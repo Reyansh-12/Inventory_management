@@ -1,0 +1,74 @@
+import slider1 from "../assets/images/slider/slider1.webp";
+import slider2 from "../assets/images/slider/slider2.webp";
+import text1 from "../assets/images/slider/text1.webp";
+
+import React from 'react';
+import { FaPinterest } from "react-icons/fa";
+import { FaTwitter } from "react-icons/fa";
+import { FaFacebook } from "react-icons/fa";
+const HeroSlider = () => {
+  const slides = [
+    {
+      title: 'CLEAN FRESH',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis.',
+      image: slider1,
+      textImg: '/assets/images/slider/text-theme.webp',
+      textShape: '/assets/images/slider/text1.webp',
+    },
+    {
+      title: 'Facial Cream',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis.',
+      image: slider2,
+      textImg: '/assets/images/slider/text-theme.webp',
+      textShape: '/assets/images/slider/text1.webp',
+    },
+  ];
+
+  return (
+    <section className="hero-slider-area position-relative mb-5">
+      <div className="swiper hero-slider-container">
+        <div className="swiper-wrapper">
+          {slides.map((slide, index) => (
+            <div key={index} className="swiper-slide hero-slide-item">
+              <div className="container">
+                <div className="row align-items-center position-relative">
+                  <div className="col-12 col-md-6">
+                    <div className="hero-slide-content">
+                      <div className="hero-slide-text-img">
+                        <img src={text1} width="427" height="232" alt="Text" />
+                      </div>
+                      <h2 className="hero-slide-title">{slide.title}</h2>
+                      <p className="hero-slide-desc">{slide.description}</p>
+                      <a className="btn btn-border-dark rounded-pill ps-5 pe-4 align-items-center" href="/product" style={{lineHeight: '2.5'}}>BUY NOW</a>
+                    </div>
+                  </div>
+                  <div className="col-12 col-md-6">
+                    <div className="hero-slide-thumb">
+                      <img src={slider1} width="841" height="832" alt={slide.title} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="hero-slide-text-shape">
+                <img src={slider1} width="70" height="955" alt="Shape" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="hero-slide-social-media">
+        <a href="https://www.pinterest.com/" target="_blank" rel="noopener noreferrer">
+          < FaPinterest/>
+        </a>
+        <a href="https://twitter.com/" target="_blank" rel="noopener noreferrer">
+          <FaTwitter />
+        </a>
+        <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer">
+          <FaFacebook />
+        </a>
+      </div>
+    </section>
+  );
+};
+
+export default HeroSlider;
