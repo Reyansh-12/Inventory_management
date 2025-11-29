@@ -1,29 +1,15 @@
 <?php
-function env($key) {
-    $envPath = __DIR__ . '/.env';
-
-    if (!file_exists($envPath)) {
-        die(".env file missing");
-    }
-
-    $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-
-    foreach ($lines as $line) {
-        list($k, $v) = explode("=", $line, 2);
-        if ($k === $key) return $v;
-    }
-
-    return null;
-}
+require_once __DIR__ . "/env.php";
 
 $host = env("DB_HOST");
-$db   = env("DB_NAME");
 $user = env("DB_USER");
 $pass = env("DB_PASS");
+$db   = env("DB_NAME");
+$port = env("DB_PORT", 3306);
 
-$conn = new mysqli($host, $user, $pass, $db);
+$conn = new mysqli($host, $user, $pass, $db, $port);
 
 if ($conn->connect_error) {
-    die("Connection Failed: " . $conn->connect_error);
+    die("DB Connection Failed: " . $conn->connect_error);
 }
 ?>
