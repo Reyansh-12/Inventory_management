@@ -1,16 +1,17 @@
 
-<?php include('/var/www/html/Inventory_management/Backend/src/Layouts/Links.php');
-include('/var/www/html/Inventory_management/Backend/src/controllers/dbConnection.php');
-// $currentPage = basename($_SERVER['PHP_SELF']);
+<?php define("BASE_PATH", dirname(__DIR__, 2));
+include BASE_PATH . "/src/Layouts/Links.php";
+include BASE_PATH . "/src/controllers/dbConnection.php";
+$currentPage = basename($_SERVER['PHP_SELF']);
 
-// $sql = "SELECT `id`,`product_name`, `category`, `quantity` FROM `product_list` WHERE quantity <= 5";
-// $result = $con->query($sql);
+$sql = "SELECT `id`,`product_name`, `category`, `quantity` FROM `product_list` WHERE quantity <= 5";
+$result = $con->query($sql);
 
-// if(isset($_GET['lowStockId'])) {
-//     $lowStockId = $_GET['lowStockId'];
-//     $deleteSql = "DELETE FROM `low_stocks` WHERE `id` = $lowStockId";
-//     $con->query($deleteSql);
-// }
+if(isset($_GET['lowStockId'])) {
+    $lowStockId = $_GET['lowStockId'];
+    $deleteSql = "DELETE FROM `low_stocks` WHERE `id` = $lowStockId";
+    $con->query($deleteSql);
+}
 ?>;
 
 <!DOCTYPE html>
@@ -35,10 +36,10 @@ include('/var/www/html/Inventory_management/Backend/src/controllers/dbConnection
         
         <div class="d-flx row">
         <div class="col-md-3">
-    <?php include('/var/www/html/Inventory_management/Backend/src/Layouts/Sidebar.php'); ?>
+    <?php include BASE_PATH . "/src/Layouts/Sidebar.php"; ?>
 </div>
 <div class="col-md-9">
-    <?php include('/var/www/html/Inventory_management/Backend/src/Layouts/Header.php'); ?>
+    <?php include BASE_PATH . "/src/Layouts/Header.php"; ?>
 </div>
         </div>
         <div class="page-wrapper">

@@ -1,6 +1,7 @@
 <?php 
-include('/var/www/html/Inventory_management/Backend/src/Layouts/Links.php');
-include('/var/www/html/Inventory_management/Backend/src/controllers/dbConnection.php');
+define("BASE_PATH", dirname(__DIR__, 3));
+include BASE_PATH . "/src/Layouts/Links.php";
+include BASE_PATH . "/src/controllers/dbConnection.php";
 
 $userName = $_POST['userName'] ?? '';
 $contact = $_POST['phoneNumber'] ?? '';
@@ -47,10 +48,10 @@ if (isset($_POST['submit'])) {
 
         <div class="d-flx row">
         <div class="col-md-3">
-    <?php include('/var/www/html/Inventory_management/Backend/src/Layouts/Sidebar.php'); ?>
+    <?php include BASE_PATH . "/src/Layouts/Sidebar.php"; ?>
 </div>
 <div class="col-md-9">
-    <?php include('/var/www/html/Inventory_management/Backend/src/Layouts/Header.php'); ?>
+    <?php include BASE_PATH . "/src/Layouts/Sidebar.php"; ?>
 </div>
     </div>
     <div class="page-wrapper">

@@ -1,5 +1,6 @@
 <?php
-include('/var/www/html/Inventory_management/Backend/src/controllers/dbConnection.php');
+require_once __DIR__ . "/../config/path.php";
+include(BASE_PATH .'/Backend/src/controllers/dbConnection.php');
 ini_set('display_errors', 0);
 session_start();
 $_SESSION['username'] = '';

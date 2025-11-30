@@ -1,14 +1,15 @@
-<?php include('/var/www/html/Inventory_management/Backend/src/Layouts/Links.php');
-include('/var/www/html/Inventory_management/Backend/src/controllers/dbConnection.php');
+<?php define("BASE_PATH", dirname(__DIR__, 2));
+include BASE_PATH . "/src/Layouts/Links.php";
+include BASE_PATH . "/src/controllers/dbConnection.php";
 
-// $sql = "SELECT `id`, `category`, `category_slug`, `created_on`, `status` FROM `category`";
-// $result = $con->query($sql);
+$sql = "SELECT `id`, `category`, `category_slug`, `created_on`, `status` FROM `category`";
+$result = $con->query($sql);
 
-// if(isset($_GET['categoryId'])) {
-//     $categoryId = $_GET['categoryId'];
-//     $deleteSql = "DELETE FROM `category` WHERE `id` = $categoryId";
-//     $con->query($deleteSql);
-// }
+if(isset($_GET['categoryId'])) {
+    $categoryId = $_GET['categoryId'];
+    $deleteSql = "DELETE FROM `category` WHERE `id` = $categoryId";
+    $con->query($deleteSql);
+}
 ?>;
 
 <!DOCTYPE html>
@@ -33,10 +34,10 @@ include('/var/www/html/Inventory_management/Backend/src/controllers/dbConnection
 
         <div class="d-flx row">
         <div class="col-md-3">
-    <?php include('/var/www/html/Inventory_management/Backend/src/Layouts/Sidebar.php'); ?>
+    <?php include BASE_PATH . "/src/Layouts/Sidebar.php"; ?>
 </div>
 <div class="col-md-9">
-    <?php include('/var/www/html/Inventory_management/Backend/src/Layouts/Header.php'); ?>
+    <?php include BASE_PATH . "/src/Layouts/Header.php"; ?>
 </div>
         </div>
         <div class="page-wrapper">

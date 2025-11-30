@@ -1,6 +1,7 @@
 <?php
 session_start();
-include('/var/www/html/Inventory_management/Backend/src/controllers/dbConnection.php'); 
+require_once __DIR__ . "/../config/path.php";
+include(BASE_PATH . '/Backend/src/controllers/dbConnection.php'); 
 
 if (isset($_POST['submit'])) {
 
