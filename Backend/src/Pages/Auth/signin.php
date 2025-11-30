@@ -1,7 +1,8 @@
 <?php
 session_start();
-require_once __DIR__ . "/../config/path.php";
-include(BASE_PATH . '/Backend/src/controllers/dbConnection.php'); 
+define("BASE_PATH", dirname(__DIR__, 3));
+include BASE_PATH . "/src/Layouts/Links.php";
+include BASE_PATH . "/src/controllers/dbConnection.php"; 
 
 if (isset($_POST['submit'])) {
 
