@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Footer from '../../components/Footer';
 import banner7 from '../../assets/images/shop/banner/7.webp';
 import shop2 from '../../assets/images/shop/product-details/2.webp';
-import ProductItem from "/xampp/htdocs/Inventory_management/Frontend/src/Pages/Products/ProductItem.jsx";
+import ProductItem from "/var/www/html/Inventory_management/Frontend/src/Pages/Products/ProductItem.jsx";
 
 const ProductDetailsNormal = () => {
   const [qty, setQty] = useState(1);

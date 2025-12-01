@@ -24,4 +24,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
     <script src="/Backend/src/assets/js/script.js"></script>
     </body>
+
+    <?php 
+        ini_set('display_errors', 1);
+        ini_set('display_startup_errors', 1);
+        error_reporting(E_ALL);
+    ?>
 </html>

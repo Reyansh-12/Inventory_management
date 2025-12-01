@@ -1,43 +1,25 @@
 <?php 
-include('/var/www/html/Inventory_management/Backend/src/Layouts/Links.php');
-include('/var/www/html/Inventory_management/Backend/src/controllers/dbConnection.php');
+define("BASE_PATH", dirname(__DIR__, 3));
+include BASE_PATH . "/src/Layouts/Links.php";
+include BASE_PATH . "/src/controllers/dbConnection.php";
 
-$supplierId = $_GET['supplierId'] ?? null;
-$supplierName = $email = $contact = $contry = $city = $address = $description = "";
 
-if($supplierId) {
-    $query = "SELECT * FROM `supplier` WHERE id='$supplierId'";
-    $result = mysqli_query($con, $query);
+$supplierName =$_POST['supplierName'];
+$email =$_POST['supplierEmail'];
+$contact =$_POST['contact'];
+$country =$_POST['countrySelector'];
+$city =$_POST['citySelector'];
+$address =$_POST['address'];
+$description =$_POST['description'];
 
-    if($result && mysqli_num_rows($result) > 0) {
-        $row = mysqli_fetch_assoc($result);
-
-        $supplierName = $row['supplier_name'];
-        $email = $row['email'];
-        $contact = $row['phone_number'];
-        $country = $row['country'];
-        $city = $row['city'];
-        $address = $row['address'];
-        $description = $row['description'];
-    }
-}
+  
  if(isset($_POST['submit'])) {
-        $supplierName = $_POST['supplierName'];
-        $email = $_POST['supplierEmail'];
-        $contact = $_POST['contact'];
-        $country = $_POST['countrySelector'];
-        $city = $_POST['citySelector'];
-        $address = $_POST['address'];
-        $description = $_POST['description'];
+    $sql = "INSERT INTO `supplier`(`id`,`supplier_name`, `email`, `phone_number`, `city`, `country`, `address`, `description`) 
+    VALUES ('1','$supplierName','$email','$contact','$city','$country','$address','$description')";
 
-        if($supplierId) {
-            $sql = "UPDATE `supplier` SET `supplier_name`='$supplierName',`email`='$email',`phone_number`='$contact',`country`='$country',`city`='$city',`address`='$address',`description`='$description'";
-        } else {
-            $sql = "INSERT INTO `supplier`(`supplier_name`, `email`, `phone_number`, `country`, `city`, `address`, `description`) 
-            VALUES ('$supplierName','$email','$contact','$country','$city','$address','$description')";
-        }
-        mysqli_query($con, $sql);
-        
+mysqli_query($con, $sql);
+    header("Location: SupplierList.php");
+    exit();
  }
 ?>
 
@@ -75,10 +57,10 @@ if($supplierId) {
         
         <div class="d-flx row">
         <div class="col-md-3">
-    <?php include('/var/www/html/Inventory_management/Backend/src/Layouts/Sidebar.php'); ?>
+    <?php include BASE_PATH . "/src/Layouts/Sidebar.php"; ?>
 </div>
 <div class="col-md-9">
-    <?php include('/var/www/html/Inventory_management/Backend/src/Layouts/Header.php'); ?>
+    <?php include BASE_PATH . "/src/Layouts/Header.php"; ?>
 </div>
         </div>
         <div class="page-wrapper">
@@ -92,7 +74,7 @@ if($supplierId) {
 
                 <div class="card">
                     <div class="card-body">
-                        <form action="#" id="myForm" method="POST" data-parsley-validate>
+                        <form  id="myForm" method="POST" data-parsley-validate>
                             <div class="row">
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
@@ -144,7 +126,7 @@ if($supplierId) {
                                     <textarea class="form-control" id="description" name="description" placeholder="Enter description" data-parsley-required-message="Description Field is required" data-parsley-required></textarea>
                                 </div>
                             </div>
-                            <div class="col-lg-12">
+                            <!-- <div class="col-lg-12">
                                 <div class="form-group">
                                     <label> Avatar</label>
                                     <div class="image-upload">
@@ -155,7 +137,7 @@ if($supplierId) {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="col-lg-12 d-flex justify-content-end">
                                 <button class="btn btn-cancel me-2" type="reset" name="reset" id="resetButton">Reset</button>
                                 <button class="btn btn-submit" name="submit" type="submit">Submit</button>

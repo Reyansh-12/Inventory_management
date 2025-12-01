@@ -1,5 +1,7 @@
 <?php
-include('/var/www/html/Inventory_management/Backend/src/controllers/dbConnection.php');
+define("BASE_PATH", dirname(__DIR__, 3));
+include BASE_PATH . "/src/Layouts/Links.php";
+include BASE_PATH . "/src/controllers/dbConnection.php";
 ini_set('display_errors', 0);
 session_start();
 $_SESSION['username'] = '';

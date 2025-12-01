@@ -1,4 +1,6 @@
-<?php include('/var/www/html/Inventory_management/Backend/src/Layouts/Links.php'); 
+<?php 
+require_once __DIR__ . "/../config/path.php";
+include(BASE_PATH . "/Backend/src/Layouts/Links.php"); 
 
     $userMail = $_SESSION['user_email'];
     $currentPage = basename($_SERVER['PHP_SELF']); 
@@ -26,10 +28,10 @@
         
         <div class="d-flx row">
         <div class="col-md-3">
-    <?php include('/var/www/html/Inventory_management/Backend/src/Layouts/Sidebar.php'); ?>
+    <?php include(BASE_PATH . "/Backend/src/Layouts/header.php"); ?>
 </div>
 <div class="col-md-9">
-    <?php include('/var/www/html/Inventory_management/Backend/src/Layouts/Header.php'); ?>
+    <?php include(BASE_PATH . "/Backend/src/Layouts/Sidebar.php"); ?>
 </div>
 
         </div>

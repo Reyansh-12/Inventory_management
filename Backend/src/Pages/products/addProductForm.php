@@ -1,36 +1,27 @@
 <?php
-include('/var/www/html/Inventory_management/Backend/src/Layouts/Links.php');
-include('/var/www/html/Inventory_management/Backend/src/controllers/dbConnection.php');
+define("BASE_PATH", dirname(__DIR__, 3));
+include BASE_PATH . "/src/Layouts/Links.php";
+include BASE_PATH . "/src/controllers/dbConnection.php";
 
-$productname = isset($_POST['productname']) ? $_POST['productname'] : '';
-$categoryselector = isset($_POST['categoryselector']) ? $_POST['categoryselector'] : '';
-$brand = isset($_POST['brand']) ? $_POST['brand'] : '';
-$minquantity = isset($_POST['minquantity']) ? $_POST['minquantity'] : '';
-$quantity = isset($_POST['quantity']) ? $_POST['quantity'] : '';
-$description = isset($_POST['description']) ? $_POST['description'] : '';
-$price = isset($_POST['price']) ? $_POST['price'] : '';
-$status = isset($_POST['status']) ? $_POST['status'] : '';
-$discount = isset($_POST['discount']) ? $_POST['discount'] : '';
- 
+$productname = $_POST['productname'] ?? '';
+$category = $_POST['categoryselector'] ?? '';
+$brandName = $_POST['brand'] ?? '';
+$minquantity = $_POST['minquantity'] ?? '';
+$quantity = $_POST['quantity'] ?? '';
+$description = $_POST['description'] ?? '';
+$discount = $_POST['discount'] ?? '';
+$price = $_POST['price'] ?? '';
+$status = $_POST['status'] ?? '';
 
-if (isset($_POST['submit'])) {
-    $productname = mysqli_real_escape_string($con, $_POST['productname']);
-    $categoryselector = mysqli_real_escape_string($con, $_POST['categoryselector']);
-    $brand = mysqli_real_escape_string($con, $_POST['brand']);
-    $minquantity = mysqli_real_escape_string($con, $_POST['minquantity']);
-    $quantity = mysqli_real_escape_string($con, $_POST['quantity']);
-    $description = mysqli_real_escape_string($con, $_POST['description']);
-    $price = mysqli_real_escape_string($con, $_POST['price']);
-    $status = mysqli_real_escape_string($con, $_POST['status']);
-    $discount = mysqli_real_escape_string($con, $_POST['discount']);
-    $stmt = $con->prepare("INSERT INTO `product_list` (`product_name`, `category`, `brand_name`, `minQuantity`, `price`, `quantity`, `description`, `discount`, `status`) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssssssss", $productname, $categoryselector, $brand, $minquantity, $price, $quantity, $description, $discount, $status);
-    $stmt->execute();
-    $stmt->close();
+if(isset($_POST['submit'])) {
 
+    $sql = "INSERT INTO `product_list`(`product_name`, `category`, `brand_name`, `minQuantity`, `price`, `quantity`, `description`, `discount`, `status`) 
+    VALUES ('$productname','$category','$brandName','$minquantity','$price','$quantity','$description','$discount','$status')";
+    var_dump('-=-=-=-',$sql);
+    mysqli_query($con, $sql);
+    header("Location: ProductList.php");
+    exit();
 }
-
 ?>
 
 
@@ -66,10 +57,10 @@ if (isset($_POST['submit'])) {
 
         <div class="d-flx row">
         <div class="col-md-3">
-    <?php include('/var/www/html/Inventory_management/Backend/src/Layouts/Sidebar.php'); ?>
+    <?php include BASE_PATH . "/src/Layouts/Sidebar.php"; ?>
 </div>
 <div class="col-md-9">
-    <?php include('/var/www/html/Inventory_management/Backend/src/Layouts/Header.php'); ?>
+    <?php include BASE_PATH . "/src/Layouts/Header.php"; ?>
 </div>
         </div>
         <div class="page-wrapper">
@@ -90,7 +81,7 @@ if (isset($_POST['submit'])) {
                                 <div class="col-lg-4 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="productName">Product Name <span class="text-danger">*</span></label>
-                                        <input type="text" id="productName" name="productname" value="<?php echo htmlspecialchars($productName); ?>" placeholder="Enter product name" data-parsley-required-message="Product name is required" data-parsley-required>
+                                        <input type="text" id="productName" name="productname" value="<?php echo htmlspecialchars($productname);?>" placeholder="Enter product name" data-parsley-required-message="Product name is required" data-parsley-required>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-6 col-12">
@@ -110,7 +101,7 @@ if (isset($_POST['submit'])) {
                                 <div class="col-lg-4 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for='brand'>Brand <span class="text-danger">*</span></label>
-                                        <select class="form-select" id="brandSelect" name="brand" value="<?php echo htmlspecialchars($brandName) ?>" data-parsley-required-message="Select brand" data-parsley-required>
+                                        <select class="form-select" id="brandSelect" name="brand" value="<?php echo htmlspecialchars($brand)?>" data-parsley-required-message="Select brand" data-parsley-required>
                                             <option disabled selected>Choose Brand</option>
                                             <option class="haircare" value="loreal" <?php if ($brandName == "loreal") echo "selected"; ?>>L'Oréal</option>
                                             <option class="haircare" value="Pantene" <?php if ($brandName == "Pantene") echo "selected"; ?>>Pantene</option>
@@ -144,7 +135,7 @@ if (isset($_POST['submit'])) {
                                 <div class="col-lg-4 col-sm-4 col-12">
                                     <div class="form-group">
                                         <label for='minQuantity'>Minimum Qty <span class="text-danger">*</span></label>
-                                        <input type="number" class="p-2 rounded col-lg-12 border-secondary border-1 border-secondary border" value="<?php echo htmlspecialchars($minQuantity); ?>" name="minquantity" id="minQuantity" placeholder="Enter Minimum Qty" data-parsley-required-message="Minimun quantity field is required" data-parsley-required>
+                                        <input type="number" class="p-2 rounded col-lg-12 border-secondary border-1 border-secondary border" value="<?php echo htmlspecialchars($minquantity)?>" name="minquantity" id="minQuantity" placeholder="Enter Minimum Qty" data-parsley-required-message="Minimun quantity field is required" data-parsley-required>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-4 col-12">
@@ -156,7 +147,7 @@ if (isset($_POST['submit'])) {
                                 <div class="col-lg-4 col-sm-4 col-12">
                                     <div class="form-group">
                                         <label for='datepicker'>Expired Date <span class="text-danger">*</span></label>
-                                        <input type="text" class="p-2 rounded col-lg-12 border-secondary border-1 border-secondary border" value="<?php echo htmlspecialchars($quantity) ?>" name="expiredDate" id="datepicker" placeholder="Select expired date" data-parsley-required-message="Expired date is required" data-parsley-required>
+                                        <input type="text" class="p-2 rounded col-lg-12 border-secondary border-1 border-secondary border" name="expiredDate" id="datepicker" placeholder="Select expired date" data-parsley-required-message="Expired date is required" data-parsley-required>
                                         
                                     </div>
                                 </div>
@@ -172,8 +163,8 @@ if (isset($_POST['submit'])) {
                                         <label for="discout">Discount <span class="text-danger">*</span></label>
                                         <select name="discount" class="form-select mt-2" id="discout" data-parsley-required-message="Discount field is required" value="<?php echo htmlspecialchars($discount) ?>" data-parsley-required>
                                             <option disabled>Percentage</option>
-                                            <option value="10%" <?php if ($discount == "10%") echo "selected"; ?>>10%</option>
-                                            <option value="20%" <?php if ($discount == "20%") echo "selected"; ?>>20%</option>
+                                            <option value="10" <?php if ($discount == "10") echo "selected"; ?>>10%</option>
+                                            <option value="20" <?php if ($discount == "20") echo "selected"; ?>>20%</option>
                                         </select>
 
                                     </div>

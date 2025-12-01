@@ -1,6 +1,7 @@
 <?php 
-include('/var/www/html/Inventory_management/Backend/src/Layouts/Links.php');
-include('/var/www/html/Inventory_management/Backend/src/controllers/dbConnection.php');
+define("BASE_PATH", dirname(__DIR__, 2));
+include BASE_PATH . "/src/Layouts/Links.php";
+include BASE_PATH . "/src/controllers/dbConnection.php";
 
 // if(isset($_GET['expiredProductId'])) {
 //     $expiredProductId = $_GET['expiredProductId'];
@@ -12,9 +13,7 @@ include('/var/www/html/Inventory_management/Backend/src/controllers/dbConnection
 //     exit();
 // }
 
-// $sql = "SELECT `id`, `product_name`, `expired_date`, `created_at` 
-//         FROM `product_list` 
-//         WHERE expired_date < CURDATE()";
+// $sql = "SELECT `id`, `product_name` FROM `product_list` WHERE expired_date < CURDATE()";
 
 // $result = $con->query($sql);
 ?>
@@ -43,10 +42,10 @@ include('/var/www/html/Inventory_management/Backend/src/controllers/dbConnection
         
         <div class="d-flx row">
         <div class="col-md-3">
-    <?php include('/var/www/html/Inventory_management/Backend/src/Layouts/Sidebar.php'); ?>
+    <?php include BASE_PATH . "/src/Layouts/Sidebar.php"; ?>
 </div>
 <div class="col-md-9">
-    <?php include('/var/www/html/Inventory_management/Backend/src/Layouts/Header.php'); ?>
+    <?php include BASE_PATH . "/src/Layouts/Header.php"; ?>
 </div>
         </div>
         <div class="page-wrapper">
