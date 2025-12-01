@@ -1,20 +1,19 @@
-<?php 
+<?php
 define("BASE_PATH", dirname(__DIR__, 3));
 include BASE_PATH . "/src/Layouts/Links.php";
 include BASE_PATH . "/src/controllers/dbConnection.php";
 
-if(isset($_GET['productId'])) {
-    $productId = intval($_GET['productId']);
-    $deleteSql = "DELETE FROM `product_list` WHERE `id` = $productId";
-    $con->query($deleteSql);
+if(isset($_GET['deleteId'])) {
+    $productId = intval($_GET['deleteId']);
+    $stmt = $con->prepare("DELETE FROM product_list WHERE id = ?");
+    $stmt->bind_param("i", $productId);
+    $stmt->execute();
 
-    header("Location: ProductList.php");
+    header("Location: ProductList.php?deleted=1");
     exit;
 }
-
 $sql = "SELECT `id`,`product_name`, `category`, `brand_name`, `price`, `quantity` FROM `product_list`";
 $result = $con->query($sql);
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -27,7 +26,7 @@ $result = $con->query($sql);
     <meta name="author" content="Dreamguys - Bootstrap Admin Template">
     <meta name="robots" content="noindex, nofollow">
     <title>Dreams Pos admin template</title>
-    
+
 </head>
 
 <body>
@@ -35,14 +34,14 @@ $result = $con->query($sql);
         <div class="whirly-loader"> </div>
     </div>
     <div class="main-wrapper">
-        
+
         <div class="d-flx row">
-        <div class="col-md-3">
-    <?php include BASE_PATH . "/src/Layouts/Sidebar.php"; ?>
-</div>
-<div class="col-md-9">
-    <?php include BASE_PATH . "/src/Layouts/Header.php"; ?>
-</div>
+            <div class="col-md-3">
+                <?php include BASE_PATH . "/src/Layouts/Sidebar.php"; ?>
+            </div>
+            <div class="col-md-9">
+                <?php include BASE_PATH . "/src/Layouts/Header.php"; ?>
+            </div>
 
         </div>
         <div class="page-wrapper" style="padding-top: 40px;">
@@ -162,50 +161,49 @@ $result = $con->query($sql);
                                 </thead>
                                 <tbody>
                                     <?php
-                                    if(!$result) {
-                                        echo "Error: " .$con->error;
+                                    if (!$result) {
+                                        echo "Error: " . $con->error;
                                     } else {
-                                    if ($result->num_rows > 0) {
-                                        while ($row = $result->fetch_assoc()) {
-                                            echo "<tr>";
-                                            echo "    <td>";
-                                            echo "        <label class='checkboxs'>";
-                                            echo "            <input type='checkbox'>";
-                                            echo "            <span class='checkmarks'></span>";
-                                            echo "        </label>";
-                                            echo "    </td>";
-                                            echo "    <td class='productimgname'>";
-                                            echo "        <a href='javascript:void(0)' class='product-img'>";
-                                            echo "            <img src='/Backend/src/assets/images/product/product1.jpg' alt='product'>";
-                                            echo "        </a>";
-                                            echo "        <a href='javascript:void(0);'>".$row['product_name']."</a>";
-                                            echo "    </td>";
-                                            echo "    <td>".$row['category']."</td>";
-                                            echo "    <td>".$row['brand_name']."</td>";
-                                            echo "    <td>".$row['price']."</td>";
-                                            echo "    <td>".$row['quantity']."</td>";
-                                            
-                                            echo "    <td>";
-                                            echo "        <a class='me-3' href='product-details.html'>";
-                                            echo "            <img src='/Backend/src/assets/images/icons/eye.svg' alt='img'>";
-                                            echo "        </a>";
-                                            // echo "        <a class='me-3' href='/Backend/src/Pages/products/addProductForm.php?productId=".$row['id']."'>";
-                                            echo "            <img src='/Backend/src/assets/images/icons/edit.svg' alt='img'>";
-                                            echo "        </a>";
-                                            // echo "        <a class='confirm-text' name='delete' type='submit' href='/Backend/src/Pages/products/ProductList.php?productId=".$row['id']."'>";
-                                            echo "            <img src='/Backend/src/assets/images/icons/delete.svg' alt='img'>";
-                                            echo "        </a>";
-                                            echo "    </td>";
-                                            echo "</tr>";
+                                        if ($result->num_rows > 0) {
+                                            while ($row = $result->fetch_assoc()) {
+                                                echo "<tr>";
+                                                echo "    <td>";
+                                                echo "        <label class='checkboxs'>";
+                                                echo "            <input type='checkbox'>";
+                                                echo "            <span class='checkmarks'></span>";
+                                                echo "        </label>";
+                                                echo "    </td>";
+                                                echo "    <td class='productimgname'>";
+                                                echo "        <a href='javascript:void(0)' class='product-img'>";
+                                                echo "            <img src='/Backend/src/assets/images/product/product1.jpg' alt='product'>";
+                                                echo "        </a>";
+                                                echo "        <a href='javascript:void(0);'>" . $row['product_name'] . "</a>";
+                                                echo "    </td>";
+                                                echo "    <td>" . $row['category'] . "</td>";
+                                                echo "    <td>" . $row['brand_name'] . "</td>";
+                                                echo "    <td>" . $row['price'] . "</td>";
+                                                echo "    <td>" . $row['quantity'] . "</td>";
+                                                echo "    <td>";
+                                                echo "        <a class='me-3' href='product-details.html'>";
+                                                echo "            <img src='/Backend/src/assets/images/icons/eye.svg' alt='img'>";
+                                                echo "        </a>";
+                                                echo "        <a class='me-3' href='/Backend/src/Pages/products/addProductForm.php?productId=" . $row['id'] . "'>";
+                                                echo "            <img src='/Backend/src/assets/images/icons/edit.svg' alt='img'>";
+                                                echo "        </a>";
+                                                echo "        <a class='confirm-delete' href='/Backend/src/Pages/products/ProductList.php?deleteId=" . $row['id'] . "'>";
+                                                echo "            <img src='/Backend/src/assets/images/icons/delete.svg' alt='img'>";
+                                                echo "        </a>";
+                                                echo "    </td>";
+                                                echo "</tr>";
+                                            }
                                         }
-                                    } }
+                                    }
                                     ?>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>

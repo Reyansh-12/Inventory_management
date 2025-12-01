@@ -17,8 +17,7 @@ if(isset($_POST['submit'])) {
 
     $sql = "INSERT INTO `product_list`(`product_name`, `category`, `brand_name`, `minQuantity`, `price`, `quantity`, `description`, `discount`, `status`) 
     VALUES ('$productname','$category','$brandName','$minquantity','$price','$quantity','$description','$discount','$status')";
-    var_dump('-=-=-=-',$sql);
-    mysqli_query($con, $sql);
+    
     header("Location: ProductList.php");
     exit();
 }
