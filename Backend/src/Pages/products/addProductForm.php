@@ -3,26 +3,53 @@ define("BASE_PATH", dirname(__DIR__, 3));
 include BASE_PATH . "/src/Layouts/Links.php";
 include BASE_PATH . "/src/controllers/dbConnection.php";
 
-$productname = $_POST['productname'] ?? '';
-$category = $_POST['categoryselector'] ?? '';
-$brandName = $_POST['brand'] ?? '';
-$minquantity = $_POST['minquantity'] ?? '';
-$quantity = $_POST['quantity'] ?? '';
-$description = $_POST['description'] ?? '';
-$discount = $_POST['discount'] ?? '';
-$price = $_POST['price'] ?? '';
-$status = $_POST['status'] ?? '';
+$productId = $_GET['productId'] ?? null;
+$isEdit = false;
+$editData = [];
 
-if(isset($_POST['submit'])) {
+if ($productId) {
+    $isEdit = true;
+    $stmt = mysqli_prepare($con, "SELECT * FROM `product_list` WHERE id = ?");
+    mysqli_stmt_bind_param($stmt, "i", $productId);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    if ($result && mysqli_num_rows($result) > 0) {
+        $editData = mysqli_fetch_assoc($result);
+    }
+    mysqli_stmt_close($stmt);
+}
 
-    $sql = "INSERT INTO `product_list`(`product_name`, `category`, `brand_name`, `minQuantity`, `price`, `quantity`, `description`, `discount`, `status`) 
-    VALUES ('$productname','$category','$brandName','$minquantity','$price','$quantity','$description','$discount','$status')";
-    
+if (isset($_POST['submit'])) {
+    $productname = $_POST['productname'] ?? '';
+    $category = $_POST['categoryselector'] ?? '';
+    $brandName = $_POST['brand'] ?? '';
+    $minquantity = $_POST['minquantity'] ?? '';
+    $quantity = $_POST['quantity'] ?? '';
+    $description = $_POST['description'] ?? '';
+    $discount = $_POST['discount'] ?? '';
+    $price = $_POST['price'] ?? '';
+    $status = $_POST['status'] ?? '';
+    $expiredDate = $_POST['expiredDate'] ?? '';
+
+    if ($isEdit) {
+        $stmt = mysqli_prepare($con, "UPDATE `product_list` 
+            SET product_name=?, category=?, brand_name=?, minQuantity=?, price=?, quantity=?, description=?, discount=?, status=?, expired_date=? 
+            WHERE id=?");
+        mysqli_stmt_bind_param($stmt, "sssiddssssi", $productname, $category, $brandName, $minquantity, $price, $quantity, $description, $discount, $status, $expiredDate, $productId);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+    } else {
+        $stmt = mysqli_prepare($con, "INSERT INTO `product_list` 
+            (product_name, category, brand_name, minQuantity, price, quantity, description, discount, status, expired_date) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        mysqli_stmt_bind_param($stmt, "sssiddssss", $productname, $category, $brandName, $minquantity, $price, $quantity, $description, $discount, $status, $expiredDate);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+    }
     header("Location: ProductList.php");
     exit();
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -55,12 +82,12 @@ if(isset($_POST['submit'])) {
     <div class="main-wrapper">
 
         <div class="d-flx row">
-        <div class="col-md-3">
-    <?php include BASE_PATH . "/src/Layouts/Sidebar.php"; ?>
-</div>
-<div class="col-md-9">
-    <?php include BASE_PATH . "/src/Layouts/Header.php"; ?>
-</div>
+            <div class="col-md-3">
+                <?php include BASE_PATH . "/src/Layouts/Sidebar.php"; ?>
+            </div>
+            <div class="col-md-9">
+                <?php include BASE_PATH . "/src/Layouts/Header.php"; ?>
+            </div>
         </div>
         <div class="page-wrapper">
             <div class="content">
@@ -75,112 +102,104 @@ if(isset($_POST['submit'])) {
                 </div>
                 <div class="card">
                     <div class="card-body">
-                        <form action="#" id="myForm" method="POST" data-parsley-validate>
+                        <form action="#" id="myForm" method="POST" data-parsley-validate>                         <input type="hidden" name="user_id" value="<?php echo $editData['id'] ?? ''; ?>">
                             <div class="row">
                                 <div class="col-lg-4 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="productName">Product Name <span class="text-danger">*</span></label>
-                                        <input type="text" id="productName" name="productname" value="<?php echo htmlspecialchars($productname);?>" placeholder="Enter product name" data-parsley-required-message="Product name is required" data-parsley-required>
+                                        <input type="text" id="productName" name="productname" value="<?php echo htmlspecialchars($editData['product_name'] ?? '') ?>" placeholder="Enter product name" data-parsley-required-message="Product name is required" data-parsley-required>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for='categorySelector'>Category <span class="text-danger">*</span></label>
-                                        <select class="form-select" onchange="enableBrandSelector()" name="categoryselector" value="<?php echo htmlspecialchars($category) ?>" id="categorySelector" data-parsley-required-message="Select category" data-parsley-required>
+                                        <select class="form-select" onchange="enableBrandSelector()" name="categoryselector" id="categorySelector" data-parsley-required-message="Select category" data-parsley-required>
                                             <option disabled selected>Choose Category</option>
-                                            <option value="haircare" <?php if ($category == "haircare") echo "selected"; ?>>Hair care</option>
-                                            <option value="skincare" <?php if ($category == "skincare") echo "selected"; ?>>Skin care</option>
-                                            <option value="lipstick" <?php if ($category == "lipstick") echo "selected"; ?>>Lip Stick</option>
-                                            <option value="faceskin" <?php if ($category == "faceskin") echo "selected"; ?>>Face Skin</option>
-                                            <option value="blusher" <?php if ($category == "blusher") echo "selected"; ?>>Blusher</option>
-                                            <option value="natural" <?php if ($category == "natural") echo "selected"; ?>>Natural</option>
+                                            <?php
+                                            $categories = ['haircare' => 'Hair care', 'skincare' => 'Skin care', 'lipstick' => 'Lip Stick', 'faceskin' => 'Face Skin', 'blusher' => 'Blusher', 'natural' => 'Natural'];
+                                            foreach ($categories as $key => $value) {
+                                                $selected = ($editData['category'] ?? '') == $key ? 'selected' : '';
+                                                echo "<option value=\"$key\" $selected>$value</option>";
+                                            }
+                                            ?>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for='brand'>Brand <span class="text-danger">*</span></label>
-                                        <select class="form-select" id="brandSelect" name="brand" value="<?php echo htmlspecialchars($brand)?>" data-parsley-required-message="Select brand" data-parsley-required>
+                                        <select class="form-select" id="brandSelect" name="brand" data-parsley-required-message="Select brand" data-parsley-required>
                                             <option disabled selected>Choose Brand</option>
-                                            <option class="haircare" value="loreal" <?php if ($brandName == "loreal") echo "selected"; ?>>L'Oréal</option>
-                                            <option class="haircare" value="Pantene" <?php if ($brandName == "Pantene") echo "selected"; ?>>Pantene</option>
-                                            <option class="haircare" value="Dove" <?php if ($brandName == "Dove") echo "selected"; ?>>Dove</option>
-                                            <option class="haircare" value="Moroccanoil" <?php if ($brandName == "Moroccanoil") echo "selected"; ?>>Moroccanoil</option>
-                                            <option class="haircare" value="Herbal Essences" <?php if ($brandName == "Herbal Essences") echo "selected"; ?>>Herbal Essences</option>
-                                            <option class="skincare" value="CeraVe" <?php if ($brandName == "CeraVe") echo "selected"; ?>>CeraVe</option>
-                                            <option class="skincare" value="The Ordinary" <?php if ($brandName == "The Ordinary") echo "selected"; ?>>The Ordinary</option>
-                                            <option class="skincare" value="Neutrogena" <?php if ($brandName == "Neutrogena") echo "selected"; ?>>Neutrogena</option>
-                                            <option class="skincare" value="Biotique" <?php if ($brandName == "Biotique") echo "selected"; ?>>Biotique</option>
-                                            <option class="skincare" value="La Roche-Posay" <?php if ($brandName == "La Roche-Posay") echo "selected"; ?>>La Roche-Posay</option>
-                                            <option class="skincare" value="Clinique" <?php if ($brandName == "Clinique") echo "selected"; ?>>Clinique</option>
-                                            <option class="lipstick" value="MAC Cosmetics" <?php if ($brandName == "MAC Cosmetics") echo "selected"; ?>>MAC Cosmetics</option>
-                                            <option class="lipstick" value="Charlotte Tilbury" <?php if ($brandName == "Charlotte Tilbury") echo "selected"; ?>>Charlotte Tilbury</option>
-                                            <option class="lipstick" value="Revlon" <?php if ($brandName == "Revlon") echo "selected"; ?>>Revlon</option>
-                                            <option class="lipstick" value="Huda Beauty" <?php if ($brandName == "Huda Beauty") echo "selected"; ?>>Huda Beauty</option>
-                                            <option class="lipstick" value="Maybelline" <?php if ($brandName == "Maybelline") echo "selected"; ?>>Maybelline</option>
-                                            <option class="natural" value="Burt’s Bees" <?php if ($brandName == "Burt’s Bees") echo "selected"; ?>>Burt’s Bees</option>
-                                            <option class="natural" value="The Body Shop" <?php if ($brandName == "The Body Shop") echo "selected"; ?>>The Body Shop</option>
-                                            <option class="natural" value="Dr. Bronner’s" <?php if ($brandName == "Dr. Bronner’s") echo "selected"; ?>>Dr. Bronner’s</option>
-                                            <option class="natural" value="Weleda" <?php if ($brandName == "Weleda") echo "selected"; ?>>Weleda</option>
-                                            <option class="blusher" value="Dandelion" <?php if ($brandName == "Dandelion") echo "selected"; ?>>Dandelion</option>
-                                            <option class="blusher" value="Rockateur" <?php if ($brandName == "Rockateur") echo "selected"; ?>>Rockateur</option>
-                                            <option class="blusher" value="Tarte (Amazonian Clay Blush)" <?php if ($brandName == "Tarte (Amazonian Clay Blush)") echo "selected"; ?>>Tarte (Amazonian Clay Blush)</option>
-                                            <option class="blusher" value="NARS (“Orgasm”)" <?php if ($brandName == "NARS (“Orgasm”)") echo "selected"; ?>>NARS (“Orgasm”)</option>
-                                            <option class="blusher" value="Milani" <?php if ($brandName == "Milani") echo "selected"; ?>>Milani</option>
-                                            <option class="blusher" value="Rare Beauty" <?php if ($brandName == "Rare Beauty") echo "selected"; ?>>Rare Beauty</option>
+                                            <?php
+                                            $brands = [
+                                                'haircare' => ['loreal' => "L'Oréal", 'Pantene' => 'Pantene', 'Dove' => 'Dove', 'Moroccanoil' => 'Moroccanoil', 'Herbal Essences' => 'Herbal Essences'],
+                                                'skincare' => ['CeraVe' => 'CeraVe', 'The Ordinary' => 'The Ordinary', 'Neutrogena' => 'Neutrogena', 'Biotique' => 'Biotique', 'La Roche-Posay' => 'La Roche-Posay', 'Clinique' => 'Clinique'],
+                                                'lipstick' => ['MAC Cosmetics' => 'MAC Cosmetics', 'Charlotte Tilbury' => 'Charlotte Tilbury', 'Revlon' => 'Revlon', 'Huda Beauty' => 'Huda Beauty', 'Maybelline' => 'Maybelline'],
+                                                'natural' => ['Burt’s Bees' => 'Burt’s Bees', 'The Body Shop' => 'The Body Shop', 'Dr. Bronner’s' => 'Dr. Bronner’s', 'Weleda' => 'Weleda'],
+                                                'blusher' => ['Dandelion' => 'Dandelion', 'Rockateur' => 'Rockateur', 'Tarte (Amazonian Clay Blush)' => 'Tarte (Amazonian Clay Blush)', 'NARS (“Orgasm”)' => 'NARS (“Orgasm”)', 'Milani' => 'Milani', 'Rare Beauty' => 'Rare Beauty'],
+                                                'faceskin' => ['Fenty Beauty' => 'Fenty Beauty', 'Estée Lauder' => 'Estée Lauder', 'Maybelline Fit Me' => 'DermaCare', 'L’Oréal True Match' => 'L’Oréal True Match', 'Revlon ColorStay' => 'Revlon ColorStay'],
+                                            ];
+
+                                            foreach ($brands as $cat => $brandList) {
+                                                foreach ($brandList as $bKey => $bName) {
+                                                    $selected = ($editData['brand_name'] ?? '') == $bKey ? 'selected' : '';
+                                                    echo "<option class=\"$cat\" value=\"$bKey\" $selected>$bName</option>";
+                                                }
+                                            }
+                                            ?>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-4 col-12">
                                     <div class="form-group">
                                         <label for='minQuantity'>Minimum Qty <span class="text-danger">*</span></label>
-                                        <input type="number" class="p-2 rounded col-lg-12 border-secondary border-1 border-secondary border" value="<?php echo htmlspecialchars($minquantity)?>" name="minquantity" id="minQuantity" placeholder="Enter Minimum Qty" data-parsley-required-message="Minimun quantity field is required" data-parsley-required>
+                                        <input type="number" class="p-2 rounded col-lg-12 border-secondary border-1 border-secondary border" value="<?php echo htmlspecialchars($editData['minQuantity'] ?? '') ?>" name="minquantity" id="minQuantity" placeholder="Enter Minimum Qty" data-parsley-required-message="Minimum quantity field is required" data-parsley-required>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-4 col-12">
                                     <div class="form-group">
                                         <label for='quantity'>Quantity <span class="text-danger">*</span></label>
-                                        <input type="number" class="p-2 rounded col-lg-12 border-secondary border-1 border-secondary border" value="<?php echo htmlspecialchars($quantity) ?>" name="quantity" id="quantity" placeholder="Enter Quantity" data-parsley-required-message="Quantity field is required" data-parsley-required>
+                                        <input type="number" class="p-2 rounded col-lg-12 border-secondary border-1 border-secondary border" value="<?php echo htmlspecialchars($editData['quantity'] ?? '') ?>" name="quantity" id="quantity" placeholder="Enter Quantity" data-parsley-required-message="Quantity field is required" data-parsley-required>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-4 col-12">
                                     <div class="form-group">
                                         <label for='datepicker'>Expired Date <span class="text-danger">*</span></label>
-                                        <input type="text" class="p-2 rounded col-lg-12 border-secondary border-1 border-secondary border" name="expiredDate" id="datepicker" placeholder="Select expired date" data-parsley-required-message="Expired date is required" data-parsley-required>
-                                        
+                                        <input type="text" class="p-2 rounded col-lg-12 border-secondary border-1 border-secondary border" name="expiredDate" id="datepicker" placeholder="Select expired date" value="<?php echo htmlspecialchars($editData['expiredDate'] ?? '') ?>" data-parsley-required-message="Expired date is required" data-parsley-required>
                                     </div>
                                 </div>
-                                <div class="class=col-lg-4 col-sm-4 col-12"></div>
+
+                                <div class="col-lg-4 col-sm-4 col-12"></div>
+
                                 <div class="col-lg-12">
                                     <div class="form-group">
                                         <label for="productDescription">Product Description <span class="text-danger">*</span></label>
-                                        <textarea class="form-control" name="description" id="description" placeholder="Enter product description" data-parsley-required-message="Product description field is required" data-parsley-required><?php echo htmlspecialchars($description) ?></textarea>
+                                        <textarea class="form-control" name="description" id="description" placeholder="Enter product description" data-parsley-required-message="Product description field is required" data-parsley-required><?php echo htmlspecialchars($editData['description'] ?? '') ?></textarea>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="discout">Discount <span class="text-danger">*</span></label>
-                                        <select name="discount" class="form-select mt-2" id="discout" data-parsley-required-message="Discount field is required" value="<?php echo htmlspecialchars($discount) ?>" data-parsley-required>
+                                        <select name="discount" class="form-select mt-2" id="discout" data-parsley-required-message="Discount field is required" data-parsley-required>
                                             <option disabled>Percentage</option>
-                                            <option value="10" <?php if ($discount == "10") echo "selected"; ?>>10%</option>
-                                            <option value="20" <?php if ($discount == "20") echo "selected"; ?>>20%</option>
+                                            <option value="10" <?= ($editData['discount'] ?? '') == '10' ? 'selected' : '' ?>>10%</option>
+                                            <option value="20" <?= ($editData['discount'] ?? '') == '20' ? 'selected' : '' ?>>20%</option>
                                         </select>
-
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="price">Price <span class="text-danger">*</span></label>
-                                        <input type="number" class="form-control p-2 rounded-end col-lg-12 border-secondary border-1 border-secondary border" value="<?php echo htmlspecialchars($price) ?>" name="price" id="price" placeholder="Enter Price" data-parsley-required-message="Price field is required" data-parsley-required>
+                                        <input type="number" class="form-control p-2 rounded-end col-lg-12 border-secondary border-1 border-secondary border" value="<?php echo htmlspecialchars($editData['price'] ?? '') ?>" name="price" id="price" placeholder="Enter Price" data-parsley-required-message="Price field is required" data-parsley-required>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="label"> Status</label>
-                                        <select class="form-select" name="status" id="label" data-parsley-id="1601" value="<?php echo htmlspecialchars($status) ?>">
-                                            <option value="" disabled selected>Choose Status</option>
-                                            <option>Active</option>
-                                            <option>Unactive</option>
+                                        <select class="form-select" name="status" id="label" data-parsley-id="1601">
+                                            <option value="" disabled <?= empty($editData['status']) ? 'selected' : '' ?>>Choose Status</option>
+                                            <option value="Active" <?= ($editData['status'] ?? '') == 'Active' ? 'selected' : '' ?>>Active</option>
+                                            <option value="Inactive" <?= ($editData['status'] ?? '') == 'Inactive' ? 'selected' : '' ?>>Inactive</option>
                                         </select>
                                     </div>
                                 </div>
@@ -198,7 +217,7 @@ if(isset($_POST['submit'])) {
                                 </div>
                                 <div class="col-lg-12 d-flex justify-content-end">
                                     <button class="btn btn-cancel me-2" type="reset" name="reset" id="resetButton">Reset</button>
-                                    <button class="btn btn-submit" name="submit" type="submit">Submit</button>
+                                    <button class="btn btn-submit" name="submit" type="submit"><?= $productId ? 'Update' : 'Submit' ?></button>
                                 </div>
                             </div>
                         </form>
@@ -238,15 +257,16 @@ if(isset($_POST['submit'])) {
                 $('#brandSelect option:not(:first)').not('.' + selectedCategory).hide();
             }
         });
-         $(function () {
-    $("#datepicker").datepicker({
-        dateFormat: "yy-mm-dd",
-        changeMonth: true,
-        changeYear: true,
-        showAnim: "fadeIn"
-    });
-});
+
+        enableBrandSelector();
+        $(function () {
+            $("#datepicker").datepicker({
+                dateFormat: "yy-mm-dd",
+                changeMonth: true,
+                changeYear: true,
+                showAnim: "fadeIn"
+            });
+        });
     </script>
 </body>
-
 </html>

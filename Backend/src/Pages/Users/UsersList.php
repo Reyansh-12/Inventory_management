@@ -12,7 +12,7 @@ if (isset($_GET['deleteId'])) {
     exit;
 }
 
-$sql = "SELECT `id`, `user_name`, `user_email`, `user_contact`, `user_role`, `user_password`, `status` FROM `new_user`";
+$sql = "SELECT `id`, `user_name`, `user_email`, `user_contact`, `user_role`, `user_password`, `status`, `created_at` FROM `new_user`";
 $result = $con->query($sql);
 ?>
 
@@ -161,7 +161,7 @@ $result = $con->query($sql);
                                             echo "    <td>".$row['user_contact']."</td>";
                                             echo "    <td><a href='/cdn-cgi/l/email-protection' class='__cf_email__' data-cfemail='fb8f9394969a88bb9e839a968b979ed5989496'>".$row['user_email']."</a> </td>";
                                             echo "    <td>".$row['user_role']."</td>";
-                                            echo "    <td>".$row['date']."</td>";
+                                            echo "    <td>".$row['created_at']."</td>";
                                             echo "    <td><span class='bg-lightgreen badges'>Active</span></td>";
                                             echo "    <td>";
                                             echo "        <a class='me-3' href='/Backend/src/Pages/Users/NewUser.php?userId=".$row['id']."'>";

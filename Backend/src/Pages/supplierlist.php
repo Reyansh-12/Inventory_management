@@ -193,7 +193,7 @@ if (isset($_GET['supplierId'])) {
                                     echo "    <td>".$row['city']."</td>";
                                     echo "    <td>".$row['country']."</td>";
                                     echo "    <td>";
-                                    echo "        <a class='me-3' href='/Backend/src/Pages/supplier/supplierForm.php'>";
+                                    echo "        <a class='me-3 confirm-text' href='/Backend/src/Pages/supplier/supplierForm.php?supplierId=".$row['id']."'>";
                                     echo "            <img src='/Backend/src/assets/images/icons/edit.svg' alt='img'>";
                                     echo "        </a>";
                                     echo "        <a class='me-3 confirm-text' href='/Backend/src/Pages/supplierlist.php?supplierId=".$row['id']."'>";

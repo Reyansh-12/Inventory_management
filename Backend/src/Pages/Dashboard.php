@@ -2,9 +2,9 @@
 require_once __DIR__ . "/../config/path.php";
 include(BASE_PATH . "/Backend/src/Layouts/Links.php"); 
 
-    $userMail = $_SESSION['user_email'];
-    $currentPage = basename($_SERVER['PHP_SELF']); 
-    $currentDir  = basename(dirname($_SERVER['PHP_SELF']));
+    // $userMail = $_SESSION['user_email'];
+    // $currentPage = basename($_SERVER['PHP_SELF']); 
+    // $currentDir  = basename(dirname($_SERVER['PHP_SELF']));
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -24,16 +24,14 @@ include(BASE_PATH . "/Backend/src/Layouts/Links.php");
     <div id="global-loader">
         <div class="whirly-loader"> </div>
     </div>
-    <div class="main-wrapper">
-        
+    <div class="main-wrapper"> 
         <div class="d-flx row">
-        <div class="col-md-3">
-    <?php include(BASE_PATH . "/Backend/src/Layouts/header.php"); ?>
-</div>
-<div class="col-md-9">
-    <?php include(BASE_PATH . "/Backend/src/Layouts/Sidebar.php"); ?>
-</div>
-
+            <div class="col-md-3">
+                <?php include(BASE_PATH . "/Backend/src/Layouts/Sidebar.php"); ?>
+            </div>
+            <div class="col-md-9">
+                <?php include BASE_PATH . "/Backend/src/Layouts/Header.php"; ?>
+            </div>
         </div>
         <div class="page-wrapper">
             <div class="content">       

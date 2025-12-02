@@ -1,204 +1,88 @@
-<?php 
+<?php
 define("BASE_PATH", dirname(__DIR__, 2));
 include BASE_PATH . "/src/Layouts/Links.php";
 include BASE_PATH . "/src/controllers/dbConnection.php";
 
-// if(isset($_GET['expiredProductId'])) {
-//     $expiredProductId = $_GET['expiredProductId'];
+if(isset($_GET['expiredProductId'])) {
+    $expiredProductId = $_GET['expiredProductId'];
 
-//     $deleteSql = "DELETE FROM product_list WHERE id = $expiredProductId";
-//     $con->query($deleteSql);
+    $stmt = $con->prepare("DELETE FROM product_list WHERE id = ?");
+    $stmt->bind_param("i", $expiredProductId);
+    $stmt->execute();
+    $stmt->close();
 
-//     header("Location: expiredProduct.php");
-//     exit();
-// }
+    header("Location: expiredProduct.php");
+    exit();
+}
 
-// $sql = "SELECT `id`, `product_name` FROM `product_list` WHERE expired_date < CURDATE()";
-
-// $result = $con->query($sql);
+$sql = "SELECT `id`, `product_name`, `expired_date` FROM `product_list` WHERE expired_date = CURDATE()";
+$result = $con->query($sql);
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-    <meta name="description" content="POS - Bootstrap Admin Template">
-    <meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern,  html5, responsive">
-    <meta name="author" content="Dreamguys - Bootstrap Admin Template">
-    <meta name="robots" content="noindex, nofollow">
-    <title>Dreams Pos admin template</title>
-    
+    <title>Expired Products - POS</title>
+    <link rel="stylesheet" href="/Backend/src/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/Backend/src/assets/css/style.css">
 </head>
-
 <body>
-    <div id="global-loader">
-        <div class="whirly-loader"> </div>
-    </div>
-    <div class="main-wrapper">
-        
-        <div class="d-flx row">
-        <div class="col-md-3">
+<div class="main-wrapper">
+
     <?php include BASE_PATH . "/src/Layouts/Sidebar.php"; ?>
-</div>
-<div class="col-md-9">
+
     <?php include BASE_PATH . "/src/Layouts/Header.php"; ?>
-</div>
-        </div>
-        <div class="page-wrapper">
-            <div class="content">
-                <div class="page-header">
+
+    <div class="page-wrapper">
+        <div class="content">
+        <div class="page-header">
                     <div class="page-title">
                         <h4>Expired Products</h4>
                         <h6>Manage your expired products</h6>
                     </div>
                 </div>
-                <div class="card">
-                    <div class="card-body">
-                        <div class="table-top">
-                            <div class="search-set">
-                                <div class="search-path">
-                                    <a class="btn btn-filter" id="filter_search">
-                                        <img src="/Backend/src/assets/images/icons/filter.svg" alt="img">
-                                        <span><img src="/Backend/src/assets/images/icons/closes.svg" alt="img"></span>
-                                    </a>
-                                </div>
-                                <div class="search-input">
-                                    <a class="btn btn-searchset"><img src="/Backend/src/assets/images/icons/search-white.svg" alt="img"></a>
-                                </div>
-                            </div>
-                            <div class="wordset">
-                                <ul>
-                                    <li>
-                                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img src="/Backend/src/assets/images/icons/pdf.svg" alt="img"></a>
-                                    </li>
-                                    <li>
-                                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src="/Backend/src/assets/images/icons/excel.svg" alt="img"></a>
-                                    </li>
-                                    <li>
-                                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img src="/Backend/src/assets/images/icons/printer.svg" alt="img"></a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="card mb-0" id="filter_inputs">
-                            <div class="card-body pb-0">
-                                <div class="row">
-                                    <div class="col-lg-12 col-sm-12">
-                                        <div class="row">
-                                            <div class="col-lg col-sm-6 col-12">
-                                                <div class="form-group">
-                                                    <select class="select">
-                                                        <option>Choose Product</option>
-                                                        <option>Macbook pro</option>
-                                                        <option>Orange</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg col-sm-6 col-12">
-                                                <div class="form-group">
-                                                    <select class="select">
-                                                        <option>Choose Category</option>
-                                                        <option>Computers</option>
-                                                        <option>Fruits</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg col-sm-6 col-12">
-                                                <div class="form-group">
-                                                    <select class="select">
-                                                        <option>Choose Sub Category</option>
-                                                        <option>Computer</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg col-sm-6 col-12">
-                                                <div class="form-group">
-                                                    <select class="select">
-                                                        <option>Brand</option>
-                                                        <option>N/D</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg col-sm-6 col-12 ">
-                                                <div class="form-group">
-                                                    <select class="select">
-                                                        <option>Price</option>
-                                                        <option>150.00</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-1 col-sm-6 col-12">
-                                                <div class="form-group">
-                                                    <a class="btn btn-filters ms-auto"><img src="/Backend/src/assets/images/icons/search-white.svg" alt="img"></a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="table-responsive">
-                            <table class="table  datanew">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            <label class="checkboxs">
-                                                <input type="checkbox" id="select-all">
-                                                <span class="checkmarks"></span>
-                                            </label>
-                                        </th>
-                                        <th>Product Name</th>
-                                        <th>Manufactured Date </th>
-                                        <th>Expired Date</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    if ($result->num_rows > 0) {
-                                        while ($row = $result->fetch_assoc()) {
-                                            echo "<tr>";
-                                            echo "    <td>";
-                                            echo "        <label class='checkboxs'>";
-                                            echo "            <input type='checkbox'>";
-                                            echo "            <span class='checkmarks'></span>";
-                                            echo "        </label>";
-                                            echo "    </td>";
-                                            echo "    <td class='productimgname'>";
-                                            echo "        <a href='javascript:void(0)' class='product-img'>";
-                                            echo "            <img src='/Backend/src/assets/images/product/product1.jpg' alt='product'>";
-                                            echo "        </a>";
-                                            echo "        <a href='javascript:void(0);'>".$row['product_name']."</a>";
-                                            echo "    </td>";
-                                            echo "    <td>".$row['created_at']."</td>";
-                                            echo "    <td>".$row['expired_date']."</td>";
-                                            echo "    <td>";
-                                            echo "        <a class='me-3' href='product-details.html'>";
-                                            echo "            <img src='/Backend/src/assets/images/icons/eye.svg' alt='img'>";
-                                            echo "        </a>";
-                                            echo "        <a class='confirm-text' href='expiredProduct.php?expiredProductId=".$row['id']."'>";
-                                            echo "            <img src='/Backend/src/assets/images/icons/delete.svg' alt='img'>";
-                                            echo "        </a>";
-                                            echo "    </td>";
-                                            echo "</tr>";
-                                        }
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Product Name</th>
+                                    <th>Expired Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                if ($result->num_rows > 0) {
+                                    while ($row = $result->fetch_assoc()) {
+                                        echo "<tr>";
+                                        echo "<td>".$row['product_name']."</td>";
+                                        echo "<td>".$row['expired_date']."</td>";
+                                        echo "<td>
+                                                <a class='confirm-text' href='expiredProduct.php?expiredProductId=".$row['id']."'>
+                                                    <img src='/Backend/src/assets/images/icons/delete.svg' alt='img'>
+                                                </a>
+                                              </td>";
+                                        echo "</tr>";
                                     }
-                                    ?>
-                                </tbody>
-                            </table>
-                        </div>
+                                } else {
+                                    echo "<tr><td colspan='3'>No products expired today.</td></tr>";
+                                }
+                                ?>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-
             </div>
+
         </div>
     </div>
-</body>
+</div>
 
+<script src="/Backend/src/assets/js/jquery-3.6.0.min.js"></script>
+<script src="/Backend/src/assets/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>

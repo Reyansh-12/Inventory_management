@@ -3,26 +3,51 @@ define("BASE_PATH", dirname(__DIR__, 3));
 include BASE_PATH . "/src/Layouts/Links.php";
 include BASE_PATH . "/src/controllers/dbConnection.php";
 
-$userName = $_POST['userName'] ?? '';
-$contact = $_POST['phoneNumber'] ?? '';
-$userEmail = $_POST['userEmail'] ?? '';
-$userRole = $_POST['userRole'] ?? '';
-$password = $_POST['password'] ?? '';
-$confirmPassword = $_POST['confirmPassword'] ?? '';
 $status = 'Active';
-
 $confirmPasswordError = '';
+$userId = $_GET['userId'] ?? null;
+$isEdit = false;
+$editData = [];
+
+if ($userId) {
+    $isEdit = true;
+    $result = mysqli_query($con, "SELECT * FROM `new_user` WHERE id = '$userId'");
+    if ($result && mysqli_num_rows($result) > 0) {
+        $editData = mysqli_fetch_assoc($result);
+    }
+}
 
 if (isset($_POST['submit'])) {
-    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-    $insertSql = "INSERT INTO `new_user`(`user_name`, `user_email`, `user_contact`,`user_password`, `user_role`,`status`) 
-        VALUES ('$userName','$userEmail','$contact','$hashed_password','$userRole','$status')";
-            
-            mysqli_query($con, $insertSql);
+    $userName = mysqli_real_escape_string($con, $_POST['userName']);
+    $contact = mysqli_real_escape_string($con, $_POST['phoneNumber']);
+    $userEmail = mysqli_real_escape_string($con, $_POST['userEmail']);
+    $userRole = mysqli_real_escape_string($con, $_POST['userRole']);
+    $password = mysqli_real_escape_string($con, $_POST['password']);
+    $confirmPassword = mysqli_real_escape_string($con, $_POST['confirmPassword']);
+
+    if ($isEdit) {
+        $sql = "UPDATE `new_user` SET  `user_name` = '$userName', `user_email` = '$userEmail', `user_contact` = '$contact', `user_role` = '$userRole', `status` = '$status' WHERE id = '$userId'";
+        mysqli_query($con, $sql);
+        header("Location: UsersList.php");
+        exit();
+    } else {
+        if ($password !== $confirmPassword) {
+            $confirmPasswordError = "Passwords do not match.";
+        } else {
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+            $insertSql = "INSERT INTO `new_user`(`user_name`, `user_email`, `user_contact`, `user_password`, `user_role`, `status`)
+                          VALUES ('$userName', '$userEmail', '$contact', '$hashed_password', '$userRole', '$status')";
+            if (!mysqli_query($con, $insertSql)) {
+                die("Insert Failed: " . mysqli_error($con));
+            }
+
             header("Location: UsersList.php");
             exit();
-} 
+        }
+    }
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -69,15 +94,16 @@ if (isset($_POST['submit'])) {
             <div class="card">
                 <div class="card-body">
                     <form action="#" id="myForm" method="POST" enctype="multipart/form-data" data-parsley-validate>
-                        <div class="row">
+                    <input type="hidden" name="user_id" value="<?php echo $editData['id'] ?? ''; ?>">    
+                    <div class="row">
                             <div class="col-lg-4 col-12">
                                 <div class="form-group">
                                     <label for='userName'>User Name <span class="text-danger">*</span></label>
-                                    <input type="text" id="userName" name="userName" value="<?php echo $editData['user_name'] ?? ''; ?>" placeholder="Enter your name" data-parsley-required-message="User name is required" required>
+                                    <input type="text" id="userName" name="userName" value="<?php echo htmlspecialchars($editData['user_name'] ?? '') ?>" placeholder="Enter your name" data-parsley-required-message="User name is required" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="userEmail">Email <span class="text-danger">*</span></label>
-                                    <input type="text" id="userEmail" name="userEmail" value="<?php echo $editData['user_email'] ?? ''; ?>" placeholder="Enter your email" data-parsley-type="email" data-parsley-required-message="Enter your email address" data-parsley-required>
+                                    <input type="text" id="userEmail" name="userEmail" value="<?php echo htmlspecialchars($editData['user_email'] ?? ''); ?>" placeholder="Enter your email" data-parsley-type="email" data-parsley-required-message="Enter your email address" data-parsley-required>
                                 </div>
                                 <div class="form-group">
                                     <div class="pass-group">
@@ -92,7 +118,7 @@ if (isset($_POST['submit'])) {
                                     <label for="contact" class="">Mobile <span class="text-danger">*</span></label>
                                     <div class="input-group">
                                         <span class="input-group-text" id="addon-wrapping">+91</span>
-                                        <input type="text" id="contact" name="phoneNumber" value="<?php echo $editData['user_contact'] ?? ''; ?>" placeholder="Enter your mobile number"
+                                        <input type="text" id="contact" name="phoneNumber" value="<?php echo htmlspecialchars($editData['user_contact'] ?? ''); ?>" placeholder="Enter your mobile number"
                                             maxlength="10"
                                             
                                             data-parsley-minlength="10"
@@ -133,7 +159,7 @@ if (isset($_POST['submit'])) {
                             </div>
                             <div class="col-lg-12 d-flex justify-content-end">
                                 <button class="btn btn-cancel me-2" type="reset" name="reset" id="resetButton">Reset</button>
-                                <button class="btn btn-submit" name="submit" type="submit">Submit</button>
+                                <button class="btn btn-submit" name="submit" type="submit"><?= $userId ? 'Update' : 'Submit' ?></button>
                             </div>
                         </div>
                     </form>

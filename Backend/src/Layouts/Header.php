@@ -1,8 +1,4 @@
-<?php
-    include('/xampp/htdocs/Inventory_management/Backend/src/controllers/dbConnection.php');
-    
 
-?>
 <!DOCTYPE html>
 <html lang="en">
 

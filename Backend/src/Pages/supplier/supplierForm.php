@@ -3,27 +3,49 @@ define("BASE_PATH", dirname(__DIR__, 3));
 include BASE_PATH . "/src/Layouts/Links.php";
 include BASE_PATH . "/src/controllers/dbConnection.php";
 
+$supplierId = $_GET['supplierId'] ?? null;
 
-$supplierName =$_POST['supplierName'];
-$email =$_POST['supplierEmail'];
-$contact =$_POST['contact'];
-$country =$_POST['countrySelector'];
-$city =$_POST['citySelector'];
-$address =$_POST['address'];
-$description =$_POST['description'];
+$supplierName = $email = $contact = $country = $city = $address = $description = "";
 
-  
- if(isset($_POST['submit'])) {
-    $sql = "INSERT INTO `supplier`(`id`,`supplier_name`, `email`, `phone_number`, `city`, `country`, `address`, `description`) 
-    VALUES ('1','$supplierName','$email','$contact','$city','$country','$address','$description')";
+if ($supplierId) {
+    $stmt = $con->prepare("SELECT * FROM supplier WHERE id = ?");
+    $stmt->bind_param("i", $supplierId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $supplierName = $row['supplier_name'];
+        $email = $row['email'];
+        $contact = $row['phone_number'];
+        $country = $row['country'];
+        $city = $row['city'];
+        $address = $row['address'];
+        $description = $row['description'];
+    }
+}
 
-mysqli_query($con, $sql);
-    header("Location: SupplierList.php");
+if(isset($_POST['submit'])) {
+    $supplierName = $_POST['supplierName'];
+    $email = $_POST['supplierEmail'];
+    $contact = $_POST['contact'];
+    $country = $_POST['countrySelector'];
+    $city = $_POST['citySelector'];
+    $address = $_POST['address'];
+    $description = $_POST['description'];
+
+    if ($supplierId) {
+        $stmt = $con->prepare("UPDATE supplier SET supplier_name=?, email=?, phone_number=?, city=?, country=?, address=?, description=? WHERE id=?");
+        $stmt->bind_param("sssssssi", $supplierName, $email, $contact, $city, $country, $address, $description, $supplierId);
+    } else {
+        $stmt = $con->prepare("INSERT INTO supplier (supplier_name, email, phone_number, city, country, address, description) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssssss", $supplierName, $email, $contact, $city, $country, $address, $description);
+        $stmt->execute();
+    }
+
+    header("Location: /Backend/src/Pages/supplierlist.php");
     exit();
- }
+}
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -70,80 +92,72 @@ mysqli_query($con, $sql);
                         <h4>Supplier Management</h4>
                         <h6>Add/Update Customer</h6>
                     </div>
+                    <div class="page-btn">
+                        <a href="/Backend/src/Pages/supplierlist.php" class="btn btn-added"><i class="bi bi-arrow-left me-1 fw-bold"></i>Back to Product</a>
+                    </div>
                 </div>
 
                 <div class="card">
                     <div class="card-body">
-                        <form  id="myForm" method="POST" data-parsley-validate>
-                            <div class="row">
-                            <div class="col-lg-3 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <label for='supplierName'>Supplier Name</label>
-                                    <input type="text" id="supplierName" name="supplierName" placeholder="Enter supplier name" data-parsley-required-message="Supplier Name is required" data-parsley-required>
-                                </div>
-                            </div>
-                            <div class="col-lg-3 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <label for='supplierMail'>Email</label>
-                                    <input type="text" id='supplierMail' name="supplierEmail" placeholder="Enter supplier email" data-parsley-required-message="Email is required" data-parsley-required>
-                                </div>
-                            </div>
-                            <div class="col-lg-3 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <label for="poneNumber">Phone</label>
-                                    <input type="text" id="poneNumber" name="contact" placeholder="Enter phone number" data-parsley-required-message="Mobile number is required" data-parsley-required>
-                                </div>
-                            </div>
-                            <div class="col-lg-3 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <label for="countrySelector">Choose Country</label>
-                                    <select class="form-select" name="countrySelector" id="countrySelector" data-parsley-required-message="Country is required" data-parsley-required>
-                                        <option disabled selected>Choose Country</option>
-                                        <option value="india">India</option>
-                                        <option value="usa">USA</option>
-                                     </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-3 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <label for="citySelector">City</label>
-                                    <select class="form-select" name="citySelector" id="citySelector" data-parsley-required-message="City is required" data-parsley-required>
-                                        <option disabled selected>Choose City</option>
-                                        <option value="india">Nagpur</option>
-                                        <option value="usa">Bhandara</option>
-                                     </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-9 col-12">
-                                <div class="form-group">
-                                    <label for="address">Address</label>
-                                    <input type="text" id="address" name="address" placeholder="Enter supplier address" data-parsley-required-message="Address is required" data-parsley-required>
-                                </div>
-                            </div>
-                            <div class="col-lg-12">
-                                <div class="form-group">
-                                    <label for="description">Description</label>
-                                    <textarea class="form-control" id="description" name="description" placeholder="Enter description" data-parsley-required-message="Description Field is required" data-parsley-required></textarea>
-                                </div>
-                            </div>
-                            <!-- <div class="col-lg-12">
-                                <div class="form-group">
-                                    <label> Avatar</label>
-                                    <div class="image-upload">
-                                        <input type="file">
-                                        <div class="image-uploads">
-                                            <img src="/Backend/src/assets/images/icons/upload.svg" alt="img">
-                                            <h4>Drag and drop a file to upload</h4>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> -->
-                            <div class="col-lg-12 d-flex justify-content-end">
-                                <button class="btn btn-cancel me-2" type="reset" name="reset" id="resetButton">Reset</button>
-                                <button class="btn btn-submit" name="submit" type="submit">Submit</button>
-                            </div>
-                            </div>
-                        </form>
+                    <form id="myForm" method="POST" data-parsley-validate>
+    <div class="row">
+        <div class="col-lg-3 col-sm-6 col-12">
+            <div class="form-group">
+                <label for='supplierName'>Supplier Name</label>
+                <input type="text" id="supplierName" name="supplierName" value="<?= htmlspecialchars($supplierName) ?>" placeholder="Enter supplier name" data-parsley-required-message="Supplier Name is required" data-parsley-required>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-6 col-12">
+            <div class="form-group">
+                <label for='supplierMail'>Email</label>
+                <input type="text" id='supplierMail' name="supplierEmail" value="<?= htmlspecialchars($email) ?>" placeholder="Enter supplier email" data-parsley-required-message="Email is required" data-parsley-required>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-6 col-12">
+            <div class="form-group">
+                <label for="poneNumber">Phone</label>
+                <input type="text" id="poneNumber" name="contact" value="<?= htmlspecialchars($contact) ?>" placeholder="Enter phone number" data-parsley-required-message="Mobile number is required" data-parsley-required>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-6 col-12">
+            <div class="form-group">
+                <label for="countrySelector">Choose Country</label>
+                <select class="form-select" name="countrySelector" id="countrySelector" data-parsley-required-message="Country is required" data-parsley-required>
+                    <option disabled <?= !$country ? 'selected' : '' ?>>Choose Country</option>
+                    <option value="india" <?= $country=='india' ? 'selected' : '' ?>>India</option>
+                    <option value="usa" <?= $country=='usa' ? 'selected' : '' ?>>USA</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-6 col-12">
+            <div class="form-group">
+                <label for="citySelector">City</label>
+                <select class="form-select" name="citySelector" id="citySelector" data-parsley-required-message="City is required" data-parsley-required>
+                    <option disabled <?= !$city ? 'selected' : '' ?>>Choose City</option>
+                    <option value="Nagpur" <?= $city=='Nagpur' ? 'selected' : '' ?>>Nagpur</option>
+                    <option value="Bhandara" <?= $city=='Bhandara' ? 'selected' : '' ?>>Bhandara</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-9 col-12">
+            <div class="form-group">
+                <label for="address">Address</label>
+                <input type="text" id="address" name="address" value="<?= htmlspecialchars($address) ?>" placeholder="Enter supplier address" data-parsley-required-message="Address is required" data-parsley-required>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea class="form-control" id="description" name="description" placeholder="Enter description" data-parsley-required-message="Description Field is required" data-parsley-required><?= htmlspecialchars($description) ?></textarea>
+            </div>
+        </div>
+        <div class="col-lg-12 d-flex justify-content-end">
+            <button class="btn btn-cancel me-2" type="reset" id="resetButton">Reset</button>
+            <button class="btn btn-submit" name="submit" type="submit"><?= $supplierId ? 'Update' : 'Submit' ?></button>
+        </div>
+    </div>
+</form>
+
                     </div>
                 </div>
             </div>
