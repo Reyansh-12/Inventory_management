@@ -31,7 +31,13 @@ if (isset($_POST['submit'])) {
         header("Location: UsersList.php");
         exit();
     } else {
-        if ($password !== $confirmPassword) {
+        $checkEmailSql = "SELECT id FROM `new_user` WHERE user_email = '$userEmail'";
+        $emailResult = mysqli_query($con, $checkEmailSql);
+        if (mysqli_num_rows($emailResult) > 0) {
+            $confirmPasswordError = "";
+            $emailError = "Email already exists!";
+        }
+        elseif ($password !== $confirmPassword) {   
             $confirmPasswordError = "Passwords do not match.";
         } else {
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
@@ -104,6 +110,7 @@ if (isset($_POST['submit'])) {
                                 <div class="form-group">
                                     <label for="userEmail">Email <span class="text-danger">*</span></label>
                                     <input type="text" id="userEmail" name="userEmail" value="<?php echo htmlspecialchars($editData['user_email'] ?? ''); ?>" placeholder="Enter your email" data-parsley-type="email" data-parsley-required-message="Enter your email address" data-parsley-required>
+                                    <span class="text-danger" id="emailError"><?php echo $emailError ?? ""; ?></span>
                                 </div>
                                 <div class="form-group">
                                     <div class="pass-group">
@@ -118,13 +125,8 @@ if (isset($_POST['submit'])) {
                                     <label for="contact" class="">Mobile <span class="text-danger">*</span></label>
                                     <div class="input-group">
                                         <span class="input-group-text" id="addon-wrapping">+91</span>
-                                        <input type="text" id="contact" name="phoneNumber" value="<?php echo htmlspecialchars($editData['user_contact'] ?? ''); ?>" placeholder="Enter your mobile number"
-                                            maxlength="10"
-                                            
-                                            data-parsley-minlength="10"
-                                            data-parsley-required="true"
-                                            data-parsley-required-message="Phone number is required"
-                                            data-parsley-errors-container="#contactError" />
+                                        <input type="text" id="contact" name="phoneNumber" value="<?php echo htmlspecialchars($editData['user_contact'] ?? ''); ?>" placeholder="Enter your mobile number" maxlength="10" data-parsley-minlength="10"data-parsley-required="true"data-parsley-required-message="Phone number is required"data-parsley-errors-container="#contactError" />
+                                        <span class="text-danger" id="contactError"><?php echo $contactError ?? ""; ?></span>
                                     </div>
                                     <div id="contactError" class="text-danger"></div>
                                 </div>
