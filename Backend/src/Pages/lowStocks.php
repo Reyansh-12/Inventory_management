@@ -3,15 +3,13 @@ define("BASE_PATH", dirname(__DIR__, 2));
 include BASE_PATH . "/src/Layouts/Links.php";
 include BASE_PATH . "/src/controllers/dbConnection.php";
 
-// Fetch products where quantity equals minQuantity
 $sql = "SELECT `id`, `product_name`, `category`, `brand_name`, `minQuantity`, 
         `price`, `quantity`, `description`, `discount`, `status`, `expired_date` 
         FROM `product_list` 
-        WHERE `quantity` = `minQuantity`";
+        WHERE `quantity` <= `minQuantity`";
 
 $result = $con->query($sql);
 
-// Delete product if requested
 if(isset($_GET['lowStockId'])) {
     $lowStockId = $_GET['lowStockId'];
     

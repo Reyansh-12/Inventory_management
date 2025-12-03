@@ -3,7 +3,7 @@ define("BASE_PATH", dirname(__DIR__, 3));
 include BASE_PATH . "/src/Layouts/Links.php";
 include BASE_PATH . "/src/controllers/dbConnection.php";
 
-if(isset($_GET['deleteId'])) {
+if (isset($_GET['deleteId'])) {
     $productId = intval($_GET['deleteId']);
     $stmt = $con->prepare("DELETE FROM product_list WHERE id = ?");
     $stmt->bind_param("i", $productId);
@@ -26,7 +26,27 @@ $result = $con->query($sql);
     <meta name="author" content="Dreamguys - Bootstrap Admin Template">
     <meta name="robots" content="noindex, nofollow">
     <title>Dreams Pos admin template</title>
+    <style>
+        .toast-timer {
+            height: 4px;
+            width: 100%;
+            background: rgba(231, 10, 10, 0.6);
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            z-index: 999;
+            animation: shrink 4s linear forwards;
+        }
+        @keyframes shrink {
+            from {
+                width: 100%;
+            }
 
+            to {
+                width: 0%;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -142,7 +162,7 @@ $result = $con->query($sql);
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table datanew" id="">
+                            <table class="table datanew" id="myTable">
                                 <thead>
                                     <tr>
                                         <th>
@@ -175,7 +195,7 @@ $result = $con->query($sql);
                                                 echo "    </td>";
                                                 echo "    <td class='productimgname'>";
                                                 echo "        <a href='javascript:void(0)' class='product-img'>";
-                                                echo "            <img src='".$row['image_path']."' alt='product'>";
+                                                echo "            <img src='" . $row['image_path'] . "' alt='product'>";
                                                 echo "        </a>";
                                                 echo "        <a href='javascript:void(0);'>" . $row['product_name'] . "</a>";
                                                 echo "    </td>";
@@ -207,9 +227,40 @@ $result = $con->query($sql);
             </div>
         </div>
     </div>
+    <div class="toast-container position-fixed top-0 mt-3 me-3 end-0" style="z-index:999;">
+        <div id="deleteToast" class="toast align-items-center bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body text-white">
+                    Product deleted successfully!
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-timer" style="background: rgba(241, 193, 208, 0.8);"></div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         let table = new DataTable('#myTable');
     </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get("deleted") === "1") {
+                let toastElement = document.getElementById("deleteToast");
+                let timerBar = toastElement.querySelector(".toast-timer");
+                timerBar.style.animation = "none";
+                timerBar.offsetHeight; 
+                timerBar.style.animation = "shrink 5s linear forwards";
+                let toast = new bootstrap.Toast(toastElement, {
+                    delay: 3000
+                });
+                toast.show();
+                setTimeout(() => {
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }, 3500);
+            }
+        });
+    </script>
 </body>
-
 </html>

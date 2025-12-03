@@ -15,7 +15,7 @@ if(isset($_GET['expiredProductId'])) {
     exit();
 }
 
-$sql = "SELECT `id`, `product_name`, `expired_date` FROM `product_list` WHERE expired_date = CURDATE()";
+$sql = "SELECT `id`, `product_name`, `expired_date` FROM `product_list` WHERE expired_date <= CURDATE()";
 $result = $con->query($sql);
 ?>
 
