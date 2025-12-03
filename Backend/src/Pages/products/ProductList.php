@@ -242,8 +242,7 @@ $result = $con->query($sql);
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         let table = new DataTable('#myTable');
-    </script>
-    <script>
+    
         document.addEventListener("DOMContentLoaded", function() {
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get("deleted") === "1") {

@@ -60,10 +60,14 @@ if (isset($_POST['submit'])) {
         mysqli_stmt_bind_param($stmt, "sssiddsssss", $productname, $category, $brandName, $minquantity, $price, $quantity, $description, $discount, $status, $imagePath, $expiredDate);
         mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
-        var_dump($stmt);
     }
-    header("Location: ProductList.php");
-    exit();
+    if ($isEdit) {
+    header("Location: ProductList.php?updated=1");
+} else {
+    header("Location: ProductList.php?added=1");
+}
+exit();
+
 }
 ?>
 
@@ -89,6 +93,12 @@ if (isset($_POST['submit'])) {
             margin: 0;
         }
     </style>
+    <style>
+@keyframes shrink { 
+    from { width: 100%; } 
+    to { width: 0%; } 
+}
+</style>
 </head>
 
 <body>
@@ -181,7 +191,7 @@ if (isset($_POST['submit'])) {
                                 <div class="col-lg-4 col-sm-4 col-12">
                                     <div class="form-group">
                                         <label for='datepicker'>Expired Date <span class="text-danger">*</span></label>
-                                        <input type="text" class="p-2 rounded col-lg-12 border-secondary border-1 border-secondary border" name="expiredDate" id="datepicker" placeholder="Select expired date" value="<?php echo htmlspecialchars($editData['expiredDate'] ?? '') ?>" data-parsley-required-message="Expired date is required" data-parsley-required>
+                                        <input type="text" class="p-2 rounded col-lg-12 border-secondary border-1 border-secondary border" name="expiredDate" id="datepicker" placeholder="Select expired date" value="<?php echo htmlspecialchars($editData['expired_date'] ?? '') ?>" data-parsley-required-message="Expired date is required" data-parsley-required>
                                     </div>
                                 </div>
 
@@ -242,47 +252,51 @@ if (isset($_POST['submit'])) {
             </div>
         </div>
     </div>
+    <!-- Toast Container -->
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 999;">
+    <div id="deleteToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body text-white">
+                <!-- JS will change this message -->
+                Action completed!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+        <div class="toast-timer" style="height: 4px; background: rgba(255,255,255,0.9); animation: shrink 3s linear forwards;"></div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
-        $('#productName').on('input', function() {
-            let inputValue = $(this).val();
-            let filteredValue = inputValue.replace(/[0-9]/g, '');
-            $(this).val(filteredValue);
-        });
-        let parsleyForm = $('#myForm').parsley();
-        $('#resetButton').on('click', function() {
-            parsleyForm.reset();
-        });
+document.addEventListener("DOMContentLoaded", function() {
+    const params = new URLSearchParams(window.location.search);
 
-        function enableBrandSelector() {
-            const primarySelect = document.getElementById('categorySelector');
-            const secondarySelect = document.getElementById('brandSelect');
+    let toastElement = document.getElementById("deleteToast");
+    let toastMessage = toastElement.querySelector(".toast-body");
 
-            if (primarySelect.value !== "") {
-                secondarySelect.disabled = false;
-            } else {
-                secondarySelect.disabled = true;
-                secondarySelect.value = "";
-            }
-        }
-        $('#brandSelect option:not(:first)').hide();
-        $('#categorySelector').change(function() {
-            var selectedCategory = $(this).val();
-            $('#brandSelect option').show();
-            $('#brandSelect').val('');
-            if (selectedCategory) {
-                $('#brandSelect option:not(:first)').not('.' + selectedCategory).hide();
-            }
-        });
+    if (params.get("added") === "1") {
+        toastMessage.textContent = "Product is successfully added!";
+    } 
+    else if (params.get("updated") === "1") {
+        toastMessage.textContent = "Product data is updated successfully!";
+    } 
+    else {
+        return; 
+    }
 
-        enableBrandSelector();
-        $(function () {
-            $("#datepicker").datepicker({
-                dateFormat: "yy-mm-dd",
-                changeMonth: true,
-                changeYear: true,
-                showAnim: "fadeIn"
-            });
-        });
-    </script>
+    let timerBar = toastElement.querySelector(".toast-timer");
+    timerBar.style.animation = "none";
+    timerBar.offsetHeight;
+    timerBar.style.animation = "shrink 5s linear forwards";
+
+    let toast = new bootstrap.Toast(toastElement, { delay: 3000 });
+    toast.show();
+
+    setTimeout(() => {
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }, 3500);
+});
+</script>
+
 </body>
 </html>

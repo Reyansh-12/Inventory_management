@@ -77,7 +77,6 @@ if (isset($_POST['submit'])) {
         <div class="whirly-loader"> </div>
     </div>
     <div class="main-wrapper">
-
         <div class="d-flx row">
         <div class="col-md-3">
     <?php include BASE_PATH . "/src/Layouts/Sidebar.php"; ?>
