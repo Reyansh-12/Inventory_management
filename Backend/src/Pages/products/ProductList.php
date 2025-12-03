@@ -12,7 +12,7 @@ if(isset($_GET['deleteId'])) {
     header("Location: ProductList.php?deleted=1");
     exit;
 }
-$sql = "SELECT `id`,`product_name`, `category`, `brand_name`, `price`, `quantity` FROM `product_list`";
+$sql = "SELECT `id`,`product_name`, `category`, `brand_name`, `price`, `quantity`, `image_path` FROM `product_list`";
 $result = $con->query($sql);
 ?>
 <!DOCTYPE html>
@@ -175,7 +175,7 @@ $result = $con->query($sql);
                                                 echo "    </td>";
                                                 echo "    <td class='productimgname'>";
                                                 echo "        <a href='javascript:void(0)' class='product-img'>";
-                                                echo "            <img src='/Backend/src/assets/images/product/product1.jpg' alt='product'>";
+                                                echo "            <img src='".$row['image_path']."' alt='product'>";
                                                 echo "        </a>";
                                                 echo "        <a href='javascript:void(0);'>" . $row['product_name'] . "</a>";
                                                 echo "    </td>";

@@ -1,5 +1,5 @@
 import React from 'react';
-import category1 from "/xampp/htdocs/Inventory_management/Frontend/public/images/shop/category/1.webp";
+import category1 from "../assets/images/shop/category/category1.webp";
 import category2 from "../assets/images/shop/category/category2.webp";
 import category3 from "../assets/images/shop/category/category3.webp";
 import category4 from "../assets/images/shop/category/category4.webp";

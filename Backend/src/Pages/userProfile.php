@@ -2,9 +2,9 @@
 include BASE_PATH . "/src/Layouts/Links.php";
 include BASE_PATH . "/src/controllers/dbConnection.php";
 
-    $userMail = $_SESSION['user_email'];
-    $currentPage = basename($_SERVER['PHP_SELF']); 
-    $currentDir  = basename(dirname($_SERVER['PHP_SELF']));
+    // $userMail = $_SESSION['user_email'];
+    // $currentPage = basename($_SERVER['PHP_SELF']); 
+    // $currentDir  = basename(dirname($_SERVER['PHP_SELF']));
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -52,20 +52,16 @@ include BASE_PATH . "/src/controllers/dbConnection.php";
                             <div class="profile-top">
                                 <div class="profile-content">
                                     <div class="profile-contentimg">
-                                        <img src="assets/img/customer/customer5.jpg" alt="img" id="blah">
+                                        <img src="/Backend/src/assets/images/customer/customer5.jpg" alt="img" id="blah">
                                         <div class="profileupload">
                                             <input type="file" id="imgInp">
-                                            <a href="javascript:void(0);"><img src="assets/img/icons/edit-set.svg" alt="img"></a>
+                                            <a href="javascript:void(0);"><img src="/Backend/src/assets/images/icons/edit-set.svg" alt="img"></a>
                                         </div>
                                     </div>
                                     <div class="profile-contentname">
                                         <h2>William Castillo</h2>
                                         <h4>Updates Your Photo and Personal Details.</h4>
                                     </div>
-                                </div>
-                                <div class="ms-auto">
-                                    <a href="javascript:void(0);" class="btn btn-submit me-2">Save</a>
-                                    <a href="javascript:void(0);" class="btn btn-cancel">Cancel</a>
                                 </div>
                             </div>
                         </div>
@@ -109,9 +105,9 @@ include BASE_PATH . "/src/controllers/dbConnection.php";
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-12">
-                                <a href="javascript:void(0);" class="btn btn-submit me-2">Submit</a>
-                                <a href="javascript:void(0);" class="btn btn-cancel">Cancel</a>
+                            <div class="col-12 d-flex justify-content-end">
+                                <a href="javascript:void(0);" class="btn btn-cancel me-2">Cancel</a>
+                                <a href="javascript:void(0);" class="btn btn-submit">Submit</a>
                             </div>
                         </div>
                     </div>

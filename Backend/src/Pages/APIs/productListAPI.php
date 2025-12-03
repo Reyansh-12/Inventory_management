@@ -1,25 +1,34 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Methods: GET");
 header("Content-Type: application/json");
 
-include('/var/www/html/Inventory_management/Backend/src/controllers/dbConnection.php');
+include __DIR__ . "/../../controllers/dbConnection.php";
 
-// Query only required fields
-$sql = "SELECT id, product_name AS name, price
-        FROM product_list";
+$sql = "SELECT p.id AS id, p.product_name AS name, p.price, p.quantity, p.image_path
+        FROM product_list p";
 $result = $con->query($sql);
 
 $products = [];
 
 if ($result && $result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
+        $imageUrl = null;
+        if (!empty($row['image_path'])) {
+            $imageUrl = "http://localhost" . $row['image_path']; 
+        }
+
         $products[] = [
-            "id"    => $row["id"],
-            "name"  => $row["name"],
-            "price" => $row["price"]
+            "id"       => (int)$row["id"],
+            "name"     => $row["name"],
+            "price"    => $row["price"],
+            "quantity" => isset($row["quantity"]) ? (int)$row["quantity"] : null,
+            "image"    => $imageUrl
         ];
     }
 }
 
 echo json_encode($products);
-?>

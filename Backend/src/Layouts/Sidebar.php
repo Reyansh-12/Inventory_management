@@ -39,8 +39,8 @@
                     <li class="<?php echo ($currentPage == 'category.php') ? 'active' : ''; ?>">
                         <a href="/Backend/src/Pages/category.php"><img src="/Backend/src/assets/images/icons/quotation1.svg" alt="img"><span> Category</span> </a>
                     </li>
-                    <li class="<?php echo ($currentPage == 'brands.php') ? 'active' : ''; ?>">
-                        <a href="/Backend/src/Pages/brands.php"><img src="/Backend/src/assets/images/icons/return1.svg" alt="img"><span> Brands</span> </a>
+                    <li class="<?php echo ($currentPage == 'pos.php') ? 'active' : ''; ?>">
+                        <a href="/Backend/src/Pages/POS/pos.php"><img src="/Backend/src/assets/images/icons/return1.svg" alt="img"><span>POS</span> </a>
                     </li>
                     <li class="<?php echo ($currentPage == 'supplierlist.php' || $currentDir == "Supplier") ? 'active' : ''; ?>">
                         <a href="/Backend/src/Pages/supplierlist.php"><span>Suppliers</span> </a>

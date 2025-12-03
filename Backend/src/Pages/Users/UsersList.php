@@ -37,14 +37,13 @@ $result = $con->query($sql);
         <div class="whirly-loader"> </div>
     </div>
     <div class="main-wrapper">
-        
         <div class="d-flx row">
-        <div class="col-md-3">
-    <?php include BASE_PATH . "/src/Layouts/Sidebar.php"; ?>
-</div>
-<div class="col-md-9">
-    <?php include BASE_PATH . "/src/Layouts/Header.php"; ?>
-</div>
+            <div class="col-md-3">
+                <?php include BASE_PATH . "/src/Layouts/Sidebar.php"; ?>
+            </div>
+            <div class="col-md-9">
+                <?php include BASE_PATH . "/src/Layouts/Header.php"; ?>
+            </div>
         </div>
         <div class="page-wrapper">
             <div class="content">

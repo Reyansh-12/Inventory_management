@@ -30,7 +30,22 @@ if (isset($_POST['submit'])) {
     $price = $_POST['price'] ?? '';
     $status = $_POST['status'] ?? '';
     $expiredDate = $_POST['expiredDate'] ?? '';
+    $image = $_FILES['imageBox'] ?? '';
+    $imagePath = null;
+    if (!empty($_FILES['imageBox']['name'])) {
 
+        $uploadDir = BASE_PATH . "/uploads/";
+        
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+        $fileName = time() . "_" . basename($_FILES["imageBox"]["name"]);
+        $targetPath = $uploadDir . $fileName;
+    
+        if (move_uploaded_file($_FILES["imageBox"]["tmp_name"], $targetPath)) {
+            $imagePath = "/uploads/" . $fileName;
+        }
+    }
     if ($isEdit) {
         $stmt = mysqli_prepare($con, "UPDATE `product_list` 
             SET product_name=?, category=?, brand_name=?, minQuantity=?, price=?, quantity=?, description=?, discount=?, status=?, expired_date=? 
@@ -40,11 +55,12 @@ if (isset($_POST['submit'])) {
         mysqli_stmt_close($stmt);
     } else {
         $stmt = mysqli_prepare($con, "INSERT INTO `product_list` 
-            (product_name, category, brand_name, minQuantity, price, quantity, description, discount, status, expired_date) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        mysqli_stmt_bind_param($stmt, "sssiddssss", $productname, $category, $brandName, $minquantity, $price, $quantity, $description, $discount, $status, $expiredDate);
+            (product_name, category, brand_name, minQuantity, price, quantity, description, discount, status, image_path, expired_date) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ?)");
+        mysqli_stmt_bind_param($stmt, "sssiddsssss", $productname, $category, $brandName, $minquantity, $price, $quantity, $description, $discount, $status, $imagePath, $expiredDate);
         mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
+        var_dump($stmt);
     }
     header("Location: ProductList.php");
     exit();
@@ -102,7 +118,7 @@ if (isset($_POST['submit'])) {
                 </div>
                 <div class="card">
                     <div class="card-body">
-                        <form action="#" id="myForm" method="POST" data-parsley-validate>                         <input type="hidden" name="user_id" value="<?php echo $editData['id'] ?? ''; ?>">
+                        <form action="#" id="myForm" method="POST" enctype="multipart/form-data" data-parsley-validate>                         <input type="hidden" name="user_id" value="<?php echo $editData['id'] ?? ''; ?>">
                             <div class="row">
                                 <div class="col-lg-4 col-sm-6 col-12">
                                     <div class="form-group">
@@ -205,7 +221,7 @@ if (isset($_POST['submit'])) {
                                 </div>
                                 <div class="col-lg-12">
                                     <div class="form-group">
-                                        <label for="productImage"> Product Image (Optional)</label>
+                                        <label for="productImage"> Product Image <span class="text-danger">*</span></label>
                                         <div class="image-upload">
                                             <input type="file" name="imageBox" id="productImage">
                                             <div class="image-uploads">

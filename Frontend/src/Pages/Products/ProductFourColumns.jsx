@@ -8,7 +8,8 @@ import category3 from "../../assets/images/shop/category/category3.webp";
 import category4 from "../../assets/images/shop/category/category4.webp";
 import category5 from "../../assets/images/shop/category/category5.webp";
 import category6 from "../../assets/images/shop/category/category6.webp";
-import ProductItem from "/xampp/htdocs/Inventory_management/Frontend/src/Pages/Products/ProductItem.jsx";
+import ProductItem from "@/Pages/Products/ProductItem.jsx";
+
 
 const ProductFourColumns = () => {
     const [products, setProducts] = useState([]);
@@ -132,7 +133,7 @@ const ProductFourColumns = () => {
                   </div>
                 </div>
               </div>
-              ))}
+              ))} 
             </div>
           </div>
         </section>

@@ -10,14 +10,14 @@ import { FaStarHalfAlt } from "react-icons/fa";
 import { CgArrowsExpandRight } from "react-icons/cg";
 import { useEffect, useState } from "react";
 import { FaArrowRightLong } from "react-icons/fa6";
-import ProductItem from "/xampp/htdocs/Inventory_management/Frontend/src/Pages/Products/ProductItem.jsx";
+import ProductItem from "../Pages/Products/ProductItem.jsx";
 
 const TopSaleProducts = () => {
 
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3000/Backend/src/Pages/APIs/productListAPI.php")
+      fetch("http://localhost/Inventory_management/Backend/src/Pages/APIs/productListAPI.php")
       .then((res) => res.json())
       .then((data) => setProducts(data))
       .catch((err) => console.log("API Error:", err));
