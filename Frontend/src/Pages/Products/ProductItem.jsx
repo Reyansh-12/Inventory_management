@@ -39,7 +39,7 @@ const ProductItem = ({ product }) => {
     <div className="product-item text-start">
       <div className="product-thumb">
         <a className="d-block" href="product-details.html">
-          <img src={`http://localhost/Inventory_management/Backend${product.image}`} width="370" height="450" alt={product?.name || 'product'} />
+          <img src={shop4} width="370" height="450" alt={product?.name || 'product'} />
         </a>
         <span className="flag-new">new</span>
 

@@ -2,6 +2,9 @@
 define("BASE_PATH", dirname(__DIR__, 3));
 include BASE_PATH . "/src/Layouts/Links.php";
 include BASE_PATH . "/src/controllers/dbConnection.php";
+
+$sql = "SELECT `id`,`product_name`, `category`, `brand_name`, `price`, `quantity`, `image_path` FROM `product_list`";
+$result = $con->query($sql);
 ?>
 
 <!DOCTYPE html>
@@ -16,36 +19,41 @@ include BASE_PATH . "/src/controllers/dbConnection.php";
     <meta name="robots" content="noindex, nofollow">
     <title>Dreams POS Admin Template</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-
     <style>
         .category-card {
             width: 10rem;
         }
-
         .slider-container {
             position: relative;
         }
-
         .slider-btn {
-            background: white;
+            background: red !important;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            width: 10px;
+            height: 15px;
+            color: black !important;
         }
         .pos-column {
-        max-height: calc(100vh - 0px); /* adjust 220px to match header/footer height */
+        max-height: calc(100vh - 0px); 
         overflow-y: auto;
+        }
+        .product-card {
+            background: #fff;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+        .product-image img {
+            max-height: 120px;
+            object-fit: contain;
         }
     </style>
 </head>
-
 <body>
     <div id="global-loader">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
+        <div class="whirly-loader"> </div>
     </div>
     <div class="d-flex row">
         <div class="col-md-3">
@@ -74,6 +82,12 @@ include BASE_PATH . "/src/controllers/dbConnection.php";
                         <div class="row">
                             <div class="col-lg-8 pos-column">
                                 <div id="categorySlider" class="carousel slide slider-container" data-bs-ride="false">
+                                    <button class="carousel-control-prev slider-btn" type="button" data-bs-target="#categorySlider" data-bs-slide="prev" id="prevBtn">
+                                        <span class="carousel-control-prev-icon"></span>
+                                    </button>
+                                    <button class="carousel-control-next slider-btn" type="button" data-bs-target="#categorySlider" data-bs-slide="next" id="nextBtn">
+                                        <span class="carousel-control-next-icon"></span>
+                                    </button>
                                     <div class="carousel-inner">
                                         <div class="carousel-item active">
                                             <div class="card m-2 category-card">
@@ -112,99 +126,40 @@ include BASE_PATH . "/src/controllers/dbConnection.php";
                                             </div>
                                         </div>
                                     </div>
-                                    <button class="carousel-control-prev slider-btn" type="button" data-bs-target="#categorySlider" data-bs-slide="prev" id="prevBtn">
-                                        <span class="carousel-control-prev-icon"></span>
-                                    </button>
-                                    <button class="carousel-control-next slider-btn" type="button" data-bs-target="#categorySlider" data-bs-slide="next" id="nextBtn">
-                                        <span class="carousel-control-next-icon"></span>
-                                    </button>
                                 </div>
                                 <div class="tabs_container">
-                                    <div class="tab_content active" data-tab="fruits">
-                                        <div class="row ">
-                                            <div class="col-lg-3 col-sm-6 d-flex ">
-                                                <div class="productset flex-fill active">
-                                                    <div class="productsetimg">
-                                                        <img src="/Backend/assets/images/product/product29.png" alt="img">
-                                                        <h6>Qty: 5.00</h6>
-                                                        <div class="check-product">
-                                                            <i class="fa fa-check"></i>
-                                                        </div>
-                                                    </div>
-                                                    <div class="productsetcontent">
-                                                        <h5>Fruits</h5>
-                                                        <h4>Orange</h4>
-                                                        <h6>150.00</h6>
-                                                    </div>
+                                <div class="tab_content active" data-tab="fruits">
+                                    <div class="row">
+                                        <?php
+                                            if (!$result) {
+                                                echo "Error: " . $con->error;
+                                            } else {
+                                            if ($result->num_rows > 0) {
+                                                while ($row = $result->fetch_assoc()) {
+                                        ?>
+                                        <div class="col-lg-4 col-sm-6 mb-4">
+                                            <div class="product-card p-3 shadow-sm rounded">
+                                                <div class="product-image text-center">
+                                                    <img src="/Backend/assets/images/favicon1.png" class="img-fluid mb-2" alt="product">
                                                 </div>
-                                            </div>
-                                            <div class="col-lg-3 col-sm-6 d-flex ">
-                                                <div class="productset flex-fill">
-                                                    <div class="productsetimg">
-                                                        <img src="/Backend/assets/images/product/product31.png" alt="img">
-                                                        <h6>Qty: 1.00</h6>
-                                                        <div class="check-product">
-                                                            <i class="fa fa-check"></i>
-                                                        </div>
-                                                    </div>
-                                                    <div class="productsetcontent">
-                                                        <h5>Fruits</h5>
-                                                        <h4>Strawberry</h4>
-                                                        <h6>15.00</h6>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3 col-sm-6 d-flex ">
-                                                <div class="productset flex-fill">
-                                                    <div class="productsetimg">
-                                                        <img src="assets/img/product/product35.jpg" alt="img">
-                                                        <h6>Qty: 5.00</h6>
-                                                        <div class="check-product">
-                                                            <i class="fa fa-check"></i>
-                                                        </div>
-                                                    </div>
-                                                    <div class="productsetcontent">
-                                                        <h5>Fruits</h5>
-                                                        <h4>Banana</h4>
-                                                        <h6>150.00</h6>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3 col-sm-6 d-flex ">
-                                                <div class="productset flex-fill">
-                                                    <div class="productsetimg">
-                                                        <img src="assets/img/product/product37.jpg" alt="img">
-                                                        <h6>Qty: 5.00</h6>
-                                                        <div class="check-product">
-                                                            <i class="fa fa-check"></i>
-                                                        </div>
-                                                    </div>
-                                                    <div class="productsetcontent">
-                                                        <h5>Fruits</h5>
-                                                        <h4>Limon</h4>
-                                                        <h6>1500.00</h6>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3 col-sm-6 d-flex ">
-                                                <div class="productset flex-fill">
-                                                    <div class="productsetimg">
-                                                        <img src="assets/img/product/product54.jpg" alt="img">
-                                                        <h6>Qty: 5.00</h6>
-                                                        <div class="check-product">
-                                                            <i class="fa fa-check"></i>
-                                                        </div>
-                                                    </div>
-                                                    <div class="productsetcontent">
-                                                        <h5>Fruits</h5>
-                                                        <h4>Apple</h4>
-                                                        <h6>1500.00</h6>
-                                                    </div>
-                                                </div>
+                                                <h5 class="text-muted">Fruits</h5>
+                                                <h4><?php echo $row['product_name']; ?></h4>
+                                                <h6 class="text-primary"><?php echo $row['price']; ?></h6>
+                                            <div class="check-product mt-2">
+                                                <i class="fa fa-check"></i>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="tab_content" data-tab="headphone">
+                                <?php
+                            }
+                        }
+                    }
+                ?>
+    </div>
+</div>
+
+
+                                    <!-- <div class="tab_content" data-tab="headphone">
                                         <div class="row ">
                                             <div class="col-lg-3 col-sm-6 d-flex ">
                                                 <div class="productset flex-fill">
@@ -604,7 +559,7 @@ include BASE_PATH . "/src/controllers/dbConnection.php";
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
 
@@ -744,7 +699,6 @@ include BASE_PATH . "/src/controllers/dbConnection.php";
 
 
             updateButtons();
-            // sync vertical scrolling between the two POS columns
 (function(){
   const left = document.querySelector('.col-lg-8.pos-column');
   const right = document.querySelector('.col-lg-4.pos-column');
