@@ -13,12 +13,10 @@ $result = $con->query($sql);
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Dreams POS Admin Template</title>
     <style>
-/* Swiper Container */
 .mySwiper {
     padding: 20px 0;
 }
 
-/* Product Card */
 .product-card {
     background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(8px);
@@ -34,7 +32,6 @@ $result = $con->query($sql);
     box-shadow: 0px 6px 18px rgba(0,0,0,0.12);
 }
 
-/* Product Image */
 .product-card img {
     height: 130px;
     object-fit: contain;
@@ -45,7 +42,6 @@ $result = $con->query($sql);
     transform: scale(1.07);
 }
 
-/* Product Title */
 .product-card h4 {
     margin: 10px 0 6px;
     font-size: 18px;
@@ -53,14 +49,12 @@ $result = $con->query($sql);
     color: #333;
 }
 
-/* Price */
 .product-card h6 {
     font-size: 16px;
     font-weight: bold;
     color: #ff5722;
 }
 
-/* Add to Cart Button */
 .product-card button {
     margin-top: 10px;
     width: 100%;
@@ -68,7 +62,6 @@ $result = $con->query($sql);
     font-weight: 600;
 }
 
-/* Navigation Arrows */
 .swiper-button-next,
 .swiper-button-prev {
     color: #000 !important;
@@ -92,10 +85,8 @@ $result = $con->query($sql);
 }
 </style>
 
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Swiper -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
@@ -107,7 +98,6 @@ $result = $con->query($sql);
         .product-card { background: #fff; border-radius: 10px; transition: 0.3s; height:100%; display:flex; flex-direction:column; justify-content:space-between; }
         .product-card:hover { transform: translateY(-5px); }
         .product-card img { max-height: 120px; object-fit: contain; }
-        /* small styling for cart box header area */
         #cartTotals { font-size:1.05rem; font-weight:600; }
         .swiper { padding-bottom: 40px; }
         .swiper-slide { height: auto; }
@@ -225,7 +215,7 @@ $result = $con->query($sql);
                                                 <?php } ?>
                                             </div>
 
-                                            <!-- Navigation -->
+                                            
                                             <div class="swiper-button-next"></div>
                                             <div class="swiper-button-prev"></div>
                                         </div>
@@ -234,7 +224,7 @@ $result = $con->query($sql);
 
                             </div>
 
-                            <!-- RIGHT: POS Cart -->
+                
                             <div class="col-lg-4">
                                 <div class="card">
                                     <div class="card-header">
@@ -272,12 +262,12 @@ $result = $con->query($sql);
                                                     </tr>
                                                 </thead>
                                                 <tbody id="cartBody">
-                                                    <!-- JS will render cart rows here -->
+                                            
                                                 </tbody>
                                             </table>
                                         </div>
 
-                                        <!-- Totals -->
+                                        
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <div>Total Items: <span id="totalItems">0</span></div>
                                             <div id="cartTotals">Total: ₹<span id="cartTotal">0.00</span></div>
@@ -293,19 +283,19 @@ $result = $con->query($sql);
                                     </div>
                                 </div>
 
-                                <!-- Optional small sample invoice / quick actions -->
+                                
                                 <div class="mt-4">
-                                    <!-- could add quick discounts, tax, payments -->
+                
                                 </div>
-                            </div> <!-- end right col -->
-                        </div> <!-- end row -->
-                    </div> <!-- card-body -->
-                </div> <!-- card -->
-            </div> <!-- row -->
-        </div> <!-- content -->
-    </div> <!-- page-wrapper -->
+                            </div> 
+                        </div> 
+                    </div> 
+                </div> 
+            </div> 
+        </div> 
+    </div> 
 
-    <!-- Add Customer Modal (unchanged) -->
+
     <div class="modal fade" id="addCustomerModal" tabindex="-1" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -334,11 +324,9 @@ $result = $con->query($sql);
         </div>
     </div>
 
-    <!-- Scripts (Bootstrap + custom) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-    // Initialize Swiper (4 slides in view, slide by 1)
     document.addEventListener('DOMContentLoaded', function () {
         var mySwiper = new Swiper(".mySwiper", {
             slidesPerView: 4,
@@ -350,7 +338,6 @@ $result = $con->query($sql);
             },
             slidesPerGroup: 1,
             breakpoints: {
-                // responsive
                 0: { slidesPerView: 1 },
                 576: { slidesPerView: 2 },
                 768: { slidesPerView: 3 },
@@ -358,22 +345,19 @@ $result = $con->query($sql);
             }
         });
 
-        /* POS CART LOGIC */
+    
         const cartBody = document.getElementById('cartBody');
         const cartTotalEl = document.getElementById('cartTotal');
         const totalItemsEl = document.getElementById('totalItems');
         const clearCartBtn = document.getElementById('clearCartBtn');
         const checkoutBtn = document.getElementById('checkoutBtn');
 
-        // Store cart in memory (object keyed by productId)
+        
         let cart = {};
-
-        // Utility: format currency
         function formatPrice(num) {
             return parseFloat(num).toFixed(2);
         }
 
-        // Render cart rows into the table
         function renderCart() {
             cartBody.innerHTML = '';
             let total = 0;
@@ -382,11 +366,11 @@ $result = $con->query($sql);
                 const item = cart[id];
                 const row = document.createElement('tr');
 
-                // Product cell (name & maybe small image)
+
                 const productCell = document.createElement('td');
                 productCell.innerHTML = `<div><strong>${escapeHtml(item.name)}</strong><div class="text-muted small">${escapeHtml(item.category || '')}</div></div>`;
 
-                // Qty cell
+    
                 const qtyCell = document.createElement('td');
                 qtyCell.classList.add('align-middle');
                 qtyCell.innerHTML = `
@@ -397,12 +381,12 @@ $result = $con->query($sql);
                     </div>
                 `;
 
-                // Price cell
+        
                 const priceCell = document.createElement('td');
                 priceCell.classList.add('align-middle');
                 priceCell.innerText = '₹' + formatPrice(item.price * item.qty);
 
-                // Actions cell (delete)
+            
                 const actionCell = document.createElement('td');
                 actionCell.classList.add('align-middle');
                 actionCell.innerHTML = `<button class="btn btn-sm btn-danger" data-action="remove" data-id="${id}"><i class="bi bi-trash"></i> Delete</button>`;
@@ -421,7 +405,7 @@ $result = $con->query($sql);
             cartTotalEl.innerText = formatPrice(total);
             totalItemsEl.innerText = itemCount;
 
-            // Hook action buttons (delegation)
+
             cartBody.querySelectorAll('button[data-action]').forEach(btn => {
                 btn.addEventListener('click', function (e) {
                     const action = this.getAttribute('data-action');
@@ -433,7 +417,7 @@ $result = $con->query($sql);
             });
         }
 
-        // Add item to cart
+
         function addToCart(id, name, price, category = '') {
             id = String(id);
             price = parseFloat(price);
@@ -445,7 +429,7 @@ $result = $con->query($sql);
             renderCart();
         }
 
-        // Change qty
+    
         function changeQty(id, delta) {
             id = String(id);
             if (!cart[id]) return;
@@ -454,14 +438,14 @@ $result = $con->query($sql);
             renderCart();
         }
 
-        // Remove item
+    
         function removeItem(id) {
             id = String(id);
             if (cart[id]) delete cart[id];
             renderCart();
         }
 
-        // Clear cart
+
         clearCartBtn.addEventListener('click', function () {
             if (confirm('Clear all items from cart?')) {
                 cart = {};
@@ -469,24 +453,22 @@ $result = $con->query($sql);
             }
         });
 
-        // Checkout (demo behavior)
         checkoutBtn.addEventListener('click', function () {
             if (Object.keys(cart).length === 0) {
                 alert('Cart is empty.');
                 return;
             }
-            // Demo: print cart data to console (replace with real checkout logic)
+
             console.log('Checkout payload:', cart);
             alert('Checkout pressed — check console for payload. Integrate with server-side as required.');
         });
 
-        // Add-to-cart buttons (from product cards)
         document.querySelectorAll('.addToCartBtn').forEach(btn => {
             btn.addEventListener('click', function () {
                 const id = this.dataset.id;
                 const name = this.dataset.name;
                 const price = this.dataset.price;
-                // category not provided on button; try to find category text inside the card
+    
                 const card = this.closest('.product-card');
                 const categoryEl = card ? card.querySelector('.text-muted') : null;
                 const category = categoryEl ? categoryEl.innerText.trim() : '';
@@ -494,7 +476,7 @@ $result = $con->query($sql);
             });
         });
 
-        // simple HTML escape for names/categories to avoid XSS
+    
         function escapeHtml(unsafe) {
             if (!unsafe) return '';
             return unsafe
@@ -505,7 +487,6 @@ $result = $con->query($sql);
                 .replace(/'/g, "&#039;");
         }
 
-        // initial render
         renderCart();
     });
     </script>
