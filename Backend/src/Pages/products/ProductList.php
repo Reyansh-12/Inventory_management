@@ -227,39 +227,46 @@ $result = $con->query($sql);
             </div>
         </div>
     </div>
-    <div class="toast-container position-fixed top-0 mt-3 me-3 end-0" style="z-index:999;">
-        <div id="deleteToast" class="toast align-items-center bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="d-flex">
-                <div class="toast-body text-white">
-                    Product deleted successfully!
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+
+<!-- Toast Container (Top Right) -->
+<div class="toast-container position-fixed top-0 end-0 p-3">
+    <!-- Delete Toast -->
+    <div id="deleteToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body bg-danger" id="deleteToastMessage">
+                Item deleted successfully.
             </div>
-            <div class="toast-timer" style="background: rgba(241, 193, 208, 0.8);"></div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
         </div>
     </div>
+</div>
+
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  
     <script>
-        let table = new DataTable('#myTable');
-    
-        document.addEventListener("DOMContentLoaded", function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get("deleted") === "1") {
-                let toastElement = document.getElementById("deleteToast");
-                let timerBar = toastElement.querySelector(".toast-timer");
-                timerBar.style.animation = "none";
-                timerBar.offsetHeight; 
-                timerBar.style.animation = "shrink 5s linear forwards";
-                let toast = new bootstrap.Toast(toastElement, {
-                    delay: 3000
-                });
-                toast.show();
-                setTimeout(() => {
-                    window.history.replaceState({}, document.title, window.location.pathname);
-                }, 3500);
-            }
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".confirm-delete").forEach(btn => {
+        btn.addEventListener("click", function (e) {
+            e.preventDefault(); // stop default delete link
+
+            const deleteUrl = this.getAttribute("href");
+
+            // Show delete toast
+            document.getElementById("deleteToastMessage").textContent = "Item deleted!";
+            var toast = new bootstrap.Toast(document.getElementById('deleteToast'));
+            toast.show();
+
+            // After toast, redirect to delete URL
+            setTimeout(() => {
+                window.location.href = deleteUrl;
+            }, 1200); // wait for toast to show
         });
-    </script>
+    });
+});
+</script>
+
 </body>
 </html>

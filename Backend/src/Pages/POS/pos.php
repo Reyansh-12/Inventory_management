@@ -12,6 +12,9 @@ $result = $con->query($sql);
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Dreams POS Admin Template</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <style>
 .mySwiper {
     padding: 20px 0;
@@ -83,17 +86,19 @@ $result = $con->query($sql);
     background: #000;
     color: #fff !important;
 }
-</style>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
-    <style>
-        .category-card { width: 10rem; }
-        .slider-container { position: relative; }
-        .slider-btn { background: red !important; border-radius: 50%; width: 10px; height: 15px; color: black !important; }
+.category-card { 
+    width: 10rem; 
+}
+.slider-container { 
+    position: relative; 
+}
+.slider-btn { 
+    background: red !important; 
+    border-radius: 50%; 
+    width: 10px; 
+    height: 15px; 
+    color: black !important; 
+}
         .pos-column { max-height: calc(100vh - 0px); overflow-y: auto; }
         .product-card { background: #fff; border-radius: 10px; transition: 0.3s; height:100%; display:flex; flex-direction:column; justify-content:space-between; }
         .product-card:hover { transform: translateY(-5px); }
@@ -101,7 +106,8 @@ $result = $con->query($sql);
         #cartTotals { font-size:1.05rem; font-weight:600; }
         .swiper { padding-bottom: 40px; }
         .swiper-slide { height: auto; }
-    </style>
+</style>
+    
 </head>
 <body>
     <div id="global-loader"><div class="whirly-loader"></div></div>
@@ -125,9 +131,9 @@ $result = $con->query($sql);
                             <h6 class="text-muted">Manage your purchases</h6>
                         </div>
                         <div class="page-btn">
-                            <a href="/Backend/src/Pages/Users/NewUser.php" class="btn btn-added">
-                                <img src="/Backend/src/assets/images/icons/plus.svg" alt="img"> Add User
-                            </a>
+                            <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
+                                <i class="bi bi-person-plus"></i> Add Customer
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -172,8 +178,8 @@ $result = $con->query($sql);
                                 </div>
                                 <div class="tabs_container">
                                     <div class="tab_content active" data-tab="fruits">
-                                        <div class="swiper mySwiper">
-                                            <div class="swiper-wrapper">
+                                        <!-- <div class="col"> -->
+                                            <div class="row row-cols-1 row-cols-md-3 g-3">
                                                 <?php
                                                 if ($result && $result->num_rows > 0) {
                                                     while ($row = $result->fetch_assoc()) {
@@ -181,10 +187,10 @@ $result = $con->query($sql);
                                                         $name = htmlspecialchars($row['product_name']);
                                                         $category = htmlspecialchars($row['category']);
                                                         $price = number_format((float)$row['price'], 2, '.', '');
-                                                        $image = !empty($row['image_path']) ? $row['image_path'] : '/Backend/assets/images/favicon1.png';
+                                                        $image = !empty($row['image_path']) ? $row['image_path']  : "/Inventory_managment/Backend/assets/images/favicon1.png";
                                                 ?>
-                                                <div class="swiper-slide">
-                                                    <div class="product-card p-3 shadow-sm rounded">
+                                                <div class="col">
+                                                    <div class="product-card p-3 shadow-sm rounded h-100">
                                                         <div class="text-center">
                                                             <img src="<?php echo $image; ?>" alt="<?php echo $name; ?>" class="img-fluid mb-2" />
                                                         </div>
@@ -209,21 +215,15 @@ $result = $con->query($sql);
                                                     }
                                                 } else {
                                                 ?>
-                                                <div class="swiper-slide">
+                                                <div class="col">
                                                     <div class="p-3">No products found.</div>
                                                 </div>
                                                 <?php } ?>
                                             </div>
-
-                                            
-                                            <div class="swiper-button-next"></div>
-                                            <div class="swiper-button-prev"></div>
-                                        </div>
+                                        <!-- </div> -->
                                     </div>
                                 </div>
-
                             </div>
-
                 
                             <div class="col-lg-4">
                                 <div class="card">
@@ -233,11 +233,11 @@ $result = $con->query($sql);
                                     </div>
 
                                     <div class="card-body">
-                                        <div class="mb-3">
+                                        <!-- <div class="mb-3">
                                             <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
-                                                <i class="bi bi-person-plus"></i> Add Customer
+                                                <i class="bibi-person-plus"></i> Add Customer
                                             </button>
-                                        </div>
+                                        </div> -->
 
                                         <div class="mb-3 d-flex gap-2">
                                             <select class="form-select">
@@ -267,7 +267,6 @@ $result = $con->query($sql);
                                             </table>
                                         </div>
 
-                                        
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <div>Total Items: <span id="totalItems">0</span></div>
                                             <div id="cartTotals">Total: ₹<span id="cartTotal">0.00</span></div>
@@ -282,10 +281,7 @@ $result = $con->query($sql);
                                         <button class="btn btn-danger btn-sm" id="clearCartBtn">Clear All</button>
                                     </div>
                                 </div>
-
-                                
                                 <div class="mt-4">
-                
                                 </div>
                             </div> 
                         </div> 
@@ -323,6 +319,28 @@ $result = $con->query($sql);
             </div>
         </div>
     </div>
+<div class="toast-container position-fixed top-0 end-0 p-3">
+    <div id="checkoutToast" class="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" id="checkoutToastMessage">
+                Checkout pressed — check console for payload.
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container position-fixed top-0 end-0 p-3">
+    <div id="cartToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                Cart is empty.
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -455,12 +473,12 @@ $result = $con->query($sql);
 
         checkoutBtn.addEventListener('click', function () {
             if (Object.keys(cart).length === 0) {
-                alert('Cart is empty.');
+                showCartEmptyToast();
                 return;
             }
 
             console.log('Checkout payload:', cart);
-            alert('Checkout pressed — check console for payload. Integrate with server-side as required.');
+            showCheckoutToast();
         });
 
         document.querySelectorAll('.addToCartBtn').forEach(btn => {
@@ -490,5 +508,22 @@ $result = $con->query($sql);
         renderCart();
     });
     </script>
+    <script>
+function showCartEmptyToast() {
+    var toastElement = document.getElementById('cartToast');
+    var toast = new bootstrap.Toast(toastElement);
+    toast.show();
+}
+</script>
+<script>
+function showCheckoutToast(message = "Checkout pressed — check console for payload.") {
+    document.getElementById("checkoutToastMessage").textContent = message;
+    var toastElement = document.getElementById('checkoutToast');
+    var toast = new bootstrap.Toast(toastElement);
+    toast.show();
+}
+</script>
+
+
 </body>
 </html>

@@ -34,16 +34,16 @@ if (isset($_POST['submit'])) {
     $imagePath = null;
     if (!empty($_FILES['imageBox']['name'])) {
 
-        $uploadDir = BASE_PATH . "/uploads/";
+        $uploadDir = BASE_PATH . "/Backend/assets/images/";
         
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0777, true);
         }
-        $fileName = time() . "_" . basename($_FILES["imageBox"]["name"]);
+        $fileName = basename($_FILES["imageBox"]["name"]);
         $targetPath = $uploadDir . $fileName;
     
         if (move_uploaded_file($_FILES["imageBox"]["tmp_name"], $targetPath)) {
-            $imagePath = "/uploads/" . $fileName;
+            $imagePath = "http://localhost/Inventory_management/Backend/assets/images/" . $fileName;
         }
     }
     if ($isEdit) {
@@ -69,6 +69,8 @@ if (isset($_POST['submit'])) {
 exit();
 
 }
+
+
 ?>
 
 <!DOCTYPE html>
@@ -82,6 +84,10 @@ exit();
     <meta name="author" content="Dreamguys - Bootstrap Admin Template">
     <meta name="robots" content="noindex, nofollow">
     <title>Dreams Pos admin template</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
     <style>
         .parsley-required {
             color: orangered;
@@ -98,7 +104,52 @@ exit();
     from { width: 100%; } 
     to { width: 0%; } 
 }
+
+.stylish-datepicker {
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #6c757d;
+    font-size: 15px;
+    transition: 0.3s ease-in-out;
+}
+
+.stylish-datepicker:focus {
+    border-color: #3f51b5;
+    box-shadow: 0 0 5px rgba(63, 81, 181, 0.4);
+    outline: none;
+}
+
+.ui-datepicker {
+    background: #fff;
+    border: 2px solid #3f51b5;
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+.ui-datepicker-header {
+    background: #3f51b5;
+    color: #fff;
+    border-radius: 8px 8px 0 0;
+}
+
+.ui-state-default {
+    padding: 6px;
+    border-radius: 5px;
+}
+
+.ui-state-highlight {
+    background: #eceff1 !important;
+    border-radius: 5px;
+}
+
+.ui-state-active {
+    background: #3f51b5 !important;
+    color: #fff !important;
+    border-radius: 5px;
+}
 </style>
+
 </head>
 
 <body>
@@ -106,15 +157,14 @@ exit();
         <div class="whirly-loader"> </div>
     </div>
     <div class="main-wrapper">
-
-        <div class="d-flx row">
-            <div class="col-md-3">
-                <?php include BASE_PATH . "/src/Layouts/Sidebar.php"; ?>
+            <div class="d-flx row">
+                <div class="col-md-3">
+                    <?php include BASE_PATH . "/src/Layouts/Sidebar.php"; ?>
+                </div>
+                <div class="col-md-9">
+                    <?php include BASE_PATH . "/src/Layouts/Header.php"; ?>
+                </div>
             </div>
-            <div class="col-md-9">
-                <?php include BASE_PATH . "/src/Layouts/Header.php"; ?>
-            </div>
-        </div>
         <div class="page-wrapper">
             <div class="content">
                 <div class="page-header">
@@ -154,7 +204,7 @@ exit();
                                 <div class="col-lg-4 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for='brand'>Brand <span class="text-danger">*</span></label>
-                                        <select class="form-select" id="brandSelect" name="brand" data-parsley-required-message="Select brand" data-parsley-required>
+                                        <select class="form-select" id="brandSelect" name="brand" disabled data-parsley-required-message="Select brand" data-parsley-required>
                                             <option disabled selected>Choose Brand</option>
                                             <?php
                                             $brands = [
@@ -191,7 +241,8 @@ exit();
                                 <div class="col-lg-4 col-sm-4 col-12">
                                     <div class="form-group">
                                         <label for='datepicker'>Expired Date <span class="text-danger">*</span></label>
-                                        <input type="text" class="p-2 rounded col-lg-12 border-secondary border-1 border-secondary border" name="expiredDate" id="datepicker" placeholder="Select expired date" value="<?php echo htmlspecialchars($editData['expired_date'] ?? '') ?>" data-parsley-required-message="Expired date is required" data-parsley-required>
+                                        <!-- <input type="text" class="p-2 rounded col-lg-12 border-secondary border-1 border-secondary border" name="expiredDate" id="datepicker" placeholder="Select expired date" value="<?php echo htmlspecialchars($editData['expired_date'] ?? '') ?>" data-parsley-required-message="Expired date is required" data-parsley-required> -->
+                                        <input type="text" class="form-control stylish-datepicker" name="expiredDate" id="datepicker" placeholder="Select expired date" value="<?php echo htmlspecialchars($editData['expired_date'] ?? '') ?>" data-parsley-required data-parsley-required-message="Expired date is required">
                                     </div>
                                 </div>
 
@@ -232,13 +283,14 @@ exit();
                                 <div class="col-lg-12">
                                     <div class="form-group">
                                         <label for="productImage"> Product Image <span class="text-danger">*</span></label>
-                                        <div class="image-upload">
-                                            <input type="file" name="imageBox" id="productImage">
+                                        <div class="image-upload mb-0">
+                                            <input type="file" name="imageBox" id="productImage" accept="image/*" data-parsley-required-message="Product image is required" data-parsley-required data-parsley-errors-container="#imageError">
                                             <div class="image-uploads">
                                                 <img src="/Backend/assets/images/icons/upload.svg" alt="img">
                                                 <h4>Drag and drop a file to upload</h4>
                                             </div>
                                         </div>
+                                        <div id="imageError" class="text-danger"></div>
                                     </div>
                                 </div>
                                 <div class="col-lg-12 d-flex justify-content-end">
@@ -252,36 +304,37 @@ exit();
             </div>
         </div>
     </div>
-    <!-- Toast Container -->
-<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 999;">
-    <div id="deleteToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 999;">
+    <div id="actionToast" class="toast border-0" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
-            <div class="toast-body text-white">
-                <!-- JS will change this message -->
+            <div class="toast-body" id="toastMessage">
                 Action completed!
             </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
         </div>
-        <div class="toast-timer" style="height: 4px; background: rgba(255,255,255,0.9); animation: shrink 3s linear forwards;"></div>
+        <div class="toast-timer" style="height: 4px; background: rgba(0,0,0,0.2); animation: shrink 3s linear forwards;"></div>
     </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function() {
     const params = new URLSearchParams(window.location.search);
 
-    let toastElement = document.getElementById("deleteToast");
-    let toastMessage = toastElement.querySelector(".toast-body");
+    let toastElement = document.getElementById("actionToast");
+    let toastMessage = document.getElementById("toastMessage");
 
     if (params.get("added") === "1") {
-        toastMessage.textContent = "Product is successfully added!";
+        toastMessage.textContent = "Product added successfully!";
+        toastElement.classList.add("text-bg-success", "text-white");
     } 
     else if (params.get("updated") === "1") {
-        toastMessage.textContent = "Product data is updated successfully!";
+        toastMessage.textContent = "Product updated successfully!";
+        toastElement.classList.add("text-bg-success", "text-white");
     } 
     else {
-        return; 
+        return;  // Don't show toast
     }
 
     let timerBar = toastElement.querySelector(".toast-timer");
@@ -296,7 +349,51 @@ document.addEventListener("DOMContentLoaded", function() {
         window.history.replaceState({}, document.title, window.location.pathname);
     }, 3500);
 });
+
+
+function enableBrandSelector() {
+    let category = document.getElementById("categorySelector").value;
+    let brandSelect = document.getElementById("brandSelect");
+
+    brandSelect.removeAttribute("disabled");
+
+    let options = brandSelect.querySelectorAll("option");
+
+    options.forEach(option => {
+        if (option.classList.contains(category) || option.value === "Choose Brand") {
+            option.style.display = "block"; 
+        } else {
+            option.style.display = "none";    
+        }
+    });
+
+    brandSelect.value = "";
+}
+
+$(function() {
+    $("#datepicker").datepicker({
+        dateFormat: "yy-mm-dd",
+        changeMonth: true,
+        changeYear: true,
+        showAnim: "slideDown",
+        minDate: 0,
+        yearRange: "2024:2035"
+    });
+});
+
+document.getElementById('productImage').addEventListener('change', function () {
+    const file = this.files[0];
+    const title = this.closest('.image-upload').querySelector('h4');
+
+    if (file) {
+        title.textContent = file.name;   
+    } else {
+        title.textContent = "Drag and drop a file to upload"; 
+    }
+});
 </script>
+
+
 
 </body>
 </html>
