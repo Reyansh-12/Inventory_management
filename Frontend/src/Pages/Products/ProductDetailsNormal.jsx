@@ -3,8 +3,8 @@ import Footer from '../../components/Footer';
 import banner7 from '../../assets/images/shop/banner/7.webp';
 import shop2 from '../../assets/images/shop/product-details/2.webp';
 import ProductItem from "@/Pages/Products/ProductItem.jsx";
-
-// import ProductItem from "/var/www/html/Inventory_management/Frontend/src/Pages/Products/ProductItem.jsx";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { ToastContainer, toast } from 'react-toastify';
 
 const ProductDetailsNormal = () => {
   const [qty, setQty] = useState(1);
@@ -15,8 +15,8 @@ const ProductDetailsNormal = () => {
   const increment = () => setQty(q => q + 1);
   const decrement = () => setQty(q => Math.max(1, q - 1));
   const handleAddToCart = () => {
-    console.log('add to cart', { qty, shipping });
-  };
+    toast.success('Product added to cart!');
+  }
   const handleSubmitReview = (e) => {
     e.preventDefault();
     console.log('submit review', review);
@@ -91,6 +91,7 @@ const ProductDetailsNormal = () => {
                   <div className="product-details-cart-wishlist" style={{ display: 'flex', gap: 8 }}>
                     <button type="button" className="btn-wishlist"><i className="fa fa-heart-o" /></button>
                     <button type="button" className="btn" onClick={handleAddToCart}>Add to cart</button>
+                    <ToastContainer />
                   </div>
                 </div>
               </div>

@@ -1793,7 +1793,7 @@ hr {
 }
 .hero-slide-content .hero-slide-text-img {
   position: absolute;
-  top: 7px;
+  top: 0px;
   left: 2px;
   z-index: -1;
   pointer-events: none;

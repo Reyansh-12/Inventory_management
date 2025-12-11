@@ -114,9 +114,14 @@ if(isset($_POST['submit'])) {
             </div>
         </div>
         <div class="col-lg-3 col-sm-6 col-12">
-            <div class="form-group">
-                <label for="poneNumber">Phone</label>
-                <input type="text" id="poneNumber" name="contact" value="<?= htmlspecialchars($contact) ?>" placeholder="Enter phone number" data-parsley-required-message="Mobile number is required" data-parsley-required>
+        <div class="form-group">
+            <label for="contact" class="">Mobile <span class="text-danger">*</span></label>
+                <div class="input-group">
+                    <span class="input-group-text" id="addon-wrapping">+91</span>
+                    <input type="text" id="contact" name="phoneNumber" value="<?= htmlspecialchars($contact) ?>" placeholder="Enter your mobile number" maxlength="10" data-parsley-minlength="10"data-parsley-required="true"data-parsley-required-message="Phone number is required"data-parsley-errors-container="#contactError" />
+                    <span class="text-danger" id="contactError"><?php echo $contactError ?? ""; ?></span>
+                </div>
+            <div id="contactError" class="text-danger"></div>
             </div>
         </div>
         <div class="col-lg-3 col-sm-6 col-12">
@@ -167,6 +172,11 @@ if(isset($_POST['submit'])) {
         let parsleyForm = $('#myForm').parsley();
         $('#resetButton').on('click', function() {
             parsleyForm.reset();
+        });
+        $('#contact').on('input', function() {
+            let inputValue = $(this).val();
+            let filteredValue = inputValue.replace(/[^0-9]/g, '');
+            $(this).val(filteredValue);
         });
     </script>
 </body>

@@ -37,15 +37,7 @@ $result = $con->query($sql);
             z-index: 999;
             animation: shrink 4s linear forwards;
         }
-        @keyframes shrink {
-            from {
-                width: 100%;
-            }
-
-            to {
-                width: 0%;
-            }
-        }
+        
     </style>
 </head>
 
@@ -165,12 +157,6 @@ $result = $con->query($sql);
                             <table class="table datanew" id="myTable">
                                 <thead>
                                     <tr>
-                                        <th>
-                                            <label class="checkboxs">
-                                                <input type="checkbox" id="select-all">
-                                                <span class="checkmarks"></span>
-                                            </label>
-                                        </th>
                                         <th>Product Name</th>
                                         <th>Category </th>
                                         <th>Brand</th>
@@ -187,12 +173,6 @@ $result = $con->query($sql);
                                         if ($result->num_rows > 0) {
                                             while ($row = $result->fetch_assoc()) {
                                                 echo "<tr>";
-                                                echo "    <td>";
-                                                echo "        <label class='checkboxs'>";
-                                                echo "            <input type='checkbox'>";
-                                                echo "            <span class='checkmarks'></span>";
-                                                echo "        </label>";
-                                                echo "    </td>";
                                                 echo "    <td class='productimgname'>";
                                                 echo "        <a href='javascript:void(0)' class='product-img'>";
                                                 echo "            <img src='" . $row['image_path'] . "' alt='product'>";
@@ -228,9 +208,7 @@ $result = $con->query($sql);
         </div>
     </div>
 
-<!-- Toast Container (Top Right) -->
-<div class="toast-container position-fixed top-0 end-0 p-3">
-    <!-- Delete Toast -->
+<div class="toast-container position-fixed end-0 p-3" style="z-index: 1100; top: 60px;">
     <div id="deleteToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
             <div class="toast-body bg-danger" id="deleteToastMessage">
@@ -241,8 +219,6 @@ $result = $con->query($sql);
     </div>
 </div>
 
-
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   
@@ -250,19 +226,14 @@ $result = $con->query($sql);
 document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".confirm-delete").forEach(btn => {
         btn.addEventListener("click", function (e) {
-            e.preventDefault(); // stop default delete link
-
+            e.preventDefault();
             const deleteUrl = this.getAttribute("href");
-
-            // Show delete toast
-            document.getElementById("deleteToastMessage").textContent = "Item deleted!";
+            document.getElementById("deleteToastMessage").textContent = "Item successfully deleted!";
             var toast = new bootstrap.Toast(document.getElementById('deleteToast'));
             toast.show();
-
-            // After toast, redirect to delete URL
             setTimeout(() => {
                 window.location.href = deleteUrl;
-            }, 1200); // wait for toast to show
+            }, 3000); 
         });
     });
 });

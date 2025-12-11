@@ -27,6 +27,19 @@ $result = $con->query($sql);
     <meta name="author" content="Dreamguys - Bootstrap Admin Template">
     <meta name="robots" content="noindex, nofollow">
     <title>Dreams Pos admin template</title>
+    <style>
+        .toast-timer {
+            height: 4px;
+            width: 100%;
+            background: rgba(231, 10, 10, 0.6);
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            z-index: 999;
+            animation: shrink 4s linear forwards;
+        }
+        
+    </style>
 </head>
 
 <body>
@@ -57,82 +70,37 @@ $result = $con->query($sql);
 
             <div class="card">
                 <div class="card-body">
-                    <div class="table-top">
-                        <div class="search-set">
-                            <div class="search-path">
-                                <a class="btn btn-filter" id="filter_search">
-                                    <span></span>
-                                </a>
-                            </div>
-                            <div class="search-input">
-                                <a class="btn btn-searchset"></a>
-                            </div>
-                        </div>
-                        <div class="wordset">
-                            <ul>
-                                <li>
-                                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"></a>
-                                </li>
-                                <li>
-                                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"></a>
-                                </li>
-                                <li>
-                                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"></a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="card" id="filter_inputs">
-                        <div class="card-body pb-0">
-                            <div class="row">
-                                <div class="col-lg-2 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <input type="text" placeholder="Enter User Name">
-                                    </div>
+                <div class="table-top">
+                            <div class="search-set">
+                                <div class="search-path">
+                                    <a class="btn btn-filter" id="filter_search">
+                                        <img src="/Backend/src/assets/images/icons/filter.svg" alt="img">
+                                        <span><img src="/Backend/src/assets/images/icons/closes.svg" alt="img"></span>
+                                    </a>
                                 </div>
-                                <div class="col-lg-2 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <input type="text" placeholder="Enter Phone">
-                                    </div>
-                                </div>
-                                <div class="col-lg-2 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <input type="text" placeholder="Enter Email">
-                                    </div>
-                                </div>
-                                <div class="col-lg-2 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <input type="text" class="datetimepicker cal-icon" placeholder="Choose Date">
-                                    </div>
-                                </div>
-                                <div class="col-lg-2 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <select class="select">
-                                            <option>Disable</option>
-                                            <option>Enable</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-1 col-sm-6 col-12 ms-auto">
-                                    <div class="form-group">
-                                        <a class="btn btn-filters ms-auto"></a>
-                                    </div>
+                                <div class="search-input">
+                                    <a class="btn btn-searchset"><img src="/Backend/src/assets/images/icons/search-white.svg" alt="img"></a>
                                 </div>
                             </div>
+                            <div class="wordset">
+                                <ul>
+                                    <li>
+                                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img src="/Backend/src/assets/images/icons/pdf.svg" alt="img"></a>
+                                    </li>
+                                    <li>
+                                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src="/Backend/src/assets/images/icons/excel.svg" alt="img"></a>
+                                    </li>
+                                    <li>
+                                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img src="/Backend/src/assets/images/icons/printer.svg" alt="img"></a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
-                    </div>
 
                     <div class="table-responsive">
                         <table class="table  datanew">
                             <thead>
                                 <tr>
-                                    <th>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </th>
                                     <th>User name </th>
                                     <th>Phone</th>
                                     <th>email</th>
@@ -147,12 +115,6 @@ $result = $con->query($sql);
                                 if ($result->num_rows > 0) {
                                     while ($row = $result->fetch_assoc()) {
                                         echo "<tr>";
-                                        echo "  <td>";
-                                        echo "        <label class='checkboxs'>";
-                                        echo "            <input type='checkbox'>";
-                                        echo "            <span class='checkmarks'></span>";
-                                        echo "        </label>";
-                                        echo "    </td>";
                                         echo "    <td>" . $row['user_name'] . "</td>";
                                         echo "    <td>" . $row['user_contact'] . "</td>";
                                         echo "    <td><a href='/cdn-cgi/l/email-protection' class='__cf_email__' data-cfemail='fb8f9394969a88bb9e839a968b979ed5989496'>" . $row['user_email'] . "</a> </td>";
@@ -163,7 +125,7 @@ $result = $con->query($sql);
                                         echo "        <a class='me-3' href='/Backend/src/Pages/Users/NewUser.php?userId=" . $row['id'] . "'>";
                                         echo "            <img src='/Backend/src/assets/images/icons/edit.svg' alt='img'>";
                                         echo "        </a>";
-                                        echo "        <a class='me-3 confirm-text'  href='/Backend/src/Pages/Users/UsersList.php?deleteId=" . $row['id'] . "'>";
+                                        echo "        <a class='me-3 confirm-delete'  href='/Backend/src/Pages/Users/UsersList.php?deleteId=" . $row['id'] . "'>";
                                         echo "            <img src='/Backend/src/assets/images/icons/delete.svg' alt='img'>";
                                         echo "        </a>";
                                         echo "    </td>";
@@ -179,5 +141,31 @@ $result = $con->query($sql);
         </div>
     </div>
     </div>
+    <div class="toast-container position-fixed end-0 p-3" style="z-index: 1100; top: 60px;">
+    <div id="deleteToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body bg-danger" id="deleteToastMessage">
+                Item deleted successfully.
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+</div>
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".confirm-delete").forEach(btn => {
+        btn.addEventListener("click", function (e) {
+            e.preventDefault();
+            const deleteUrl = this.getAttribute("href");
+            document.getElementById("deleteToastMessage").textContent = "User successfully deleted!";
+            var toast = new bootstrap.Toast(document.getElementById('deleteToast'));
+            toast.show();
+            setTimeout(() => {
+                window.location.href = deleteUrl;
+            }, 3000); 
+        });
+    });
+});
+</script>
 </body>
 </html>

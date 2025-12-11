@@ -8,7 +8,7 @@ header("Content-Type: application/json");
 
 include __DIR__ . "/../../controllers/dbConnection.php";
 
-$sql = "SELECT p.id AS id, p.product_name AS name, p.price, p.quantity, p.image_path
+$sql = "SELECT p.id AS id, p.product_name AS name, p.price, p.quantity, p.image_path AS image
         FROM product_list p";
 $result = $con->query($sql);
 
@@ -16,10 +16,9 @@ $products = [];
 
 if ($result && $result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-        $imageUrl = null;
-        if (!empty($row['image_path'])) {
-            $imageUrl = "http://localhost" . $row['image_path']; 
-        }
+        var_dump($row);
+
+        $imageUrl = !empty($row['image_path']) ? $row['image_path'] : null;
 
         $products[] = [
             "id"       => (int)$row["id"],

@@ -43,8 +43,13 @@ const HeroSlider = () => {
                     </div>
                   </div>
                   <div className="col-12 col-md-6">
-                    <div className="hero-slide-thumb">
-                      <img src={slider1} width="841" height="832" alt={slide.title} />
+                  <div className="hero-slide-content">
+                      <div className="hero-slide-text-img">
+                        <img src={text1} width="400" alt="Text" style={{marginTop: '-400px', marginLeft: '100px'}}/>
+                      </div>
+                      <div className="hero-slide-thumb">
+                        <img src={slider1} width="841" height="832" alt={slide.title} />
+                      </div>
                     </div>
                   </div>
                 </div>

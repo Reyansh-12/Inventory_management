@@ -13,7 +13,7 @@ import {Routes , Route} from 'react-router-dom';
 import { AboutUs } from './Pages/AboutUs/AboutUs';
 import Category from './Pages/Categories/Category';
 import ProductFourColumns from './Pages/Products/ProductFourColumns';
-import ProductDetailsNormal from './Pages/Products/ProductDetailsNormal';
+import  ProductDetailsNormal  from './Pages/Products/ProductDetailsNormal';
 
 function App() {
   return (
@@ -24,7 +24,7 @@ function App() {
           <Route path='/about' element={<AboutUs />}></Route>
           <Route path='/contact' element={<Contact />}></Route>
           <Route path='/shop' element={<ProductFourColumns />}></Route>
-          <Route path='/ProductDetailsNormal' element={<ProductDetailsNormal />}></Route>
+          <Route path="/ProductDetailsNormal" element={<ProductDetailsNormal />}></Route>
         </Routes>
     </>
   )

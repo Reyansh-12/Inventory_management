@@ -48,7 +48,7 @@ if (isset($_POST['submit'])) {
     }
     if ($isEdit) {
         $stmt = mysqli_prepare($con, "UPDATE `product_list` 
-            SET product_name=?, category=?, brand_name=?, minQuantity=?, price=?, quantity=?, description=?, discount=?, status=?, expired_date=? 
+            SET product_name=?, category=?, brand_name=?, minQuantity=?, price=?, quantity=?, description=?, discount=?, status=?, expired_date=?
             WHERE id=?");
         mysqli_stmt_bind_param($stmt, "sssiddssssi", $productname, $category, $brandName, $minquantity, $price, $quantity, $description, $discount, $status, $expiredDate, $productId);
         mysqli_stmt_execute($stmt);
@@ -69,7 +69,6 @@ if (isset($_POST['submit'])) {
 exit();
 
 }
-
 
 ?>
 

@@ -19,9 +19,6 @@ if (isset($_GET['supplierId'])) {
     } 
 }
 ?>
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -33,7 +30,18 @@ if (isset($_GET['supplierId'])) {
     <meta name="author" content="Dreamguys - Bootstrap Admin Template">
     <meta name="robots" content="noindex, nofollow">
     <title>Dreams Pos admin template</title>
-    
+    <style>
+        .toast-timer {
+            height: 4px;
+            width: 100%;
+            background: rgba(231, 10, 10, 0.6);
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            z-index: 999;
+            animation: shrink 4s linear forwards;
+        }
+    </style>
 </head>
 
 <body>
@@ -90,74 +98,10 @@ if (isset($_GET['supplierId'])) {
                             </div>
                         </div>
 
-                        <div class="card mb-0" id="filter_inputs">
-                            <div class="card-body pb-0">
-                                <div class="row">
-                                    <div class="col-lg-12 col-sm-12">
-                                        <div class="row">
-                                            <div class="col-lg col-sm-6 col-12">
-                                                <div class="form-group">
-                                                    <select class="select">
-                                                        <option>Choose Product</option>
-                                                        <option>Macbook pro</option>
-                                                        <option>Orange</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg col-sm-6 col-12">
-                                                <div class="form-group">
-                                                    <select class="select">
-                                                        <option>Choose Category</option>
-                                                        <option>Computers</option>
-                                                        <option>Fruits</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg col-sm-6 col-12">
-                                                <div class="form-group">
-                                                    <select class="select">
-                                                        <option>Choose Sub Category</option>
-                                                        <option>Computer</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg col-sm-6 col-12">
-                                                <div class="form-group">
-                                                    <select class="select">
-                                                        <option>Brand</option>
-                                                        <option>N/D</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg col-sm-6 col-12 ">
-                                                <div class="form-group">
-                                                    <select class="select">
-                                                        <option>Price</option>
-                                                        <option>150.00</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-1 col-sm-6 col-12">
-                                                <div class="form-group">
-                                                    <a class="btn btn-filters ms-auto"><img src="/Backend/src/assets/images/icons/search-white.svg" alt="img"></a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
                         <div class="table-responsive">
                             <table class="table datanew">
                                 <thead>
                                     <tr>
-                                        <th>
-                                            <label class="checkboxs">
-                                                <input type="checkbox" id="select-all">
-                                                <span class="checkmarks"></span>
-                                            </label>
-                                        </th>
                                         <th>Supplier Name</th>
                                         <th>Email</th>
                                         <th>Phone Number</th>
@@ -176,16 +120,7 @@ if (isset($_GET['supplierId'])) {
                                             
                                        
                                     echo "<tr>";
-                                    echo "    <td>";
-                                    echo "        <label class='checkboxs'>";
-                                    echo "            <input type='checkbox'>";
-                                    echo "            <span class='checkmarks'></span>";
-                                    echo "        </label>";
-                                    echo "    </td>";
                                     echo "    <td class='productimgname'>";
-                                    echo "        <a href='javascript:void(0);' class='product-img'>";
-                                    echo "            <img src='assets/img/product/noimage.png' alt='product'>";
-                                    echo "        </a>";
                                     echo "        <a href='javascript:void(0);'>".$row['supplier_name']."</a>";
                                     echo "    </td>";
                                     echo "    <td><a href='/cdn-cgi/l/email-protection' class='__cf_email__' data-cfemail='b8ccd0d7d5d9cbf8ddc0d9d5c8d4dd96dbd7d5'>".$row['email']."</a></td>";
@@ -196,7 +131,7 @@ if (isset($_GET['supplierId'])) {
                                     echo "        <a class='me-3 confirm-text' href='/Backend/src/Pages/supplier/supplierForm.php?supplierId=".$row['id']."'>";
                                     echo "            <img src='/Backend/src/assets/images/icons/edit.svg' alt='img'>";
                                     echo "        </a>";
-                                    echo "        <a class='me-3 confirm-text' href='/Backend/src/Pages/supplierlist.php?supplierId=".$row['id']."'>";
+                                    echo "        <a class='me-3 confirm-delete' href='/Backend/src/Pages/supplierlist.php?supplierId=".$row['id']."'>";
                                     echo "            <img src='/Backend/src/assets/images/icons/delete.svg' alt='img'>";
                                     echo "        </a>";
                                     echo "    </td>";
@@ -211,6 +146,32 @@ if (isset($_GET['supplierId'])) {
             </div>
         </div>
     </div>
+    <div class="toast-container position-fixed end-0 p-3" style="z-index: 1100; top: 60px;">
+    <div id="deleteToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body bg-danger" id="deleteToastMessage">
+                Item deleted successfully.
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".confirm-delete").forEach(btn => {
+        btn.addEventListener("click", function (e) {
+            e.preventDefault();
+            const deleteUrl = this.getAttribute("href");
+            document.getElementById("deleteToastMessage").textContent = "Supplier successfully deleted!";
+            var toast = new bootstrap.Toast(document.getElementById('deleteToast'));
+            toast.show();
+            setTimeout(() => {
+                window.location.href = deleteUrl;
+            }, 3000); 
+        });
+    });
+});
+</script>
 </body>
 
 </html>

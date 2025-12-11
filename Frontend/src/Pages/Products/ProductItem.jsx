@@ -3,7 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { CgArrowsExpandRight } from "react-icons/cg";
 import { FaRegHeart, FaRegStar, FaStarHalfAlt } from "react-icons/fa";
 import shop4 from "../../assets/images/shop/category/4.webp";
-
+import { Link } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+ 
 const ProductItem = ({ product }) => {
   const navigate = useNavigate();
 
@@ -22,50 +24,41 @@ const ProductItem = ({ product }) => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("updateQuantity response:", data);
-        if (data.success) {
-          navigate('/ProductDetailsNormal');
-        } else {
-          alert(data.error || "Failed to update quantity");
-        }
+        toast.success("Product added to cart!");
       })
-      .catch((err) => {
-        console.error("API Error:", err);
-        alert("Network error when updating quantity");
+      .catch((error) => {
+        toast.error("Error updating quantity.");
       });
   };
 
   return (
     <div className="product-item text-start">
       <div className="product-thumb">
-        <a className="d-block" href="product-details.html">
-          <img src={shop4} width="370" height="450" alt={product?.name || 'product'} />
-        </a>
+        <Link to="/ProductDetailsNormal">
+          <img src={product?.image ? product.image : shop4} width="370" height="450" alt={product?.name || 'product'} />
+        </Link>
         <span className="flag-new">new</span>
-
         <div className="product-action">
           <button type="button" className="product-action-btn action-btn-quick-view">
             <CgArrowsExpandRight style={{ marginRight: "10px" }} />
           </button>
 
-          <button
-            type="button"
-            className="product-action-btn action-btn-cart"
-            onClick={() => addToCart(product?.id)}
-          >
+          <button type="button" className="product-action-btn action-btn-cart" onClick={() => addToCart(product?.id)}>
             <span>Add to cart</span>
           </button>
+            <ToastContainer />
 
-          <button type="button" className="product-action-btn action-btn-wishlist">
+          <button type="button" className="product-action-btn action-btn-wishlist" onClick={() => toast.info("Added to wishlist!")}>
             <FaRegHeart className="me-5" />
           </button>
+          <ToastContainer />
         </div>
       </div>
 
       <div className="product-info">
         <h4 className="title">
           <a href="product-details.html" className="text-decoration-none">
-            {product?.name}
+            {product?.name} 
           </a>
         </h4>
 
