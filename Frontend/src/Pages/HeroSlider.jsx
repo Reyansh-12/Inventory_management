@@ -1,6 +1,7 @@
 import slider1 from "../assets/images/slider/slider1.webp";
 import slider2 from "../assets/images/slider/slider2.webp";
 import text1 from "../assets/images/slider/text1.webp";
+import textTheme from "../assets/images/slider/text-theme.webp";
 
 import React from 'react';
 import { FaPinterest } from "react-icons/fa";
@@ -34,10 +35,8 @@ const HeroSlider = () => {
                 <div className="row align-items-center position-relative">
                   <div className="col-12 col-md-6">
                     <div className="hero-slide-content">
-                      <div className="hero-slide-text-img">
-                        <img src={text1} width="427" height="232" alt="Text" />
-                      </div>
-                      <h2 className="hero-slide-title">{slide.title}</h2>
+                    <div class="hero-slide-text-img"><img src={textTheme} width="427" height="232" alt="Image" style={{marginTop: '-150px'}}></img></div>
+                      <h2 className="hero-slide-title" style={{marginTop: '100px'}} >{slide.title}</h2>
                       <p className="hero-slide-desc">{slide.description}</p>
                       <a className="btn btn-border-dark rounded-pill ps-5 pe-4 align-items-center" href="/product" style={{lineHeight: '2.5'}}>BUY NOW</a>
                     </div>
@@ -45,7 +44,7 @@ const HeroSlider = () => {
                   <div className="col-12 col-md-6">
                   <div className="hero-slide-content">
                       <div className="hero-slide-text-img">
-                        <img src={text1} width="400" alt="Text" style={{marginTop: '-400px', marginLeft: '100px'}}/>
+                        <img src={text1} width="39" alt="Text" style={{marginTop: '-265px', marginLeft: '477px'}}/>
                       </div>
                       <div className="hero-slide-thumb">
                         <img src={slider1} width="841" height="832" alt={slide.title} />

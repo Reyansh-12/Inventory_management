@@ -27,10 +27,10 @@
 <body>
     <div class="header">
         <div class="header-left active">
-            <a href="index.html" class="logo">
+            <a href="/Backend/src/Pages/Dashboard.php" class="logo">
                 <img src="/Backend/src/assets/images/logo.png" alt="">
             </a>
-            <a href="index.html" class="logo-small">
+            <a href="/Backend/src/Pages/Dashboard.php" class="logo-small">
                 <img src="/Backend/src/assets/images/logo-small.png" alt="">
             </a>
             <a id="toggle_btn" href="javascript:void(0);">

@@ -1,0 +1,94 @@
+.mySwiper {
+    padding: 20px 0;
+}
+
+.product-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(8px);
+    border-radius: 18px;
+    padding: 18px;
+    transition: 0.3s;
+    border: 1px solid rgba(0,0,0,0.08);
+    cursor: pointer;
+}
+
+.product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0px 6px 18px rgba(0,0,0,0.12);
+}
+
+.product-card img {
+    height: 130px;
+    object-fit: contain;
+    transition: 0.3s ease-in-out;
+}
+
+.product-card:hover img {
+    transform: scale(1.07);
+}
+
+.product-card h4 {
+    margin: 10px 0 6px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+.product-card h6 {
+    font-size: 16px;
+    font-weight: bold;
+    color: #ff5722;
+}
+
+.product-card button {
+    margin-top: 10px;
+    width: 100%;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+    color: #000 !important;
+    background: #fff;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    box-shadow: 0px 3px 8px rgba(0,0,0,0.12);
+}
+
+.swiper-button-next:after,
+.swiper-button-prev:after {
+    font-size: 18px !important;
+    font-weight: bold;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+    background: #000;
+    color: #fff !important;
+}
+.category-card { 
+    width: 10rem; 
+}
+.slider-container { 
+    position: relative; 
+}
+.slider-btn { 
+    background: red !important; 
+    border-radius: 50%; 
+    width: 10px; 
+    height: 15px; 
+    color: black !important; 
+}
+        .pos-column { max-height: calc(100vh - 0px); overflow-y: auto; }
+        .product-card { background: #fff; border-radius: 10px; transition: 0.3s; height:100%; display:flex; flex-direction:column; justify-content:space-between; }
+        .product-card:hover { transform: translateY(-5px); }
+        .product-card img { max-height: 120px; object-fit: contain; }
+        #cartTotals { font-size:1.05rem; font-weight:600; }
+        .swiper { padding-bottom: 40px; }
+        .swiper-slide { height: auto; }
+
+.parsley-required{
+    color: red !important;
+}

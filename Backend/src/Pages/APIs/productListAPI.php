@@ -16,9 +16,7 @@ $products = [];
 
 if ($result && $result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-        var_dump($row);
-
-        $imageUrl = !empty($row['image_path']) ? $row['image_path'] : null;
+        $imageUrl = !empty($row['image']) ? $row['image'] : null;
 
         $products[] = [
             "id"       => (int)$row["id"],

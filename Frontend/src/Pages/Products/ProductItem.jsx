@@ -48,7 +48,7 @@ const ProductItem = ({ product }) => {
           </button>
             <ToastContainer />
 
-          <button type="button" className="product-action-btn action-btn-wishlist" onClick={() => toast.info("Added to wishlist!")}>
+          <button type="button" className="product-action-btn action-btn-wishlist" onClick={() => toast.success("Added to wishlist!")}>
             <FaRegHeart className="me-5" />
           </button>
           <ToastContainer />

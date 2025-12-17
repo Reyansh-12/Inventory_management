@@ -88,7 +88,7 @@ const Footer = () => {
         <div className="footer-bottom">
           <div className="container pt-0 pb-0">
             <div className="footer-bottom-content">
-              <p className="copyright">© 2022 SayyamCode. Made with <i className="fa fa-heart"></i> by <a target="_blank" rel="noopener noreferrer" href="#" className="text-decoration-none">SayyamCode.</a></p>
+              <p className="copyright">© 2025 Reyansh. Made with <i className="fa fa-heart"></i> by <a target="_blank" rel="noopener noreferrer" href="#" className="text-decoration-none">Reyansh.</a></p>
             </div>
           </div>
         </div>
