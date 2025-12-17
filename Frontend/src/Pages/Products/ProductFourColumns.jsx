@@ -13,7 +13,11 @@ import ProductItem from "@/Pages/Products/ProductItem.jsx";
 
 const ProductFourColumns = () => {
     const [products, setProducts] = useState([]);
-
+    const [selectedCategory, setSelectedCategory] = useState("all");
+    const normalize = (value) =>
+      value?.toLowerCase().replace(/\s+/g, '');
+   
+      
     useEffect(() => {
       fetch("http://localhost:3000/Backend/src/Pages/APIs/productListAPI.php")
         .then((res) => res.json())
@@ -30,8 +34,15 @@ const ProductFourColumns = () => {
     { id: 6, category:'natural', title: 'Natural', image: category6, bgColor: '#FFF3DA', },
   ];
     
-    const firstNine = products.slice(0, 9);
-    const firstThree = products.slice(0, 3);
+  const filteredProducts =
+  selectedCategory === "all"
+    ? products
+    : products.filter(p =>
+        normalize(p.category) === normalize(selectedCategory)
+      );
+
+const visibleProducts = filteredProducts.slice(0, 9);
+const relatedProducts = products.slice(0, 3);
   return (
     
     <main className="main-content" style={{marginTop: '80px'}}>
@@ -45,7 +56,7 @@ const ProductFourColumns = () => {
             </div>
             <div className="col-md-7">
               <h5 className="showing-pagination-results text-center text-md-end">
-                Showing 09 Results
+              Showing {visibleProducts.length} Results
               </h5>
             </div>
           </div>
@@ -56,12 +67,11 @@ const ProductFourColumns = () => {
         <div className="row g-3 g-sm-6">
           {categories.map((cat) => (
             <div key={cat.id} className="col-6 col-lg-2">
-              <a
-                href="#"
-                className="product-category-item"
-                style={cat.bgColor ? { backgroundColor: cat.bgColor } : {}}
-                onClick={(e) => { e.preventDefault(); cat.onClick && cat.onClick(); }}
-              >
+              <button
+                  className={`product-category-item ${selectedCategory === cat.category ? "active" : ""}`}
+                  style={{ backgroundColor: cat.bgColor, border: "none" }}
+                  onClick={() => setSelectedCategory(cat.category)}
+                >
                 <img className="icon" src={cat.image} width="80" height="80" alt={cat.title} />
                 <h3 className="title">{cat.title}</h3>
                 {cat.badge && (
@@ -72,28 +82,27 @@ const ProductFourColumns = () => {
                     {cat.badge}
                   </span>
                 )}
-              </a>
+              </button>
             </div>
           ))}
         </div>
       </div>
     </section>
-    <section className="section-space pb-5">
-          <div className="container">
-            <div className="row mb-n4 mb-sm-n10 g-3 g-sm-6">
-              {firstNine.map((product) => (
-              <div className="col-6 col-lg-4 mb-4 mb-sm-8" key={product.id}>
-                <div className="product-item text-start">
-                  <div className="product-thumb">
-                    <a className="d-block" href="product-details.html"></a>
-                    <ProductItem product={product} />
-                  </div>
+      <section className="section-space pb-5">
+        <div className="container">
+          <div className="row g-3 g-sm-6">
+            {visibleProducts.length > 0 ? (
+              visibleProducts.map(product => (
+                <div className="col-6 col-lg-4" key={product.id}>
+                  <ProductItem product={product} />
                 </div>
-              </div>
-              ))}
-            </div>
+              ))
+            ) : (
+              <p className="text-center">No products found</p>
+            )}
           </div>
-        </section>
+        </div>
+      </section>
       <section>
         <div className="container">
           <a href="/products" className="product-banner-item">
@@ -122,21 +131,17 @@ const ProductFourColumns = () => {
         </div>
       </section>
       <section className="section-space pb-5">
-          <div className="container">
-            <div className="row mb-n4 mb-sm-n10 g-3 g-sm-6">
-              {firstThree.map((product) => (
-              <div className="col-6 col-lg-4 mb-4 mb-sm-8" key={product.id}>
-                <div className="product-item text-start">
-                  <div className="product-thumb">
-                    <a className="d-block" href="product-details.html"></a>
-                    <ProductItem product={product} />
-                  </div>
-                </div>
+        <div className="container">
+          <h2>Related Products</h2>
+          <div className="row g-3 g-sm-6">
+            {relatedProducts.map(product => (
+              <div className="col-6 col-lg-4" key={product.id}>
+                <ProductItem product={product} />
               </div>
-              ))} 
-            </div>
+            ))}
           </div>
-        </section>
+        </div>
+      </section>
 <Footer />
     </main>
   );

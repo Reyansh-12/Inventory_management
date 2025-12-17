@@ -8,7 +8,7 @@ header("Content-Type: application/json");
 
 include __DIR__ . "/../../controllers/dbConnection.php";
 
-$sql = "SELECT p.id AS id, p.product_name AS name, p.price, p.quantity, p.image_path AS image
+$sql = "SELECT p.id AS id, p.product_name AS name, p.price, p.quantity,p.category, p.image_path AS image
         FROM product_list p";
 $result = $con->query($sql);
 
@@ -23,6 +23,7 @@ if ($result && $result->num_rows > 0) {
             "name"     => $row["name"],
             "price"    => $row["price"],
             "quantity" => isset($row["quantity"]) ? (int)$row["quantity"] : null,
+            "category" => $row["category"],
             "image"    => $imageUrl
         ];
     }
