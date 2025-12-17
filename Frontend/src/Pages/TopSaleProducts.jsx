@@ -109,7 +109,7 @@ const firstSix = products.slice(0, 6);
           </div>
         </section>
         <div className="d-flex justify-content-center text-white">
-          <Link to="/shop" className="rounded-3 p-2 ps-3 pe-3 text-decoration-none text-wite" id="sow_all_products">See All Product <FaArrowRightLong className="ms-2" /></Link>
+          <Link to="/shop" className="rounded-3 p-3 ps-4 pe-4 text-decoration-none text-wite" id="sow_all_products">See All Products <FaArrowRightLong className="ms-2" /></Link>
         </div>
       </main>
     </section>

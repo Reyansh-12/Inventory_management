@@ -2702,19 +2702,8 @@ hr {
     font-size: 14px;
   }
 }
-.product-item .prices .price-old {
-  color: #364958;
-  font-size: 12px;
-  font-weight: 300;
-  margin-left: 4px;
-  -webkit-text-decoration-line: line-through;
-  text-decoration-line: line-through;
-}
-@media only screen and (max-width: 575px) {
-  .product-item .prices .price-old {
-    font-size: 11px;
-  }
-}
+
+
 .product-item .flag-new {
   background-color: #ff6565;
   border-radius: 50px;

@@ -32,10 +32,10 @@ const ProductItem = ({ product }) => {
   };
 
   return (
-    <div className="product-item text-start">
+    <div className="product-item text-start" style={{position: 'relative'}}>
       <div className="product-thumb">
         <Link to="/ProductDetailsNormal">
-          <img src={product?.image ? product.image : shop4} width="370" height="450" alt={product?.name || 'product'} />
+          <img src={product?.image ? product.image : shop4} alt={product?.name || 'product'} style={{width: '100%', height: '350px', objectFit: 'contain'}} />
         </Link>
         <span className="flag-new">new</span>
         <div className="product-action">
@@ -64,7 +64,6 @@ const ProductItem = ({ product }) => {
 
         <div className="prices">
           <span className="price">${product?.price}</span>
-          <span className="price-old">300.00</span>
         </div>
       </div>
     </div>

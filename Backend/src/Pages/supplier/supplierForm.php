@@ -103,13 +103,13 @@ if(isset($_POST['submit'])) {
     <div class="row">
         <div class="col-lg-3 col-sm-6 col-12">
             <div class="form-group">
-                <label for='supplierName'>Supplier Name</label>
+                <label for='supplierName'>Supplier Name <span class="text-danger">*</span></label>
                 <input type="text" id="supplierName" name="supplierName" value="<?= htmlspecialchars($supplierName) ?>" placeholder="Enter supplier name" data-parsley-required-message="Supplier Name is required" data-parsley-required>
             </div>
         </div>
         <div class="col-lg-3 col-sm-6 col-12">
             <div class="form-group">
-                <label for='supplierMail'>Email</label>
+                <label for='supplierMail'>Email <span class="text-danger">*</span></label>
                 <input type="text" id='supplierMail' name="supplierEmail" value="<?= htmlspecialchars($email) ?>" placeholder="Enter supplier email" data-parsley-required-message="Email is required" data-parsley-required>
             </div>
         </div>
@@ -119,14 +119,13 @@ if(isset($_POST['submit'])) {
                 <div class="input-group">
                     <span class="input-group-text" id="addon-wrapping">+91</span>
                     <input type="text" id="contact" name="phoneNumber" value="<?= htmlspecialchars($contact) ?>" placeholder="Enter your mobile number" maxlength="10" data-parsley-minlength="10"data-parsley-required="true"data-parsley-required-message="Phone number is required"data-parsley-errors-container="#contactError" />
-                    <span class="text-danger" id="contactError"><?php echo $contactError ?? ""; ?></span>
                 </div>
-            <div id="contactError" class="text-danger"></div>
+            <div id="contactError" class="text-danger"><?php echo $contactError ?? ""; ?></div>
             </div>
         </div>
         <div class="col-lg-3 col-sm-6 col-12">
             <div class="form-group">
-                <label for="countrySelector">Choose Country</label>
+                <label for="countrySelector">Choose Country <span class="text-danger">*</span></label>
                 <select class="form-select" name="countrySelector" id="countrySelector" data-parsley-required-message="Country is required" data-parsley-required>
                     <option disabled <?= !$country ? 'selected' : '' ?>>Choose Country</option>
                     <option value="india" <?= $country=='india' ? 'selected' : '' ?>>India</option>
@@ -136,7 +135,7 @@ if(isset($_POST['submit'])) {
         </div>
         <div class="col-lg-3 col-sm-6 col-12">
             <div class="form-group">
-                <label for="citySelector">City</label>
+                <label for="citySelector">City <span class="text-danger">*</span></label>
                 <select class="form-select" name="citySelector" id="citySelector" data-parsley-required-message="City is required" data-parsley-required>
                     <option disabled <?= !$city ? 'selected' : '' ?>>Choose City</option>
                     <option value="Nagpur" <?= $city=='Nagpur' ? 'selected' : '' ?>>Nagpur</option>
@@ -146,14 +145,14 @@ if(isset($_POST['submit'])) {
         </div>
         <div class="col-lg-9 col-12">
             <div class="form-group">
-                <label for="address">Address</label>
+                <label for="address">Address <span class="text-danger">*</span></label>
                 <input type="text" id="address" name="address" value="<?= htmlspecialchars($address) ?>" placeholder="Enter supplier address" data-parsley-required-message="Address is required" data-parsley-required>
             </div>
         </div>
         <div class="col-lg-12">
             <div class="form-group">
                 <label for="description">Description</label>
-                <textarea class="form-control" id="description" name="description" placeholder="Enter description" data-parsley-required-message="Description Field is required" data-parsley-required><?= htmlspecialchars($description) ?></textarea>
+                <textarea class="form-control" id="description" name="description" placeholder="Enter description"><?= htmlspecialchars($description) ?></textarea>
             </div>
         </div>
         <div class="col-lg-12 d-flex justify-content-end">

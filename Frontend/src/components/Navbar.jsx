@@ -18,14 +18,14 @@ const handleLogout=()=>{
           <div className="row align-items-center">
             <div className="col-5 col-lg-2 col-xl-1">
               <div className="header-logo">
-                <NavLink to="/home"><img className="logo-main" src={logo} width="95" height="68" alt="Logo"/></NavLink>
+                <NavLink to="/"><img className="logo-main" src={logo} width="95" height="68" alt="Logo"/></NavLink>
               </div>
             </div>
             <div className="col-lg-7 col-xl-7 d-none d-lg-block">
               <div className="header-navigation ps-7">
                 <ul className="main-nav justify-content-start">
                   <li className="has-submenu">
-                    <NavLink to='/home' className="text-decoration-none nav-link">Home</NavLink>
+                    <NavLink to='/' className="text-decoration-none nav-link">Home</NavLink>
                   </li>
                   <li>
                     <NavLink to='/about' className="text-decoration-none nav-link">About</NavLink>

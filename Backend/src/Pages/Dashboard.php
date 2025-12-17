@@ -84,7 +84,7 @@ include(BASE_PATH . "/Backend/src/Layouts/Links.php");
                         <div class="dash-count">
                             <div class="dash-counts">
                                 <h4>100</h4>
-                                <h5>Customers</h5>
+                                <h5>Beauty Customers</h5>
                             </div>
                             <div class="dash-imgs">
                                 <i data-feather="user"></i>
@@ -95,7 +95,7 @@ include(BASE_PATH . "/Backend/src/Layouts/Links.php");
                         <div class="dash-count das1">
                             <div class="dash-counts">
                                 <h4>100</h4>
-                                <h5>Suppliers</h5>
+                                <h5>Cosmetic Brands</h5>
                             </div>
                             <div class="dash-imgs">
                                 <i data-feather="user-check"></i>
@@ -106,7 +106,7 @@ include(BASE_PATH . "/Backend/src/Layouts/Links.php");
                         <div class="dash-count das2">
                             <div class="dash-counts">
                                 <h4>100</h4>
-                                <h5>Purchase Invoice</h5>
+                                <h5>Purchase Orders</h5>
                             </div>
                             <div class="dash-imgs">
                                 <i data-feather="file-text"></i>
@@ -117,7 +117,7 @@ include(BASE_PATH . "/Backend/src/Layouts/Links.php");
                         <div class="dash-count das3">
                             <div class="dash-counts">
                                 <h4>105</h4>
-                                <h5>Sales Invoice</h5>
+                                <h5>Sales Orders</h5>
                             </div>
                             <div class="dash-imgs">
                                 <i data-feather="file"></i>
@@ -130,7 +130,7 @@ include(BASE_PATH . "/Backend/src/Layouts/Links.php");
                     <div class="col-lg-7 col-sm-12 col-12 d-flex">
                         <div class="card flex-fill">
                             <div class="card-header pb-0 d-flex justify-content-between align-items-center">
-                                <h5 class="card-title mb-0">Purchase & Sales</h5>
+                                <h5 class="card-title mb-0">Cosmetic Sales</h5>
                                 <div class="graph-sets">
                                     <ul>
                                         <li>
@@ -140,22 +140,24 @@ include(BASE_PATH . "/Backend/src/Layouts/Links.php");
                                             <span>Purchase</span>
                                         </li>
                                     </ul>
-                                    <div class="dropdown">
-                                        <button class="btn btn-white btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                            2022 <img src="assets/img/icons/dropdown.svg" alt="img" class="ms-2">
-                                        </button>
-                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <li>
-                                                <a href="javascript:void(0);" class="dropdown-item">2022</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" class="dropdown-item">2021</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" class="dropdown-item">2020</a>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                    <select class="form-select btn-sm" aria-label="Default select example">
+  <option selected disabled>select menu</option>
+  <option value="daily">Daily</option>
+  <option value="monthly">Monthly</option>
+  <option value="yealry">Yearly</option>
+</select>
+<div class="dropdown">
+  <button class="btn btn-white btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+  Category-wise<img src="/Backend/src/assets/images/icons/dropdown.svg" alt="img" class="ms-2">
+  </button>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item active" href="#">Action</a></li>
+    <li><a class="dropdown-item" href="#">Another action</a></li>
+    <li><a class="dropdown-item" href="#">Something else here</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="#">Separated link</a></li>
+  </ul>
+</div>
                                 </div>
                             </div>
                             <div class="card-body">

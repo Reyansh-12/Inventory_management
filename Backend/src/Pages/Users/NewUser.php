@@ -121,17 +121,17 @@ if (isset($_POST['submit'])) {
                             </div>
                             <div class="col-lg-4 col-12">
                                 <div class="form-group">
-                                    <label for="contact" class="">Mobile <span class="text-danger">*</span></label>
+                                    <label for="contact">Mobile <span class="text-danger">*</span></label>
                                     <div class="input-group">
-                                        <span class="input-group-text" id="addon-wrapping">+91</span>
-                                        <input type="text" id="contact" name="phoneNumber" value="<?php echo htmlspecialchars($editData['user_contact'] ?? ''); ?>" placeholder="Enter your mobile number" maxlength="10" data-parsley-minlength="10"data-parsley-required="true"data-parsley-required-message="Phone number is required"data-parsley-errors-container="#contactError" />
-                                        <span class="text-danger" id="contactError"><?php echo $contactError ?? ""; ?></span>
+                                        <span class="input-group-text">+91</span>
+                                        <input type="text" class="form-control" id="contact" name="phoneNumber" value="<?php echo htmlspecialchars($editData['user_contact'] ?? ''); ?>" placeholder="Enter your mobile number" maxlength="10" data-parsley-minlength="10" data-parsley-required="true" data-parsley-required-message="Phone number is required" data-parsley-errors-container="#contactError" />
+                                        
                                     </div>
-                                    <div id="contactError" class="text-danger"></div>
+                                    <div id="contactError" class="text-danger"><?php echo $contactError ?? ""; ?></div>
                                 </div>
                                 <div class="form-group">
                                     <label for='userRole'>Role</label>
-                                    <select class="form-select" id="userRole" name="userRole" data-parsley-required-message="Select user role" data-parsley-required>
+                                    <select class="form-select" id="userRole" name="userRole">
                                         <option disabled selected>Select</option>
                                         <option <?php if(($editData['user_role'] ?? '')=='Admin') echo 'selected'; ?>>Admin</option>
                                         <option <?php if(($editData['user_role'] ?? '')=='User') echo 'selected'; ?>>User</option>

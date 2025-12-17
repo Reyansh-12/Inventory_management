@@ -22,37 +22,37 @@
             <div id="sidebar-menu" class="sidebar-menu">
                 <ul>
                     <li class="<?php echo ($currentPage == 'Dashboard.php') ? 'active' : ''; ?>">
-                        <a href="/Backend/src/Pages/Dashboard.php"><img src="/Backend/src/assets/images/icons/dashboard.svg" alt="img"><span> Dashboard</span> </a>
+                        <a href="/Backend/src/Pages/Dashboard.php"><i class="bi bi-speedometer2"></i><span> Dashboard</span> </a>
                     </li>
                     <li class="<?php echo ($currentPage == 'ProductList.php') ? 'active' : ''; ?>">
-                        <a href="/Backend/src/Pages/products/ProductList.php"><img src="/Backend/src/assets/images/icons/product.svg" alt="img"><span> Products</span> </a>
+                        <a href="/Backend/src/Pages/products/ProductList.php"><i class="bi bi-box-seam"></i><span>Cosmetic Products</span> </a>
                     </li>
                     <li class="<?php echo ($currentPage == 'addProductForm.php') ? 'active' : ''; ?>">
-                        <a href="/Backend/src/Pages/products/addProductForm.php"><img src="/Backend/src/assets/images/icons/sales1.svg" alt="img"><span>Create Product</span> </a>
-                    </li>
-                    <li class="<?php echo ($currentPage == 'expiredProduct.php') ? 'active' : ''; ?>">
-                        <a href="/Backend/src/Pages/expiredProduct.php"><i class="bi bi-clock-history"></i><span> Expired Products</span> </a>
-                    </li>
-                    <li class="<?php echo ($currentPage == 'lowStocks.php') ? 'active' : ''; ?>">
-                        <a href="/Backend/src/Pages/lowStocks.php"><i class="bi bi-graph-down-arrow"></i><span> Low Stocks</span> </a>
+                        <a href="/Backend/src/Pages/products/addProductForm.php"><i class="bi bi-plus-square"></i><span>Add Cosmetic</span> </a>
                     </li>
                     <li class="<?php echo ($currentPage == 'category.php') ? 'active' : ''; ?>">
-                        <a href="/Backend/src/Pages/category.php"><img src="/Backend/src/assets/images/icons/quotation1.svg" alt="img"><span> Category</span> </a>
+                        <a href="/Backend/src/Pages/category.php"><i class="bi bi-tags"></i><span> Category</span> </a>
+                    </li>
+                    <li class="<?php echo ($currentPage == 'category.php') ? 'active' : ''; ?>">
+                        <a href="/Backend/src/Pages/category.php"><i class="bi bi-tags"></i><span>Brands</span> </a>
+                    </li>
+                    <li class="<?php echo ($currentPage == 'expiredProduct.php') ? 'active' : ''; ?>">
+                        <a href="/Backend/src/Pages/expiredProduct.php"><i class="bi bi-calendar-x"></i><span> Expired Management</span> </a>
+                    </li>
+                    <li class="<?php echo ($currentPage == 'lowStocks.php') ? 'active' : ''; ?>">
+                        <a href="/Backend/src/Pages/lowStocks.php"><i class="bi bi-graph-down-arrow"></i><span>Low Stock Alerts</span> </a>
                     </li>
                     <li class="<?php echo ($currentPage == 'pos.php') ? 'active' : ''; ?>">
-                        <a href="/Backend/src/Pages/POS/pos.php"><img src="/Backend/src/assets/images/icons/return1.svg" alt="img"><span>POS</span> </a>
+                        <a href="/Backend/src/Pages/POS/pos.php"><i class="bi bi-receipt"></i><span>POS Billing</span> </a>
                     </li>
                     <li class="<?php echo ($currentPage == 'supplierlist.php' || $currentDir == "Supplier") ? 'active' : ''; ?>">
-                        <a href="/Backend/src/Pages/supplierlist.php"><span>Suppliers</span> </a>
-                    </li>
-                    <li class="<?php echo ($currentPage == 'userProfile.php') ? 'active' : ''; ?>">
-                        <a href="/Backend/src/Pages/userProfile.php"><i data-feather="file"></i><span>Profile</span> </a>
+                        <a href="/Backend/src/Pages/supplierlist.php"><i class="bi bi-truck"></i><span>Suppliers</span> </a>
                     </li>
                     <li class="<?php echo ($currentPage == 'UsersList.php' || $currentDir == 'Users') ? 'active' : ''; ?>">
-                        <a href="/Backend/src/Pages/Users/UsersList.php">
-                            <img src="/Backend/src/assets/images/icons/users1.svg" alt="img">
-                            <span> Users</span>
-                        </a>
+                        <a href="/Backend/src/Pages/Users/UsersList.php"><i class="bi bi-people"></i><span> Users</span></a>
+                    </li>
+                    <li class="<?php echo ($currentPage == 'userProfile.php') ? 'active' : ''; ?>">
+                        <a href="/Backend/src/Pages/userProfile.php"><i class="bi bi-person-circle"></i><span>Profile</span> </a>
                     </li>
                 </ul>
             </div>

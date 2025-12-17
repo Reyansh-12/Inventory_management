@@ -207,7 +207,7 @@ $result = $con->query($sql);
             </div>
         </div>
     </div>
-
+<!-- 
 <div class="toast-container position-fixed end-0 p-3" style="z-index: 1100; top: 60px;">
     <div id="deleteToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
@@ -217,12 +217,12 @@ $result = $con->query($sql);
             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
         </div>
     </div>
-</div>
+</div> -->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   
-    <script>
+    <!-- <script>
 document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".confirm-delete").forEach(btn => {
         btn.addEventListener("click", function (e) {
@@ -237,7 +237,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
-</script>
+</script> -->
 
 </body>
 </html>

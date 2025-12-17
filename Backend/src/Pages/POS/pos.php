@@ -14,6 +14,7 @@ $result = $con->query($sql);
     <title>Dreams POS Admin Template</title>
     <link rel="stylesheet" href="/Backend/src/assets/css/pos.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 </head>
@@ -91,10 +92,10 @@ $result = $con->query($sql);
                                                 <?php
                                                 if ($result && $result->num_rows > 0) {
                                                     while ($row = $result->fetch_assoc()) { $id = (int)$row['id']; $name = htmlspecialchars($row['product_name']); $category = htmlspecialchars($row['category']); $price = number_format((float)$row['price'], 2, '.', ''); $image = !empty($row['image_path']) ? $row['image_path']  : "/Inventory_managment/Backend/assets/images/favicon1.png";?>
-                                                <div class="col" style="width: 200px">
+                                                <div class="col-12 col-md-4 col-lg-4">
                                                     <div class="product-card p-3 shadow-sm rounded h-100">
                                                         <div class="text-center">
-                                                            <img src="<?php echo $image; ?>" alt="<?php echo $name; ?>" class="img-fluid mb-2" />
+                                                            <img src="<?php echo $image; ?>" alt="<?php echo $name; ?>" class="img-fluid mb-2" alt="Product image"/>
                                                         </div>
 
                                                         <div>
@@ -104,7 +105,7 @@ $result = $con->query($sql);
                                                         </div>
 
                                                         <div class="d-grid">
-                                                            <button class="btn btn-primary addToCartBtn" data-id="<?php echo $id; ?>" data-name="<?php echo $name; ?>" data-price="<?php echo $price; ?>">Add to Cart</button>
+                                                            <button class="btn btn-primary addToCartBtn" data-id="<?php echo $id; ?>" data-name="<?php echo $name; ?>" data-price="<?= (float)$price; ?>" data-stock="<?= (int)$row['quantity'] ?>" aria-label="Add to cart">Add to Cart</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -256,5 +257,14 @@ $result = $con->query($sql);
 </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/Backend/src/assets/js/pos.js"></script>
+    <script>
+        if (stock <= 0) {
+  showToast("Out of stock");
+  return;
+}
+checkoutBtn.disabled = cart.length === 0;
+
+
+    </script>
 </body>
 </html>

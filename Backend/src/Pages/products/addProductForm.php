@@ -283,7 +283,8 @@ exit();
                                     <div class="form-group">
                                         <label for="productImage"> Product Image <span class="text-danger">*</span></label>
                                         <div class="image-upload mb-0">
-                                            <input type="file" name="imageBox" id="productImage" accept="image/*" data-parsley-required-message="Product image is required" data-parsley-required data-parsley-errors-container="#imageError">
+                                            <input type="file" name="imageBox" id="productImage" accept="image/*" >
+                                            <!-- data-parsley-required-message="Product image is required" data-parsley-required data-parsley-errors-container="#imageError" -->
                                             <div class="image-uploads">
                                                 <img src="/Backend/assets/images/icons/upload.svg" alt="img">
                                                 <h4>Drag and drop a file to upload</h4>
