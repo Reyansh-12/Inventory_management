@@ -88,7 +88,7 @@ exit();
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 
     <style>
-        .parsley-required {
+        .parsley-required,.parsley-minlength, .parsley-gteMinquantity {
             color: orangered;
         }
 
@@ -167,22 +167,30 @@ exit();
         <div class="page-wrapper">
             <div class="content">
                 <div class="page-header">
-                    <div class="page-title">
-                        <h4>Product Add</h4>
-                        <h6>Create new product</h6>
-                    </div>
                     <div class="page-btn">
                         <a href="/Backend/src/Pages/products/ProductList.php" class="btn btn-added"><i class="bi bi-arrow-left me-1 fw-bold"></i>Back to Product</a>
+                    </div>
+                    <div class="page-title">
+                        <h4>Add Cosmetic Product</h4>
+                        <h6>
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="ProductList.php">Cosmetic List</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Cosmetic Form</li>
+                                </ol>
+                            </nav>
+                        </h6>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-body">
-                        <form action="#" id="myForm" method="POST" enctype="multipart/form-data" data-parsley-validate>                         <input type="hidden" name="user_id" value="<?php echo $editData['id'] ?? ''; ?>">
+                        <form action="#" id="myForm" method="POST" enctype="multipart/form-data" data-parsley-validate>
+                            <input type="hidden" name="user_id" value="<?php echo $editData['id'] ?? ''; ?>">
                             <div class="row">
                                 <div class="col-lg-4 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="productName">Product Name <span class="text-danger">*</span></label>
-                                        <input type="text" id="productName" name="productname" value="<?php echo htmlspecialchars($editData['product_name'] ?? '') ?>" placeholder="Enter product name" data-parsley-required-message="Product name is required" data-parsley-required>
+                                        <input type="text" id="productName" name="productname" value="<?php echo htmlspecialchars($editData['product_name'] ?? '') ?>" placeholder="Enter product name" maxlength="100" data-parsley-minlength="3" data-parsley-required-message="Product name is required" data-parsley-required>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-6 col-12">
@@ -227,14 +235,14 @@ exit();
                                 </div>
                                 <div class="col-lg-4 col-sm-4 col-12">
                                     <div class="form-group">
-                                        <label for='minQuantity'>Minimum Qty <span class="text-danger">*</span></label>
+                                        <label for='minQuantity'>Min Quantity <span class="text-danger">*</span></label>
                                         <input type="number" class="p-2 rounded col-lg-12 border-secondary border-1 border-secondary border" value="<?php echo htmlspecialchars($editData['minQuantity'] ?? '') ?>" name="minquantity" id="minQuantity" placeholder="Enter Minimum Qty" data-parsley-required-message="Minimum quantity field is required" data-parsley-required>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-4 col-12">
                                     <div class="form-group">
-                                        <label for='quantity'>Quantity <span class="text-danger">*</span></label>
-                                        <input type="number" class="p-2 rounded col-lg-12 border-secondary border-1 border-secondary border" value="<?php echo htmlspecialchars($editData['quantity'] ?? '') ?>" name="quantity" id="quantity" placeholder="Enter Quantity" data-parsley-required-message="Quantity field is required" data-parsley-required>
+                                        <label for='quantity'>Max Quantity <span class="text-danger">*</span></label>
+                                        <input type="number" name="quantity" id="quantity" class="p-2 rounded col-lg-12 border-secondary border-1 border-secondary border" value="<?php echo htmlspecialchars($editData['quantity'] ?? '') ?>" placeholder="Enter Quantity" data-parsley-gte-minquantity data-parsley-required data-parsley-required-message="Quantity field is required">
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-4 col-12">
@@ -249,8 +257,8 @@ exit();
 
                                 <div class="col-lg-12">
                                     <div class="form-group">
-                                        <label for="productDescription">Product Description <span class="text-danger">*</span></label>
-                                        <textarea class="form-control" name="description" id="description" placeholder="Enter product description" data-parsley-required-message="Product description field is required" data-parsley-required><?php echo htmlspecialchars($editData['description'] ?? '') ?></textarea>
+                                        <label for="productDescription">Product Description</label>
+                                        <textarea class="form-control" name="description" maxlength="1000" id="description" placeholder="Enter product description"><?php echo htmlspecialchars($editData['description'] ?? '') ?></textarea>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-6 col-12">
@@ -283,8 +291,7 @@ exit();
                                     <div class="form-group">
                                         <label for="productImage"> Product Image <span class="text-danger">*</span></label>
                                         <div class="image-upload mb-0">
-                                            <input type="file" name="imageBox" id="productImage" accept="image/*" >
-                                            <!-- data-parsley-required-message="Product image is required" data-parsley-required data-parsley-errors-container="#imageError" -->
+                                            <input type="file" name="imageBox" id="productImage" accept="image/*">
                                             <div class="image-uploads">
                                                 <img src="/Backend/assets/images/icons/upload.svg" alt="img">
                                                 <h4>Drag and drop a file to upload</h4>
@@ -318,7 +325,13 @@ exit();
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
+    <script> 
+    
+
+        let parsleyForm = $('#myForm').parsley();
+        $('#resetButton').on('click', function() {
+            parsleyForm.reset();
+        });
         document.addEventListener("DOMContentLoaded", function() {
     const params = new URLSearchParams(window.location.search);
 
@@ -334,7 +347,7 @@ exit();
         toastElement.classList.add("text-bg-success", "text-white");
     } 
     else {
-        return;  // Don't show toast
+        return; 
     }
 
     let timerBar = toastElement.querySelector(".toast-timer");
@@ -370,14 +383,17 @@ function enableBrandSelector() {
     brandSelect.value = "";
 }
 
-$(function() {
+$(function () {
     $("#datepicker").datepicker({
         dateFormat: "yy-mm-dd",
         changeMonth: true,
         changeYear: true,
         showAnim: "slideDown",
         minDate: 0,
-        yearRange: "2024:2035"
+        yearRange: "2024:2035",
+        onSelect: function () {
+            $(this).parsley().validate();
+        }
     });
 });
 
@@ -392,8 +408,25 @@ document.getElementById('productImage').addEventListener('change', function () {
     }
 });
 </script>
+<script>
+window.Parsley.addValidator('gteMinquantity', {
+    validateNumber: function (value) {
+        const minQty = Number($('#minQuantity').val());
 
+        if (isNaN(minQty)) {
+            return true; 
+        }
 
+        return Number(value) >= minQty;
+    },
+    messages: {
+        en: 'Max quantity must be greater than or equal to Min quantity'
+    }
+});
+$('#minQuantity').on('input change', function () {
+    $('#quantity').parsley().validate();
+});
+</script>
 
 </body>
 </html>

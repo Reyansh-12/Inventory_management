@@ -50,6 +50,7 @@ if (isset($_POST['submit'])) {
     <link rel="shortcut icon" type="image/x-icon" href="/Backend/src/assets/images/favicon.jpg">
     <link rel="stylesheet" href="/Backend/src/assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="/Backend/src/assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.13.1/font/bootstrap-icons.min.css" integrity="sha512-t7Few9xlddEmgd3oKZQahkNI4dS6l80+eGEzFQiqtyVYdvcSG2D3Iub77R20BdotfRPA9caaRkg1tyaJiPmO0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         .parsley-required, .parsley-minlength, .parsley-type{
             color: orangered;
@@ -67,7 +68,7 @@ if (isset($_POST['submit'])) {
                 <div class="login-content">
                     <div class="login-userset">
                         <div class="login-logo">
-                            <img src="/Backend/src/assets/images/logo.png" alt="img">
+                            <img src="/Backend/src/assets/images/logo.webp" alt="img">
                         </div>
                         <div class="login-userheading">
                             <h3>Sign In</h3>
@@ -77,15 +78,15 @@ if (isset($_POST['submit'])) {
                             <div class="form-login">
                                 <label for='email'>Email</label>
                                 <div class="form-addons">
-                                    <input type="text" id='email' name='userEmail' placeholder="Enter your email address" data-parsley-type="email" data-parsley-required>
+                                    <input type="text" id='email' name='userEmail' placeholder="Enter your email address" data-parsley-type="email" data-parsley-required-message="Email is required" data-parsley-required>
                                     <img src="/Backend/src/assets/images/icons/mail.svg" alt="img">
                                 </div>
                             </div>
                             <div class="form-login">
                                 <div class="pass-group">
                                     <label for="password">Password</label>
-                                    <input type="password" id='password' name='userPassword' class="pass-input" placeholder="Enter your password" data-parsley-minlength="6" data-parsley-required>
-                                    <span class="fa toggle-password fa-eye-slash"></span>
+                                    <input type="password" id='password' name='userPassword' class="pass-input" placeholder="Enter your password" data-parsley-minlength="6" data-parsley-required-message="Password is required" data-parsley-required>
+                                    <span class="bi bi-eye-slash toggle-password mt-3" style="color: #605d5d"></span>
                                 </div>
                             </div>
                             <div class="form-login">
@@ -127,11 +128,38 @@ if (isset($_POST['submit'])) {
             </div>
         </div>
     </div>
+    <div class=" align-items-center text-bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+  <div class="d-flex">
+    <div class="toast-body">
+      Hello, world! This is a toast message.
+    </div>
+    <button type="button" class="btn-close btn-close-red top-0 end-0 me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+  </div>
+</div>
     <script src="/Backend/src/assets/js/jquery-3.6.0.min.js"></script>
     <script src="/Backend/src/assets/js/feather.min.js"></script>
     <script src="/Backend/src/assets/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
     <script src="/Backend/src/assets/js/script.js"></script>
+    <script>
+        if ($('.toggle-password').length > 0) {
+    $(document).on('click', '.toggle-password', function () {
+        const input = $('.pass-input');
+
+        if (input.attr('type') === 'password') {
+            input.attr('type', 'text');
+            $(this)
+                .removeClass('bi-eye-slash')
+                .addClass('bi-eye');
+        } else {
+            input.attr('type', 'password');
+            $(this)
+                .removeClass('bi-eye')
+                .addClass('bi-eye-slash');
+        }
+    });
+}
+    </script>
 </body>
 
 </html>
