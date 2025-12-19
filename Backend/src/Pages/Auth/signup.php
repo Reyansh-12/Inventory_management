@@ -94,7 +94,7 @@ if (!preg_match($strongPasswordPattern, $password)) {
                             <div class="form-login">
                                 <label for="email">Email</label>
                                 <div class="form-addons">
-                                    <input type="text" name='useremail' id='email' placeholder="Enter your email address" data-parsley-pattern="^(?=.*[a-zA-Z])[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" data-parsley-required-message="Email must contain letters and numbers and be in a valid format" data-parsley-required>
+                                    <input type="text" name='useremail' id='email' placeholder="Enter your email address" data-parsley-pattern="^(?=.*[a-zA-Z])[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" data-parsley-required-message="Email is required" data-parsley-required>
                                     <img src="/Backend/src/assets/images/icons/mail.svg" alt="img">
                                 </div>
                             </div>
