@@ -12,7 +12,7 @@ if (isset($_GET['deleteId'])) {
     header("Location: ProductList.php?deleted=1");
     exit;
 }
-$sql = "SELECT `id`,`product_name`, `category`, `brand_name`, `price`, `quantity`, `image_path` FROM `product_list`";
+$sql = "SELECT `id`,`product_name`, `category`, `brand_name`, `price`, `quantity`, `image_path`, `status` FROM `product_list`";
 $result = $con->query($sql);
 ?>
 <!DOCTYPE html>
@@ -71,12 +71,12 @@ $result = $con->query($sql);
                     <div class="card-body">
                         <div class="table-top">
                             <div class="search-set">
-                                <div class="search-path">
+                                <!-- <div class="search-path">
                                     <a class="btn btn-filter" id="filter_search">
                                         <img src="/Backend/src/assets/images/icons/filter.svg" alt="img">
                                         <span><img src="/Backend/src/assets/images/icons/closes.svg" alt="img"></span>
                                     </a>
-                                </div>
+                                </div> -->
                                 <div class="search-input">
                                     <a class="btn btn-searchset"><img src="/Backend/src/assets/images/icons/search-white.svg" alt="img"></a>
                                 </div>
@@ -92,6 +92,7 @@ $result = $con->query($sql);
                                         <th>Brand</th>
                                         <th>price</th>
                                         <th>Qty</th>
+                                        <th>Status</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -105,19 +106,20 @@ $result = $con->query($sql);
                                                 echo "<tr>";
                                                 echo "    <td class='productimgname'>";
                                                 echo "        <a href='javascript:void(0)' class='product-img'>";
-                                                echo "            <img src='" . $row['image_path'] . "' alt='product'>";
+                                                echo "            <img src='" . $row['image_path'] . "' alt='product' class=''>";
                                                 echo "        </a>";
-                                                echo "        <a href='javascript:void(0);'>" . $row['product_name'] . "</a>";
+                                                echo "        <a href='javascript:void(0);' class='text-truncate w-50' data-bs-toggle='tooltip' data-bs-title='". $row['product_name'] ."'>" . $row['product_name'] . "</a>";
                                                 echo "    </td>";
                                                 echo "    <td>" . $row['category'] . "</td>";
                                                 echo "    <td>" . $row['brand_name'] . "</td>";
                                                 echo "    <td>" . $row['price'] . "</td>";
                                                 echo "    <td>" . $row['quantity'] . "</td>";
+                                                echo "    <td>" . $row['status'] . "</td>";
                                                 echo "    <td>";
-                                                echo "        <a class='me-3' href='/Backend/src/Pages/products/addProductForm.php?productId=" . $row['id'] . "'>";
+                                                echo "        <a class='me-3' href='/Backend/src/Pages/products/addProductForm.php?productId=" . $row['id'] . "' data-bs-toggle='tooltip' data-bs-title='Edit'>";
                                                 echo "            <img src='/Backend/src/assets/images/icons/edit.svg' alt='img'>";
                                                 echo "        </a>";
-                                                echo "        <a class='confirm-delete' href='/Backend/src/Pages/products/ProductList.php?deleteId=" . $row['id'] . "'>";
+                                                echo "        <a class='confirm-delete' href='/Backend/src/Pages/products/ProductList.php?deleteId=" . $row['id'] . "' data-bs-toggle='tooltip' data-bs-title='Delete'>";
                                                 echo "            <img src='/Backend/src/assets/images/icons/delete.svg' alt='img'>";
                                                 echo "        </a>";
                                                 echo "    </td>";

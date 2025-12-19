@@ -33,24 +33,20 @@ if (isset($_POST['submit'])) {
     $image = $_FILES['imageBox'] ?? '';
     $imagePath = null;
     if (!empty($_FILES['imageBox']['name'])) {
-
-        $uploadDir = BASE_PATH . "/Backend/assets/images/";
+        $uploadDir = include BASE_PATH . "/Backend/src/uploads/";
         
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
-        }
         $fileName = basename($_FILES["imageBox"]["name"]);
         $targetPath = $uploadDir . $fileName;
     
         if (move_uploaded_file($_FILES["imageBox"]["tmp_name"], $targetPath)) {
-            $imagePath = "http://localhost/Inventory_management/Backend/assets/images/" . $fileName;
+            $imagePath = $uploadDir . $fileName;
         }
     }
     if ($isEdit) {
         $stmt = mysqli_prepare($con, "UPDATE `product_list` 
-            SET product_name=?, category=?, brand_name=?, minQuantity=?, price=?, quantity=?, description=?, discount=?, status=?, expired_date=?
+            SET product_name=?, category=?, brand_name=?, minQuantity=?, price=?, quantity=?, description=?, discount=?, status=?, `image_path`=?, expired_date=?
             WHERE id=?");
-        mysqli_stmt_bind_param($stmt, "sssiddssssi", $productname, $category, $brandName, $minquantity, $price, $quantity, $description, $discount, $status, $expiredDate, $productId);
+        mysqli_stmt_bind_param($stmt, "sssiddsssssi", $productname, $category, $brandName, $minquantity, $price, $quantity, $description, $discount, $status, $imagePath, $expiredDate, $productId);
         mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
     } else {
@@ -168,15 +164,14 @@ exit();
             <div class="content">
                 <div class="page-header">
                     <div class="page-btn">
-                        <a href="/Backend/src/Pages/products/ProductList.php" class="btn btn-added"><i class="bi bi-arrow-left me-1 fw-bold"></i>Back to Product</a>
+                        <a href="/Backend/src/Pages/products/ProductList.php" class="fw-bold fs-6 text-secondary"><i class="bi bi-arrow-left me-1 fw-bold"></i>Back to Product</a>
                     </div>
                     <div class="page-title">
-                        <h4>Add Cosmetic Product</h4>
                         <h6>
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="ProductList.php">Cosmetic List</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Cosmetic Form</li>
+                                    <li class="breadcrumb-item active" aria-current="page">Add Cosmetic</li>
                                 </ol>
                             </nav>
                         </h6>
@@ -190,7 +185,7 @@ exit();
                                 <div class="col-lg-4 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="productName">Product Name <span class="text-danger">*</span></label>
-                                        <input type="text" id="productName" name="productname" value="<?php echo htmlspecialchars($editData['product_name'] ?? '') ?>" placeholder="Enter product name" maxlength="100" data-parsley-minlength="3" data-parsley-required-message="Product name is required" data-parsley-required>
+                                        <input type="text" id="productName" name="productname" value="<?php echo htmlspecialchars($editData['product_name'] ?? '') ?>" placeholder="Product name" maxlength="100" data-parsley-minlength="3" data-parsley-required-message="Product name is required" data-parsley-required>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-6 col-12">
@@ -236,13 +231,13 @@ exit();
                                 <div class="col-lg-4 col-sm-4 col-12">
                                     <div class="form-group">
                                         <label for='minQuantity'>Min Quantity <span class="text-danger">*</span></label>
-                                        <input type="number" class="p-2 rounded col-lg-12 border-secondary border-1 border-secondary border" value="<?php echo htmlspecialchars($editData['minQuantity'] ?? '') ?>" name="minquantity" id="minQuantity" placeholder="Enter Minimum Qty" data-parsley-required-message="Minimum quantity field is required" data-parsley-required>
+                                        <input type="number" class="p-2 rounded col-lg-12 border-secondary border-1 border-secondary border" value="<?php echo htmlspecialchars($editData['minQuantity'] ?? '') ?>" name="minquantity" id="minQuantity" placeholder="Min Quantity" data-parsley-required-message="Minimum quantity field is required" data-parsley-required>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-4 col-12">
                                     <div class="form-group">
                                         <label for='quantity'>Max Quantity <span class="text-danger">*</span></label>
-                                        <input type="number" name="quantity" id="quantity" class="p-2 rounded col-lg-12 border-secondary border-1 border-secondary border" value="<?php echo htmlspecialchars($editData['quantity'] ?? '') ?>" placeholder="Enter Quantity" data-parsley-gte-minquantity data-parsley-required data-parsley-required-message="Quantity field is required">
+                                        <input type="number" name="quantity" id="quantity" class="p-2 rounded col-lg-12 border-secondary border-1 border-secondary border" value="<?php echo htmlspecialchars($editData['quantity'] ?? '') ?>" placeholder="Max Quantity" data-parsley-gte-minquantity data-parsley-required data-parsley-required-message="Quantity field is required">
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-4 col-12">
@@ -258,23 +253,26 @@ exit();
                                 <div class="col-lg-12">
                                     <div class="form-group">
                                         <label for="productDescription">Product Description</label>
-                                        <textarea class="form-control" name="description" maxlength="1000" id="description" placeholder="Enter product description"><?php echo htmlspecialchars($editData['description'] ?? '') ?></textarea>
+                                        <textarea class="form-control" name="description" maxlength="1000" id="description" placeholder="Product description"><?php echo htmlspecialchars($editData['description'] ?? '') ?></textarea>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="discout">Discount <span class="text-danger">*</span></label>
-                                        <select name="discount" class="form-select mt-2" id="discout" data-parsley-required-message="Discount field is required" data-parsley-required>
-                                            <option disabled>Percentage</option>
-                                            <option value="10" <?= ($editData['discount'] ?? '') == '10' ? 'selected' : '' ?>>10%</option>
-                                            <option value="20" <?= ($editData['discount'] ?? '') == '20' ? 'selected' : '' ?>>20%</option>
-                                        </select>
+                                        <div class="input-group has-validation">
+                                            <input type="text" class="form-control" id="discountInput" aria-describedby="discountFeedback discount-suffix"placeholder="0 to 100" min="0" maxlength="2" step="1"required>
+                                            <span class="input-group-text" id="discount-suffix">%</span>
+                                            <div id="discountFeedback" class="invalid-feedback"></div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-6 col-12">
                                     <div class="form-group">
-                                        <label for="price">Price <span class="text-danger">*</span></label>
-                                        <input type="number" class="form-control p-2 rounded-end col-lg-12 border-secondary border-1 border-secondary border" value="<?php echo htmlspecialchars($editData['price'] ?? '') ?>" name="price" id="price" placeholder="Enter Price" data-parsley-required-message="Price field is required" data-parsley-required>
+                                        <label for="price">Price per unit <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="number" onkeydown="return event.key !== '-'" class="form-control p-2" min="0" max="99.99" step="0.01" value="<?php echo htmlspecialchars($editData['price'] ?? '') ?>" name="price" id="price" placeholder="Price per unit" data-parsley-required-message="Price field is required" data-parsley-required>
+                                            <span class="input-group-text" id="discount-suffix">₹</span>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-6 col-12">
@@ -291,7 +289,7 @@ exit();
                                     <div class="form-group">
                                         <label for="productImage"> Product Image <span class="text-danger">*</span></label>
                                         <div class="image-upload mb-0">
-                                            <input type="file" name="imageBox" id="productImage" accept="image/*">
+                                            <input type="file" name="imageBox" id="productImage" accept="image/*" value="<?php echo htmlspecialchars($editData[''] ?? '') ?>">
                                             <div class="image-uploads">
                                                 <img src="/Backend/assets/images/icons/upload.svg" alt="img">
                                                 <h4>Drag and drop a file to upload</h4>
@@ -301,7 +299,7 @@ exit();
                                     </div>
                                 </div>
                                 <div class="col-lg-12 d-flex justify-content-end">
-                                    <button class="btn btn-cancel me-2" type="reset" name="reset" id="resetButton">Reset</button>
+                                    <button class="btn btn-cancel me-2" type="reset" name="reset" id="resetButton"><?= $productId ? 'Back' : 'Reset' ?></button>
                                     <button class="btn btn-submit" name="submit" type="submit"><?= $productId ? 'Update' : 'Submit' ?></button>
                                 </div>
                             </div>
@@ -327,7 +325,11 @@ exit();
 
     <script> 
     
-
+    $('#discountInput').on('input', function() {
+            let inputValue = $(this).val();
+            let filteredValue = inputValue.replace(/[^0-9]/g, '');
+            $(this).val(filteredValue);
+        });
         let parsleyForm = $('#myForm').parsley();
         $('#resetButton').on('click', function() {
             parsleyForm.reset();
@@ -396,7 +398,8 @@ $(function () {
         }
     });
 });
-
+</script>
+<script>
 document.getElementById('productImage').addEventListener('change', function () {
     const file = this.files[0];
     const title = this.closest('.image-upload').querySelector('h4');

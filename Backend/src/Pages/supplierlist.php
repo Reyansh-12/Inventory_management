@@ -73,12 +73,12 @@ if (isset($_GET['supplierId'])) {
                     <div class="card-body">
                         <div class="table-top">
                             <div class="search-set">
-                                <div class="search-path">
+                                <!-- <div class="search-path">
                                     <a class="btn btn-filter" id="filter_search">
                                         <img src="/Backend/src/assets/images/icons/filter.svg" alt="img">
                                         <span><img src="/Backend/src/assets/images/icons/closes.svg" alt="img"></span>
                                     </a>
-                                </div>
+                                </div> -->
                                 <div class="search-input">
                                     <a class="btn btn-searchset"><img src="/Backend/src/assets/images/icons/search-white.svg" alt="img"></a>
                                 </div>
@@ -121,17 +121,17 @@ if (isset($_GET['supplierId'])) {
                                        
                                     echo "<tr>";
                                     echo "    <td class='productimgname'>";
-                                    echo "        <a href='javascript:void(0);'>".$row['supplier_name']."</a>";
+                                    echo "        <a href='' class='text-truncate w-50' data-bs-toggle='tooltip' data-bs-title='".$row['supplier_name']."'>".$row['supplier_name']."</a>";
                                     echo "    </td>";
                                     echo "    <td><a href='/cdn-cgi/l/email-protection' class='__cf_email__' data-cfemail='b8ccd0d7d5d9cbf8ddc0d9d5c8d4dd96dbd7d5'>".$row['email']."</a></td>";
                                     echo "    <td>".$row['phone_number']."</td>";
                                     echo "    <td>".$row['city']."</td>";
                                     echo "    <td>".$row['country']."</td>";
                                     echo "    <td>";
-                                    echo "        <a class='me-3 confirm-text' href='/Backend/src/Pages/supplier/supplierForm.php?supplierId=".$row['id']."'>";
+                                    echo "        <a class='me-3 confirm-text' href='/Backend/src/Pages/supplier/supplierForm.php?supplierId=".$row['id']."' data-bs-toggle='tooltip' data-bs-title='Edit'>";
                                     echo "            <img src='/Backend/src/assets/images/icons/edit.svg' alt='img'>";
                                     echo "        </a>";
-                                    echo "        <a class='me-3 confirm-delete' href='/Backend/src/Pages/supplierlist.php?supplierId=".$row['id']."'>";
+                                    echo "        <a class='me-3 confirm-delete' href='/Backend/src/Pages/supplierlist.php?supplierId=".$row['id']."' data-bs-toggle='tooltip' data-bs-title='Delete'>";
                                     echo "            <img src='/Backend/src/assets/images/icons/delete.svg' alt='img'>";
                                     echo "        </a>";
                                     echo "    </td>";

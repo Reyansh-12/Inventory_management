@@ -85,7 +85,7 @@ if (isset($_POST['submit'])) {
                             <div class="form-login">
                                 <div class="pass-group">
                                     <label for="password">Password</label>
-                                    <input type="password" id='password' name='userPassword' class="pass-input" placeholder="Enter your password" data-parsley-minlength="6" data-parsley-required-message="Password is required" data-parsley-required>
+                                    <input type="password" id='password' name='userPassword' class="pass-input" placeholder="........." data-parsley-minlength="6" data-parsley-required-message="Password is required" data-parsley-required>
                                     <span class="bi bi-eye-slash toggle-password mt-3" style="color: #605d5d"></span>
                                 </div>
                             </div>

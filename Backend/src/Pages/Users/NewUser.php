@@ -88,12 +88,18 @@ if (isset($_POST['submit'])) {
     <div class="page-wrapper">
         <div class="content">
             <div class="page-header">
-                <div class="page-title">
-                    <h4>User Management</h4>
-                    <h6>Add/Update User</h6>
-                </div>
                 <div class="page-btn">
-                    <a href="/Backend/src/Pages/Users/UsersList.php" class="btn btn-added"><i class="bi bi-arrow-left me-1 fw-bold"></i>Back to user list</a>
+                    <a href="/Backend/src/Pages/Users/UsersList.php" class="fw-bold text-secondary fs-6"><i class="bi bi-arrow-left me-1 fw-bold"></i>Back to user list</a>
+                </div>
+                <div class="page-title">
+                    <h6>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="NewUser.php">User List</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Add User</li>
+                            </ol>
+                        </nav>
+                    </h6>
                 </div>
             </div>
             <div class="card">
@@ -104,27 +110,27 @@ if (isset($_POST['submit'])) {
                             <div class="col-lg-4 col-12">
                                 <div class="form-group">
                                     <label for='userName'>User Name <span class="text-danger">*</span></label>
-                                    <input type="text" id="userName" name="userName" value="<?php echo htmlspecialchars($editData['user_name'] ?? '') ?>" placeholder="Enter your name" data-parsley-required-message="User name is required" required>
+                                    <input type="text" id="userName" name="userName" value="<?php echo htmlspecialchars($editData['user_name'] ?? '') ?>" placeholder="User name" data-parsley-required-message="User name is required" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="userEmail">Email <span class="text-danger">*</span></label>
-                                    <input type="text" id="userEmail" name="userEmail" value="<?php echo htmlspecialchars($editData['user_email'] ?? ''); ?>" placeholder="Enter your email" data-parsley-type="email" data-parsley-required-message="Enter your email address" data-parsley-required>
+                                    <input type="text" id="userEmail" name="userEmail" value="<?php echo htmlspecialchars($editData['user_email'] ?? ''); ?>" placeholder="User email" data-parsley-type="email" data-parsley-required-message="Enter your email address" data-parsley-required>
                                     <span class="text-danger" id="emailError"><?php echo $emailError ?? ""; ?></span>
                                 </div>
                                 <div class="form-group">
                                     <div class="pass-group">
                                         <label for="password">Password <?php if(!$isEdit) echo '<span class="text-danger">*</span>'; ?></label>
-                                        <input type="password" class="pass-input" id="password" name="password" placeholder="Enter your password" data-parsley-minlength="6" <?php echo !$isEdit ? 'required data-parsley-required-message="Password is required"' : 'disabled'; ?>>
-                                        <span class="fas toggle-password fa-eye-slash"></span>
+                                        <input type="password" class="pass-input" id="password" name="password" placeholder=".........." data-parsley-minlength="6" <?php echo !$isEdit ? 'required data-parsley-required-message="Password is required"' : 'disabled'; ?>>
+                                        <i class="bi bi-eye-slash toggle-password" style="color: #605d5d"></i>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-lg-4 col-12">
                                 <div class="form-group">
-                                    <label for="contact">Mobile <span class="text-danger">*</span></label>
+                                    <label for="contact">Phone number <span class="text-danger">*</span></label>
                                     <div class="input-group">
                                         <span class="input-group-text">+91</span>
-                                        <input type="text" class="form-control" id="contact" name="phoneNumber" value="<?php echo htmlspecialchars($editData['user_contact'] ?? ''); ?>" placeholder="Enter your mobile number" maxlength="10" data-parsley-minlength="10" data-parsley-required="true" data-parsley-required-message="Phone number is required" data-parsley-errors-container="#contactError" />
+                                        <input type="text" class="form-control" id="contact" name="phoneNumber" value="<?php echo htmlspecialchars($editData['user_contact'] ?? ''); ?>" placeholder="Phone number" maxlength="10" data-parsley-minlength="10" data-parsley-required="true" data-parsley-required-message="Phone number is required" data-parsley-errors-container="#contactError" />
                                         
                                     </div>
                                     <div id="contactError" class="text-danger"><?php echo $contactError ?? ""; ?></div>
@@ -132,7 +138,7 @@ if (isset($_POST['submit'])) {
                                 <div class="form-group">
                                     <label for='userRole'>Role</label>
                                     <select class="form-select" id="userRole" name="userRole">
-                                        <option disabled selected>Select</option>
+                                        <option disabled selected>Select role</option>
                                         <option <?php if(($editData['user_role'] ?? '')=='Admin') echo 'selected'; ?>>Admin</option>
                                         <option <?php if(($editData['user_role'] ?? '')=='User') echo 'selected'; ?>>User</option>
                                     </select>
@@ -140,8 +146,8 @@ if (isset($_POST['submit'])) {
                                 <div class="form-group">
                                     <label for='confirmPassword'>Confirm Password <?php if(!$isEdit) echo '<span class="text-danger">*</span>'; ?></label>
                                     <div class="pass-group">
-                                        <input type="password" class="pass-inputs" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" data-parsley-minlength="6" <?php echo !$isEdit ? 'required data-parsley-required-message="Confirm password"' : 'disabled'; ?>>
-                                        <span class="fas toggle-passworda fa-eye-slash"></span>
+                                        <input type="password" class="pass-inputs" id="confirmPassword" name="confirmPassword" placeholder=".........." data-parsley-minlength="6" <?php echo !$isEdit ? 'required data-parsley-required-message="Confirm password"' : 'disabled'; ?>>
+                                        <i class="bi bi-eye-slash toggle-password" style="color: #605d5d"></i>
                                         <span class="text-danger ms-1" id="confirmPasswordError"><?php echo $confirmPasswordError ?></span>
                                     </div>
                                 </div>
@@ -159,7 +165,7 @@ if (isset($_POST['submit'])) {
                                 </div>
                             </div>
                             <div class="col-lg-12 d-flex justify-content-end">
-                                <button class="btn btn-cancel me-2" type="reset" name="reset" id="resetButton">Reset</button>
+                                <button class="btn btn-cancel me-2" type="reset" name="reset" id="resetButton"><?= $userId ? 'Back' : 'Reset' ?></button>
                                 <button class="btn btn-submit" name="submit" type="submit"><?= $userId ? 'Update' : 'Submit' ?></button>
                             </div>
                         </div>
@@ -185,6 +191,23 @@ if (isset($_POST['submit'])) {
             parsleyForm.reset();
             $('#confirmPasswordError').text('');
         });
+        if ($('.toggle-password').length > 0) {
+    $(document).on('click', '.toggle-password', function () {
+        const input = $('.pass-input');
+
+        if (input.attr('type') === 'password') {
+            input.attr('type', 'text');
+            $(this)
+                .removeClass('bi-eye-slash')
+                .addClass('bi-eye');
+        } else {
+            input.attr('type', 'password');
+            $(this)
+                .removeClass('bi-eye')
+                .addClass('bi-eye-slash');
+        }
+    });
+}
     </script>
 </body>
 

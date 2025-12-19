@@ -65,10 +65,10 @@ $result = $con->query($sql);
                                 if ($result->num_rows > 0) {
                                     while ($row = $result->fetch_assoc()) {
                                         echo "<tr>";
-                                        echo "<td>".$row['product_name']."</td>";
+                                        echo "<td><a href='' class='text-truncate w-50' data-bs-toggle='tooltip' data-bs-title='".$row['product_name']."'>" . $row['product_name'] . "</a></td>";
                                         echo "<td>".$row['expired_date']."</td>";
                                         echo "<td>
-                                                <a class='confirm-text' href='expiredProduct.php?expiredProductId=".$row['id']."'>
+                                                <a class='confirm-text' href='expiredProduct.php?expiredProductId=".$row['id']."' data-bs-toggle='tooltip' data-bs-title='Delete'>
                                                     <img src='/Backend/src/assets/images/icons/delete.svg' alt='img'>
                                                 </a>
                                               </td>";

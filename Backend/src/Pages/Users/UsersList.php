@@ -72,12 +72,12 @@ $result = $con->query($sql);
                 <div class="card-body">
                 <div class="table-top">
                             <div class="search-set">
-                                <div class="search-path">
+                                <!-- <div class="search-path">
                                     <a class="btn btn-filter" id="filter_search">
                                         <img src="/Backend/src/assets/images/icons/filter.svg" alt="img">
                                         <span><img src="/Backend/src/assets/images/icons/closes.svg" alt="img"></span>
                                     </a>
-                                </div>
+                                </div> -->
                                 <div class="search-input">
                                     <a class="btn btn-searchset"><img src="/Backend/src/assets/images/icons/search-white.svg" alt="img"></a>
                                 </div>
@@ -115,17 +115,17 @@ $result = $con->query($sql);
                                 if ($result->num_rows > 0) {
                                     while ($row = $result->fetch_assoc()) {
                                         echo "<tr>";
-                                        echo "    <td>" . $row['user_name'] . "</td>";
+                                        echo "    <td><a href='javascript:void(0);' class='d-inline-block text-truncate w-50' data-bs-toggle='tooltip' data-bs-title='".$row['user_name']."'>" . $row['user_name'] . "</a></td>";
                                         echo "    <td>" . $row['user_contact'] . "</td>";
                                         echo "    <td><a href='/cdn-cgi/l/email-protection' class='__cf_email__' data-cfemail='fb8f9394969a88bb9e839a968b979ed5989496'>" . $row['user_email'] . "</a> </td>";
                                         echo "    <td>" . $row['user_role'] . "</td>";
                                         echo "    <td>" . $row['created_at'] . "</td>";
                                         echo "    <td><span class='bg-lightgreen badges'>Active</span></td>";
                                         echo "    <td>";
-                                        echo "        <a class='me-3' href='/Backend/src/Pages/Users/NewUser.php?userId=" . $row['id'] . "'>";
+                                        echo "        <a class='me-3' href='/Backend/src/Pages/Users/NewUser.php?userId=" . $row['id'] . "' data-bs-toggle='tooltip' data-bs-title='Edit'>";
                                         echo "            <img src='/Backend/src/assets/images/icons/edit.svg' alt='img'>";
                                         echo "        </a>";
-                                        echo "        <a class='me-3 confirm-delete'  href='/Backend/src/Pages/Users/UsersList.php?deleteId=" . $row['id'] . "'>";
+                                        echo "        <a class='me-3 confirm-delete'  href='/Backend/src/Pages/Users/UsersList.php?deleteId=" . $row['id'] . "' data-bs-toggle='tooltip' data-bs-title='Delete'>";
                                         echo "            <img src='/Backend/src/assets/images/icons/delete.svg' alt='img'>";
                                         echo "        </a>";
                                         echo "    </td>";

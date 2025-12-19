@@ -30,7 +30,7 @@ if (!preg_match($strongPasswordPattern, $password)) {
     if (!mysqli_stmt_execute($stmt)) {
         die("Insert Failed: " . mysqli_error($con));
     }
-    header("Location: signin.php");
+    header("Location: /Backend/src/Pages/Dashboard.php");
     exit();
 }
 ?>
@@ -101,7 +101,7 @@ if (!preg_match($strongPasswordPattern, $password)) {
                             <div class="form-login">
                                 <label for="password">Password</label>
                                 <div class="pass-group">
-                                    <input type="password" name='userpassword' id='password' class="pass-input" placeholder="Enter your password" data-parsley-minlength="8" data-parsley-required-message="Password is required" data-parsley-required data-parsley-pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()_+\-=\[\]{};':\\|,.<>\/?]).{8,16}$">
+                                    <input type="password" name='userpassword' id='password' class="pass-input" placeholder="........." data-parsley-minlength="8" data-parsley-required-message="Password is required" data-parsley-required data-parsley-pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()_+\-=\[\]{};':\\|,.<>\/?]).{8,16}$">
                                     <i class="bi bi-eye-slash toggle-password" style="color: #605d5d"></i>
                                 </div>
                             </div>  

@@ -27,9 +27,6 @@
                     <li class="<?php echo ($currentPage == 'ProductList.php') ? 'active' : ''; ?>">
                         <a href="/Backend/src/Pages/products/ProductList.php"><i class="bi bi-box-seam"></i><span>Cosmetic Products</span> </a>
                     </li>
-                    <li class="<?php echo ($currentPage == 'addProductForm.php') ? 'active' : ''; ?>">
-                        <a href="/Backend/src/Pages/products/addProductForm.php"><i class="bi bi-plus-square"></i><span>Add Cosmetic</span> </a>
-                    </li>
                     <li class="<?php echo ($currentPage == 'category.php') ? 'active' : ''; ?>">
                         <a href="/Backend/src/Pages/category.php"><i class="bi bi-tags"></i><span> Category</span> </a>
                     </li>

@@ -88,12 +88,18 @@ if(isset($_POST['submit'])) {
         <div class="page-wrapper">
             <div class="content">
                 <div class="page-header">
-                    <div class="page-title">
-                        <h4>Supplier Management</h4>
-                        <h6>Add/Update Customer</h6>
-                    </div>
                     <div class="page-btn">
-                        <a href="/Backend/src/Pages/supplierlist.php" class="btn btn-added"><i class="bi bi-arrow-left me-1 fw-bold"></i>Back to Product</a>
+                        <a href="/Backend/src/Pages/supplierlist.php" class="text-secondary fw-bold fs-6"><i class="bi bi-arrow-left me-1 fw-bold"></i>Back to Product</a>
+                    </div>
+                    <div class="page-title">
+                        <h6>
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="/Backend/src/Pages/supplierlist.php">Supplier List</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Add Supplier</li>
+                                </ol>
+                            </nav>
+                        </h6>
                     </div>
                 </div>
 
@@ -104,21 +110,21 @@ if(isset($_POST['submit'])) {
         <div class="col-lg-3 col-sm-6 col-12">
             <div class="form-group">
                 <label for='supplierName'>Supplier Name <span class="text-danger">*</span></label>
-                <input type="text" id="supplierName" name="supplierName" value="<?= htmlspecialchars($supplierName) ?>" placeholder="Enter supplier name" data-parsley-required-message="Supplier Name is required" data-parsley-required>
+                <input type="text" id="supplierName" name="supplierName" value="<?= htmlspecialchars($supplierName) ?>" placeholder="Supplier name" data-parsley-required-message="Supplier Name is required" data-parsley-required>
             </div>
         </div>
         <div class="col-lg-3 col-sm-6 col-12">
             <div class="form-group">
                 <label for='supplierMail'>Email <span class="text-danger">*</span></label>
-                <input type="text" id='supplierMail' name="supplierEmail" value="<?= htmlspecialchars($email) ?>" placeholder="Enter supplier email" data-parsley-required-message="Email is required" data-parsley-required>
+                <input type="text" id='supplierMail' name="supplierEmail" value="<?= htmlspecialchars($email) ?>" placeholder="Supplier email" data-parsley-required-message="Email is required" data-parsley-required>
             </div>
         </div>
         <div class="col-lg-3 col-sm-6 col-12">
         <div class="form-group">
-            <label for="contact" class="">Mobile <span class="text-danger">*</span></label>
+            <label for="contact" class="">Phone number <span class="text-danger">*</span></label>
                 <div class="input-group">
                     <span class="input-group-text" id="addon-wrapping">+91</span>
-                    <input type="text" id="contact" name="phoneNumber" value="<?= htmlspecialchars($contact) ?>" placeholder="Enter your mobile number" maxlength="10" data-parsley-minlength="10"data-parsley-required="true"data-parsley-required-message="Phone number is required"data-parsley-errors-container="#contactError" />
+                    <input type="text" id="contact" name="phoneNumber" value="<?= htmlspecialchars($contact) ?>" placeholder="Phone number" maxlength="10" data-parsley-minlength="10"data-parsley-required="true"data-parsley-required-message="Phone number is required"data-parsley-errors-container="#contactError" />
                 </div>
             <div id="contactError" class="text-danger"><?php echo $contactError ?? ""; ?></div>
             </div>
@@ -146,17 +152,17 @@ if(isset($_POST['submit'])) {
         <div class="col-lg-9 col-12">
             <div class="form-group">
                 <label for="address">Address <span class="text-danger">*</span></label>
-                <input type="text" id="address" name="address" value="<?= htmlspecialchars($address) ?>" placeholder="Enter supplier address" data-parsley-required-message="Address is required" data-parsley-required>
+                <input type="text" id="address" name="address" value="<?= htmlspecialchars($address) ?>" placeholder="Supplier address" data-parsley-required-message="Address is required" data-parsley-required>
             </div>
         </div>
         <div class="col-lg-12">
             <div class="form-group">
                 <label for="description">Description</label>
-                <textarea class="form-control" id="description" name="description" placeholder="Enter description"><?= htmlspecialchars($description) ?></textarea>
+                <textarea class="form-control" id="description" name="description" placeholder="Description"><?= htmlspecialchars($description) ?></textarea>
             </div>
         </div>
         <div class="col-lg-12 d-flex justify-content-end">
-            <button class="btn btn-cancel me-2" type="reset" id="resetButton">Reset</button>
+            <button class="btn btn-cancel me-2" type="reset" id="resetButton"><?= $supplierId ? 'Back' : 'Reset' ?></button>
             <button class="btn btn-submit" name="submit" type="submit"><?= $supplierId ? 'Update' : 'Submit' ?></button>
         </div>
     </div>

@@ -67,14 +67,14 @@ if(isset($_GET['lowStockId'])) {
                                 if ($result->num_rows > 0) {
                                     while ($row = $result->fetch_assoc()) {
                                         echo "<tr>";
-                                        echo "<td>".$row['product_name']."</td>";
+                                        echo "<td><a href='' class='text-truncate w-50' data-bs-toggle='tooltip' data-bs-title='".$row['product_name']."'>" . $row['product_name'] . "</a></td>";
                                         echo "<td>".$row['category']."</td>";
                                         echo "<td>".$row['brand_name']."</td>";
                                         echo "<td>".$row['quantity']."</td>";
                                         echo "<td>".$row['minQuantity']."</td>";
                                         echo "<td>".$row['price']."</td>";
                                         echo "<td>
-                                                <a class='btn btn-sm' href='?lowStockId=".$row['id']."' onclick='return confirm(\"Are you sure to delete?\");'>
+                                                <a class='btn btn-sm' href='?lowStockId=".$row['id']."' onclick='return confirm(\"Are you sure to delete?\");' data-bs-toggle='tooltip' data-bs-title='Delete'>
                                                     <img src='/Backend/src/assets/images/icons/delete.svg' alt='img'>
                                                 </a>
                                               </td>";
