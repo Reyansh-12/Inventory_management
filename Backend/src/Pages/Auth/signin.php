@@ -1,40 +1,48 @@
 <?php
 session_start();
 define("BASE_PATH", dirname(__DIR__, 3));
-include BASE_PATH . "/src/Layouts/Links.php";
-include BASE_PATH . "/src/controllers/dbConnection.php"; 
+include BASE_PATH . "/src/controllers/dbConnection.php";
 
 if (isset($_POST['submit'])) {
 
-    $userName = mysqli_real_escape_string($con, $_POST['userEmail']);
-    $userPassword = mysqli_real_escape_string($con, $_POST['userPassword']);
+    $userEmail = trim($_POST['userEmail']);
+    $userPassword = $_POST['userPassword'];
 
-    $sql = "SELECT * FROM `new_user` WHERE user_email = '$userName'";
-    $result = mysqli_query($con, $sql);
+    $stmt = mysqli_prepare($con, "SELECT * FROM new_user WHERE user_email = ?");
+    mysqli_stmt_bind_param($stmt, "s", $userEmail);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
     $user = mysqli_fetch_assoc($result);
 
-    if ($user && password_verify($userPassword, $user['user_password'])) {
-
-        $_SESSION['userEmail'] = $user['user_email'];
-        $_SESSION['role'] = $user['user_role'];
-
-        if ($user['user_role'] === "Admin") {
-            header("Location: http://localhost:3000/Backend/src/Pages/Dashboard.php");
-            exit();
-        }
-
-        if ($user['user_role'] === "User") {
-            header("Location: http://localhost:5173/");
-            exit();
-        }
-
-        echo "<script>alert('Access denied. Invalid role detected.');</script>";
-        
-    } else {
-        echo "<script>alert('Invalid Email or Password');</script>";
+    if (!$user) {
+        $_SESSION['toast_error'] = "Email not found";
+        $_SESSION['keep_email'] = $userEmail;
+        header("Location: signin.php");
+        exit();
     }
+
+    if (!password_verify($userPassword, $user['user_password'])) {
+        $_SESSION['toast_error'] = "Password is incorrect";
+        $_SESSION['keep_email'] = $userEmail;
+        header("Location: signin.php");
+        exit();
+    }
+
+    // ✅ SESSION SET (MOST IMPORTANT)
+    $_SESSION['user_id']   = $user['id'];
+    $_SESSION['user_role'] = $user['user_role'];
+    $_SESSION['user_email'] = $user['user_email'];
+
+    if ($user['user_role'] === "Admin") {
+        header("Location: /Backend/src/Pages/Dashboard.php");
+    } else {
+        header("Location: http://localhost:5173/");
+    }
+    exit();
 }
+
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -78,7 +86,7 @@ if (isset($_POST['submit'])) {
                             <div class="form-login">
                                 <label for='email'>Email</label>
                                 <div class="form-addons">
-                                    <input type="text" id='email' name='userEmail' placeholder="Enter your email address" data-parsley-type="email" data-parsley-required-message="Email is required" data-parsley-required>
+                                    <input type="text" id='email' name='userEmail' value="<?= $_SESSION['keep_email'] ?? '' ?>" placeholder="Enter your email address" data-parsley-type="email" data-parsley-required-message="Email is required" data-parsley-required>
                                     <img src="/Backend/src/assets/images/icons/mail.svg" alt="img">
                                 </div>
                             </div>
@@ -128,14 +136,19 @@ if (isset($_POST['submit'])) {
             </div>
         </div>
     </div>
-    <div class=" align-items-center text-bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
-  <div class="d-flex">
-    <div class="toast-body">
-      Hello, world! This is a toast message.
+    <?php if (isset($_SESSION['toast_error'])): ?>
+<div class="toast-container position-fixed top-0 end-0 p-3">
+  <div class="toast align-items-center text-bg-danger show" data-bs-delay="3000" data-bs-autohide="true">
+    <div class="d-flex">
+      <div class="toast-body">
+        <?= $_SESSION['toast_error']; ?>
+      </div>
+      <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
     </div>
-    <button type="button" class="btn-close btn-close-red top-0 end-0 me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
   </div>
 </div>
+<?php unset($_SESSION['toast_error']); endif; ?>
+
     <script src="/Backend/src/assets/js/jquery-3.6.0.min.js"></script>
     <script src="/Backend/src/assets/js/feather.min.js"></script>
     <script src="/Backend/src/assets/js/bootstrap.bundle.min.js"></script>
@@ -159,7 +172,18 @@ if (isset($_POST['submit'])) {
         }
     });
 }
+
     </script>
+    <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const toastElList = document.querySelectorAll('.toast');
+    toastElList.forEach(function (toastEl) {
+        const toast = new bootstrap.Toast(toastEl);
+        toast.show();
+    });
+});
+</script>
+
 </body>
 
 </html>

@@ -24,7 +24,7 @@
                     <li class="<?php echo ($currentPage == 'Dashboard.php') ? 'active' : ''; ?>">
                         <a href="/Backend/src/Pages/Dashboard.php"><i class="bi bi-speedometer2"></i><span> Dashboard</span> </a>
                     </li>
-                    <li class="<?php echo ($currentPage == 'ProductList.php') ? 'active' : ''; ?>">
+                    <li class="<?php echo in_array($currentPage, ['ProductList.php', 'addProductForm.php']) ? 'active' : ''; ?>">
                         <a href="/Backend/src/Pages/products/ProductList.php"><i class="bi bi-box-seam"></i><span>Cosmetic Products</span> </a>
                     </li>
                     <li class="<?php echo ($currentPage == 'category.php') ? 'active' : ''; ?>">
@@ -42,10 +42,10 @@
                     <li class="<?php echo ($currentPage == 'pos.php') ? 'active' : ''; ?>">
                         <a href="/Backend/src/Pages/POS/pos.php"><i class="bi bi-receipt"></i><span>POS Billing</span> </a>
                     </li>
-                    <li class="<?php echo ($currentPage == 'supplierlist.php' || $currentDir == "Supplier") ? 'active' : ''; ?>">
+                    <li class="<?php echo in_array($currentPage, ['supplierlist.php', 'supplierForm.php']) ? 'active' : ''; ?>">
                         <a href="/Backend/src/Pages/supplierlist.php"><i class="bi bi-truck"></i><span>Suppliers</span> </a>
                     </li>
-                    <li class="<?php echo ($currentPage == 'UsersList.php' || $currentDir == 'Users') ? 'active' : ''; ?>">
+                    <li class="<?php echo in_array($currentPage, ['UsersList.php', 'NewUser.php']) ? 'active' : ''; ?>">
                         <a href="/Backend/src/Pages/Users/UsersList.php"><i class="bi bi-people"></i><span> Users</span></a>
                     </li>
                     <li class="<?php echo ($currentPage == 'userProfile.php') ? 'active' : ''; ?>">

@@ -3,6 +3,7 @@ define("BASE_PATH", dirname(__DIR__, 3));
 include BASE_PATH . "/src/Layouts/Links.php";
 include BASE_PATH . "/src/controllers/dbConnection.php";
 
+$currentPage = basename($_SERVER['PHP_SELF']);
 $supplierId = $_GET['supplierId'] ?? null;
 
 $supplierName = $email = $contact = $country = $city = $address = $description = "";

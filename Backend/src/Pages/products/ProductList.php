@@ -136,18 +136,26 @@ $result = $con->query($sql);
             </div>
         </div>
     </div>
-<!-- 
-<div class="toast-container position-fixed end-0 p-3" style="z-index: 1100; top: 60px;">
-    <div id="deleteToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:1100;">
+    <div id="actionToast"
+         class="toast border-0 text-bg-success"
+         role="alert"
+         aria-live="assertive"
+         aria-atomic="true"
+         data-bs-delay="5000"
+         data-bs-autohide="true">
         <div class="d-flex">
-            <div class="toast-body bg-danger" id="deleteToastMessage">
-                Item deleted successfully.
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            <div class="toast-body" id="toastMessage"></div>
+            <button type="button"
+                    class="btn-close btn-close-white me-2 m-auto"
+                    data-bs-dismiss="toast"></button>
         </div>
+        <div class="toast-timer"></div>
     </div>
-</div> -->
+</div>
 
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   
@@ -167,6 +175,47 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 </script> -->
+<script>
+document.querySelectorAll('.confirm-delete').forEach(btn => {
+    btn.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        const deleteUrl = this.getAttribute('href');
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This product will be permanently deleted!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = deleteUrl;
+            }
+        });
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const urlParams = new URLSearchParams(window.location.search);
+
+    if (urlParams.get('deleted') === '1') {
+
+        const toastEl = document.getElementById('deleteToast');
+        const toast = new bootstrap.Toast(toastEl);
+        toast.show();
+
+        // URL clean (optional but professional)
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
+});
+</script>
+
 
 </body>
 </html>

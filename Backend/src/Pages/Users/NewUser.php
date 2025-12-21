@@ -3,6 +3,7 @@ define("BASE_PATH", dirname(__DIR__, 3));
 include BASE_PATH . "/src/Layouts/Links.php";
 include BASE_PATH . "/src/controllers/dbConnection.php";
 
+$currentPage = basename($_SERVER['PHP_SELF']);
 $status = 'Active';
 $confirmPasswordError = '';
 $userId = $_GET['userId'] ?? null;
@@ -131,7 +132,6 @@ if (isset($_POST['submit'])) {
                                     <div class="input-group">
                                         <span class="input-group-text">+91</span>
                                         <input type="text" class="form-control" id="contact" name="phoneNumber" value="<?php echo htmlspecialchars($editData['user_contact'] ?? ''); ?>" placeholder="Phone number" maxlength="10" data-parsley-minlength="10" data-parsley-required="true" data-parsley-required-message="Phone number is required" data-parsley-errors-container="#contactError" />
-                                        
                                     </div>
                                     <div id="contactError" class="text-danger"><?php echo $contactError ?? ""; ?></div>
                                 </div>

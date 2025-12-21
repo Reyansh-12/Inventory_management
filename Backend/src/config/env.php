@@ -23,4 +23,11 @@ function env($key, $default = null)
 {
     return $_ENV[$key] ?? $default;
 }
+
+if (PHP_OS_FAMILY === 'Windows') {
+    $password = "";
+} else {
+    $password = "codeberg@2023";
+}
+
 ?>

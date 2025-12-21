@@ -82,19 +82,6 @@ $result = $con->query($sql);
                                     <a class="btn btn-searchset"><img src="/Backend/src/assets/images/icons/search-white.svg" alt="img"></a>
                                 </div>
                             </div>
-                            <div class="wordset">
-                                <ul>
-                                    <li>
-                                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img src="/Backend/src/assets/images/icons/pdf.svg" alt="img"></a>
-                                    </li>
-                                    <li>
-                                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src="/Backend/src/assets/images/icons/excel.svg" alt="img"></a>
-                                    </li>
-                                    <li>
-                                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img src="/Backend/src/assets/images/icons/printer.svg" alt="img"></a>
-                                    </li>
-                                </ul>
-                            </div>
                         </div>
 
                     <div class="table-responsive">
@@ -151,20 +138,61 @@ $result = $con->query($sql);
         </div>
     </div>
 </div>
-    <script>
-document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".confirm-delete").forEach(btn => {
-        btn.addEventListener("click", function (e) {
-            e.preventDefault();
-            const deleteUrl = this.getAttribute("href");
-            document.getElementById("deleteToastMessage").textContent = "User successfully deleted!";
-            var toast = new bootstrap.Toast(document.getElementById('deleteToast'));
-            toast.show();
-            setTimeout(() => {
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:1100;">
+    <div id="actionToast"
+         class="toast border-0 text-bg-success"
+         role="alert"
+         aria-live="assertive"
+         aria-atomic="true"
+         data-bs-delay="5000"
+         data-bs-autohide="true">
+        <div class="d-flex">
+            <div class="toast-body" id="toastMessage"></div>
+            <button type="button"
+                    class="btn-close btn-close-white me-2 m-auto"
+                    data-bs-dismiss="toast"></button>
+        </div>
+        <div class="toast-timer"></div>
+    </div>
+</div>
+  <script>
+document.querySelectorAll('.confirm-delete').forEach(btn => {
+    btn.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        const deleteUrl = this.getAttribute('href');
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This product will be permanently deleted!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
                 window.location.href = deleteUrl;
-            }, 3000); 
+            }
         });
     });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const urlParams = new URLSearchParams(window.location.search);
+
+    if (urlParams.get('deleted') === '1') {
+
+        const toastEl = document.getElementById('deleteToast');
+        const toast = new bootstrap.Toast(toastEl);
+        toast.show();
+
+        // URL clean (optional but professional)
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
 });
 </script>
 </body>

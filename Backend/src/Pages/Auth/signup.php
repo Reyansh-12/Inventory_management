@@ -85,23 +85,24 @@ if (!preg_match($strongPasswordPattern, $password)) {
                             </div>
                             <div class="form-login">
                                 <label for="contact">Phone Number</label>
-                                <div class="pass-group">
-                                    <input type="text" name='contact' id='contact' placeholder="Enter phone number" maxlength="10" data-parsley-required-message="Phone number is required" data-parsley-required>
-                                    <i class="bi bi-telephone toggle-password" style="color: #605d5d; pointer-events: none;"></i>
+                                <div class="form-addons">
+                                    <input type="text" name='contact' id='contact' placeholder="Enter phone number" maxlength="10" data-parsley-type="digits" data-parsley-length="[10,10]" data-parsley-required-message="Phone number is required" data-parsley-required>
+                                    <!-- <i class="bi bi-telephone toggle-password" style="color: #605d5d; pointer-events: none;"></i> -->
+                                     <img src="/Backend/src/assets/images/icons/phone.svg" alt="img">
                                 </div>
                             </div>
                             
                             <div class="form-login">
                                 <label for="email">Email</label>
                                 <div class="form-addons">
-                                    <input type="text" name='useremail' id='email' placeholder="Enter your email address" data-parsley-pattern="^(?=.*[a-zA-Z])[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" data-parsley-required-message="Email is required" data-parsley-required>
+                                    <input type="text" name='useremail' id='email' placeholder="Enter your email address" data-parsley-pattern="^[A-Za-z][A-Za-z0-9]*@[A-Za-z0-9]+\.[A-Za-z]{2,}$" data-parsley-required-message="Email is required" data-parsley-required data-parsley-pattern-message="Email must start with a letter and contain only letters & numbers">
                                     <img src="/Backend/src/assets/images/icons/mail.svg" alt="img">
                                 </div>
                             </div>
                             <div class="form-login">
                                 <label for="password">Password</label>
-                                <div class="pass-group">
-                                    <input type="password" name='userpassword' id='password' class="pass-input" placeholder="........." data-parsley-minlength="8" data-parsley-required-message="Password is required" data-parsley-required data-parsley-pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()_+\-=\[\]{};':\\|,.<>\/?]).{8,16}$">
+                                <div class="form-addons position-relative">
+                                    <input type="password" name='userpassword' id='password' data-parsley-trigger="keyup" class="pass-input" placeholder="........." data-parsley-minlength="8" data-parsley-required-message="Password is required" data-parsley-required data-parsley-pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()_+\-=\[\]{};':\\|,.<>\/?]).{8,16}$" data-parsley-pattern-message="Password must be 8–16 characters with uppercase, lowercase, number & special character">
                                     <i class="bi bi-eye-slash toggle-password" style="color: #605d5d"></i>
                                 </div>
                             </div>  
@@ -156,7 +157,7 @@ if (!preg_match($strongPasswordPattern, $password)) {
             let filteredValue = inputValue.replace(/[^0-9]/g, '');
             $(this).val(filteredValue);
         });
-if ($('.toggle-password').length > 0) {
+
     $(document).on('click', '.toggle-password', function () {
         const input = $('.pass-input');
 
@@ -172,7 +173,40 @@ if ($('.toggle-password').length > 0) {
                 .addClass('bi-eye-slash');
         }
     });
-}
+
+$('#email').on('input', function () {
+    let value = $(this).val();
+
+    // Allow letters, numbers, @ and .
+    value = value.replace(/[^a-zA-Z0-9@.]/g, '');
+
+    // Force first character to be a letter
+    if (value.length === 1 && !/^[A-Za-z]$/.test(value)) {
+        value = '';
+    }
+
+    $(this).val(value);
+});
+$(document).on('click', '.toggle-password', function () {
+    const input = $('.pass-input');
+
+    if (input.attr('type') === 'password') {
+        input.attr('type', 'text');
+        $(this).removeClass('bi-eye-slash').addClass('bi-eye');
+    } else {
+        input.attr('type', 'password');
+        $(this).removeClass('bi-eye').addClass('bi-eye-slash');
+    }
+});
+$('#password').on('keyup', function () {
+    $(this).parsley().validate();
+});
+$('#password').on('input', function () {
+    if ($(this).val().length === 0) {
+        $(this).parsley().reset();
+    }
+});
+
     </script>
 </body>
 

@@ -3,6 +3,7 @@ define("BASE_PATH", dirname(__DIR__, 3));
 include BASE_PATH . "/src/Layouts/Links.php";
 include BASE_PATH . "/src/controllers/dbConnection.php";
 
+$currentPage = basename($_SERVER['PHP_SELF']);
 $productId = $_GET['productId'] ?? null;
 $isEdit = false;
 $editData = [];
@@ -30,18 +31,8 @@ if (isset($_POST['submit'])) {
     $price = $_POST['price'] ?? '';
     $status = $_POST['status'] ?? '';
     $expiredDate = $_POST['expiredDate'] ?? '';
-    $image = $_FILES['imageBox'] ?? '';
-    $imagePath = null;
-    if (!empty($_FILES['imageBox']['name'])) {
-        $uploadDir = include BASE_PATH . "/Backend/src/uploads/";
-        
-        $fileName = basename($_FILES["imageBox"]["name"]);
-        $targetPath = $uploadDir . $fileName;
-    
-        if (move_uploaded_file($_FILES["imageBox"]["tmp_name"], $targetPath)) {
-            $imagePath = $uploadDir . $fileName;
-        }
-    }
+$image = $_FILES['imageBox'] ?? ''; $imagePath = null; if (!empty($_FILES['imageBox']['name'])) { $uploadDir = include BASE_PATH . "/Backend/src/uploads/"; $fileName = basename($_FILES["imageBox"]["name"]); $targetPath = $uploadDir . $fileName; if (move_uploaded_file($_FILES["imageBox"]["tmp_name"], $targetPath)) { $imagePath = $uploadDir . $fileName; } }
+
     if ($isEdit) {
         $stmt = mysqli_prepare($con, "UPDATE `product_list` 
             SET product_name=?, category=?, brand_name=?, minQuantity=?, price=?, quantity=?, description=?, discount=?, status=?, `image_path`=?, expired_date=?
@@ -65,6 +56,7 @@ if (isset($_POST['submit'])) {
 exit();
 
 }
+
 
 ?>
 
@@ -179,19 +171,19 @@ exit();
                 </div>
                 <div class="card">
                     <div class="card-body">
-                        <form action="#" id="myForm" method="POST" enctype="multipart/form-data" data-parsley-validate>
+                        <form id="myForm" method="POST" enctype="multipart/form-data" data-parsley-validate>
                             <input type="hidden" name="user_id" value="<?php echo $editData['id'] ?? ''; ?>">
                             <div class="row">
                                 <div class="col-lg-4 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="productName">Product Name <span class="text-danger">*</span></label>
-                                        <input type="text" id="productName" name="productname" value="<?php echo htmlspecialchars($editData['product_name'] ?? '') ?>" placeholder="Product name" maxlength="100" data-parsley-minlength="3" data-parsley-required-message="Product name is required" data-parsley-required>
+                                        <input type="text" id="productName" name="productname" value="<?php echo htmlspecialchars($editData['product_name'] ?? '') ?>" placeholder="Product name" maxlength="100" data-parsley-required-message="Product name is required" data-parsley-required data-parsley-trigger="keyup" data-parsley-pattern-message="Product name must be at least 3 characters long">
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for='categorySelector'>Category <span class="text-danger">*</span></label>
-                                        <select class="form-select" onchange="enableBrandSelector()" name="categoryselector" id="categorySelector" data-parsley-required-message="Select category" data-parsley-required>
+                                        <select class="form-select" onchange="filterBrandsByCategory()" name="categoryselector" id="categorySelector" data-parsley-required-message="Select category" data-parsley-required>
                                             <option disabled selected>Choose Category</option>
                                             <?php
                                             $categories = ['haircare' => 'Hair care', 'skincare' => 'Skin care', 'lipstick' => 'Lip Stick', 'faceskin' => 'Face Skin', 'blusher' => 'Blusher', 'natural' => 'Natural'];
@@ -244,7 +236,7 @@ exit();
                                     <div class="form-group">
                                         <label for='datepicker'>Expired Date <span class="text-danger">*</span></label>
                                         <!-- <input type="text" class="p-2 rounded col-lg-12 border-secondary border-1 border-secondary border" name="expiredDate" id="datepicker" placeholder="Select expired date" value="<?php echo htmlspecialchars($editData['expired_date'] ?? '') ?>" data-parsley-required-message="Expired date is required" data-parsley-required> -->
-                                        <input type="text" class="form-control stylish-datepicker" name="expiredDate" id="datepicker" placeholder="Select expired date" value="<?php echo htmlspecialchars($editData['expired_date'] ?? '') ?>" data-parsley-required data-parsley-required-message="Expired date is required">
+                                        <input type="text" class="form-control" name="expiredDate" id="datepicker" placeholder="Select expired date" autocomplete="off" value="<?php echo htmlspecialchars($editData['expired_date'] ?? '') ?>" data-parsley-required data-parsley-required-message="Expired date is required">
                                     </div>
                                 </div>
 
@@ -260,19 +252,21 @@ exit();
                                     <div class="form-group">
                                         <label for="discout">Discount <span class="text-danger">*</span></label>
                                         <div class="input-group has-validation">
-                                            <input type="text" class="form-control" id="discountInput" aria-describedby="discountFeedback discount-suffix"placeholder="0 to 100" min="0" maxlength="2" step="1"required>
+                                            <input type="text" name="discount" class="form-control" id="discountInput" oninput="this.value=this.value.replace(/[^0-9]/g,'')" aria-describedby="discountFeedback discount-suffix"placeholder="0 to 100" min="0" maxlength="2" step="1"required data-parsley-required-message="Discount field is required" data-parsley-errors-container="#discountError">
                                             <span class="input-group-text" id="discount-suffix">%</span>
-                                            <div id="discountFeedback" class="invalid-feedback"></div>
+                                            <!-- <div id="discountFeedback" class="invalid-feedback"></div> -->
                                         </div>
+                                        <div id="discountError" class="text-danger"><?php echo $discountError ?? ""; ?></div>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="price">Price per unit <span class="text-danger">*</span></label>
                                         <div class="input-group">
-                                            <input type="number" onkeydown="return event.key !== '-'" class="form-control p-2" min="0" max="99.99" step="0.01" value="<?php echo htmlspecialchars($editData['price'] ?? '') ?>" name="price" id="price" placeholder="Price per unit" data-parsley-required-message="Price field is required" data-parsley-required>
+                                            <input type="number" onkeydown="return event.key !== '-'" class="form-control p-2" min="0" max="99.99" step="0.01" value="<?php echo htmlspecialchars($editData['price'] ?? '') ?>" name="price" id="price" placeholder="Price per unit" data-parsley-required-message="Price field is required" data-parsley-required data-parsley-errors-container="#priceError">
                                             <span class="input-group-text" id="discount-suffix">₹</span>
                                         </div>
+                                        <div id="priceError" class="text-danger"><?php echo $priceError ?? ""; ?></div>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-6 col-12">
@@ -289,7 +283,8 @@ exit();
                                     <div class="form-group">
                                         <label for="productImage"> Product Image <span class="text-danger">*</span></label>
                                         <div class="image-upload mb-0">
-                                            <input type="file" name="imageBox" id="productImage" accept="image/*" value="<?php echo htmlspecialchars($editData[''] ?? '') ?>">
+                                            <!-- <input type="file" name="imageBox" id="productImage" accept="image/*" value="<?php echo htmlspecialchars($editData[''] ?? '') ?>"> -->
+                                            <input type="file" name="imageBox" id="productImage" accept="image/*" <?= $isEdit ? '' : 'required' ?>>
                                             <div class="image-uploads">
                                                 <img src="/Backend/assets/images/icons/upload.svg" alt="img">
                                                 <h4>Drag and drop a file to upload</h4>
@@ -299,7 +294,7 @@ exit();
                                     </div>
                                 </div>
                                 <div class="col-lg-12 d-flex justify-content-end">
-                                    <button class="btn btn-cancel me-2" type="reset" name="reset" id="resetButton"><?= $productId ? 'Back' : 'Reset' ?></button>
+                                    <button class="btn btn-cancel me-2" type="<?= $productId ? 'button' : 'reset' ?>" name="reset" id="resetButton"><?= $productId ? 'Back' : 'Reset' ?></button>
                                     <button class="btn btn-submit" name="submit" type="submit"><?= $productId ? 'Update' : 'Submit' ?></button>
                                 </div>
                             </div>
@@ -320,11 +315,28 @@ exit();
         <div class="toast-timer" style="height: 4px; background: rgba(0,0,0,0.2); animation: shrink 3s linear forwards;"></div>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    const isEditMode = <?= $isEdit ? 'true' : 'false' ?>;
+
+    document.addEventListener("DOMContentLoaded", function () {
+        if (isEditMode) {
+            filterBrandsByCategory();
+        }
+    });
+</script>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script> 
-    
+    document.addEventListener("DOMContentLoaded", function () {
+    if (isEditMode) {
+        document.getElementById("brandSelect").disabled = false;
+    }
+});
+
     $('#discountInput').on('input', function() {
             let inputValue = $(this).val();
             let filteredValue = inputValue.replace(/[^0-9]/g, '');
@@ -366,38 +378,58 @@ exit();
 });
 
 
-function enableBrandSelector() {
-    let category = document.getElementById("categorySelector").value;
-    let brandSelect = document.getElementById("brandSelect");
+function filterBrandsByCategory() {
+    const categorySelect = document.getElementById("categorySelector");
+    const brandSelect = document.getElementById("brandSelect");
+    const selectedCategory = categorySelect.value;
 
-    brandSelect.removeAttribute("disabled");
+    if (!selectedCategory) {
+        brandSelect.disabled = true;
+        return;
+    }
 
-    let options = brandSelect.querySelectorAll("option");
+    brandSelect.disabled = false;
+
+    const options = brandSelect.querySelectorAll("option");
 
     options.forEach(option => {
-        if (option.classList.contains(category) || option.value === "Choose Brand") {
-            option.style.display = "block"; 
+        // Always show placeholder
+        if (option.disabled || option.value === "") {
+            option.style.display = "block";
+            return;
+        }
+
+        // Show only matching category brands
+        if (option.classList.contains(selectedCategory)) {
+            option.style.display = "block";
         } else {
-            option.style.display = "none";    
+            option.style.display = "none";
         }
     });
-
-    brandSelect.value = "";
 }
 
 $(function () {
+    const isEditMode = <?= $isEdit ? 'true' : 'false' ?>;
+
+    let minDateValue = isEditMode ? null : +1;
+
     $("#datepicker").datepicker({
         dateFormat: "yy-mm-dd",
         changeMonth: true,
         changeYear: true,
-        showAnim: "slideDown",
-        minDate: 0,
-        yearRange: "2024:2035",
+        showAnim: "fadeIn",
+        minDate: minDateValue,
+        beforeShow: function () {
+            setTimeout(() => {
+                $('.ui-datepicker').css('z-index', 9999);
+            }, 0);
+        },
         onSelect: function () {
             $(this).parsley().validate();
         }
     });
 });
+
 </script>
 <script>
 document.getElementById('productImage').addEventListener('change', function () {
@@ -411,25 +443,49 @@ document.getElementById('productImage').addEventListener('change', function () {
     }
 });
 </script>
+
 <script>
-window.Parsley.addValidator('gteMinquantity', {
-    validateNumber: function (value) {
-        const minQty = Number($('#minQuantity').val());
+$(function () {
 
-        if (isNaN(minQty)) {
-            return true; 
+    // ✅ SINGLE validator (number based)
+    window.Parsley.addValidator('gteMinquantity', {
+        validateNumber: function (value) {
+            let minQty = parseInt($('#minQuantity').val(), 10);
+
+            if (isNaN(minQty)) return true;
+
+            return value >= minQty;
+        },
+        messages: {
+            en: 'Max Quantity must be greater than or equal to Min Quantity'
         }
+    });
 
-        return Number(value) >= minQty;
-    },
-    messages: {
-        en: 'Max quantity must be greater than or equal to Min quantity'
+    // 🔥 KEYDOWN par turant validate
+    $('#quantity').on('keydown', function () {
+        let parsleyField = $(this).parsley();
+        setTimeout(() => {
+            parsleyField.validate();
+        }, 0);
+    });
+
+    // Min quantity change → max revalidate
+    $('#minQuantity').on('keydown', function () {
+        setTimeout(() => {
+            $('#quantity').parsley().validate();
+        }, 0);
+    });
+
+});
+$('#resetButton').on('click', function () {
+    if (<?= $productId ? 'true' : 'false' ?>) {
+        window.location.href = "ProductList.php";
     }
 });
-$('#minQuantity').on('input change', function () {
-    $('#quantity').parsley().validate();
-});
+
 </script>
+
+
 
 </body>
 </html>

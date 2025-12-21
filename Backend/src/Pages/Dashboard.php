@@ -1,7 +1,17 @@
 <?php 
 require_once __DIR__ . "/../config/path.php";
 include(BASE_PATH . "/Backend/src/Layouts/Links.php"); 
+session_start();
 
+// Back button + cache fix
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Pragma: no-cache");
+
+// Auth check
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Admin') {
+    header("Location: /Backend/src/Pages/Auth/signin.php");
+    exit();
+}
     // $userMail = $_SESSION['user_email'];
     // $currentPage = basename($_SERVER['PHP_SELF']); 
     // $currentDir  = basename(dirname($_SERVER['PHP_SELF']));
