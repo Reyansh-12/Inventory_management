@@ -31,7 +31,35 @@ if (isset($_POST['submit'])) {
     $price = $_POST['price'] ?? '';
     $status = $_POST['status'] ?? '';
     $expiredDate = $_POST['expiredDate'] ?? '';
-$image = $_FILES['imageBox'] ?? ''; $imagePath = null; if (!empty($_FILES['imageBox']['name'])) { $uploadDir = include BASE_PATH . "/Backend/src/uploads/"; $fileName = basename($_FILES["imageBox"]["name"]); $targetPath = $uploadDir . $fileName; if (move_uploaded_file($_FILES["imageBox"]["tmp_name"], $targetPath)) { $imagePath = $uploadDir . $fileName; } }
+    $imagePath = $editData['image_path'] ?? null;
+
+    if (isset($_FILES['imageBox']) && $_FILES['imageBox']['error'] === 0) {
+        $uploadDir = BASE_PATH . DIRECTORY_SEPARATOR .
+            'src' . DIRECTORY_SEPARATOR .
+            'uploads' . DIRECTORY_SEPARATOR .
+            'products' . DIRECTORY_SEPARATOR .
+            'featured' . DIRECTORY_SEPARATOR;
+
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+
+        $ext = strtolower(pathinfo($_FILES['imageBox']['name'], PATHINFO_EXTENSION));
+        $allowed = ['jpg', 'jpeg', 'png', 'webp'];
+
+        if (!in_array($ext, $allowed)) {
+            die('Invalid image type');
+        }
+
+        $fileName = uniqid('product_', true) . '.' . $ext;
+        $targetPath = $uploadDir . $fileName;
+
+        if (!move_uploaded_file($_FILES['imageBox']['tmp_name'], $targetPath)) {
+            die('Image upload failed');
+        }
+
+        $imagePath = '/Backend/src/uploads/products/featured/' . $fileName;
+    }
 
     if ($isEdit) {
         $stmt = mysqli_prepare($con, "UPDATE `product_list` 
@@ -49,15 +77,12 @@ $image = $_FILES['imageBox'] ?? ''; $imagePath = null; if (!empty($_FILES['image
         mysqli_stmt_close($stmt);
     }
     if ($isEdit) {
-    header("Location: ProductList.php?updated=1");
-} else {
-    header("Location: ProductList.php?added=1");
+        header("Location: ProductList.php?updated=1");
+    } else {
+        header("Location: ProductList.php?added=1");
+    }
+    exit();
 }
-exit();
-
-}
-
-
 ?>
 
 <!DOCTYPE html>
@@ -72,11 +97,12 @@ exit();
     <meta name="robots" content="noindex, nofollow">
     <title>Dreams Pos admin template</title>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
     <style>
-        .parsley-required,.parsley-minlength, .parsley-gteMinquantity {
+        .parsley-required,
+        .parsley-minlength,
+        .parsley-gteMinquantity {
             color: orangered;
         }
 
@@ -87,55 +113,60 @@ exit();
         }
     </style>
     <style>
-@keyframes shrink { 
-    from { width: 100%; } 
-    to { width: 0%; } 
-}
+        @keyframes shrink {
+            from {
+                width: 100%;
+            }
 
-.stylish-datepicker {
-    padding: 12px;
-    border-radius: 8px;
-    border: 1px solid #6c757d;
-    font-size: 15px;
-    transition: 0.3s ease-in-out;
-}
+            to {
+                width: 0%;
+            }
+        }
 
-.stylish-datepicker:focus {
-    border-color: #3f51b5;
-    box-shadow: 0 0 5px rgba(63, 81, 181, 0.4);
-    outline: none;
-}
+        .stylish-datepicker {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #6c757d;
+            font-size: 15px;
+            transition: 0.3s ease-in-out;
+        }
 
-.ui-datepicker {
-    background: #fff;
-    border: 2px solid #3f51b5;
-    padding: 10px;
-    border-radius: 10px;
-    font-size: 14px;
-}
+        .stylish-datepicker:focus {
+            border-color: #3f51b5;
+            box-shadow: 0 0 5px rgba(63, 81, 181, 0.4);
+            outline: none;
+        }
 
-.ui-datepicker-header {
-    background: #3f51b5;
-    color: #fff;
-    border-radius: 8px 8px 0 0;
-}
+        .ui-datepicker {
+            background: #fff;
+            border: 2px solid #3f51b5;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 14px;
+        }
 
-.ui-state-default {
-    padding: 6px;
-    border-radius: 5px;
-}
+        .ui-datepicker-header {
+            background: #3f51b5;
+            color: #fff;
+            border-radius: 8px 8px 0 0;
+        }
 
-.ui-state-highlight {
-    background: #eceff1 !important;
-    border-radius: 5px;
-}
+        .ui-state-default {
+            padding: 6px;
+            border-radius: 5px;
+        }
 
-.ui-state-active {
-    background: #3f51b5 !important;
-    color: #fff !important;
-    border-radius: 5px;
-}
-</style>
+        .ui-state-highlight {
+            background: #eceff1 !important;
+            border-radius: 5px;
+        }
+
+        .ui-state-active {
+            background: #3f51b5 !important;
+            color: #fff !important;
+            border-radius: 5px;
+        }
+    </style>
 
 </head>
 
@@ -144,14 +175,14 @@ exit();
         <div class="whirly-loader"> </div>
     </div>
     <div class="main-wrapper">
-            <div class="d-flx row">
-                <div class="col-md-3">
-                    <?php include BASE_PATH . "/src/Layouts/Sidebar.php"; ?>
-                </div>
-                <div class="col-md-9">
-                    <?php include BASE_PATH . "/src/Layouts/Header.php"; ?>
-                </div>
+        <div class="d-flx row">
+            <div class="col-md-3">
+                <?php include BASE_PATH . "/src/Layouts/Sidebar.php"; ?>
             </div>
+            <div class="col-md-9">
+                <?php include BASE_PATH . "/src/Layouts/Header.php"; ?>
+            </div>
+        </div>
         <div class="page-wrapper">
             <div class="content">
                 <div class="page-header">
@@ -239,9 +270,7 @@ exit();
                                         <input type="text" class="form-control" name="expiredDate" id="datepicker" placeholder="Select expired date" autocomplete="off" value="<?php echo htmlspecialchars($editData['expired_date'] ?? '') ?>" data-parsley-required data-parsley-required-message="Expired date is required">
                                     </div>
                                 </div>
-
                                 <div class="col-lg-4 col-sm-4 col-12"></div>
-
                                 <div class="col-lg-12">
                                     <div class="form-group">
                                         <label for="productDescription">Product Description</label>
@@ -252,7 +281,7 @@ exit();
                                     <div class="form-group">
                                         <label for="discout">Discount <span class="text-danger">*</span></label>
                                         <div class="input-group has-validation">
-                                            <input type="text" name="discount" class="form-control" id="discountInput" oninput="this.value=this.value.replace(/[^0-9]/g,'')" aria-describedby="discountFeedback discount-suffix"placeholder="0 to 100" min="0" maxlength="2" step="1"required data-parsley-required-message="Discount field is required" data-parsley-errors-container="#discountError">
+                                            <input type="text" name="discount" class="form-control" id="discountInput" oninput="this.value=this.value.replace(/[^0-9]/g,'')" aria-describedby="discountFeedback discount-suffix" placeholder="0 to 100" min="0" maxlength="2" step="1" required data-parsley-required-message="Discount field is required" data-parsley-errors-container="#discountError" value="<?= htmlspecialchars($editData['discount'] ?? '') ?>">
                                             <span class="input-group-text" id="discount-suffix">%</span>
                                             <!-- <div id="discountFeedback" class="invalid-feedback"></div> -->
                                         </div>
@@ -283,11 +312,18 @@ exit();
                                     <div class="form-group">
                                         <label for="productImage"> Product Image <span class="text-danger">*</span></label>
                                         <div class="image-upload mb-0">
-                                            <!-- <input type="file" name="imageBox" id="productImage" accept="image/*" value="<?php echo htmlspecialchars($editData[''] ?? '') ?>"> -->
                                             <input type="file" name="imageBox" id="productImage" accept="image/*" <?= $isEdit ? '' : 'required' ?>>
                                             <div class="image-uploads">
                                                 <img src="/Backend/assets/images/icons/upload.svg" alt="img">
-                                                <h4>Drag and drop a file to upload</h4>
+                                                <h4 id="imageUploadTitle">
+                                                    <?php
+                                                    if ($isEdit && !empty($editData['image_path'])) {
+                                                        echo htmlspecialchars(basename($editData['image_path']));
+                                                    } else {
+                                                        echo "Drag and drop a file to upload";
+                                                    }
+                                                    ?>
+                                                </h4>
                                             </div>
                                         </div>
                                         <div id="imageError" class="text-danger"></div>
@@ -305,39 +341,44 @@ exit();
         </div>
     </div>
     <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 999;">
-    <div id="actionToast" class="toast border-0" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="d-flex">
-            <div class="toast-body" id="toastMessage">
-                Action completed!
+        <div id="actionToast" class="toast border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="toastMessage">
+                    Action completed!
+                </div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
             </div>
-            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
+            <div class="toast-timer" style="height: 4px; background: rgba(0,0,0,0.2); animation: shrink 3s linear forwards;"></div>
         </div>
-        <div class="toast-timer" style="height: 4px; background: rgba(0,0,0,0.2); animation: shrink 3s linear forwards;"></div>
     </div>
-</div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        document.getElementById('productImage').addEventListener('change', function() {
+            const file = this.files[0];
+            const title = document.getElementById('imageUploadTitle');
+            if (file) {
+                title.textContent = file.name;
+            } else {
+                title.textContent = "Drag and drop a file to upload";
+            }
+        });
+        const isEditMode = <?= $isEdit ? 'true' : 'false' ?>;
+        document.addEventListener("DOMContentLoaded", function() {
+            if (isEditMode) {
+                filterBrandsByCategory();
+            }
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<script>
-    const isEditMode = <?= $isEdit ? 'true' : 'false' ?>;
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            if (isEditMode) {
+                document.getElementById("brandSelect").disabled = false;
+            }
+        });
 
-    document.addEventListener("DOMContentLoaded", function () {
-        if (isEditMode) {
-            filterBrandsByCategory();
-        }
-    });
-</script>
-
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script> 
-    document.addEventListener("DOMContentLoaded", function () {
-    if (isEditMode) {
-        document.getElementById("brandSelect").disabled = false;
-    }
-});
-
-    $('#discountInput').on('input', function() {
+        $('#discountInput').on('input', function() {
             let inputValue = $(this).val();
             let filteredValue = inputValue.replace(/[^0-9]/g, '');
             $(this).val(filteredValue);
@@ -347,145 +388,120 @@ exit();
             parsleyForm.reset();
         });
         document.addEventListener("DOMContentLoaded", function() {
-    const params = new URLSearchParams(window.location.search);
+            const params = new URLSearchParams(window.location.search);
 
-    let toastElement = document.getElementById("actionToast");
-    let toastMessage = document.getElementById("toastMessage");
+            let toastElement = document.getElementById("actionToast");
+            let toastMessage = document.getElementById("toastMessage");
 
-    if (params.get("added") === "1") {
-        toastMessage.textContent = "Product added successfully!";
-        toastElement.classList.add("text-bg-success", "text-white");
-    } 
-    else if (params.get("updated") === "1") {
-        toastMessage.textContent = "Product updated successfully!";
-        toastElement.classList.add("text-bg-success", "text-white");
-    } 
-    else {
-        return; 
-    }
-
-    let timerBar = toastElement.querySelector(".toast-timer");
-    timerBar.style.animation = "none";
-    timerBar.offsetHeight;
-    timerBar.style.animation = "shrink 5s linear forwards";
-
-    let toast = new bootstrap.Toast(toastElement, { delay: 3000 });
-    toast.show();
-
-    setTimeout(() => {
-        window.history.replaceState({}, document.title, window.location.pathname);
-    }, 3500);
-});
-
-
-function filterBrandsByCategory() {
-    const categorySelect = document.getElementById("categorySelector");
-    const brandSelect = document.getElementById("brandSelect");
-    const selectedCategory = categorySelect.value;
-
-    if (!selectedCategory) {
-        brandSelect.disabled = true;
-        return;
-    }
-
-    brandSelect.disabled = false;
-
-    const options = brandSelect.querySelectorAll("option");
-
-    options.forEach(option => {
-        // Always show placeholder
-        if (option.disabled || option.value === "") {
-            option.style.display = "block";
-            return;
-        }
-
-        // Show only matching category brands
-        if (option.classList.contains(selectedCategory)) {
-            option.style.display = "block";
-        } else {
-            option.style.display = "none";
-        }
-    });
-}
-
-$(function () {
-    const isEditMode = <?= $isEdit ? 'true' : 'false' ?>;
-
-    let minDateValue = isEditMode ? null : +1;
-
-    $("#datepicker").datepicker({
-        dateFormat: "yy-mm-dd",
-        changeMonth: true,
-        changeYear: true,
-        showAnim: "fadeIn",
-        minDate: minDateValue,
-        beforeShow: function () {
+            if (params.get("added") === "1") {
+                toastMessage.textContent = "Product added successfully!";
+                toastElement.classList.add("text-bg-success", "text-white");
+            } else if (params.get("updated") === "1") {
+                toastMessage.textContent = "Product updated successfully!";
+                toastElement.classList.add("text-bg-success", "text-white");
+            } else {
+                return;
+            }
+            let timerBar = toastElement.querySelector(".toast-timer");
+            timerBar.style.animation = "none";
+            timerBar.offsetHeight;
+            timerBar.style.animation = "shrink 5s linear forwards";
+            let toast = new bootstrap.Toast(toastElement, {
+                delay: 3000
+            });
+            toast.show();
             setTimeout(() => {
-                $('.ui-datepicker').css('z-index', 9999);
-            }, 0);
-        },
-        onSelect: function () {
-            $(this).parsley().validate();
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }, 3500);
+        });
+
+        function filterBrandsByCategory() {
+            const categorySelect = document.getElementById("categorySelector");
+            const brandSelect = document.getElementById("brandSelect");
+            const selectedCategory = categorySelect.value;
+
+            if (!selectedCategory) {
+                brandSelect.disabled = true;
+                return;
+            }
+            brandSelect.disabled = false;
+            const options = brandSelect.querySelectorAll("option");
+            options.forEach(option => {
+                if (option.disabled || option.value === "") {
+                    option.style.display = "block";
+                    return;
+                }
+                if (option.classList.contains(selectedCategory)) {
+                    option.style.display = "block";
+                } else {
+                    option.style.display = "none";
+                }
+            });
         }
-    });
-});
 
-</script>
-<script>
-document.getElementById('productImage').addEventListener('change', function () {
-    const file = this.files[0];
-    const title = this.closest('.image-upload').querySelector('h4');
+        $(function() {
+            const isEditMode = <?= $isEdit ? 'true' : 'false' ?>;
+            let minDateValue = isEditMode && $('#datepicker').val() ? null : +1;
+            $("#datepicker").datepicker({
+                dateFormat: "yy-mm-dd",
+                changeMonth: true,
+                changeYear: true,
+                showAnim: "fadeIn",
+                minDate: minDateValue,
+                beforeShow: function() {
+                    setTimeout(() => {
+                        $('.ui-datepicker').css('z-index', 9999);
+                    }, 0);
+                },
+                onSelect: function() {
+                    $(this).parsley().validate();
+                }
+            });
+        });
+    </script>
+    <script>
+        document.getElementById('productImage').addEventListener('change', function() {
+            const file = this.files[0];
+            const title = this.closest('.image-upload').querySelector('h4');
 
-    if (file) {
-        title.textContent = file.name;   
-    } else {
-        title.textContent = "Drag and drop a file to upload"; 
-    }
-});
-</script>
+            if (file) {
+                title.textContent = file.name;
+            } else {
+                title.textContent = "Drag and drop a file to upload";
+            }
+        });
+    </script>
+    <script>
+        $(function() {
+            window.Parsley.addValidator('gteMinquantity', {
+                validateNumber: function(value) {
+                    let minQty = parseInt($('#minQuantity').val(), 10);
+                    if (isNaN(minQty)) return true;
+                    return value >= minQty;
+                },
+                messages: {
+                    en: 'Max Quantity must be greater than or equal to Min Quantity'
+                }
+            });
 
-<script>
-$(function () {
-
-    // ✅ SINGLE validator (number based)
-    window.Parsley.addValidator('gteMinquantity', {
-        validateNumber: function (value) {
-            let minQty = parseInt($('#minQuantity').val(), 10);
-
-            if (isNaN(minQty)) return true;
-
-            return value >= minQty;
-        },
-        messages: {
-            en: 'Max Quantity must be greater than or equal to Min Quantity'
-        }
-    });
-
-    // 🔥 KEYDOWN par turant validate
-    $('#quantity').on('keydown', function () {
-        let parsleyField = $(this).parsley();
-        setTimeout(() => {
-            parsleyField.validate();
-        }, 0);
-    });
-
-    // Min quantity change → max revalidate
-    $('#minQuantity').on('keydown', function () {
-        setTimeout(() => {
-            $('#quantity').parsley().validate();
-        }, 0);
-    });
-
-});
-$('#resetButton').on('click', function () {
-    if (<?= $productId ? 'true' : 'false' ?>) {
-        window.location.href = "ProductList.php";
-    }
-});
-
-</script>
-
-
-
+            $('#quantity').on('keydown', function() {
+                let parsleyField = $(this).parsley();
+                setTimeout(() => {
+                    parsleyField.validate();
+                }, 0);
+            });
+            $('#minQuantity').on('keydown', function() {
+                setTimeout(() => {
+                    $('#quantity').parsley().validate();
+                }, 0);
+            });
+        });
+        $('#resetButton').on('click', function() {
+            if (<?= $productId ? 'true' : 'false' ?>) {
+                window.location.href = "ProductList.php";
+            }
+        });
+    </script>
 </body>
+
 </html>

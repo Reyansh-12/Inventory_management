@@ -1,24 +1,18 @@
-<?php 
+<?php
 require_once __DIR__ . "/../config/path.php";
-include(BASE_PATH . "/Backend/src/Layouts/Links.php"); 
+include(BASE_PATH . "/Backend/src/Layouts/Links.php");
 session_start();
 
-// Back button + cache fix
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Pragma: no-cache");
 
-// Auth check
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Admin') {
     header("Location: /Backend/src/Pages/Auth/signin.php");
     exit();
 }
-    // $userMail = $_SESSION['user_email'];
-    // $currentPage = basename($_SERVER['PHP_SELF']); 
-    // $currentDir  = basename(dirname($_SERVER['PHP_SELF']));
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
@@ -26,15 +20,13 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Admin') {
     <meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern,  html5, responsive">
     <meta name="author" content="Dreamguys - Bootstrap Admin Template">
     <meta name="robots" content="noindex, nofollow">
-    <title>Dreams Pos admin template</title>
-    
+    <title>Dashboard</title>
 </head>
-
 <body>
     <div id="global-loader">
         <div class="whirly-loader"> </div>
     </div>
-    <div class="main-wrapper"> 
+    <div class="main-wrapper">
         <div class="d-flx row">
             <div class="col-md-3">
                 <?php include(BASE_PATH . "/Backend/src/Layouts/Sidebar.php"); ?>
@@ -44,7 +36,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Admin') {
             </div>
         </div>
         <div class="page-wrapper">
-            <div class="content">       
+            <div class="content">
                 <div class="row">
                     <div class="col-lg-3 col-sm-6 col-12">
                         <div class="dash-widget">
@@ -151,23 +143,25 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Admin') {
                                         </li>
                                     </ul>
                                     <select class="form-select btn-sm" aria-label="Default select example">
-  <option selected disabled>select menu</option>
-  <option value="daily">Daily</option>
-  <option value="monthly">Monthly</option>
-  <option value="yealry">Yearly</option>
-</select>
-<div class="dropdown">
-  <button class="btn btn-white btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-  Category-wise<img src="/Backend/src/assets/images/icons/dropdown.svg" alt="img" class="ms-2">
-  </button>
-  <ul class="dropdown-menu">
-    <li><a class="dropdown-item active" href="#">Action</a></li>
-    <li><a class="dropdown-item" href="#">Another action</a></li>
-    <li><a class="dropdown-item" href="#">Something else here</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><a class="dropdown-item" href="#">Separated link</a></li>
-  </ul>
-</div>
+                                        <option selected disabled>select menu</option>
+                                        <option value="daily">Daily</option>
+                                        <option value="monthly">Monthly</option>
+                                        <option value="yealry">Yearly</option>
+                                    </select>
+                                    <div class="dropdown">
+                                        <button class="btn btn-white btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Category-wise<img src="/Backend/src/assets/images/icons/dropdown.svg" alt="img" class="ms-2">
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item active" href="#">Action</a></li>
+                                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                            <li>
+                                                <hr class="dropdown-divider">
+                                            </li>
+                                            <li><a class="dropdown-item" href="#">Separated link</a></li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                             <div class="card-body">
@@ -328,5 +322,4 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Admin') {
         </div>
     </div>
 </body>
-
 </html>

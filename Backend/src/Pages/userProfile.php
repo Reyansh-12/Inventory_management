@@ -1,14 +1,9 @@
 <?php define("BASE_PATH", dirname(__DIR__, 2));
 include BASE_PATH . "/src/Layouts/Links.php";
 include BASE_PATH . "/src/controllers/dbConnection.php";
-
-    // $userMail = $_SESSION['user_email'];
-    // $currentPage = basename($_SERVER['PHP_SELF']); 
-    // $currentDir  = basename(dirname($_SERVER['PHP_SELF']));
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
@@ -16,24 +11,20 @@ include BASE_PATH . "/src/controllers/dbConnection.php";
     <meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern,  html5, responsive">
     <meta name="author" content="Dreamguys - Bootstrap Admin Template">
     <meta name="robots" content="noindex, nofollow">
-    <title>Dreams Pos admin template</title>
-    
+    <title>User Profile</title>
 </head>
-
 <body>
     <div id="global-loader">
         <div class="whirly-loader"> </div>
     </div>
     <div class="main-wrapper">
-        
         <div class="d-flx row">
-        <div class="col-md-3">
-    <?php include BASE_PATH . "/src/Layouts/Sidebar.php"; ?>
-</div>
-<div class="col-md-9">
-    <?php include BASE_PATH . "/src/Layouts/Header.php"; ?>
-</div>
-
+            <div class="col-md-3">
+                <?php include BASE_PATH . "/src/Layouts/Sidebar.php"; ?>
+            </div>
+            <div class="col-md-9">
+                <?php include BASE_PATH . "/src/Layouts/Header.php"; ?>
+            </div>
         </div>
         <div class="page-wrapper">
             <div class="content">
@@ -43,7 +34,6 @@ include BASE_PATH . "/src/controllers/dbConnection.php";
                         <h6>User Profile</h6>
                     </div>
                 </div>
-
                 <div class="card">
                     <div class="card-body">
                         <div class="profile-set">
@@ -112,11 +102,8 @@ include BASE_PATH . "/src/controllers/dbConnection.php";
                         </div>
                     </div>
                 </div>
-
             </div>
-
         </div>
     </div>
 </body>
-
 </html>
