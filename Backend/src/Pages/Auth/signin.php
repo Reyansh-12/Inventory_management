@@ -58,7 +58,7 @@ if (isset($_POST['submit'])) {
     <link rel="shortcut icon" type="image/x-icon" href="/Backend/src/assets/images/favicon.jpg">
     <link rel="stylesheet" href="/Backend/src/assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="/Backend/src/assets/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.13.1/font/bootstrap-icons.min.css" integrity="sha512-t7Few9xlddEmgd3oKZQahkNI4dS6l80+eGEzFQiqtyVYdvcSG2D3Iub77R20BdotfRPA9caaRkg1tyaJiPmO0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         .parsley-required, .parsley-minlength, .parsley-type{
             color: orangered;
@@ -94,7 +94,7 @@ if (isset($_POST['submit'])) {
                                 <div class="pass-group">
                                     <label for="password">Password</label>
                                     <input type="password" id='password' name='userPassword' class="pass-input" placeholder="........." data-parsley-minlength="6" data-parsley-required-message="Password is required" data-parsley-required>
-                                    <span class="bi bi-eye-slash toggle-password mt-3" style="color: #605d5d"></span>
+                                    <span class="fas toggle-password fa-eye-slash position-absolute" style="top: 53px"></span>
                                 </div>
                             </div>
                             <div class="form-login">
@@ -162,13 +162,13 @@ if (isset($_POST['submit'])) {
         if (input.attr('type') === 'password') {
             input.attr('type', 'text');
             $(this)
-                .removeClass('bi-eye-slash')
-                .addClass('bi-eye');
+                .removeClass('fa-eye-slash')
+                .addClass('fa-eye');
         } else {
             input.attr('type', 'password');
             $(this)
-                .removeClass('bi-eye')
-                .addClass('bi-eye-slash');
+                .removeClass('fa-eye')
+                .addClass('fa-eye-slash');
         }
     });
 }

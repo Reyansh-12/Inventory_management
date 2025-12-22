@@ -29,7 +29,9 @@ if (isset($_GET['supplierId'])) {
     <meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern,  html5, responsive">
     <meta name="author" content="Dreamguys - Bootstrap Admin Template">
     <meta name="robots" content="noindex, nofollow">
-    <title>Dreams Pos admin template</title>
+    <title>Supplier List</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <style>
         .toast-timer {
             height: 4px;
@@ -131,21 +133,31 @@ if (isset($_GET['supplierId'])) {
         </div>
     </div>
     <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:1100;">
-        <div id="actionToast" class="toast border-0 text-bg-success" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000" data-bs-autohide="true">
+        <div id="actionToast"
+            class="toast border-0 text-bg-success"
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
+            data-bs-delay="5000"
+            data-bs-autohide="true">
             <div class="d-flex">
                 <div class="toast-body" id="toastMessage"></div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                <button type="button"
+                    class="btn-close btn-close-white me-2 m-auto"
+                    data-bs-dismiss="toast"></button>
             </div>
             <div class="toast-timer"></div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.querySelectorAll('.confirm-delete').forEach(btn => {
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
 
                 const deleteUrl = this.getAttribute('href');
-
                 Swal.fire({
                     title: 'Are you sure?',
                     text: "This product will be permanently deleted!",

@@ -99,6 +99,9 @@ if (isset($_POST['submit'])) {
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@coreui/coreui@5.4.3/dist/css/coreui.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@coreui/coreui@5.4.3/dist/js/coreui.bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         .parsley-required,
         .parsley-minlength,
@@ -121,34 +124,6 @@ if (isset($_POST['submit'])) {
             to {
                 width: 0%;
             }
-        }
-
-        .stylish-datepicker {
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #6c757d;
-            font-size: 15px;
-            transition: 0.3s ease-in-out;
-        }
-
-        .stylish-datepicker:focus {
-            border-color: #3f51b5;
-            box-shadow: 0 0 5px rgba(63, 81, 181, 0.4);
-            outline: none;
-        }
-
-        .ui-datepicker {
-            background: #fff;
-            border: 2px solid #3f51b5;
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 14px;
-        }
-
-        .ui-datepicker-header {
-            background: #3f51b5;
-            color: #fff;
-            border-radius: 8px 8px 0 0;
         }
 
         .ui-state-default {
@@ -208,13 +183,13 @@ if (isset($_POST['submit'])) {
                                 <div class="col-lg-4 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="productName">Product Name <span class="text-danger">*</span></label>
-                                        <input type="text" id="productName" name="productname" value="<?php echo htmlspecialchars($editData['product_name'] ?? '') ?>" placeholder="Product name" maxlength="100" data-parsley-required-message="Product name is required" data-parsley-required data-parsley-trigger="keyup" data-parsley-pattern-message="Product name must be at least 3 characters long">
+                                        <input type="text" id="productName" name="productname" value="<?php echo htmlspecialchars($editData['product_name'] ?? '') ?>" placeholder="Product name" maxlength="500" data-parsley-minlength="3" data-parsley-required-message="Product name is required" data-parsley-required data-parsley-trigger="keyup" data-parsley-pattern-message="Product name must be at least 3 characters long">
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for='categorySelector'>Category <span class="text-danger">*</span></label>
-                                        <select class="form-select" onchange="filterBrandsByCategory()" name="categoryselector" id="categorySelector" data-parsley-required-message="Select category" data-parsley-required>
+                                        <select class="form-select" onchange="filterBrandsByCategory()" name="categoryselector" id="categorySelector" data-parsley-required-message="Select category" maxlength="200" data-parsley-required>
                                             <option disabled selected>Choose Category</option>
                                             <?php
                                             $categories = ['haircare' => 'Hair care', 'skincare' => 'Skin care', 'lipstick' => 'Lip Stick', 'faceskin' => 'Face Skin', 'blusher' => 'Blusher', 'natural' => 'Natural'];
@@ -229,7 +204,7 @@ if (isset($_POST['submit'])) {
                                 <div class="col-lg-4 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for='brand'>Brand <span class="text-danger">*</span></label>
-                                        <select class="form-select" id="brandSelect" name="brand" disabled data-parsley-required-message="Select brand" data-parsley-required>
+                                        <select class="form-select" id="brandSelect" name="brand" disabled data-parsley-required-message="Select brand" maxlength="500" data-parsley-required>
                                             <option disabled selected>Choose Brand</option>
                                             <?php
                                             $brands = [
@@ -292,7 +267,7 @@ if (isset($_POST['submit'])) {
                                     <div class="form-group">
                                         <label for="price">Price per unit <span class="text-danger">*</span></label>
                                         <div class="input-group">
-                                            <input type="number" onkeydown="return event.key !== '-'" class="form-control p-2" min="0" max="99.99" step="0.01" value="<?php echo htmlspecialchars($editData['price'] ?? '') ?>" name="price" id="price" placeholder="Price per unit" data-parsley-required-message="Price field is required" data-parsley-required data-parsley-errors-container="#priceError">
+                                            <input type="number" onkeydown="return event.key !== '-'" class="form-control p-2" min="0" maxlength="1000000" step="0.01" value="<?php echo htmlspecialchars($editData['price'] ?? '') ?>" name="price" id="price" placeholder="Price per unit" data-parsley-required-message="Price field is required" data-parsley-required data-parsley-errors-container="#priceError">
                                             <span class="input-group-text" id="discount-suffix">₹</span>
                                         </div>
                                         <div id="priceError" class="text-danger"><?php echo $priceError ?? ""; ?></div>
@@ -301,7 +276,7 @@ if (isset($_POST['submit'])) {
                                 <div class="col-lg-4 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="label"> Status</label>
-                                        <select class="form-select" name="status" id="label" data-parsley-id="1601">
+                                        <select class="form-select" name="status" id="label" data-parsley-id="1601" maxlength="200">
                                             <option value="" disabled <?= empty($editData['status']) ? 'selected' : '' ?>>Choose Status</option>
                                             <option value="Active" <?= ($editData['status'] ?? '') == 'Active' ? 'selected' : '' ?>>Active</option>
                                             <option value="Inactive" <?= ($editData['status'] ?? '') == 'Inactive' ? 'selected' : '' ?>>Inactive</option>
@@ -312,7 +287,7 @@ if (isset($_POST['submit'])) {
                                     <div class="form-group">
                                         <label for="productImage"> Product Image <span class="text-danger">*</span></label>
                                         <div class="image-upload mb-0">
-                                            <input type="file" name="imageBox" id="productImage" accept="image/*" <?= $isEdit ? '' : 'required' ?>>
+                                            <input type="file" name="imageBox" id="productImage" accept="image/*" <?= $isEdit ? '' : 'required' ?> maxlength="2000">
                                             <div class="image-uploads">
                                                 <img src="/Backend/assets/images/icons/upload.svg" alt="img">
                                                 <h4 id="imageUploadTitle">
@@ -352,6 +327,7 @@ if (isset($_POST['submit'])) {
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
     <script>
         document.getElementById('productImage').addEventListener('change', function() {
             const file = this.files[0];
@@ -439,25 +415,26 @@ if (isset($_POST['submit'])) {
             });
         }
 
-        $(function() {
-            const isEditMode = <?= $isEdit ? 'true' : 'false' ?>;
-            let minDateValue = isEditMode && $('#datepicker').val() ? null : +1;
-            $("#datepicker").datepicker({
-                dateFormat: "yy-mm-dd",
-                changeMonth: true,
-                changeYear: true,
-                showAnim: "fadeIn",
-                minDate: minDateValue,
-                beforeShow: function() {
-                    setTimeout(() => {
-                        $('.ui-datepicker').css('z-index', 9999);
-                    }, 0);
-                },
-                onSelect: function() {
-                    $(this).parsley().validate();
-                }
-            });
-        });
+        // $(function() {
+        //     const isEditMode = <?= $isEdit ? 'true' : 'false' ?>;
+        //     let minDateValue = isEditMode && $('#datepicker').val() ? null : +1;
+        //     $("#datepicker").datepicker({
+        //         dateFormat: "yy-mm-dd",
+        //         changeMonth: true,
+        //         changeYear: true,
+        //         showAnim: "fadeIn",
+        //         minDate: minDateValue,
+        //         beforeShow: function() {
+        //             setTimeout(() => {
+        //                 $('.ui-datepicker').css('z-index', 9999);
+        //             }, 0);
+        //         },
+        //         onSelect: function() {
+        //             $(this).parsley().validate();
+        //         }
+        //     });
+        // });
+        
     </script>
     <script>
         document.getElementById('productImage').addEventListener('change', function() {
@@ -501,6 +478,9 @@ if (isset($_POST['submit'])) {
                 window.location.href = "ProductList.php";
             }
         });
+    </script>
+    <script>
+        
     </script>
 </body>
 

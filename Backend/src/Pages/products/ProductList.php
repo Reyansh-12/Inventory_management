@@ -60,7 +60,7 @@ $result = $con->query($sql);
         </div>
         <div class="page-wrapper" style="padding-top: 40px;">
             <div class="content">
-                <div class="page-header">
+                <div class="page-header mt-3">
                     <div class="page-title">
                         <h4>Cosmetic Product List</h4>
                         <h6>Manage your products</h6>
@@ -85,7 +85,7 @@ $result = $con->query($sql);
                             </div>
                         </div>
                         <div class="table-responsive">
-                            <table class="table datanew" id="myTable">
+                            <table class="table datanew">
                                 <thead>
                                     <tr>
                                         <th>Product Name</th>
@@ -189,20 +189,6 @@ $result = $con->query($sql);
                 toast.show();
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
-        });
-        $(document).ready(function() {
-            $('#myTable').DataTable({
-                "pageLength": 10,
-                "lengthMenu": [5, 10, 25, 50, 100],
-                "pagingType": "full_numbers",
-                "order": [
-                    [0, "asc"]
-                ],
-                "columnDefs": [{
-                    "orderable": false,
-                    "targets": 6
-                }]
-            });
         });
     </script>
 </body>

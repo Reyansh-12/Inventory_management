@@ -26,7 +26,9 @@ $result = $con->query($sql);
     <meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern,  html5, responsive">
     <meta name="author" content="Dreamguys - Bootstrap Admin Template">
     <meta name="robots" content="noindex, nofollow">
-    <title>Dreams Pos admin template</title>
+    <title>User List</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <style>
         .toast-timer {
             height: 4px;
@@ -85,7 +87,7 @@ $result = $con->query($sql);
                         </div>
 
                     <div class="table-responsive">
-                        <table class="table  datanew">
+                        <table class="table datanew">
                             <thead>
                                 <tr>
                                     <th>User name </th>
@@ -107,7 +109,8 @@ $result = $con->query($sql);
                                         echo "    <td><a href='/cdn-cgi/l/email-protection' class='__cf_email__' data-cfemail='fb8f9394969a88bb9e839a968b979ed5989496'>" . $row['user_email'] . "</a> </td>";
                                         echo "    <td>" . $row['user_role'] . "</td>";
                                         echo "    <td>" . $row['created_at'] . "</td>";
-                                        echo "    <td><span class='bg-lightgreen badges'>Active</span></td>";
+                                        $statusClass = strtolower($row['status']) === 'active' ? 'bg-success' : 'bg-danger';
+                                        echo "<td><span class='badge $statusClass shadow-sm'>" . htmlspecialchars($row['status']) . "</span></td>";
                                         echo "    <td>";
                                         echo "        <a class='me-3' href='/Backend/src/Pages/Users/NewUser.php?userId=" . $row['id'] . "' data-bs-toggle='tooltip' data-bs-title='Edit'>";
                                         echo "            <img src='/Backend/src/assets/images/icons/edit.svg' alt='img'>";
@@ -139,61 +142,57 @@ $result = $con->query($sql);
     </div>
 </div>
 <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:1100;">
-    <div id="actionToast"
-         class="toast border-0 text-bg-success"
-         role="alert"
-         aria-live="assertive"
-         aria-atomic="true"
-         data-bs-delay="5000"
-         data-bs-autohide="true">
-        <div class="d-flex">
-            <div class="toast-body" id="toastMessage"></div>
-            <button type="button"
+        <div id="actionToast"
+            class="toast border-0 text-bg-success"
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
+            data-bs-delay="5000"
+            data-bs-autohide="true">
+            <div class="d-flex">
+                <div class="toast-body" id="toastMessage"></div>
+                <button type="button"
                     class="btn-close btn-close-white me-2 m-auto"
                     data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-timer"></div>
         </div>
-        <div class="toast-timer"></div>
     </div>
-</div>
-  <script>
-document.querySelectorAll('.confirm-delete').forEach(btn => {
-    btn.addEventListener('click', function (e) {
-        e.preventDefault();
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.querySelectorAll('.confirm-delete').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
 
-        const deleteUrl = this.getAttribute('href');
+                const deleteUrl = this.getAttribute('href');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "This product will be permanently deleted!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = deleteUrl;
+                    }
+                });
+            });
+        });
 
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "This product will be permanently deleted!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'Cancel'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = deleteUrl;
+        document.addEventListener("DOMContentLoaded", function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('deleted') === '1') {
+                const toastEl = document.getElementById('deleteToast');
+                const toast = new bootstrap.Toast(toastEl);
+                toast.show();
+                window.history.replaceState({}, document.title, window.location.pathname);
             }
         });
-    });
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    const urlParams = new URLSearchParams(window.location.search);
-
-    if (urlParams.get('deleted') === '1') {
-
-        const toastEl = document.getElementById('deleteToast');
-        const toast = new bootstrap.Toast(toastEl);
-        toast.show();
-
-        // URL clean (optional but professional)
-        window.history.replaceState({}, document.title, window.location.pathname);
-    }
-
-});
-</script>
+    </script>
 </body>
 </html>

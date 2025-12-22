@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/../config/path.php";
 include(BASE_PATH . "/Backend/src/Layouts/Links.php");
+include(BASE_PATH . '/Backend/src/controllers/dbConnection.php');
 session_start();
 
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
@@ -10,6 +11,32 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Admin') {
     header("Location: /Backend/src/Pages/Auth/signin.php");
     exit();
 }
+
+function getCount($table) {
+    global $con;
+
+    $allowedTables = [
+        'new_user',
+        'supplier',
+        'product_list',
+    ];
+
+    if (!in_array($table, $allowedTables)) {
+        return 0;
+    }
+    $query = "SELECT COUNT(*) AS total FROM `$table`";
+    $result = mysqli_query($con, $query);
+
+    if ($result) {
+        $row = mysqli_fetch_assoc($result);
+        return $row['total'];
+    }
+    return 0;
+}
+
+$expiredProducts = "SELECT `id`, `product_name`, `category`, `brand_name`, `expired_date` FROM `product_list` WHERE expired_date <= CURDATE()";
+$result = $con->query($expiredProducts);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -21,6 +48,8 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Admin') {
     <meta name="author" content="Dreamguys - Bootstrap Admin Template">
     <meta name="robots" content="noindex, nofollow">
     <title>Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.dataTables.css" />
+    
 </head>
 <body>
     <div id="global-loader">
@@ -85,7 +114,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Admin') {
                     <div class="col-lg-3 col-sm-6 col-12 d-flex">
                         <div class="dash-count">
                             <div class="dash-counts">
-                                <h4>100</h4>
+                                <h4><?= getCount('new_user') ?></h4>
                                 <h5>Beauty Customers</h5>
                             </div>
                             <div class="dash-imgs">
@@ -96,7 +125,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Admin') {
                     <div class="col-lg-3 col-sm-6 col-12 d-flex">
                         <div class="dash-count das1">
                             <div class="dash-counts">
-                                <h4>100</h4>
+                                <h4><?= getCount('product_list') ?></h4>
                                 <h5>Cosmetic Brands</h5>
                             </div>
                             <div class="dash-imgs">
@@ -107,7 +136,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Admin') {
                     <div class="col-lg-3 col-sm-6 col-12 d-flex">
                         <div class="dash-count das2">
                             <div class="dash-counts">
-                                <h4>100</h4>
+                                <h4><?= getCount('supplier') ?></h4>
                                 <h5>Purchase Orders</h5>
                             </div>
                             <div class="dash-imgs">
@@ -249,11 +278,10 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Admin') {
                     <div class="card-body">
                         <h4 class="card-title">Expired Products</h4>
                         <div class="table-responsive dataview">
-                            <table class="table datatable ">
+                            <table class="table datatable" id='expiredTable'>
                                 <thead>
                                     <tr>
-                                        <th>SNo</th>
-                                        <th>Product Code</th>
+                                        
                                         <th>Product Name</th>
                                         <th>Brand Name</th>
                                         <th>Category Name</th>
@@ -261,7 +289,25 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Admin') {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
+                                <?php
+                                    if (!$result) {
+                                        echo "Error: " . $con->error;
+                                    } else {
+                                        if ($result->num_rows > 0) {
+                                            while ($row = $result->fetch_assoc()) {
+                                                echo "<tr>";
+                                                echo "    <td class='productimgname'>";
+                                                echo "        <a href='javascript:void(0);' class='text-truncate w-50' data-bs-toggle='tooltip' data-bs-title='" . $row['product_name'] . "'>" . $row['product_name'] . "</a>";
+                                                echo "    </td>";
+                                                echo "    <td>".$row['brand_name']."</td>";
+                                                echo "    <td>".$row['category']."</td>";
+                                                echo "    <td>" . $row['expired_date'] . "</td>";
+                                                echo "</tr>";
+                                            }
+                                        }
+                                    }
+                                    ?>
+                                    <!-- <tr>
                                         <td>1</td>
                                         <td><a href="javascript:void(0);">IT0001</a></td>
                                         <td class="productimgname">
@@ -312,7 +358,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Admin') {
                                         <td>N/D</td>
                                         <td>Fruits</td>
                                         <td>20-11-2022</td>
-                                    </tr>
+                                    </tr> -->
                                 </tbody>
                             </table>
                         </div>
@@ -321,5 +367,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Admin') {
             </div>
         </div>
     </div>
+    
 </body>
 </html>

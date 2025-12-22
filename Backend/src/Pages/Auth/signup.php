@@ -50,8 +50,7 @@ if (!preg_match($strongPasswordPattern, $password)) {
     <link rel="shortcut icon" type="image/x-icon" href="/Backend/src/assets/images/favicon.jpg">
     <link rel="stylesheet" href="/Backend/src/assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="/Backend/src/assets/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.13.1/font/bootstrap-icons.min.css" integrity="sha512-t7Few9xlddEmgd3oKZQahkNI4dS6l80+eGEzFQiqtyVYdvcSG2D3Iub77R20BdotfRPA9caaRkg1tyaJiPmO0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         .parsley-required, .parsley-minlength, .parsley-type,.parsley-pattern{
             color: orangered;
@@ -87,8 +86,7 @@ if (!preg_match($strongPasswordPattern, $password)) {
                                 <label for="contact">Phone Number</label>
                                 <div class="form-addons">
                                     <input type="text" name='contact' id='contact' placeholder="Enter phone number" maxlength="10" data-parsley-type="digits" data-parsley-length="[10,10]" data-parsley-required-message="Phone number is required" data-parsley-required>
-                                    <!-- <i class="bi bi-telephone toggle-password" style="color: #605d5d; pointer-events: none;"></i> -->
-                                     <img src="/Backend/src/assets/images/icons/phone.svg" alt="img">
+                                    <i class="fa-solid toggle-password fa-phone position-absolute" style="top: 20px; color:rgba(138, 135, 135, 0.93); font-size: 13px"></i>
                                 </div>
                             </div>
                             
@@ -103,7 +101,7 @@ if (!preg_match($strongPasswordPattern, $password)) {
                                 <label for="password">Password</label>
                                 <div class="form-addons position-relative">
                                     <input type="password" name='userpassword' id='password' data-parsley-trigger="keyup" class="pass-input" placeholder="........." data-parsley-minlength="8" data-parsley-required-message="Password is required" data-parsley-required data-parsley-pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()_+\-=\[\]{};':\\|,.<>\/?]).{8,16}$" data-parsley-pattern-message="Password must be 8–16 characters with uppercase, lowercase, number & special character">
-                                    <i class="bi bi-eye-slash toggle-password" style="color: #605d5d"></i>
+                                    <span class="fas toggle-password fa-eye-slash position-absolute" style="top: 20px; color:rgba(138, 135, 135, 0.93); font-size: 13px"></span>
                                 </div>
                             </div>  
                             <div class="form-login">
@@ -164,23 +162,21 @@ if (!preg_match($strongPasswordPattern, $password)) {
         if (input.attr('type') === 'password') {
             input.attr('type', 'text');
             $(this)
-                .removeClass('bi-eye-slash')
-                .addClass('bi-eye');
+                .removeClass('fa-eye-slash')
+                .addClass('fa-eye');
         } else {
             input.attr('type', 'password');
             $(this)
-                .removeClass('bi-eye')
-                .addClass('bi-eye-slash');
+                .removeClass('fa-eye')
+                .addClass('fa-eye-slash');
         }
     });
 
 $('#email').on('input', function () {
     let value = $(this).val();
 
-    // Allow letters, numbers, @ and .
     value = value.replace(/[^a-zA-Z0-9@.]/g, '');
 
-    // Force first character to be a letter
     if (value.length === 1 && !/^[A-Za-z]$/.test(value)) {
         value = '';
     }

@@ -165,7 +165,7 @@ if (isset($_POST['submit'])) {
                                 </div>
                             </div>
                             <div class="col-lg-12 d-flex justify-content-end">
-                                <button class="btn btn-cancel me-2" type="reset" name="reset" id="resetButton"><?= $userId ? 'Back' : 'Reset' ?></button>
+                                <button class="btn btn-cancel me-2" type="<?= $userId ? 'button' : 'reset' ?>" name="reset" id="resetButton"><?= $userId ? 'Back' : 'Reset' ?></button>
                                 <button class="btn btn-submit" name="submit" type="submit"><?= $userId ? 'Update' : 'Submit' ?></button>
                             </div>
                         </div>
@@ -208,6 +208,11 @@ if (isset($_POST['submit'])) {
         }
     });
 }
+            $('#resetButton').on('click', function() {
+            if (<?= $userId ? 'true' : 'false' ?>) {
+                window.location.href = "UsersList.php";
+            }
+        });
     </script>
 </body>
 

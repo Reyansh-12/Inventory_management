@@ -163,7 +163,7 @@ if(isset($_POST['submit'])) {
             </div>
         </div>
         <div class="col-lg-12 d-flex justify-content-end">
-            <button class="btn btn-cancel me-2" type="reset" id="resetButton"><?= $supplierId ? 'Back' : 'Reset' ?></button>
+            <button class="btn btn-cancel me-2" type="<?= $supplierId ? 'button' : 'reset' ?>" id="resetButton"><?= $supplierId ? 'Back' : 'Reset' ?></button>
             <button class="btn btn-submit" name="submit" type="submit"><?= $supplierId ? 'Update' : 'Submit' ?></button>
         </div>
     </div>
@@ -183,6 +183,11 @@ if(isset($_POST['submit'])) {
             let inputValue = $(this).val();
             let filteredValue = inputValue.replace(/[^0-9]/g, '');
             $(this).val(filteredValue);
+        });
+        $('#resetButton').on('click', function() {
+            if (<?= $supplierId ? 'true' : 'false' ?>) {
+                window.location.href = "/Backend/src/Pages/supplierlist.php";
+            }
         });
     </script>
 </body>

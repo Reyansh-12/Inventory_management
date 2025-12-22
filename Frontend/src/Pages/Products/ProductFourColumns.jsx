@@ -68,7 +68,7 @@ const relatedProducts = products.slice(0, 3);
           {categories.map((cat) => (
             <div key={cat.id} className="col-6 col-lg-2">
               <button
-                  className={`product-category-item ${selectedCategory === cat.category ? "active" : ""}`}
+                  className={`product-category-item w-100 ${selectedCategory === cat.category ? "active" : ""}`}
                   style={{ backgroundColor: cat.bgColor, border: "none" }}
                   onClick={() => setSelectedCategory(cat.category)}
                 >
