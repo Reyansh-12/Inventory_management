@@ -40,7 +40,10 @@ $result = $con->query($sql);
             z-index: 999;
             animation: shrink 4s linear forwards;
         }
-        
+        .swal2-icon-content{
+            margin-left: 537%;
+            margin-top: 48%;
+        }
     </style>
 </head>
 

@@ -20,18 +20,20 @@ if ($productId) {
     mysqli_stmt_close($stmt);
 }
 
+
 if (isset($_POST['submit'])) {
+   
     $productname = $_POST['productname'] ?? '';
-    $category = $_POST['categoryselector'] ?? '';
-    $brandName = $_POST['brand'] ?? '';
-    $minquantity = $_POST['minquantity'] ?? '';
-    $quantity = $_POST['quantity'] ?? '';
-    $description = $_POST['description'] ?? '';
-    $discount = $_POST['discount'] ?? '';
-    $price = $_POST['price'] ?? '';
-    $status = $_POST['status'] ?? '';
-    $expiredDate = $_POST['expiredDate'] ?? '';
-    $imagePath = $editData['image_path'] ?? null;
+$category = $_POST['categoryselector'] ?? '';
+$brandName = $_POST['brand'] ?? '';
+$minquantity = $_POST['minquantity'] ?? '';
+$quantity = $_POST['quantity'] ?? '';
+$description = $_POST['description'] ?? '';
+$discount = $_POST['discount'] ?? '';
+$price = $_POST['price'] ?? '';
+$status = $_POST['status'] ?? '';
+$expiredDate = $_POST['expiredDate'] ?? '';
+$imagePath = $editData['image_path'] ?? null;
 
     if (isset($_FILES['imageBox']) && $_FILES['imageBox']['error'] === 0) {
         $uploadDir = BASE_PATH . DIRECTORY_SEPARATOR .
@@ -69,12 +71,13 @@ if (isset($_POST['submit'])) {
         mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
     } else {
-        $stmt = mysqli_prepare($con, "INSERT INTO `product_list` 
+            $stmt = mysqli_prepare($con, "INSERT INTO `product_list` 
             (product_name, category, brand_name, minQuantity, price, quantity, description, discount, status, image_path, expired_date) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ?)");
-        mysqli_stmt_bind_param($stmt, "sssiddsssss", $productname, $category, $brandName, $minquantity, $price, $quantity, $description, $discount, $status, $imagePath, $expiredDate);
-        mysqli_stmt_execute($stmt);
-        mysqli_stmt_close($stmt);
+            mysqli_stmt_bind_param($stmt, "sssiddsssss", $productname, $category, $brandName, $minquantity, $price, $quantity, $description, $discount, $status, $imagePath, $expiredDate);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
+        
     }
     if ($isEdit) {
         header("Location: ProductList.php?updated=1");
@@ -83,6 +86,7 @@ if (isset($_POST['submit'])) {
     }
     exit();
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -96,16 +100,13 @@ if (isset($_POST['submit'])) {
     <meta name="author" content="Dreamguys - Bootstrap Admin Template">
     <meta name="robots" content="noindex, nofollow">
     <title>Dreams Pos admin template</title>
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/@coreui/coreui@5.4.3/dist/css/coreui.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@coreui/coreui@5.4.3/dist/js/coreui.bundle.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
+    
     <style>
         .parsley-required,
         .parsley-minlength,
-        .parsley-gteMinquantity {
+        .parsley-gteMinquantity, .parsley-custom-error-message {
             color: orangered;
         }
 
@@ -140,6 +141,14 @@ if (isset($_POST['submit'])) {
             background: #3f51b5 !important;
             color: #fff !important;
             border-radius: 5px;
+        }
+        .ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight {
+            border: none !important;
+        }
+        .ui-state-highlight a, .ui-widget-content .ui-state-highlight a, .ui-widget-header .ui-state-highlight a {
+            background: #003980 !important;
+            color: white !important;
+            text-align: center;
         }
     </style>
 
@@ -183,7 +192,10 @@ if (isset($_POST['submit'])) {
                                 <div class="col-lg-4 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="productName">Product Name <span class="text-danger">*</span></label>
-                                        <input type="text" id="productName" name="productname" value="<?php echo htmlspecialchars($editData['product_name'] ?? '') ?>" placeholder="Product name" maxlength="500" data-parsley-minlength="3" data-parsley-required-message="Product name is required" data-parsley-required data-parsley-trigger="keyup" data-parsley-pattern-message="Product name must be at least 3 characters long">
+                                        <input type="text" id="productName" name="productname" value="<?php echo htmlspecialchars($editData['product_name'] ?? '') ?>" placeholder="Product name" oninput="validateProductName()" maxlength="500" data-parsley-required data-parsley-required-message="Product name is required">
+                                        <small id="productNameError" class="text-danger" style="display:none;">
+                                            Product name must be at least 3 characters long
+                                        </small>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-6 col-12">
@@ -228,21 +240,35 @@ if (isset($_POST['submit'])) {
                                 </div>
                                 <div class="col-lg-4 col-sm-4 col-12">
                                     <div class="form-group">
-                                        <label for='minQuantity'>Min Quantity <span class="text-danger">*</span></label>
-                                        <input type="number" class="p-2 rounded col-lg-12 border-secondary border-1 border-secondary border" value="<?php echo htmlspecialchars($editData['minQuantity'] ?? '') ?>" name="minquantity" id="minQuantity" placeholder="Min Quantity" data-parsley-required-message="Minimum quantity field is required" data-parsley-required>
+                                        <label for="minQuantity">Min Quantity <span class="text-danger">*</span></label>
+                                        <input type="number" class="p-2 rounded col-lg-12 border border-secondary" value="<?php echo htmlspecialchars($editData['minQuantity'] ?? ''); ?>" name="minquantity" id="minQuantity" placeholder="Min Quantity" oninput="validateQuantity()" data-parsley-required data-parsley-error-message="Minimum quantity is required">
+                                        <small id="minQuantityError" class="text-danger" style="display:none;"></small>
                                     </div>
                                 </div>
+
                                 <div class="col-lg-4 col-sm-4 col-12">
                                     <div class="form-group">
-                                        <label for='quantity'>Max Quantity <span class="text-danger">*</span></label>
-                                        <input type="number" name="quantity" id="quantity" class="p-2 rounded col-lg-12 border-secondary border-1 border-secondary border" value="<?php echo htmlspecialchars($editData['quantity'] ?? '') ?>" placeholder="Max Quantity" data-parsley-gte-minquantity data-parsley-required data-parsley-required-message="Quantity field is required">
+                                        <label for="quantity">Max Quantity <span class="text-danger">*</span></label>
+                                        <input type="number" name="quantity" id="quantity" class="p-2 rounded col-lg-12 border border-secondary" value="<?php echo htmlspecialchars($editData['quantity'] ?? ''); ?>" placeholder="Max Quantity" oninput="validateQuantity()" data-parsley-required data-parsley-error-message="Maximum quantity is required">
+                                        <small id="quantityError" class="text-danger" style="display:none;">Max quantity must be greater than or equal to Min quantity</small>
                                     </div>
                                 </div>
+
                                 <div class="col-lg-4 col-sm-4 col-12">
                                     <div class="form-group">
                                         <label for='datepicker'>Expired Date <span class="text-danger">*</span></label>
                                         <!-- <input type="text" class="p-2 rounded col-lg-12 border-secondary border-1 border-secondary border" name="expiredDate" id="datepicker" placeholder="Select expired date" value="<?php echo htmlspecialchars($editData['expired_date'] ?? '') ?>" data-parsley-required-message="Expired date is required" data-parsley-required> -->
-                                        <input type="text" class="form-control" name="expiredDate" id="datepicker" placeholder="Select expired date" autocomplete="off" value="<?php echo htmlspecialchars($editData['expired_date'] ?? '') ?>" data-parsley-required data-parsley-required-message="Expired date is required">
+                                        <!-- <input type="text" class="form-control" name="expiredDate" id="newdatepicker" placeholder="Select expired date" autocomplete="off" value="<?php echo htmlspecialchars($editData['expired_date'] ?? '') ?>" data-parsley-required data-parsley-required-message="Expired date is required"> -->
+                                        <input type="text"
+       class="form-control"
+       name="expiredDate"
+       id="datepicker"
+       placeholder="Select expired date"
+       autocomplete="off"
+       value="<?= htmlspecialchars($editData['expired_date'] ?? '') ?>"
+       data-parsley-required
+       data-parsley-required-message="Expired date is required">
+
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-4 col-12"></div>
@@ -287,7 +313,7 @@ if (isset($_POST['submit'])) {
                                     <div class="form-group">
                                         <label for="productImage"> Product Image <span class="text-danger">*</span></label>
                                         <div class="image-upload mb-0">
-                                            <input type="file" name="imageBox" id="productImage" accept="image/*" <?= $isEdit ? '' : 'required' ?> maxlength="2000">
+                                            <input type="file" name="imageBox" id="productImage" accept="image/*" maxlength="2000" data-parsley-required data-parsley-error-message="Image is required" data-parsley-errors-container="#imageError">
                                             <div class="image-uploads">
                                                 <img src="/Backend/assets/images/icons/upload.svg" alt="img">
                                                 <h4 id="imageUploadTitle">
@@ -326,9 +352,45 @@ if (isset($_POST['submit'])) {
             <div class="toast-timer" style="height: 4px; background: rgba(0,0,0,0.2); animation: shrink 3s linear forwards;"></div>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+    $(document).ready(function() {
+    const isEditMode = <?= $isEdit ? 'true' : 'false' ?>;
+    const existingDate = $('#datepicker').val(); 
+
+    $("#datepicker").datepicker({
+        dateFormat: "yy-mm-dd",
+        changeMonth: true,
+        changeYear: true,
+        showAnim: "fadeIn",
+        minDate: isEditMode && existingDate ? null : 0,
+        beforeShow: function(input, inst) {
+            setTimeout(() => {
+                $('.ui-datepicker').css('z-index', 9999);
+            }, 0);
+        },
+        beforeShowDay: function(date) {
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            if (date.getTime() === today.getTime()) {
+                return [true, "ui-state-highlight", "Today"];
+            }
+            return [true, ""];
+        },
+        onSelect: function(dateText, inst) {
+            $(this).parsley().validate();
+        }
+    });
+
+    if(isEditMode && existingDate) {
+        $('#datepicker').parsley().validate();
+    }
+});
+</script>
+    <script>
+   
         document.getElementById('productImage').addEventListener('change', function() {
             const file = this.files[0];
             const title = document.getElementById('imageUploadTitle');
@@ -345,7 +407,6 @@ if (isset($_POST['submit'])) {
             }
         });
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -414,26 +475,6 @@ if (isset($_POST['submit'])) {
                 }
             });
         }
-
-        // $(function() {
-        //     const isEditMode = <?= $isEdit ? 'true' : 'false' ?>;
-        //     let minDateValue = isEditMode && $('#datepicker').val() ? null : +1;
-        //     $("#datepicker").datepicker({
-        //         dateFormat: "yy-mm-dd",
-        //         changeMonth: true,
-        //         changeYear: true,
-        //         showAnim: "fadeIn",
-        //         minDate: minDateValue,
-        //         beforeShow: function() {
-        //             setTimeout(() => {
-        //                 $('.ui-datepicker').css('z-index', 9999);
-        //             }, 0);
-        //         },
-        //         onSelect: function() {
-        //             $(this).parsley().validate();
-        //         }
-        //     });
-        // });
         
     </script>
     <script>
@@ -480,8 +521,42 @@ if (isset($_POST['submit'])) {
         });
     </script>
     <script>
-        
-    </script>
+function validateProductName() {
+    const input = document.getElementById('productName');
+    const error = document.getElementById('productNameError');
+
+    if (input.value.length > 0 && input.value.length < 3) {
+        error.style.display = 'block';
+    } else {
+        error.style.display = 'none';
+    }
+}
+</script>
+<script>
+function validateQuantity() {
+    const minInput = document.getElementById('minQuantity');
+    const maxInput = document.getElementById('quantity');
+
+    const minError = document.getElementById('minQuantityError');
+    const maxError = document.getElementById('quantityError');
+
+    const minValue = minInput.value;
+    const maxValue = maxInput.value;
+
+    if (minValue === '') {
+        minError.style.display = 'block';
+    } else {
+        minError.style.display = 'none';
+    }
+
+    if (maxValue !== '' && minValue !== '' && Number(maxValue) < Number(minValue)) {
+        maxError.style.display = 'block';
+    } else {
+        maxError.style.display = 'none';
+    }
+}
+</script>
+
 </body>
 
 </html>
