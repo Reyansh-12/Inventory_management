@@ -115,7 +115,7 @@ if (isset($_POST['submit'])) {
                                 </div>
                                 <div class="form-group">
                                     <label for="userEmail">Email <span class="text-danger">*</span></label>
-                                    <input type="text" id="userEmail" name="userEmail" value="<?php echo htmlspecialchars($editData['user_email'] ?? ''); ?>" placeholder="User email" data-parsley-type="email" data-parsley-required-message="Enter your email address" data-parsley-required>
+                                    <input type="text" id="userEmail" name="userEmail" value="<?php echo htmlspecialchars($editData['user_email'] ?? ''); ?>" placeholder="User email" data-parsley-type="email" data-parsley-pattern="^[A-Za-z][A-Za-z0-9]*@[A-Za-z0-9]+\.[A-Za-z]{2,}$" data-parsley-required-message="Email is required" data-parsley-required data-parsley-pattern-message="Email must start with a letter and contain only letters & numbers">
                                     <span class="text-danger" id="emailError"><?php echo $emailError ?? ""; ?></span>
                                 </div>
                                 <div class="form-group">
@@ -176,16 +176,27 @@ if (isset($_POST['submit'])) {
     </div>
     </div>
     <script>
-        $('#userName').on('input', function() {
-            let inputValue = $(this).val();
-            let filteredValue = inputValue.replace(/[0-9]/g, '');
-            $(this).val(filteredValue);
-        });
+        $('#userName').on('input', function () {
+    let value = $(this).val();
+    value = value.replace(/[^a-zA-Z\s]/g, '');
+    $(this).val(value);
+});
         $('#contact').on('input', function() {
             let inputValue = $(this).val();
             let filteredValue = inputValue.replace(/[^0-9]/g, '');
             $(this).val(filteredValue);
         });
+        $('#userEmail').on('input', function () {
+    let value = $(this).val();
+
+    value = value.replace(/[^a-zA-Z0-9@.]/g, '');
+
+    if (value.length === 1 && !/^[A-Za-z]$/.test(value)) {
+        value = '';
+    }
+
+    $(this).val(value);
+});
         let parsleyForm = $('#myForm').parsley();
         $('#resetButton').on('click', function() {
             parsleyForm.reset();

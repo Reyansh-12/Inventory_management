@@ -86,7 +86,7 @@ if (!preg_match($strongPasswordPattern, $password)) {
                                 <label for="contact">Phone Number</label>
                                 <div class="form-addons">
                                     <input type="text" name='contact' id='contact' placeholder="Enter phone number" maxlength="10" data-parsley-type="digits" data-parsley-length="[10,10]" data-parsley-required-message="Phone number is required" data-parsley-required>
-                                    <i class="fa-solid toggle-password fa-phone position-absolute" style="top: 20px; color:rgba(138, 135, 135, 0.93); font-size: 13px"></i>
+                                    <i class="fa-solid toggle-password pe-none fa-phone position-absolute" style="top: 20px; color:rgba(138, 135, 135, 0.93); font-size: 13px"></i>
                                 </div>
                             </div>
                             
@@ -145,17 +145,30 @@ if (!preg_match($strongPasswordPattern, $password)) {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
     <script src="/Backend/src/assets/js/script.js"></script>
     <script>
-        $('#userName').on('input', function() {
-            let inputValue = $(this).val();
-            let filteredValue = inputValue.replace(/[0-9]/g, '');
-            $(this).val(filteredValue);
-        });
+        $('#userName').on('input', function () {
+    let value = $(this).val();
+    value = value.replace(/[^a-zA-Z\s]/g, '');
+    $(this).val(value);
+});
+
         $('#contact').on('input', function() {
             let inputValue = $(this).val();
             let filteredValue = inputValue.replace(/[^0-9]/g, '');
             $(this).val(filteredValue);
         });
 
+$('#email').on('input', function () {
+    let value = $(this).val();
+
+    value = value.replace(/[^a-zA-Z0-9@.]/g, '');
+
+    if (value.length === 1 && !/^[A-Za-z]$/.test(value)) {
+        value = '';
+    }
+
+    $(this).val(value);
+});
+if ($('.toggle-password').length > 0) {
     $(document).on('click', '.toggle-password', function () {
         const input = $('.pass-input');
 
@@ -171,29 +184,7 @@ if (!preg_match($strongPasswordPattern, $password)) {
                 .addClass('fa-eye-slash');
         }
     });
-
-$('#email').on('input', function () {
-    let value = $(this).val();
-
-    value = value.replace(/[^a-zA-Z0-9@.]/g, '');
-
-    if (value.length === 1 && !/^[A-Za-z]$/.test(value)) {
-        value = '';
-    }
-
-    $(this).val(value);
-});
-$(document).on('click', '.toggle-password', function () {
-    const input = $('.pass-input');
-
-    if (input.attr('type') === 'password') {
-        input.attr('type', 'text');
-        $(this).removeClass('bi-eye-slash').addClass('bi-eye');
-    } else {
-        input.attr('type', 'password');
-        $(this).removeClass('bi-eye').addClass('bi-eye-slash');
-    }
-});
+}
 $('#password').on('keyup', function () {
     $(this).parsley().validate();
 });

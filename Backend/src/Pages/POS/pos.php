@@ -17,6 +17,22 @@ $result = $con->query($sql);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <style>
+        .parsley-minlength{
+            color: red !important;
+        }
+    </style>
+    <style>
+.cart-product-name {
+    max-width: 140px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    vertical-align: middle;
+}
+</style>
+
 </head>
 <body>
     <div id="global-loader"><div class="whirly-loader"></div></div>
@@ -99,8 +115,8 @@ $result = $con->query($sql);
                                                         </div>
 
                                                         <div>
-                                                            <h6 class="text-muted mb-1 small"><?php echo $category; ?></h6>
-                                                            <h5 class="mb-1"><?php echo $name; ?></h5>
+                                                            <h6 class="text-muted mb-1 small text-truncate w-100" data-bs-toggle='tooltip' style="width: 100px" data-bs-title="<?php echo htmlspecialchars($category); ?>"><?php echo $category; ?></h6>
+                                                            <h5 class="mb-1 text-truncate w-100" data-bs-toggle='tooltip' data-bs-title="<?php echo htmlspecialchars($name); ?>" style="width: 150px"><?php echo $name; ?></h5>
                                                             <h6 class="text-primary">₹<?php echo $price; ?></h6>
                                                         </div>
 
@@ -160,7 +176,7 @@ $result = $con->query($sql);
                                                     </tr>
                                                 </thead>
                                                 <tbody id="cartBody">
-                                            
+                                                    
                                                 </tbody>
                                             </table>
                                         </div>
@@ -263,8 +279,37 @@ $result = $con->query($sql);
   return;
 }
 checkoutBtn.disabled = cart.length === 0;
+</script>
+<script>
+$('#customerName').on('input', function () {
+    let value = $(this).val();
+    value = value.replace(/[^a-zA-Z\s]/g, '');
+    $(this).val(value);
+});
+$('#customerEmail').on('input', function () {
+    let value = $(this).val();
+
+    value = value.replace(/[^a-zA-Z0-9@.]/g, '');
+
+    if (value.length === 1 && !/^[A-Za-z]$/.test(value)) {
+        value = '';
+    }
+
+    $(this).val(value);
+});
+$('#customerCity').on('input', function () {
+    let value = $(this).val();
+    value = value.replace(/[^a-zA-Z\s]/g, '');
+    $(this).val(value);
+});
+$('#customerCountry').on('input', function () {
+    let value = $(this).val();
+    value = value.replace(/[^a-zA-Z\s]/g, '');
+    $(this).val(value);
+});
 
 
     </script>
+
 </body>
 </html>

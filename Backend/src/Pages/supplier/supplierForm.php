@@ -117,7 +117,7 @@ if(isset($_POST['submit'])) {
         <div class="col-lg-3 col-sm-6 col-12">
             <div class="form-group">
                 <label for='supplierMail'>Email <span class="text-danger">*</span></label>
-                <input type="text" id='supplierMail' name="supplierEmail" value="<?= htmlspecialchars($email) ?>" placeholder="Supplier email" data-parsley-required-message="Email is required" data-parsley-required>
+                <input type="text" id='supplierMail' name="supplierEmail" value="<?= htmlspecialchars($email) ?>" placeholder="Supplier email" data-parsley-pattern="^[A-Za-z][A-Za-z0-9]*@[A-Za-z0-9]+\.[A-Za-z]{2,}$" data-parsley-required-message="Email is required" data-parsley-required data-parsley-pattern-message="Email must start with a letter and contain only letters & numbers">
             </div>
         </div>
         <div class="col-lg-3 col-sm-6 col-12">
@@ -179,6 +179,11 @@ if(isset($_POST['submit'])) {
         $('#resetButton').on('click', function() {
             parsleyForm.reset();
         });
+        $('#supplierName').on('input', function () {
+    let value = $(this).val();
+    value = value.replace(/[^a-zA-Z\s]/g, '');
+    $(this).val(value);
+});
         $('#contact').on('input', function() {
             let inputValue = $(this).val();
             let filteredValue = inputValue.replace(/[^0-9]/g, '');
@@ -189,6 +194,17 @@ if(isset($_POST['submit'])) {
                 window.location.href = "/Backend/src/Pages/supplierlist.php";
             }
         });
+        $('#supplierMail').on('input', function () {
+    let value = $(this).val();
+
+    value = value.replace(/[^a-zA-Z0-9@.]/g, '');
+
+    if (value.length === 1 && !/^[A-Za-z]$/.test(value)) {
+        value = '';
+    }
+
+    $(this).val(value);
+});
     </script>
 </body>
 

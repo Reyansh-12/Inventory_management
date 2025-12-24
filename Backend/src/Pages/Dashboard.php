@@ -4,13 +4,13 @@ include(BASE_PATH . "/Backend/src/Layouts/Links.php");
 include(BASE_PATH . '/Backend/src/controllers/dbConnection.php');
 session_start();
 
-header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-header("Pragma: no-cache");
+// header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+// header("Pragma: no-cache");
 
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Admin') {
-    header("Location: /Backend/src/Pages/Auth/signin.php");
-    exit();
-}
+// if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Admin') {
+//     header("Location: /Backend/src/Pages/Auth/signin.php");
+//     exit();
+// }
 
 function getCount($table) {
     global $con;
@@ -296,11 +296,11 @@ $result = $con->query($expiredProducts);
                                         if ($result->num_rows > 0) {
                                             while ($row = $result->fetch_assoc()) {
                                                 echo "<tr>";
-                                                echo "    <td class='productimgname'>";
-                                                echo "        <a href='javascript:void(0);' class='text-truncate w-50' data-bs-toggle='tooltip' data-bs-title='" . $row['product_name'] . "'>" . $row['product_name'] . "</a>";
+                                                echo "    <td class='productimgname' style='width: 300px'>";
+                                                echo "        <a href='javascript:void(0);' class='text-truncate' data-bs-toggle='tooltip' data-bs-title='" . $row['product_name'] . "'>" . $row['product_name'] . "</a>";
                                                 echo "    </td>";
-                                                echo "    <td>".$row['brand_name']."</td>";
-                                                echo "    <td>".$row['category']."</td>";
+                                                echo "    <td style='width: 100px' class='text-truncate' data-bs-toggle='tooltip' data-bs-title='" . $row['brand_name'] . "'>".$row['brand_name']."</td>";
+                                                echo "    <td style='width: 100px' class='text-truncate' data-bs-toggle='tooltip' data-bs-title='" . $row['category'] . "'>".$row['category']."</td>";
                                                 echo "    <td>" . $row['expired_date'] . "</td>";
                                                 echo "</tr>";
                                             }

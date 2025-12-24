@@ -30,7 +30,7 @@ $result = $con->query($sql);
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <style>
-        .toast-timer {
+        /* .toast-timer {
             height: 4px;
             width: 100%;
             background: rgba(231, 10, 10, 0.6);
@@ -39,7 +39,7 @@ $result = $con->query($sql);
             left: 0;
             z-index: 999;
             animation: shrink 4s linear forwards;
-        }
+        } */
         .swal2-icon-content{
             margin-left: 537%;
             margin-top: 48%;
@@ -107,7 +107,7 @@ $result = $con->query($sql);
                                 if ($result->num_rows > 0) {
                                     while ($row = $result->fetch_assoc()) {
                                         echo "<tr>";
-                                        echo "    <td><a href='javascript:void(0);' class='d-inline-block text-truncate w-50' data-bs-toggle='tooltip' data-bs-title='".$row['user_name']."'>" . $row['user_name'] . "</a></td>";
+                                        echo "    <td style='width: 200px'><a class='d-inline-block text-truncate w-100' data-bs-toggle='tooltip' data-bs-title='".$row['user_name']."'>" . $row['user_name'] . "</a></td>";
                                         echo "    <td>" . $row['user_contact'] . "</td>";
                                         echo "    <td><a href='/cdn-cgi/l/email-protection' class='__cf_email__' data-cfemail='fb8f9394969a88bb9e839a968b979ed5989496'>" . $row['user_email'] . "</a> </td>";
                                         echo "    <td>" . $row['user_role'] . "</td>";
@@ -145,20 +145,12 @@ $result = $con->query($sql);
     </div>
 </div>
 <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:1100;">
-        <div id="actionToast"
-            class="toast border-0 text-bg-success"
-            role="alert"
-            aria-live="assertive"
-            aria-atomic="true"
-            data-bs-delay="5000"
-            data-bs-autohide="true">
+        <div id="actionToast" class="toast border-0 bg-danger" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000" data-bs-autohide="true">
             <div class="d-flex">
-                <div class="toast-body" id="toastMessage"></div>
-                <button type="button"
-                    class="btn-close btn-close-white me-2 m-auto"
-                    data-bs-dismiss="toast"></button>
+                <div class="toast-body text-white" id="toastMessage">Delete Successfully!</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
             </div>
-            <div class="toast-timer"></div>
+            <!-- <div class="toast-timer"></div> -->
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -190,7 +182,7 @@ $result = $con->query($sql);
         document.addEventListener("DOMContentLoaded", function() {
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('deleted') === '1') {
-                const toastEl = document.getElementById('deleteToast');
+                const toastEl = document.getElementById('actionToast');
                 const toast = new bootstrap.Toast(toastEl);
                 toast.show();
                 window.history.replaceState({}, document.title, window.location.pathname);

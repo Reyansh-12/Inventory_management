@@ -33,7 +33,6 @@ if (isset($_POST['submit'])) {
     $price = $_POST['price'] ?? '';
     $status = $_POST['status'] ?? '';
     $expiredDate = $_POST['expiredDate'] ?? '';
-    // $imagePath = $editData['image_path'] ?? null;
     $imagePath = $_POST['existing_image'] ?? null;
     if (isset($_FILES['imageBox']) && $_FILES['imageBox']['error'] === 0) {
         $uploadDir = BASE_PATH . DIRECTORY_SEPARATOR .
@@ -247,7 +246,7 @@ if (isset($_POST['submit'])) {
                                 <div class="col-lg-4 col-sm-4 col-12">
                                     <div class="form-group">
                                         <label for="minQuantity">Min Quantity <span class="text-danger">*</span></label>
-                                        <input type="number" class="p-2 rounded col-lg-12 border border-secondary" onkeydown="return event.key !== '-'" value="<?php echo htmlspecialchars($editData['minQuantity'] ?? ''); ?>" name="minquantity" id="minQuantity" placeholder="Min Quantity" oninput="validateQuantity()" data-parsley-required data-parsley-error-message="Minimum quantity is required">
+                                        <input type="number" class="p-2 rounded col-lg-12 border border-secondary" onkeydown="return event.key !== '-'" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" value="<?php echo htmlspecialchars($editData['minQuantity'] ?? ''); ?>" name="minquantity" id="minQuantity" placeholder="Min Quantity" oninput="validateQuantity()" data-parsley-required data-parsley-error-message="Minimum quantity is required">
                                         <small id="minQuantityError" class="text-danger" style="display:none;"></small>
                                     </div>
                                 </div>
@@ -255,8 +254,8 @@ if (isset($_POST['submit'])) {
                                 <div class="col-lg-4 col-sm-4 col-12">
                                     <div class="form-group">
                                         <label for="quantity">Max Quantity <span class="text-danger">*</span></label>
-                                        <input type="number" name="quantity" id="quantity" onkeydown="return event.key !== '-'" class="p-2 rounded col-lg-12 border border-secondary" value="<?php echo htmlspecialchars($editData['quantity'] ?? ''); ?>" placeholder="Max Quantity" oninput="validateQuantity()" data-parsley-required data-parsley-error-message="Maximum quantity is required">
-                                        <small id="quantityError" class="text-danger" style="display:none;">Max quantity must be greater than or equal to Min quantity</small>
+                                        <input type="number" name="quantity" id="quantity" onkeydown="return event.key !== '-'" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); validateQuantity();" class="p-2 rounded col-lg-12 border border-secondary" value="<?php echo htmlspecialchars($editData['quantity'] ?? ''); ?>" placeholder="Max Quantity" data-parsley-required  data-parsley-error-message="Maximum quantity is required">
+                                        <small id="maxError" class="text-danger" style="display:none;">Max quantity must be greater than or equal to Min quantity</small>
                                     </div>
                                 </div>
 
@@ -567,7 +566,7 @@ document.getElementById('resetButton').addEventListener('click', function () {
             const maxInput = document.getElementById('quantity');
 
             const minError = document.getElementById('minQuantityError');
-            const maxError = document.getElementById('quantityError');
+            const maxError = document.getElementById('maxError');
 
             const minValue = minInput.value;
             const maxValue = maxInput.value;
@@ -621,8 +620,21 @@ document.getElementById('price').addEventListener('input', function () {
         this.value = 1000000;
     }
 });
-</script>
+document.getElementById('minQuantity').addEventListener('input', function () {
+    let value = this.value;
 
+    if (parseFloat(value) > 1000000) {
+        this.value = 1000000;
+    }
+});
+document.getElementById('quantity').addEventListener('input', function () {
+    let value = this.value;
+
+    if (parseFloat(value) > 1000000) {
+        this.value = 1000000;
+    }
+});
+</script>
 </body>
 
 </html>

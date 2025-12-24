@@ -109,8 +109,8 @@ if (isset($_GET['supplierId'])) {
                                         if ($result->num_rows > 0) {
                                             while ($row = $result->fetch_assoc()) {
                                                 echo "<tr>";
-                                                echo "    <td class='productimgname'>";
-                                                echo "        <a href='' class='text-truncate w-50' data-bs-toggle='tooltip' data-bs-title='" . $row['supplier_name'] . "'>" . $row['supplier_name'] . "</a>";
+                                                echo "    <td class='productimgname' style='width: 200px'>";
+                                                echo "        <a href='' class='text-truncate w-100' data-bs-toggle='tooltip' data-bs-title='" . $row['supplier_name'] . "'>" . $row['supplier_name'] . "</a>";
                                                 echo "    </td>";
                                                 echo "    <td><a href='/cdn-cgi/l/email-protection' class='__cf_email__' data-cfemail='b8ccd0d7d5d9cbf8ddc0d9d5c8d4dd96dbd7d5'>" . $row['email'] . "</a></td>";
                                                 echo "    <td>" . $row['phone_number'] . "</td>";
@@ -136,21 +136,15 @@ if (isset($_GET['supplierId'])) {
             </div>
         </div>
     </div>
+    
+
     <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:1100;">
-        <div id="actionToast"
-            class="toast border-0 text-bg-success"
-            role="alert"
-            aria-live="assertive"
-            aria-atomic="true"
-            data-bs-delay="5000"
-            data-bs-autohide="true">
+        <div id="actionToast" class="toast border-0 bg-danger" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000" data-bs-autohide="true">
             <div class="d-flex">
-                <div class="toast-body" id="toastMessage"></div>
-                <button type="button"
-                    class="btn-close btn-close-white me-2 m-auto"
-                    data-bs-dismiss="toast"></button>
+                <div class="toast-body text-white" id="toastMessage">Delete Successfully!</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
             </div>
-            <div class="toast-timer"></div>
+            <!-- <div class="toast-timer"></div> -->
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -182,12 +176,13 @@ if (isset($_GET['supplierId'])) {
         document.addEventListener("DOMContentLoaded", function() {
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('deleted') === '1') {
-                const toastEl = document.getElementById('deleteToast');
+                const toastEl = document.getElementById('actionToast');
                 const toast = new bootstrap.Toast(toastEl);
                 toast.show();
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
         });
     </script>
+    
 </body>
 </html>

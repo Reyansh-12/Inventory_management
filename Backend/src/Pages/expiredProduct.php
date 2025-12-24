@@ -44,6 +44,10 @@ $result = $con->query($sql);
             z-index: 999;
             animation: shrink 4s linear forwards;
         }
+        .swal2-icon-content{
+            margin-left: 537%;
+            margin-top: 48%;
+        }
     </style>
 </head>
 
@@ -102,8 +106,8 @@ $result = $con->query($sql);
                                         if ($result->num_rows > 0) {
                                             while ($row = $result->fetch_assoc()) {
                                                 echo "<tr>";
-                                                echo "    <td class='productimgname'>";
-                                                echo "        <a href='javascript:void(0);' class='text-truncate w-50' data-bs-toggle='tooltip' data-bs-title='" . $row['product_name'] . "'>" . $row['product_name'] . "</a>";
+                                                echo "    <td class='productimgname' style='width: 400px'>";
+                                                echo "        <a href='javascript:void(0);' class='text-truncate' data-bs-toggle='tooltip' data-bs-title='" . $row['product_name'] . "'>" . $row['product_name'] . "</a>";
                                                 echo "    </td>";
                                                 echo "    <td>" . $row['expired_date'] . "</td>";
                                                 echo "    <td>";
@@ -125,20 +129,12 @@ $result = $con->query($sql);
         </div>
     </div>
     <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:1100;">
-        <div id="actionToast"
-            class="toast border-0 text-bg-success"
-            role="alert"
-            aria-live="assertive"
-            aria-atomic="true"
-            data-bs-delay="5000"
-            data-bs-autohide="true">
+        <div id="actionToast" class="toast border-0 bg-danger" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000" data-bs-autohide="true">
             <div class="d-flex">
-                <div class="toast-body" id="toastMessage"></div>
-                <button type="button"
-                    class="btn-close btn-close-white me-2 m-auto"
-                    data-bs-dismiss="toast"></button>
+                <div class="toast-body text-white" id="toastMessage">Delete Successfully!</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
             </div>
-            <div class="toast-timer"></div>
+            <!-- <div class="toast-timer"></div> -->
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -170,7 +166,7 @@ $result = $con->query($sql);
         document.addEventListener("DOMContentLoaded", function() {
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('deleted') === '1') {
-                const toastEl = document.getElementById('deleteToast');
+                const toastEl = document.getElementById('actionToast');
                 const toast = new bootstrap.Toast(toastEl);
                 toast.show();
                 window.history.replaceState({}, document.title, window.location.pathname);
