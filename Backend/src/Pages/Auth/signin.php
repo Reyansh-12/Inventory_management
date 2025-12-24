@@ -28,7 +28,6 @@ if (isset($_POST['submit'])) {
         exit();
     }
 
-    // ✅ SESSION SET (MOST IMPORTANT)
     $_SESSION['user_id']   = $user['id'];
     $_SESSION['user_role'] = $user['user_role'];
     $_SESSION['user_email'] = $user['user_email'];
@@ -86,7 +85,7 @@ if (isset($_POST['submit'])) {
                             <div class="form-login">
                                 <label for='email'>Email</label>
                                 <div class="form-addons">
-                                    <input type="text" id='email' name='userEmail' value="<?= $_SESSION['keep_email'] ?? '' ?>" placeholder="Enter your email address" data-parsley-type="email" data-parsley-required-message="Email is required" data-parsley-required>
+                                    <input type="text" id='email' name='userEmail' value="<?= $_SESSION['keep_email'] ?? '' ?>" placeholder="Enter your email address" data-parsley-type="email" data-parsley-pattern="^[A-Za-z][A-Za-z0-9]*@[A-Za-z0-9]+\.[A-Za-z]{2,}$" data-parsley-required-message="Email is required" data-parsley-required>
                                     <img src="/Backend/src/assets/images/icons/mail.svg" alt="img">
                                 </div>
                             </div>
@@ -172,6 +171,17 @@ if (isset($_POST['submit'])) {
         }
     });
 }
+$('#email').on('input', function () {
+    let value = $(this).val();
+
+    value = value.replace(/[^a-zA-Z0-9@.]/g, '');
+
+    if (value.length === 1 && !/^[A-Za-z]$/.test(value)) {
+        value = '';
+    }
+
+    $(this).val(value);
+});
 
     </script>
     <script>

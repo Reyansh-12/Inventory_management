@@ -30,7 +30,7 @@ if (!preg_match($strongPasswordPattern, $password)) {
     if (!mysqli_stmt_execute($stmt)) {
         die("Insert Failed: " . mysqli_error($con));
     }
-    header("Location: /Backend/src/Pages/Dashboard.php");
+    header("Location: http://localhost:5173/");
     exit();
 }
 ?>
