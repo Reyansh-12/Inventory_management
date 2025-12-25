@@ -2,15 +2,42 @@
 define("BASE_PATH", dirname(__DIR__, 3));
 include BASE_PATH . "/src/Layouts/Links.php";
 include BASE_PATH . "/src/controllers/dbConnection.php";
+session_start();
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+if (!isset($_SESSION['transaction_id'])) {
+    $_SESSION['transaction_id'] = 'TXN' . date('YmdHis') . rand(100, 999);
+}
 
 $sql = "SELECT `id`,`product_name`, `category`, `brand_name`, `price`, `quantity`, `image_path` FROM `product_list`";
 $result = $con->query($sql);
+
+if (isset($_POST['addCustomerSubmitButton'])) {
+
+    $customerId = 'CUST' . time();
+    $name       = $_POST['customername'];
+    $phone      = $_POST['customerphone'];
+    $email      = $_POST['customeremail'];
+    $address    = $_POST['customeraddress'];
+
+    $sql = "INSERT INTO customers (customer_id, name, phone, email, address)
+            VALUES ('$customerId', '$name', '$phone', '$email', '$address')";
+
+    if (mysqli_query($con, $sql)) {
+        $_SESSION['customer_added'] = true;
+        $_SESSION['selected_customer_id'] = mysqli_insert_id($con);
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit;
+    }
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dreams POS Admin Template</title>
     <link rel="stylesheet" href="/Backend/src/assets/css/pos.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -18,24 +45,27 @@ $result = $con->query($sql);
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <style>
-        .parsley-minlength{
+        .parsley-minlength {
             color: red !important;
         }
     </style>
     <style>
-.cart-product-name {
-    max-width: 140px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: inline-block;
-    vertical-align: middle;
-}
-</style>
+        .cart-product-name {
+            max-width: 140px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+            vertical-align: middle;
+        }
+    </style>
 
 </head>
+
 <body>
-    <div id="global-loader"><div class="whirly-loader"></div></div>
+    <div id="global-loader">
+        <div class="whirly-loader"></div>
+    </div>
 
     <div class="d-flex row">
         <div class="col-md-3">
@@ -104,46 +134,54 @@ $result = $con->query($sql);
                                 <div class="tabs_container">
                                     <div class="tab_content active" data-tab="fruits">
                                         <!-- <div class="col"> -->
-                                            <div class="row row-cols-1 row-cols-md-3">
-                                                <?php
-                                                if ($result && $result->num_rows > 0) {
-                                                    while ($row = $result->fetch_assoc()) { $id = (int)$row['id']; $name = htmlspecialchars($row['product_name']); $category = htmlspecialchars($row['category']); $price = number_format((float)$row['price'], 2, '.', ''); $image = !empty($row['image_path']) ? $row['image_path']  : "/Inventory_managment/Backend/assets/images/favicon1.png";?>
-                                                <div class="col-12 col-md-4 col-lg-4">
-                                                    <div class="product-card p-3 shadow-sm rounded h-100">
-                                                        <div class="text-center">
-                                                            <img src="<?php echo $image; ?>" alt="<?php echo $name; ?>" class="img-fluid mb-2" alt="Product image"/>
-                                                        </div>
+                                        <div class="row row-cols-1 row-cols-md-3">
+                                            <?php
+                                            if ($result && $result->num_rows > 0) {
+                                                while ($row = $result->fetch_assoc()) {
+                                                    $id = (int)$row['id'];
+                                                    $name = htmlspecialchars($row['product_name']);
+                                                    $category = htmlspecialchars($row['category']);
+                                                    $price = number_format((float)$row['price'], 2, '.', '');
+                                                    $image = !empty($row['image_path']) ? $row['image_path']  : "/Inventory_managment/Backend/assets/images/favicon1.png"; ?>
+                                                    <div class="col-12 col-md-4 col-lg-4">
+                                                        <div class="product-card p-3 shadow-sm rounded h-100">
+                                                            <div class="text-center">
+                                                                <img src="<?php echo $image; ?>" alt="<?php echo $name; ?>" class="img-fluid mb-2" alt="Product image" />
+                                                            </div>
 
-                                                        <div>
-                                                            <h6 class="text-muted mb-1 small text-truncate w-100" data-bs-toggle='tooltip' style="width: 100px" data-bs-title="<?php echo htmlspecialchars($category); ?>"><?php echo $category; ?></h6>
-                                                            <h5 class="mb-1 text-truncate w-100" data-bs-toggle='tooltip' data-bs-title="<?php echo htmlspecialchars($name); ?>" style="width: 150px"><?php echo $name; ?></h5>
-                                                            <h6 class="text-primary">₹<?php echo $price; ?></h6>
-                                                        </div>
+                                                            <div>
+                                                                <h6 class="text-muted mb-1 small text-truncate w-100" data-bs-toggle='tooltip' style="width: 100px" data-bs-title="<?php echo htmlspecialchars($category); ?>"><?php echo $category; ?></h6>
+                                                                <h5 class="mb-1 text-truncate w-100" data-bs-toggle='tooltip' data-bs-title="<?php echo htmlspecialchars($name); ?>" style="width: 150px"><?php echo $name; ?></h5>
+                                                                <h6 class="text-primary">₹<?php echo $price; ?></h6>
+                                                            </div>
 
-                                                        <div class="d-grid">
-                                                            <button class="btn btn-primary addToCartBtn" data-id="<?php echo $id; ?>" data-name="<?php echo $name; ?>" data-price="<?= (float)$price; ?>" data-stock="<?= (int)$row['quantity'] ?>" aria-label="Add to cart">Add to Cart</button>
+                                                            <div class="d-grid">
+                                                                <button class="btn btn-primary addToCartBtn" data-id="<?php echo $id; ?>" data-name="<?php echo $name; ?>" data-price="<?= (float)$price; ?>" data-stock="<?= (int)$row['quantity'] ?>" aria-label="Add to cart">Add to Cart</button>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
                                                 <?php
-                                                    }
-                                                } else {
+                                                }
+                                            } else {
                                                 ?>
                                                 <div class="col">
                                                     <div class="p-3">No products found.</div>
                                                 </div>
-                                                <?php } ?>
-                                            </div>
+                                            <?php } ?>
+                                        </div>
                                         <!-- </div> -->
                                     </div>
                                 </div>
                             </div>
-                
+
                             <div class="col-lg-4">
                                 <div class="card">
                                     <div class="card-header">
                                         <h5 class="mb-0">Order List</h5>
-                                        <small class="text-muted">Transaction ID: #65565</small>
+                                        <small class="text-muted">
+                                            Transaction ID: #<?= $_SESSION['transaction_id']; ?>
+                                        </small>
+
                                     </div>
 
                                     <div class="card-body">
@@ -154,13 +192,20 @@ $result = $con->query($sql);
                                         </div> -->
 
                                         <div class="mb-3 d-flex gap-2">
-                                            <select class="form-select">
-                                                <option>Walk-in Customer</option>
-                                                <option>Chris Moris</option>
-                                            </select>
-                                            <select class="form-select">
-                                                <option>Product</option>
-                                                <option>Barcode</option>
+                                            <select class="form-select" id="customerSelect">
+                                                <option disabled <?= empty($_SESSION['selected_customer_id']) ? 'selected' : '' ?>>
+                                                    Walk-in Customer
+                                                </option>
+
+                                                <?php
+                                                $selectedCustomerId = $_SESSION['selected_customer_id'] ?? null;
+
+                                                $customers = mysqli_query($con, "SELECT id, name FROM customers ORDER BY id DESC");
+                                                while ($c = mysqli_fetch_assoc($customers)) {
+                                                    $selected = ($c['id'] == $selectedCustomerId) ? 'selected' : '';
+                                                    echo "<option value='{$c['id']}' $selected>{$c['name']}</option>";
+                                                }
+                                                ?>
                                             </select>
                                         </div>
 
@@ -176,7 +221,7 @@ $result = $con->query($sql);
                                                     </tr>
                                                 </thead>
                                                 <tbody id="cartBody">
-                                                    
+
                                                 </tbody>
                                             </table>
                                         </div>
@@ -197,13 +242,13 @@ $result = $con->query($sql);
                                 </div>
                                 <div class="mt-4">
                                 </div>
-                            </div> 
-                        </div> 
-                    </div> 
-                </div> 
-            </div> 
-        </div> 
-    </div> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
     <div class="modal fade" id="addCustomerModal" tabindex="-1" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
@@ -214,102 +259,199 @@ $result = $con->query($sql);
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
                 </div>
                 <div class="modal-body">
-                    <form id="customerForm" data-parsley-validate>
+                    <form method="POST" id="customerForm" data-parsley-validate>
                         <div class="row mb-3">
-                        <div class="col-lg-6 col-md-6 col-sm-12">
-                            <label for="customerName" class="form-label">Customer Name <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="customerName" placeholder="Enter customer name" data-parsley-required-message="Customer name is required" data-parsley-required>
-                        </div>
-                        <div class="col-lg-6 col-md-6 col-sm-12">
-                            <label for="customerPhone" class="form-label">Phone <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="customerPhone" placeholder="Enter phone number" maxlength="10" data-parsley-minlength="10" data-parsley-required-message="Phone number is required" data-parsley-required>
-                        </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <label for="customerName" class="form-label">Customer Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="customername" id="customerName" placeholder="Enter customer name" data-parsley-required-message="Customer name is required" data-parsley-required>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <label for="customerPhone" class="form-label">Phone <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="customerphone" id="customerPhone" placeholder="Enter phone number" maxlength="10" data-parsley-minlength="10" data-parsley-required-message="Phone number is required" data-parsley-required>
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label for="customerEmail" class="form-label">Email <span class="text-danger">*</span></label>
-                            <input type="email" class="form-control" id="customerEmail" placeholder="Enter customer email" data-parsley-required-message="Email is required" data-parsley-required>
+                            <input type="email" class="form-control" name="customeremail" id="customerEmail" placeholder="Enter customer email" data-parsley-required-message="Email is required" data-parsley-required>
                         </div>
                         <div class="mb-3">
                             <label for="customerAddress" class="form-label">Address</label>
-                            <input type="text" class="form-control" id="customerAddress" placeholder="Enter customer address">
+                            <input type="text" class="form-control" name="customeraddress" id="customerAddress" placeholder="Enter customer address">
                         </div>
                         <div class="row mb-3">
-                        <div class="col-lg-6 col-md-6 col-sm-12">
-                            <label for="customerCity" class="form-label">City</label>
-                            <input type="text" class="form-control" id="customerCity" placeholder="Enter city">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <label for="customerCity" class="form-label">City</label>
+                                <input type="text" class="form-control" name="customercity" id="customerCity" placeholder="Enter city">
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <label for="customerCountry" class="form-label">Country</label>
+                                <input type="text" class="form-control" name="customercountry" id="customerCountry" placeholder="Enter country">
+                            </div>
                         </div>
-                        <div class="col-lg-6 col-md-6 col-sm-12">
-                            <label for="customerCountry" class="form-label">Country</label>
-                            <input type="text" class="form-control" id="customerCountry" placeholder="Enter country">
-                        </div>
-                        </div>
-                        
-                        <button type="submit" class="btn btn-primary">Add Customer</button>
+                        <button type="submit" name="addCustomerSubmitButton" class="btn btn-primary">Add Customer</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-<div class="toast-container position-fixed top-0 end-0 p-3">
-    <div id="checkoutToast" class="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="d-flex">
-            <div class="toast-body" id="checkoutToastMessage">
-                Checkout pressed — check console for payload.
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div id="checkoutToast" class="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="checkoutToastMessage">
+                    Checkout pressed — check console for payload.
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div id="cartToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    Cart is empty.
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+    <div id="clearCartToast" class="toast align-items-center text-bg-warning border-0"
+         role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                🗑️ Cart cleared successfully
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                data-bs-dismiss="toast"></button>
         </div>
     </div>
 </div>
 
-<div class="toast-container position-fixed top-0 end-0 p-3">
-    <div id="cartToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="d-flex">
-            <div class="toast-body">
-                Cart is empty.
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div id="customerToast" class="toast text-bg-success border-0">
+            <div class="d-flex">
+                <div class="toast-body">
+                    ✅ Customer added successfully
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                    data-bs-dismiss="toast"></button>
             </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
     </div>
-</div>
+    <?php unset($_SESSION['selected_customer_id']); ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/Backend/src/assets/js/pos.js"></script>
     <script>
         if (stock <= 0) {
-  showToast("Out of stock");
-  return;
-}
-checkoutBtn.disabled = cart.length === 0;
-</script>
+            showToast("Out of stock");
+            return;
+        }
+        checkoutBtn.disabled = cart.length === 0;
+    </script>
+    <script>
+        $('#customerName').on('input', function() {
+            let value = $(this).val();
+            value = value.replace(/[^a-zA-Z\s]/g, '');
+            $(this).val(value);
+        });
+        $('#customerEmail').on('input', function() {
+            let value = $(this).val();
+
+            value = value.replace(/[^a-zA-Z0-9@.]/g, '');
+
+            if (value.length === 1 && !/^[A-Za-z]$/.test(value)) {
+                value = '';
+            }
+
+            $(this).val(value);
+        });
+        $('#customerCity').on('input', function() {
+            let value = $(this).val();
+            value = value.replace(/[^a-zA-Z\s]/g, '');
+            $(this).val(value);
+        });
+        $('#customerCountry').on('input', function() {
+            let value = $(this).val();
+            value = value.replace(/[^a-zA-Z\s]/g, '');
+            $(this).val(value);
+        });
+    </script>
+    <?php if (!empty($_SESSION['customer_added'])): ?>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var toastEl = document.getElementById('customerToast');
+                var toast = new bootstrap.Toast(toastEl, {
+                    delay: 3000
+                });
+                toast.show();
+            });
+        </script>
+    <?php unset($_SESSION['customer_added']);
+    endif; ?>
 <script>
-$('#customerName').on('input', function () {
-    let value = $(this).val();
-    value = value.replace(/[^a-zA-Z\s]/g, '');
-    $(this).val(value);
-});
-$('#customerEmail').on('input', function () {
-    let value = $(this).val();
+document.getElementById('checkoutBtn').addEventListener('click', function () {
 
-    value = value.replace(/[^a-zA-Z0-9@.]/g, '');
-
-    if (value.length === 1 && !/^[A-Za-z]$/.test(value)) {
-        value = '';
+    if (cart.length === 0) {
+        showCartToast("Cart is empty");
+        return;
     }
 
-    $(this).val(value);
-});
-$('#customerCity').on('input', function () {
-    let value = $(this).val();
-    value = value.replace(/[^a-zA-Z\s]/g, '');
-    $(this).val(value);
-});
-$('#customerCountry').on('input', function () {
-    let value = $(this).val();
-    value = value.replace(/[^a-zA-Z\s]/g, '');
-    $(this).val(value);
+    fetch('checkout.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            transaction_id: "<?= $_SESSION['transaction_id']; ?>",
+            customer_id: document.getElementById('customerSelect').value ?? null,
+            cart: cart
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'success') {
+            showCheckoutToast(data.message);
+            cart = [];
+            updateCartUI();
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            showCartToast(data.message);
+        }
+    });
+
 });
 
+function showCheckoutToast(msg) {
+    document.getElementById('checkoutToastMessage').innerText = msg;
+    new bootstrap.Toast(document.getElementById('checkoutToast')).show();
+}
 
-    </script>
+function showCartToast(msg) {
+    document.querySelector('#cartToast .toast-body').innerText = msg;
+    new bootstrap.Toast(document.getElementById('cartToast')).show();
+}
+document.getElementById('clearCartBtn').addEventListener('click', function () {
+
+    if (cart.length === 0) {
+        showCartToast("Cart is already empty");
+        return;
+    }
+
+    cart = [];
+    updateCartUI();
+
+    const toastEl = document.getElementById('clearCartToast');
+    const toast = new bootstrap.Toast(toastEl, { delay: 2500 });
+    toast.show();
+});
+function updateCartUI() {
+    document.getElementById('cartBody').innerHTML = '';
+    document.getElementById('totalItems').innerText = 0;
+    document.getElementById('cartTotal').innerText = '0.00';
+    checkoutBtn.disabled = true;
+}
+
+</script>
 
 </body>
+
 </html>

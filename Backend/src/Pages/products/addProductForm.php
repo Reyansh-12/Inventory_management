@@ -433,7 +433,6 @@ if (isset($_POST['submit'])) {
             parsleyForm.reset();
         });
         document.addEventListener("DOMContentLoaded", function() {
-            const params = new URLSearchParams(window.location.search);
 
             let toastElement = document.getElementById("actionToast");
             let toastMessage = document.getElementById("toastMessage");

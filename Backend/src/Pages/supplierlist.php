@@ -8,16 +8,15 @@ $result = $con->query($sql);
 
 if (isset($_GET['supplierId'])) {
     $supplierId = intval($_GET['supplierId']);
-    $deletesql = "DELETE FROM `supplier` WHERE `id` = ?";
-    if ($stmt = $con->prepare($deletesql)) {
-        $stmt->bind_param("i", $supplierId);
-        if ($stmt->execute()) {
-            header("Location: supplierlist.php");
-            exit();
-        }
-        $stmt->close();
+    $stmt = $con->prepare("DELETE FROM supplier WHERE id = ?");
+    $stmt->bind_param("i", $supplierId);
+
+    if ($stmt->execute()) {
+        header("Location: supplierlist.php?deleted=1");
+        exit();
     }
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -138,15 +137,20 @@ if (isset($_GET['supplierId'])) {
     </div>
     
 
-    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:1100;">
-        <div id="actionToast" class="toast border-0 bg-danger" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000" data-bs-autohide="true">
-            <div class="d-flex">
-                <div class="toast-body text-white" id="toastMessage">Delete Successfully!</div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-            </div>
-            <!-- <div class="toast-timer"></div> -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+    <div id="actionToast" class="toast border-0" role="alert">
+        <div class="d-flex">
+            <div class="toast-body text-white" id="toastMessage"></div>
+            <button type="button"
+                class="btn-close btn-close-white me-2 m-auto"
+                data-bs-dismiss="toast"></button>
         </div>
+        <div class="toast-timer"
+             style="height:4px;background:rgba(255,255,255,0.6);
+             animation: shrink 3s linear forwards;"></div>
     </div>
+</div>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -173,16 +177,38 @@ if (isset($_GET['supplierId'])) {
             });
         });
 
-        document.addEventListener("DOMContentLoaded", function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('deleted') === '1') {
-                const toastEl = document.getElementById('actionToast');
-                const toast = new bootstrap.Toast(toastEl);
-                toast.show();
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
-        });
-    </script>
-    
+document.addEventListener("DOMContentLoaded", function () {
+    const params = new URLSearchParams(window.location.search);
+    const toastEl = document.getElementById("actionToast");
+    const toastMsg = document.getElementById("toastMessage");
+
+    toastEl.classList.remove("bg-success", "bg-danger");
+
+    if (params.get("added") === "1") {
+        toastMsg.innerText = "Supplier added successfully!";
+        toastEl.classList.add("bg-success");
+    }
+    else if (params.get("updated") === "1") {
+        toastMsg.innerText = "Supplier updated successfully!";
+        toastEl.classList.add("bg-success");
+    }
+    else if (params.get("deleted") === "1") {
+        toastMsg.innerText = "Supplier deleted successfully!";
+        toastEl.classList.add("bg-danger");
+    }
+    else {
+        return;
+    }
+
+    const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+    toast.show();
+
+    // URL clean (refresh par repeat nahi hoga)
+    setTimeout(() => {
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }, 3500);
+});
+</script>
+
 </body>
 </html>

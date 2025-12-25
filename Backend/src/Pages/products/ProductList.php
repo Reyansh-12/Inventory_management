@@ -12,7 +12,8 @@ if (isset($_GET['deleteId'])) {
     header("Location: ProductList.php?deleted=1");
     exit;
 }
-$sql = "SELECT `id`,`product_name`, `category`, `brand_name`, `price`, `quantity`, `image_path`, `status` FROM `product_list`";
+$sql = "SELECT `id`,`product_name`, `category`, `brand_name`, `price`, `quantity`, `image_path`, `status` FROM `product_list`
+        ORDER BY id DESC";
 $result = $con->query($sql);
 ?>
 <!DOCTYPE html>
@@ -26,7 +27,8 @@ $result = $con->query($sql);
     <meta name="author" content="Dreamguys - Bootstrap Admin Template">
     <meta name="robots" content="noindex, nofollow">
     <title>Cosmetic product form</title>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css"> -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
     <style>
@@ -44,6 +46,37 @@ $result = $con->query($sql);
             margin-left: 537%;
             margin-top: 48%;
         }
+        /* Pagination styling */
+.dataTables_paginate .pagination {
+    justify-content: end;
+}
+
+.dataTables_paginate .page-item .page-link {
+    border-radius: 6px;
+    margin: 0 3px;
+    border: 1px solid #dee2e6;
+    color: #333;
+}
+
+.dataTables_paginate .page-item.active .page-link {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: #fff;
+}
+
+.dataTables_paginate .page-item.disabled .page-link {
+    opacity: 0.5;
+}
+/* Remove default DataTable sort icons */
+table.dataTable thead .sorting:before,
+table.dataTable thead .sorting:after,
+table.dataTable thead .sorting_asc:before,
+table.dataTable thead .sorting_asc:after,
+table.dataTable thead .sorting_desc:before,
+table.dataTable thead .sorting_desc:after {
+    display: none !important;
+}
+
     </style>
 </head>
 
@@ -91,6 +124,7 @@ $result = $con->query($sql);
                             <table class="table datanew">
                                 <thead>
                                     <tr>
+                                        <th style="display:none;">ID</th>
                                         <th>Product Name</th>
                                         <th>Category </th>
                                         <th>Brand</th>
@@ -108,6 +142,7 @@ $result = $con->query($sql);
                                         if ($result->num_rows > 0) {
                                             while ($row = $result->fetch_assoc()) {
                                                 echo "<tr>";
+                                                echo "<td style='display:none;'>" . $row['id'] . "</td>";
                                                 echo "    <td class='productimgname' style='width: 200px'>";
                                                 echo "        <a href='javascript:void(0)' class='product-img'>";
                                                 echo "            <img src='" . $row['image_path'] . "' alt='product' class=''>";
@@ -141,15 +176,21 @@ $result = $con->query($sql);
             </div>
         </div>
     </div>
-    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:1100;">
-        <div id="actionToast" class="toast border-0 bg-danger" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000" data-bs-autohide="true">
-            <div class="d-flex">
-                <div class="toast-body" style="color:#fff !important" id="toastMessage">Delete Successfully!</div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-            </div>
-            <!-- <div class="toast-timer"></div> -->
+    
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+    <div id="actionToast" class="toast align-items-center border-0" role="alert">
+        <div class="d-flex">
+            <div class="toast-body text-white" id="toastMessage"></div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                data-bs-dismiss="toast"></button>
         </div>
+        <div class="toast-timer"
+             style="height:4px;background:rgba(255,255,255,0.6);
+             animation: shrink 3s linear forwards;"></div>
     </div>
+</div>
+
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -175,16 +216,65 @@ $result = $con->query($sql);
             });
         });
 
-        document.addEventListener("DOMContentLoaded", function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('deleted') === '1') {
-                const toastEl = document.getElementById('actionToast');
-                const toast = new bootstrap.Toast(toastEl);
-                toast.show();
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
-        });
-    </script>
-</body>
+    
+document.addEventListener("DOMContentLoaded", function () {
+    const params = new URLSearchParams(window.location.search);
+    const toastEl = document.getElementById("actionToast");
+    const toastMsg = document.getElementById("toastMessage");
 
+    toastEl.classList.remove("bg-success", "bg-danger");
+
+    if (params.get("added") === "1") {
+        toastMsg.innerText = "Product added successfully!";
+        toastEl.classList.add("bg-success");
+    }
+    else if (params.get("updated") === "1") {
+        toastMsg.innerText = "Product updated successfully!";
+        toastEl.classList.add("bg-success");
+    }
+    else if (params.get("deleted") === "1") {
+        toastMsg.innerText = "Product deleted successfully!";
+        toastEl.classList.add("bg-danger");
+    }
+    else {
+        return;
+    }
+
+    const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+    toast.show();
+
+    setTimeout(() => {
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }, 3500);
+});
+    </script>
+  <script>
+$(document).ready(function () {
+
+    if ($.fn.DataTable.isDataTable('.datanew')) {
+        $('.datanew').DataTable().destroy();
+    }
+
+    $('.datanew').DataTable({
+        order: [[0, 'desc']],
+
+        columnDefs: [
+            { targets: 0, visible: false, searchable: false },
+            { targets: '_all', orderable: true } 
+        ],
+
+        autoWidth: false,
+        responsive: false,
+
+        searching: false,       
+        lengthChange: true,    
+        pageLength: 10,
+
+        pagingType: "simple_numbers",
+
+        dom: 'rt<"row mt-3"<"col-md-6"l><"col-md-6 text-end"p>>'
+    });
+});
+</script>
+</body>
 </html>

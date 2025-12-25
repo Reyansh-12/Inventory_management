@@ -8,11 +8,12 @@ if (isset($_GET['deleteId'])) {
     $deleteQuery = "DELETE FROM new_user WHERE id = $deleteId";
     $con->query($deleteQuery);
 
-    header("Location: UsersList.php");
+    header("Location: UsersList.php?deleted=1");
     exit;
+
 }
 
-$sql = "SELECT `id`, `user_name`, `user_email`, `user_contact`, `user_role`, `user_password`, `status`, `created_at` FROM `new_user`";
+$sql = "SELECT `id`, `user_name`, `user_contact`, `user_email`, `user_role`, `user_password`, `status`, `created_at` FROM `new_user`";
 $result = $con->query($sql);
 ?>
 
@@ -134,25 +135,16 @@ $result = $con->query($sql);
         </div>
     </div>
     </div>
-    <div class="toast-container position-fixed end-0 p-3" style="z-index: 1100; top: 60px;">
-    <div id="deleteToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:1100;">
+    <div id="actionToast" class="toast border-0" role="alert">
         <div class="d-flex">
-            <div class="toast-body bg-danger" id="deleteToastMessage">
-                Item deleted successfully.
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            <div class="toast-body text-white" id="toastMessage"></div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                data-bs-dismiss="toast"></button>
         </div>
     </div>
 </div>
-<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:1100;">
-        <div id="actionToast" class="toast border-0 bg-danger" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000" data-bs-autohide="true">
-            <div class="d-flex">
-                <div class="toast-body text-white" id="toastMessage">Delete Successfully!</div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-            </div>
-            <!-- <div class="toast-timer"></div> -->
-        </div>
-    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -179,15 +171,38 @@ $result = $con->query($sql);
             });
         });
 
-        document.addEventListener("DOMContentLoaded", function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('deleted') === '1') {
-                const toastEl = document.getElementById('actionToast');
-                const toast = new bootstrap.Toast(toastEl);
-                toast.show();
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
-        });
+        
+document.addEventListener("DOMContentLoaded", function () {
+    const params = new URLSearchParams(window.location.search);
+    const toastEl = document.getElementById("actionToast");
+    const toastMsg = document.getElementById("toastMessage");
+
+    toastEl.classList.remove("bg-success", "bg-danger");
+
+    if (params.get("added") === "1") {
+        toastMsg.innerText = "User added successfully!";
+        toastEl.classList.add("bg-success");
+    }
+    else if (params.get("updated") === "1") {
+        toastMsg.innerText = "User updated successfully!";
+        toastEl.classList.add("bg-success");
+    }
+    else if (params.get("deleted") === "1") {
+        toastMsg.innerText = "User deleted successfully!";
+        toastEl.classList.add("bg-danger");
+    }
+    else {
+        return;
+    }
+
+    const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+    toast.show();
+
+    // refresh par dobara toast na aaye
+    setTimeout(() => {
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }, 3500);
+});
     </script>
 </body>
 </html>

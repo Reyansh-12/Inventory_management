@@ -28,22 +28,23 @@ if ($supplierId) {
 if(isset($_POST['submit'])) {
     $supplierName = $_POST['supplierName'];
     $email = $_POST['supplierEmail'];
-    $contact = $_POST['contact'];
+    $contact = $_POST['phoneNumber'];
     $country = $_POST['countrySelector'];
     $city = $_POST['citySelector'];
     $address = $_POST['address'];
     $description = $_POST['description'];
 
     if ($supplierId) {
-        $stmt = $con->prepare("UPDATE supplier SET supplier_name=?, email=?, phone_number=?, city=?, country=?, address=?, description=? WHERE id=?");
-        $stmt->bind_param("sssssssi", $supplierName, $email, $contact, $city, $country, $address, $description, $supplierId);
-    } else {
-        $stmt = $con->prepare("INSERT INTO supplier (supplier_name, email, phone_number, city, country, address, description) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("sssssss", $supplierName, $email, $contact, $city, $country, $address, $description);
+        $stmt = $con->prepare("UPDATE supplier SET supplier_name=?, email=?, phone_number=?, country=?, city=?, address=?, description=? WHERE id=?");
+        $stmt->bind_param("sssssssi", $supplierName, $email, $contact, $country, $city, $address, $description, $supplierId);
         $stmt->execute();
+        header("Location: /Backend/src/Pages/supplierlist.php?updated=1");
+    } else {
+        $stmt = $con->prepare("INSERT INTO supplier (supplier_name, email, phone_number, country, city, address, description) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssssss", $supplierName, $email, $contact, $country, $city, $address, $description);
+        $stmt->execute();
+        header("Location: /Backend/src/Pages/supplierlist.php?added=1");
     }
-
-    header("Location: /Backend/src/Pages/supplierlist.php");
     exit();
 }
 ?>
