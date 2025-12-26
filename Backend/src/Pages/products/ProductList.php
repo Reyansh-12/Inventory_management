@@ -26,11 +26,12 @@ $result = $con->query($sql);
     <meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern,  html5, responsive">
     <meta name="author" content="Dreamguys - Bootstrap Admin Template">
     <meta name="robots" content="noindex, nofollow">
-    <title>Cosmetic product form</title>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <title>BRANCY – Cosmetic Store</title>
+    <!-- <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script> -->
     <!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css"> -->
+    <!-- <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script> -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-
     <style>
         .toast-timer {
             height: 4px;
@@ -46,7 +47,6 @@ $result = $con->query($sql);
             margin-left: 537%;
             margin-top: 48%;
         }
-        /* Pagination styling */
 .dataTables_paginate .pagination {
     justify-content: end;
 }
@@ -67,7 +67,6 @@ $result = $con->query($sql);
 .dataTables_paginate .page-item.disabled .page-link {
     opacity: 0.5;
 }
-/* Remove default DataTable sort icons */
 table.dataTable thead .sorting:before,
 table.dataTable thead .sorting:after,
 table.dataTable thead .sorting_asc:before,
@@ -192,6 +191,7 @@ table.dataTable thead .sorting_desc:after {
 
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.querySelectorAll('.confirm-delete').forEach(btn => {

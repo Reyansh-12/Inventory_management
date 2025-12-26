@@ -61,7 +61,7 @@ if(isset($_POST['submit'])) {
     <meta name="robots" content="noindex, nofollow">
     <title>Dreams Pos admin template</title>
     <style>
-        .parsley-required {
+        .parsley-required, .parsley-pattern {
             color: orangered;
         }
 
@@ -128,7 +128,7 @@ if(isset($_POST['submit'])) {
                     <span class="input-group-text" id="addon-wrapping">+91</span>
                     <input type="text" id="contact" name="phoneNumber" value="<?= htmlspecialchars($contact) ?>" placeholder="Phone number" maxlength="10" data-parsley-minlength="10"data-parsley-required="true"data-parsley-required-message="Phone number is required"data-parsley-errors-container="#contactError" />
                 </div>
-            <div id="contactError" class="text-danger"><?php echo $contactError ?? ""; ?></div>
+            <div id="contactError" class="parsley-pattern"><?php echo $contactError ?? ""; ?></div>
             </div>
         </div>
         <div class="col-lg-3 col-sm-6 col-12">

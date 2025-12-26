@@ -17,7 +17,7 @@
 <body>
     <div class="header">
         <div class="header-left active">
-            <a href="index.html" class="logo">
+            <a href="/Backend/src/Pages/Dashboard.php" class="logo">
                 <img src="/Backend/src/assets/images/brand/logo.webp" class="ms-5" alt="" style="height: 35px; width: 60px;">
             </a>
             <a href="index.html" class="logo-small">

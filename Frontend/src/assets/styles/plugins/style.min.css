@@ -1448,7 +1448,7 @@ hr {
   text-align: center;
 }
 .btn.btn-border-dark:hover {
-  background-color: #ff6565;
+  background-color: #E85B50;
   border-color: #ff6565;
   color: #fff;
 }
@@ -2020,8 +2020,8 @@ hr {
 .no-caret::after {
   display: none !important;
 }
-.nav-link.active {
-  color: #ff6565 !important;
+.nav-link.active, .price {
+  color: #FF6F61 !important;
   font-weight: 600;
 }
 
@@ -2936,8 +2936,8 @@ hr {
 
 .product-category-item .flag-new {
   position: absolute;
-  right: 20px;
-  top: -35px;
+  right: 10px;
+  top: 12px;
   background-color: #ff6565;
   border-radius: 50px;
   color: #fff;
@@ -2945,10 +2945,10 @@ hr {
   font-size: 16px;
   font-weight: 400;
   text-align: center;
-  padding: 22px 1px 22px 4px;
-  -ms-writing-mode: tb-lr;
-  writing-mode: vertical-lr;
-  transform: rotate(180deg);
+  padding: 0px 20px 0px 20px;
+  /* -ms-writing-mode: tb-lr; */
+  /* writing-mode: vertical-lr; */
+  transform: rotate(0deg);
 }
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
   .product-category-item .flag-new {

@@ -16,6 +16,16 @@ if (isset($_POST['submit'])) {
     $status = $_POST['status'];
     $strongPasswordPattern = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()_+\-=\[\]{};\'":\\|,.<>\/?]).{8,16}$/';
 
+    $emailCheck = mysqli_query(
+        $con,
+        "SELECT id FROM new_user WHERE user_email='$userEmail' AND id != '$userId'"
+    );
+
+    if (mysqli_num_rows($emailCheck) > 0) {
+        $_SESSION['toast'] = ['type' => 'danger', 'msg' => 'Email already exists'];
+        header("Location: " . $_SERVER['REQUEST_URI']);
+        exit;
+    }
 if (!preg_match($strongPasswordPattern, $password)) {
     die("Password must be 8–16 characters and include at least one uppercase letter, one lowercase letter, one number, and one special character.");
 }
@@ -46,11 +56,11 @@ if (!preg_match($strongPasswordPattern, $password)) {
     <meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, invoice, html5, responsive, Projects">
     <meta name="author" content="Dreamguys - Bootstrap Admin Template">
     <meta name="robots" content="noindex, nofollow">
-    <title>Registration</title>
+    <title>Sign up</title>
     <link rel="shortcut icon" type="image/x-icon" href="/Backend/src/assets/images/favicon.jpg">
     <link rel="stylesheet" href="/Backend/src/assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="/Backend/src/assets/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
     <style>
         .parsley-required, .parsley-minlength, .parsley-type,.parsley-pattern{
             color: orangered;
@@ -59,7 +69,9 @@ if (!preg_match($strongPasswordPattern, $password)) {
 </head>
 
 <body class="account-page">
-
+    <div id="global-loader">
+        <div class="whirly-loader"> </div>
+    </div>
     <div class="main-wrapper">
         <div class="account-content">
             <div class="login-wrapper">
@@ -139,6 +151,25 @@ if (!preg_match($strongPasswordPattern, $password)) {
             </div>
         </div>
     </div>
+    <div class="toast position-fixed bg-white top-0 end-0 m-3 text-white" style="z-index: 999" id="actionToast" role="alert">
+    <div class="d-flex">
+    <div class="toast-body text-black" id="toastMessage"></div>
+        <button type="button" class="btn-close btn-close-black me-2 m-auto"data-bs-dismiss="toast"></button>
+    </div>
+    </div>
+<?php if (!empty($_SESSION['toast'])): ?>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const toastEl = document.getElementById("actionToast");
+        const toastMsg = document.getElementById("toastMessage");
+
+        toastEl.classList.add("bg-<?= $_SESSION['toast']['type'] ?>");
+        toastMsg.innerText = "<?= $_SESSION['toast']['msg'] ?>";
+
+        new bootstrap.Toast(toastEl, { delay: 3000 }).show();
+    });
+</script>
+<?php unset($_SESSION['toast']); endif; ?>
     <script src="/Backend/src/assets/js/jquery-3.6.0.min.js"></script>
     <script src="/Backend/src/assets/js/feather.min.js"></script>
     <script src="/Backend/src/assets/js/bootstrap.bundle.min.js"></script>

@@ -6,7 +6,7 @@ session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 if (!isset($_SESSION['transaction_id'])) {
-    $_SESSION['transaction_id'] = 'TXN' . date('YmdHis') . rand(100, 999);
+    $_SESSION['transaction_id'] = 'ID' . date('YmdHis') . rand(100, 999);
 }
 
 $sql = "SELECT `id`,`product_name`, `category`, `brand_name`, `price`, `quantity`, `image_path` FROM `product_list`";

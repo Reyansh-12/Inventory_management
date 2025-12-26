@@ -98,9 +98,7 @@ if (isset($_POST['submit'])) {
     <meta name="author" content="Dreamguys - Bootstrap Admin Template">
     <meta name="robots" content="noindex, nofollow">
     <title>Dreams Pos admin template</title>
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
-
     <style>
         .parsley-required,
         .parsley-minlength,
@@ -197,9 +195,9 @@ if (isset($_POST['submit'])) {
                                 <div class="col-lg-4 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="productName">Product Name <span class="text-danger">*</span></label>
-                                        <input type="text" id="productName" name="productname" value="<?php echo htmlspecialchars($editData['product_name'] ?? '') ?>" placeholder="Product name" oninput="validateProductName()" maxlength="500" data-parsley-required data-parsley-required-message="Product name is required">
-                                        <small id="productNameError" class="text-danger" style="display:none;">
-                                            Product name must be at least 3 characters long
+                                        <input type="text" id="productName" name="productname" value="<?php echo htmlspecialchars($editData['product_name'] ?? '') ?>" placeholder="Product name" oninput="validateProductName()" maxlength="150" data-parsley-required data-parsley-required-message="Product name is required">
+                                        <small id="productNameError" class="parsley-required" style="display:none;">
+                                            Please enter a product name between 3 and 100 characters long.
                                         </small>
                                     </div>
                                 </div>
@@ -247,7 +245,7 @@ if (isset($_POST['submit'])) {
                                     <div class="form-group">
                                         <label for="minQuantity">Min Quantity <span class="text-danger">*</span></label>
                                         <input type="number" class="p-2 rounded col-lg-12 border border-secondary" onkeydown="return event.key !== '-'" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" value="<?php echo htmlspecialchars($editData['minQuantity'] ?? ''); ?>" name="minquantity" id="minQuantity" placeholder="Min Quantity" oninput="validateQuantity()" data-parsley-required data-parsley-error-message="Minimum quantity is required">
-                                        <small id="minQuantityError" class="text-danger" style="display:none;"></small>
+                                        <small id="minQuantityError" class="parsley-required" style="display:none;"></small>
                                     </div>
                                 </div>
 
@@ -255,7 +253,7 @@ if (isset($_POST['submit'])) {
                                     <div class="form-group">
                                         <label for="quantity">Max Quantity <span class="text-danger">*</span></label>
                                         <input type="number" name="quantity" id="quantity" onkeydown="return event.key !== '-'" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); validateQuantity();" class="p-2 rounded col-lg-12 border border-secondary" value="<?php echo htmlspecialchars($editData['quantity'] ?? ''); ?>" placeholder="Max Quantity" data-parsley-required  data-parsley-error-message="Maximum quantity is required">
-                                        <small id="maxError" class="text-danger" style="display:none;">Max quantity must be greater than or equal to Min quantity</small>
+                                        <small id="maxError" class="parsley-required" style="display:none;">Max quantity must be greater than or equal to Min quantity</small>
                                     </div>
                                 </div>
 
@@ -290,7 +288,7 @@ if (isset($_POST['submit'])) {
                                             <span class="input-group-text" id="discount-suffix">%</span>
                                             <!-- <div id="discountFeedback" class="invalid-feedback"></div> -->
                                         </div>
-                                        <div id="discountError" class="text-danger"><?php echo $discountError ?? ""; ?></div>
+                                        <div id="discountError" class="parsley-required"><?php echo $discountError ?? ""; ?></div>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-6 col-12">
@@ -300,7 +298,7 @@ if (isset($_POST['submit'])) {
                                             <input type="number" onkeydown="return event.key !== '-'"  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control p-2" min="0" max="1000000" step="0.01" value="<?php echo htmlspecialchars($editData['price'] ?? '') ?>" name="price" id="price" placeholder="Price per unit" data-parsley-required-message="Price field is required" data-parsley-max="1000000" data-parsley-max-message="Price cannot exceed 1,000,000" data-parsley-required data-parsley-errors-container="#priceError">
                                             <span class="input-group-text" id="discount-suffix">₹</span>
                                         </div>
-                                        <div id="priceError" class="text-danger"><?php echo $priceError ?? ""; ?></div>
+                                        <div id="priceError" class="parsley-required"><?php echo $priceError ?? ""; ?></div>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-6 col-12">
@@ -333,7 +331,7 @@ if (isset($_POST['submit'])) {
                                                 </h4>
                                             </div>
                                         </div>
-                                        <div id="imageError" class="text-danger"></div>
+                                        <div id="imageError" class="parsley-required"></div>
                                     </div>
                                 </div>
                                 <input type="hidden" name="existing_image"

@@ -9,7 +9,7 @@ import category4 from "../../assets/images/shop/category/category4.webp";
 import category5 from "../../assets/images/shop/category/category5.webp";
 import category6 from "../../assets/images/shop/category/category6.webp";
 import ProductItem from "@/Pages/Products/ProductItem.jsx";
-
+import Image from "../../../src/assets/images/product_not_found2.png";
 
 const ProductFourColumns = () => {
     const [products, setProducts] = useState([]);
@@ -98,7 +98,7 @@ const relatedProducts = products.slice(0, 3);
                 </div>
               ))
             ) : (
-              <p className="text-center">No products found</p>
+              <p className="text-center"><img src={Image} alt="no product found" style={{width: '700px'}} /></p>
             )}
           </div>
         </div>

@@ -6,6 +6,7 @@ import emailIcon from "../../assets/images/icons/2.webp";
 import locationIcon from "../../assets/images/icons/3.webp";
 import Navbar from '../../components/Navbar';
 
+
 export const Contact = () => {
   const [inputs, setInputs] = useState({
     con_name: '',

@@ -45,6 +45,34 @@ $result = $con->query($sql);
             margin-left: 537%;
             margin-top: 48%;
         }
+        .dataTables_paginate .pagination {
+    justify-content: end;
+}
+
+.dataTables_paginate .page-item .page-link {
+    border-radius: 6px;
+    margin: 0 3px;
+    border: 1px solid #dee2e6;
+    color: #333;
+}
+
+.dataTables_paginate .page-item.active .page-link {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: #fff;
+}
+
+.dataTables_paginate .page-item.disabled .page-link {
+    opacity: 0.5;
+}
+table.dataTable thead .sorting:before,
+table.dataTable thead .sorting:after,
+table.dataTable thead .sorting_asc:before,
+table.dataTable thead .sorting_asc:after,
+table.dataTable thead .sorting_desc:before,
+table.dataTable thead .sorting_desc:after {
+    display: none !important;
+}
     </style>
 </head>
 
@@ -94,6 +122,7 @@ $result = $con->query($sql);
                         <table class="table datanew">
                             <thead>
                                 <tr>
+                                    <th style="display:none;">ID</th>
                                     <th>User name </th>
                                     <th>Phone</th>
                                     <th>email</th>
@@ -108,9 +137,10 @@ $result = $con->query($sql);
                                 if ($result->num_rows > 0) {
                                     while ($row = $result->fetch_assoc()) {
                                         echo "<tr>";
+                                        echo "<td style='display:none;'>" . $row['id'] . "</td>";
                                         echo "    <td style='width: 200px'><a class='d-inline-block text-truncate w-100' data-bs-toggle='tooltip' data-bs-title='".$row['user_name']."'>" . $row['user_name'] . "</a></td>";
                                         echo "    <td>" . $row['user_contact'] . "</td>";
-                                        echo "    <td><a href='/cdn-cgi/l/email-protection' class='__cf_email__' data-cfemail='fb8f9394969a88bb9e839a968b979ed5989496'>" . $row['user_email'] . "</a> </td>";
+                                        echo "    <td><a>" . $row['user_email'] . "</a> </td>";
                                         echo "    <td>" . $row['user_role'] . "</td>";
                                         echo "    <td>" . $row['created_at'] . "</td>";
                                         $statusClass = strtolower($row['status']) === 'active' ? 'bg-success' : 'bg-danger';
@@ -135,16 +165,26 @@ $result = $con->query($sql);
         </div>
     </div>
     </div>
-    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:1100;">
-    <div id="actionToast" class="toast border-0" role="alert">
-        <div class="d-flex">
-            <div class="toast-body text-white" id="toastMessage"></div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto"
-                data-bs-dismiss="toast"></button>
-        </div>
+    
+<div class="toast position-fixed top-0 end-0 m-3 text-white" style="z-index: 1100" id="actionToast" role="alert">
+<div class="d-flex">
+    <div class="toast-body" id="toastMessage"></div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto"data-bs-dismiss="toast"></button>
     </div>
 </div>
+<?php if (!empty($_SESSION['toast'])): ?>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const toastEl = document.getElementById("actionToast");
+        const toastMsg = document.getElementById("toastMessage");
 
+        toastEl.classList.add("bg-<?= $_SESSION['toast']['type'] ?>");
+        toastMsg.innerText = "<?= $_SESSION['toast']['msg'] ?>";
+
+        new bootstrap.Toast(toastEl, { delay: 3000 }).show();
+    });
+</script>
+<?php unset($_SESSION['toast']); endif; ?>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -171,7 +211,6 @@ $result = $con->query($sql);
             });
         });
 
-        
 document.addEventListener("DOMContentLoaded", function () {
     const params = new URLSearchParams(window.location.search);
     const toastEl = document.getElementById("actionToast");
@@ -198,11 +237,38 @@ document.addEventListener("DOMContentLoaded", function () {
     const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
     toast.show();
 
-    // refresh par dobara toast na aaye
     setTimeout(() => {
         window.history.replaceState({}, document.title, window.location.pathname);
     }, 3500);
 });
     </script>
+    <script>
+$(document).ready(function () {
+
+    if ($.fn.DataTable.isDataTable('.datanew')) {
+        $('.datanew').DataTable().destroy();
+    }
+
+    $('.datanew').DataTable({
+        order: [[0, 'desc']],
+
+        columnDefs: [
+            { targets: 0, visible: false, searchable: false },
+            { targets: '_all', orderable: true } 
+        ],
+
+        autoWidth: false,
+        responsive: false,
+
+        searching: false,       
+        lengthChange: true,    
+        pageLength: 10,
+
+        pagingType: "simple_numbers",
+
+        dom: 'rt<"row mt-3"<"col-md-6"l><"col-md-6 text-end"p>>'
+    });
+});
+</script>
 </body>
 </html>

@@ -46,6 +46,34 @@ if (isset($_GET['supplierId'])) {
             margin-left: 537%;
             margin-top: 48%;
         }
+        .dataTables_paginate .pagination {
+    justify-content: end;
+}
+
+.dataTables_paginate .page-item .page-link {
+    border-radius: 6px;
+    margin: 0 3px;
+    border: 1px solid #dee2e6;
+    color: #333;
+}
+
+.dataTables_paginate .page-item.active .page-link {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: #fff;
+}
+
+.dataTables_paginate .page-item.disabled .page-link {
+    opacity: 0.5;
+}
+table.dataTable thead .sorting:before,
+table.dataTable thead .sorting:after,
+table.dataTable thead .sorting_asc:before,
+table.dataTable thead .sorting_asc:after,
+table.dataTable thead .sorting_desc:before,
+table.dataTable thead .sorting_desc:after {
+    display: none !important;
+}
     </style>
 </head>
 <body>
@@ -92,6 +120,7 @@ if (isset($_GET['supplierId'])) {
                             <table class="table datanew">
                                 <thead>
                                     <tr>
+                                        <th style="display:none;">ID</th>
                                         <th>Supplier Name</th>
                                         <th>Email</th>
                                         <th>Phone Number</th>
@@ -108,10 +137,11 @@ if (isset($_GET['supplierId'])) {
                                         if ($result->num_rows > 0) {
                                             while ($row = $result->fetch_assoc()) {
                                                 echo "<tr>";
+                                                echo "<td style='display:none;'>" . $row['id'] . "</td>";
                                                 echo "    <td class='productimgname' style='width: 200px'>";
-                                                echo "        <a href='' class='text-truncate w-100' data-bs-toggle='tooltip' data-bs-title='" . $row['supplier_name'] . "'>" . $row['supplier_name'] . "</a>";
+                                                echo "        <aclass='text-truncate w-100' data-bs-toggle='tooltip' data-bs-title='" . $row['supplier_name'] . "'>" . $row['supplier_name'] . "</a>";
                                                 echo "    </td>";
-                                                echo "    <td><a href='/cdn-cgi/l/email-protection' class='__cf_email__' data-cfemail='b8ccd0d7d5d9cbf8ddc0d9d5c8d4dd96dbd7d5'>" . $row['email'] . "</a></td>";
+                                                echo "    <td><a>" . $row['email'] . "</a></td>";
                                                 echo "    <td>" . $row['phone_number'] . "</td>";
                                                 echo "    <td>" . $row['city'] . "</td>";
                                                 echo "    <td>" . $row['country'] . "</td>";
@@ -136,7 +166,6 @@ if (isset($_GET['supplierId'])) {
         </div>
     </div>
     
-
     <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
     <div id="actionToast" class="toast border-0" role="alert">
         <div class="d-flex">
@@ -203,10 +232,37 @@ document.addEventListener("DOMContentLoaded", function () {
     const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
     toast.show();
 
-    // URL clean (refresh par repeat nahi hoga)
     setTimeout(() => {
         window.history.replaceState({}, document.title, window.location.pathname);
     }, 3500);
+});
+</script>
+<script>
+$(document).ready(function () {
+
+    if ($.fn.DataTable.isDataTable('.datanew')) {
+        $('.datanew').DataTable().destroy();
+    }
+
+    $('.datanew').DataTable({
+        order: [[0, 'desc']],
+
+        columnDefs: [
+            { targets: 0, visible: false, searchable: false },
+            { targets: '_all', orderable: true } 
+        ],
+
+        autoWidth: false,
+        responsive: false,
+
+        searching: false,       
+        lengthChange: true,    
+        pageLength: 10,
+
+        pagingType: "simple_numbers",
+
+        dom: 'rt<"row mt-3"<"col-md-6"l><"col-md-6 text-end"p>>'
+    });
 });
 </script>
 
