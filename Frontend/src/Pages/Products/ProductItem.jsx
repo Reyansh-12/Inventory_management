@@ -34,8 +34,8 @@ const ProductItem = ({ product }) => {
   return (
     <div className="product-item text-start" style={{position: 'relative'}}>
       <div className="product-thumb">
-        <Link to="/ProductDetailsNormal">
-          <img src={product?.image ? product.image : shop4} alt={product?.name || 'product'} style={{width: '100%', height: '350px', objectFit: 'contain'}} />
+        <Link to={`/product/${product.id}`}>
+          <img src={product?.image || shop4} style={{width: '100%', height: '350px', objectFit: 'contain'}} onError={(e) => (e.target.src = shop4)} />
         </Link>
         <span className="flag-new">new</span>
         <div className="product-action">

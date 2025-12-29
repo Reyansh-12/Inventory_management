@@ -3,90 +3,92 @@ define("BASE_PATH", dirname(__DIR__, 3));
 include BASE_PATH . "/src/Layouts/Links.php";
 include BASE_PATH . "/src/controllers/dbConnection.php";
 
-$currentPage = basename($_SERVER['PHP_SELF']);
 $productId = $_GET['productId'] ?? null;
 $isEdit = false;
 $editData = [];
+$existingGalleryImages = [];
 
 if ($productId) {
     $isEdit = true;
     $stmt = mysqli_prepare($con, "SELECT * FROM `product_list` WHERE id = ?");
     mysqli_stmt_bind_param($stmt, "i", $productId);
     mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
-    if ($result && mysqli_num_rows($result) > 0) {
-        $editData = mysqli_fetch_assoc($result);
-    }
+    $res = mysqli_stmt_get_result($stmt);
+    $editData = mysqli_fetch_assoc($res) ?? [];
     mysqli_stmt_close($stmt);
+
+    $existingGalleryImages = json_decode($editData['gallery_images'] ?? '[]', true) ?? [];
 }
-
-
 if (isset($_POST['submit'])) {
 
+    // 3.1 Handle removed images
+    $removedGalleryImages = json_decode($_POST['removed_gallery_images'] ?? '[]', true);
+    $galleryImages = $existingGalleryImages;
+
+    if (!empty($removedGalleryImages)) {
+        $galleryImages = array_values(array_diff($galleryImages, $removedGalleryImages));
+    }
+
+    // 3.2 Handle new uploads
+    if (!empty($_FILES['gallery_images']['name'][0])) {
+
+        $uploadDir = BASE_PATH . "/src/uploads/products/gallery/";
+
+        if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+
+        foreach ($_FILES['gallery_images']['tmp_name'] as $key => $tmpName) {
+            if ($_FILES['gallery_images']['error'][$key] !== 0) continue;
+
+            $ext = strtolower(pathinfo($_FILES['gallery_images']['name'][$key], PATHINFO_EXTENSION));
+            $allowed = ['jpg', 'jpeg', 'png', 'webp'];
+            if (!in_array($ext, $allowed)) continue;
+
+            $fileName = uniqid('gallery_', true) . '.' . $ext;
+            $targetPath = $uploadDir . $fileName;
+
+            if (move_uploaded_file($tmpName, $targetPath)) {
+                $galleryImages[] = '/Backend/src/uploads/products/gallery/' . $fileName;
+            }
+        }
+    }
+    $galleryJson = json_encode($galleryImages);
     $productname = $_POST['productname'] ?? '';
     $category = $_POST['categoryselector'] ?? '';
     $brandName = $_POST['brand'] ?? '';
-    $minquantity = $_POST['minquantity'] ?? '';
-    $quantity = $_POST['quantity'] ?? '';
+    $minquantity = $_POST['minquantity'] ?? 0;
+    $quantity = $_POST['quantity'] ?? 0;
     $description = $_POST['description'] ?? '';
-    $discount = $_POST['discount'] ?? '';
-    $price = $_POST['price'] ?? '';
+    $discount = $_POST['discount'] ?? 0;
+    $price = $_POST['price'] ?? 0;
     $status = $_POST['status'] ?? '';
     $expiredDate = $_POST['expiredDate'] ?? '';
-    $imagePath = $_POST['existing_image'] ?? null;
+
+    $imagePath = $_POST['existing_image'] ?? '';
     if (isset($_FILES['imageBox']) && $_FILES['imageBox']['error'] === 0) {
-        $uploadDir = BASE_PATH . DIRECTORY_SEPARATOR .
-            'src' . DIRECTORY_SEPARATOR .
-            'uploads' . DIRECTORY_SEPARATOR .
-            'products' . DIRECTORY_SEPARATOR .
-            'featured' . DIRECTORY_SEPARATOR;
-
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
-        }
-
+        $uploadDir = BASE_PATH . "/src/uploads/products/featured/";
+        if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
         $ext = strtolower(pathinfo($_FILES['imageBox']['name'], PATHINFO_EXTENSION));
-        $allowed = ['jpg', 'jpeg', 'png', 'webp'];
-
-        if (!in_array($ext, $allowed)) {
-            die('Invalid image type');
-        }
-
         $fileName = uniqid('product_', true) . '.' . $ext;
         $targetPath = $uploadDir . $fileName;
-
-        if (!move_uploaded_file($_FILES['imageBox']['tmp_name'], $targetPath)) {
-            die('Image upload failed');
+        if (move_uploaded_file($_FILES['imageBox']['tmp_name'], $targetPath)) {
+            $imagePath = '/Backend/src/uploads/products/featured/' . $fileName;
         }
-
-        $imagePath = '/Backend/src/uploads/products/featured/' . $fileName;
-    }
-
-    if ($isEdit) {
-        $stmt = mysqli_prepare($con, "UPDATE `product_list` 
-            SET product_name=?, category=?, brand_name=?, minQuantity=?, price=?, quantity=?, description=?, discount=?, status=?, `image_path`=?, expired_date=?
-            WHERE id=?");
-        mysqli_stmt_bind_param($stmt, "sssiddsssssi", $productname, $category, $brandName, $minquantity, $price, $quantity, $description, $discount, $status, $imagePath, $expiredDate, $productId);
-        mysqli_stmt_execute($stmt);
-        mysqli_stmt_close($stmt);
-    } else {
-        $stmt = mysqli_prepare($con, "INSERT INTO `product_list` 
-            (product_name, category, brand_name, minQuantity, price, quantity, description, discount, status, image_path, expired_date) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ?)");
-        mysqli_stmt_bind_param($stmt, "sssiddsssss", $productname, $category, $brandName, $minquantity, $price, $quantity, $description, $discount, $status, $imagePath, $expiredDate);
-        mysqli_stmt_execute($stmt);
-        mysqli_stmt_close($stmt);
     }
     if ($isEdit) {
-        header("Location: ProductList.php?updated=1");
+        $stmt = mysqli_prepare($con, "UPDATE product_list SET product_name=?, category=?, brand_name=?, minQuantity=?, price=?, quantity=?, description=?, discount=?, status=?, image_path=?, gallery_images=?, expired_date=? WHERE id=?");
+        mysqli_stmt_bind_param($stmt, "sssiddssssssi", $productname, $category, $brandName, $minquantity, $price, $quantity, $description, $discount, $status, $imagePath, $galleryJson, $expiredDate, $productId);
     } else {
-        header("Location: ProductList.php?added=1");
+        $stmt = mysqli_prepare($con, "INSERT INTO product_list (product_name, category, brand_name, minQuantity, price, quantity, description, discount, status, image_path, gallery_images, expired_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        mysqli_stmt_bind_param($stmt, "sssiddssssss", $productname, $category, $brandName, $minquantity, $price, $quantity, $description, $discount, $status, $imagePath, $galleryJson, $expiredDate);
     }
+    if (!$stmt->execute()) {
+        die("DB Error: " . mysqli_error($con));
+    }
+    mysqli_stmt_close($stmt);
+    header("Location: ProductList.php?" . ($isEdit ? "updated=1" : "added=1"));
     exit();
 }
-
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -152,6 +154,75 @@ if (isset($_POST['submit'])) {
             background: #003980 !important;
             color: white !important;
             text-align: center;
+        }
+
+        .gallery-wrapper {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .upload-box {
+            width: 100px;
+            height: 100px;
+            border: 2px dashed #aaa;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #666;
+        }
+
+        .upload-box span {
+            font-size: 28px;
+            line-height: 1;
+        }
+
+        .upload-box small {
+            font-size: 11px;
+            text-align: center;
+        }
+
+        .gallery-preview {
+            display: flex;
+            gap: 8px;
+        }
+
+        .gallery-item {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .remove-btn {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 20px;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            border-radius: 50%;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .gallery-item:hover .remove-btn {
+            display: flex;
         }
     </style>
 
@@ -252,7 +323,7 @@ if (isset($_POST['submit'])) {
                                 <div class="col-lg-4 col-sm-4 col-12">
                                     <div class="form-group">
                                         <label for="quantity">Max Quantity <span class="text-danger">*</span></label>
-                                        <input type="number" name="quantity" id="quantity" onkeydown="return event.key !== '-'" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); validateQuantity();" class="p-2 rounded col-lg-12 border border-secondary" value="<?php echo htmlspecialchars($editData['quantity'] ?? ''); ?>" placeholder="Max Quantity" data-parsley-required  data-parsley-error-message="Maximum quantity is required">
+                                        <input type="number" name="quantity" id="quantity" onkeydown="return event.key !== '-'" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); validateQuantity();" class="p-2 rounded col-lg-12 border border-secondary" value="<?php echo htmlspecialchars($editData['quantity'] ?? ''); ?>" placeholder="Max Quantity" data-parsley-required data-parsley-error-message="Maximum quantity is required">
                                         <small id="maxError" class="parsley-required" style="display:none;">Max quantity must be greater than or equal to Min quantity</small>
                                     </div>
                                 </div>
@@ -295,7 +366,7 @@ if (isset($_POST['submit'])) {
                                     <div class="form-group">
                                         <label for="price">Price per unit <span class="text-danger">*</span></label>
                                         <div class="input-group">
-                                            <input type="number" onkeydown="return event.key !== '-'"  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control p-2" min="0" max="1000000" step="0.01" value="<?php echo htmlspecialchars($editData['price'] ?? '') ?>" name="price" id="price" placeholder="Price per unit" data-parsley-required-message="Price field is required" data-parsley-max="1000000" data-parsley-max-message="Price cannot exceed 1,000,000" data-parsley-required data-parsley-errors-container="#priceError">
+                                            <input type="number" onkeydown="return event.key !== '-'" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control p-2" min="0" max="1000000" step="0.01" value="<?php echo htmlspecialchars($editData['price'] ?? '') ?>" name="price" id="price" placeholder="Price per unit" data-parsley-required-message="Price field is required" data-parsley-max="1000000" data-parsley-max-message="Price cannot exceed 1,000,000" data-parsley-required data-parsley-errors-container="#priceError">
                                             <span class="input-group-text" id="discount-suffix">₹</span>
                                         </div>
                                         <div id="priceError" class="parsley-required"><?php echo $priceError ?? ""; ?></div>
@@ -311,32 +382,57 @@ if (isset($_POST['submit'])) {
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label for="productImage"> Product Image <span class="text-danger">*</span></label>
-                                        <div class="image-upload mb-0">
-                                            <input type="file" name="imageBox" id="productImage" accept="image/*" <?= $isEdit ? '' : 'data-parsley-required' ?> maxlength="2000" data-parsley-error-message="Image is required" data-parsley-errors-container="#imageError">
-                                            <div class="image-uploads text-center">
-                                                <img id="imagePreview"
-                                                    src="<?= !empty($editData['image_path'])
-                                                                ? htmlspecialchars($editData['image_path'])
-                                                                : '/Backend/assets/images/icons/upload.svg' ?>"
-                                                    alt="Preview"
-                                                    style="max-width: 100%; max-height: 48px; object-fit: contain;">
+                                <div class="row">
+                                    <div class="col-lg-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="productImage"> Product Image <span class="text-danger">*</span></label>
+                                            <div class="image-upload mb-0">
+                                                <input type="file" name="imageBox" id="productImage" accept="image/*" <?= $isEdit ? '' : 'data-parsley-required' ?> maxlength="2000" data-parsley-error-message="Image is required" data-parsley-errors-container="#imageError">
+                                                <div class="image-uploads text-center">
+                                                    <img id="imagePreview"
+                                                        src="<?= !empty($editData['image_path'])
+                                                                    ? htmlspecialchars($editData['image_path'])
+                                                                    : '/Backend/assets/images/icons/upload.svg' ?>"
+                                                        alt="Preview"
+                                                        style="max-width: 100%; max-height: 48px; object-fit: contain;">
 
-                                                <h4 id="imageUploadTitle">
-                                                    <?= !empty($editData['image_path'])
-                                                        ? htmlspecialchars(basename($editData['image_path']))
-                                                        : 'Drag and drop a file to upload' ?>
-                                                </h4>
+                                                    <h4 id="imageUploadTitle">
+                                                        <?= !empty($editData['image_path'])
+                                                            ? htmlspecialchars(basename($editData['image_path']))
+                                                            : 'Drag and drop a file to upload' ?>
+                                                    </h4>
+                                                </div>
+                                            </div>
+                                            <div id="imageError" class="parsley-required"></div>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="existing_image"
+                                        value="<?= htmlspecialchars($editData['image_path'] ?? '') ?>">
+                                    <div class="col-lg-6 col-sm-12">
+                                        <div class="form-group">
+                                            <input type="hidden" name="removed_gallery_images" id="removedGalleryImages">
+                                            <label>Gallery Images</label>
+
+                                            <input
+                                                type="file"
+                                                name="gallery_images[]"
+                                                id="galleryInput"
+                                                accept="image/*"
+                                                multiple
+                                                hidden>
+                                            <div class="gallery-wrapper">
+
+                                                <div class="upload-box" id="uploadBox"
+                                                    onclick="document.getElementById('galleryInput').click()">
+                                                    <span>+</span>
+                                                    <small id="counterText">Select up to 5 images (5 left)</small>
+                                                </div>
+
+                                                <div id="galleryPreview" class="gallery-preview"></div>
                                             </div>
                                         </div>
-                                        <div id="imageError" class="parsley-required"></div>
                                     </div>
                                 </div>
-                                <input type="hidden" name="existing_image"
-                                    value="<?= htmlspecialchars($editData['image_path'] ?? '') ?>">
-
                                 <div class="col-lg-12 d-flex justify-content-end">
                                     <button class="btn btn-cancel me-2" type="<?= $productId ? 'button' : 'reset' ?>" name="reset" id="resetButton"><?= $productId ? 'Back' : 'Reset' ?></button>
                                     <button class="btn btn-submit" name="submit" type="submit"><?= $productId ? 'Update' : 'Submit' ?></button>
@@ -525,25 +621,24 @@ if (isset($_POST['submit'])) {
         });
     </script>
     <script>
-document.getElementById('resetButton').addEventListener('click', function () {
-    const fileInput = document.getElementById('productImage');
-    const preview = document.getElementById('imagePreview');
-    const title = document.getElementById('imageUploadTitle');
+        document.getElementById('resetButton').addEventListener('click', function() {
+            const fileInput = document.getElementById('productImage');
+            const preview = document.getElementById('imagePreview');
+            const title = document.getElementById('imageUploadTitle');
 
-    if (!<?= $isEdit ? 'true' : 'false' ?>) {
-        fileInput.value = '';
-        preview.src = '/Backend/assets/images/icons/upload.svg';
-        title.textContent = 'Drag and drop a file to upload';
-    }
-    else {
-        preview.src = "<?= htmlspecialchars($editData['image_path'] ?? '/Backend/assets/images/icons/upload.svg') ?>";
-        title.textContent = "<?= !empty($editData['image_path']) 
-            ? htmlspecialchars(basename($editData['image_path'])) 
-            : 'Drag and drop a file to upload' ?>";
-        fileInput.value = '';
-    }
-});
-</script>
+            if (!<?= $isEdit ? 'true' : 'false' ?>) {
+                fileInput.value = '';
+                preview.src = '/Backend/assets/images/icons/upload.svg';
+                title.textContent = 'Drag and drop a file to upload';
+            } else {
+                preview.src = "<?= htmlspecialchars($editData['image_path'] ?? '/Backend/assets/images/icons/upload.svg') ?>";
+                title.textContent = "<?= !empty($editData['image_path'])
+                                            ? htmlspecialchars(basename($editData['image_path']))
+                                            : 'Drag and drop a file to upload' ?>";
+                fileInput.value = '';
+            }
+        });
+    </script>
 
     <script>
         function validateProductName() {
@@ -609,29 +704,118 @@ document.getElementById('resetButton').addEventListener('click', function () {
             }
         });
     </script>
-<script>
-document.getElementById('price').addEventListener('input', function () {
-    let value = this.value;
+    <script>
+        document.getElementById('price').addEventListener('input', function() {
+            let value = this.value;
 
-    if (parseFloat(value) > 1000000) {
-        this.value = 1000000;
-    }
-});
-document.getElementById('minQuantity').addEventListener('input', function () {
-    let value = this.value;
+            if (parseFloat(value) > 1000000) {
+                this.value = 1000000;
+            }
+        });
+        document.getElementById('minQuantity').addEventListener('input', function() {
+            let value = this.value;
 
-    if (parseFloat(value) > 1000000) {
-        this.value = 1000000;
-    }
-});
-document.getElementById('quantity').addEventListener('input', function () {
-    let value = this.value;
+            if (parseFloat(value) > 1000000) {
+                this.value = 1000000;
+            }
+        });
+        document.getElementById('quantity').addEventListener('input', function() {
+            let value = this.value;
 
-    if (parseFloat(value) > 1000000) {
-        this.value = 1000000;
-    }
-});
-</script>
+            if (parseFloat(value) > 1000000) {
+                this.value = 1000000;
+            }
+        });
+    </script>
+    <script>
+        const MAX_IMAGES = 5;
+        let selectedFiles = [];
+        let removedImages = [];
+
+        const input = document.getElementById('galleryInput');
+        const preview = document.getElementById('galleryPreview');
+        const uploadBox = document.getElementById('uploadBox');
+        const counterText = document.getElementById('counterText');
+
+        function addPreview(file = null, imagePath = null) {
+
+            const div = document.createElement('div');
+            div.className = 'gallery-item';
+
+            const img = document.createElement('img');
+            img.src = imagePath ? imagePath : URL.createObjectURL(file);
+
+            const remove = document.createElement('div');
+            remove.className = 'remove-btn';
+            remove.innerHTML = '&times;';
+
+            remove.onclick = function() {
+                div.remove();
+
+                if (file) {
+                    selectedFiles = selectedFiles.filter(f => f !== file);
+                }
+
+                if (imagePath) {
+                    removedImages.push(imagePath);
+                    document.getElementById('removedGalleryImages').value =
+                        JSON.stringify(removedImages);
+                    selectedFiles.pop();
+                }
+
+                updateCounter();
+            };
+
+            div.appendChild(img);
+            div.appendChild(remove);
+            preview.appendChild(div);
+        }
+
+        input.addEventListener('change', function() {
+            const files = Array.from(this.files);
+
+            files.forEach(file => {
+                if (selectedFiles.length >= MAX_IMAGES) return;
+                selectedFiles.push(file);
+                addPreview(file);
+            });
+
+            input.value = '';
+            updateCounter();
+        });
+
+        function updateCounter() {
+            const left = MAX_IMAGES - selectedFiles.length;
+            counterText.innerText = `Select up to 5 images (${left} left)`;
+
+            uploadBox.style.display = left === 0 ? 'none' : 'flex';
+            input.disabled = left === 0;
+        }
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const existingImages = <?= json_encode($existingGalleryImages) ?>;
+
+            existingImages.forEach(img => {
+                addPreview(null, img);
+                let selectedFiles = [];
+                let existingCount = 0;
+            });
+
+            updateCounter();
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const existingImages = <?= json_encode($existingGalleryImages) ?>;
+            existingImages.forEach(img => {
+                addPreview(null, img);
+                let selectedFiles = [];
+                let existingCount = 0;
+            });
+            updateCounter();
+        });
+    </script>
 </body>
 
 </html>

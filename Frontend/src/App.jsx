@@ -25,6 +25,7 @@ function App() {
           <Route path='/contact' element={<Contact />}></Route>
           <Route path='/shop' element={<ProductFourColumns />}></Route>
           <Route path="/ProductDetailsNormal" element={<ProductDetailsNormal />}></Route>
+          <Route path="/product/:id" element={<ProductDetailsNormal />} />
         </Routes>
     </>
   )

@@ -3,33 +3,44 @@ import Footer from '../../components/Footer';
 import banner7 from '../../assets/images/shop/banner/7.webp';
 import shop2 from '../../assets/images/shop/product-details/2.webp';
 import ProductItem from "@/Pages/Products/ProductItem.jsx";
+import shop4 from '../../assets/images/shop/category/4.webp';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ToastContainer, toast } from 'react-toastify';
+import { useParams } from "react-router-dom";
 
 const ProductDetailsNormal = () => {
+  const { id } = useParams();               
+  const [product, setProduct] = useState(null);
   const [qty, setQty] = useState(1);
   const [shipping, setShipping] = useState(true);
   const [activeTab, setActiveTab] = useState('review');
   const [review, setReview] = useState({ message: '', name: '', email: '', rating: '5', anonymous: true });
-
-  const increment = () => setQty(q => q + 1);
-  const decrement = () => setQty(q => Math.max(1, q - 1));
-  const handleAddToCart = () => {
-    toast.success('Product added to cart!');
-  }
-  const handleSubmitReview = (e) => {
-    e.preventDefault();
-    console.log('submit review', review);
-  };
   const [products, setProducts] = useState([]);
-  
-      useEffect(() => {
-        fetch("http://localhost:3000/Backend/src/Pages/APIs/productListAPI.php")
-          .then((res) => res.json())
-          .then((data) => setProducts(data))
-          .catch((err) => console.log("API Error:", err));
-      }, []);
-     const firstThree = products.slice(0, 3);
+
+ useEffect(() => {
+    fetch(`http://localhost/Inventory_management/Backend/src/Pages/APIs/productDetailsAPI.php?id=${id}`)
+      .then(res => res.json())
+      .then(data => setProduct(data))
+      .catch(err => console.error(err));
+  }, [id]);
+
+  useEffect(() => {
+    fetch("http://localhost/Inventory_management/Backend/src/Pages/APIs/productListAPI.php")
+      .then(res => res.json())
+      .then(data => setProducts(data))
+      .catch(err => console.log("API Error:", err));
+  }, []);
+
+  const firstThree = products.slice(0, 3);
+
+   const increment = () => setQty(q => q + 1);
+  const decrement = () => setQty(q => Math.max(1, q - 1));
+  const handleAddToCart = () => toast.success('Product added to cart!');
+  const handleSubmitReview = (e) => { e.preventDefault(); console.log('submit review', review); };
+
+if (!product) {
+    return <h3 className="text-center mt-5">Loading...</h3>;  // ✅ show loading while fetch
+  }
 
   return (
     <main className="main-content" style={{marginTop: '80px'}}>
@@ -53,7 +64,7 @@ const ProductDetailsNormal = () => {
           <div className="row product-details">
             <div className="col-lg-6">
               <div className="product-details-thumb">
-                <img src={shop2} width="570" height="693" alt="Product" />
+                <img src={product.image || shop2} width="570" height="693" alt={product.name} onError={(e) => e.target.src = shop4} />
                 <span className="flag-new">new</span>
               </div>
             </div>
@@ -61,7 +72,7 @@ const ProductDetailsNormal = () => {
             <div className="col-lg-6">
               <div className="product-details-content">
                 <h5 className="product-details-collection">Premium collection</h5>
-                <h3 className="product-details-title">Offline Instant Age Rewind Eraser.</h3>
+                <h3 className="product-details-title">{product.name}</h3>
 
                 <div className="product-details-review mb-7">
                   <div className="product-review-icon">
@@ -87,7 +98,7 @@ const ProductDetailsNormal = () => {
                 </div>
 
                 <div className="product-details-action" style={{ marginTop: 16 }}>
-                  <h4 className="price">$254.22</h4>
+                  <h4 className="price">₹{product.price}</h4>
                   <div className="product-details-cart-wishlist" style={{ display: 'flex', gap: 8 }}>
                     <button type="button" className="btn-wishlist"><i className="fa fa-heart-o" /></button>
                     <button type="button" className="btn" onClick={handleAddToCart}>Add to cart</button>
