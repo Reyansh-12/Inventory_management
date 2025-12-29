@@ -5,7 +5,7 @@ import callIcon from "../../assets/images/icons/1.webp";
 import emailIcon from "../../assets/images/icons/2.webp";
 import locationIcon from "../../assets/images/icons/3.webp";
 import Navbar from '../../components/Navbar';
-
+import image from '../../../src/assets/images/realistic-cosmetic-with-red-rose-flowers-transparent-background_649064-3161_1_-removebg-preview.png';
 
 export const Contact = () => {
   const [inputs, setInputs] = useState({
@@ -64,9 +64,12 @@ export const Contact = () => {
       <main className="main-content">
         <section className="contact-area">
           <div className="container">
-            <div className="row">
-              <div className="offset-lg-6 col-lg-6">
-                <div className="section-title position-relative">
+            <div className="d-flex">
+              <div className="col-lg-6 col-md-6">
+                <img src={image} style={{marginTop: '60px', borderRadius: '9px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'}}></img>
+              </div>.
+              <div className="col-lg-6 col-md-6 mt-5">
+                <div className="section-title position-relative mb-4">
                   <h2 className="title">Get in touch</h2>
                   <p className="m-0">Lorem ipsum dolor sit amet, consectetur adipiscing aliquam, purus sit amet luctus venenatis</p>
                   <div className="line-left-style mt-4 mb-1" />
@@ -76,7 +79,7 @@ export const Contact = () => {
                   <form id="contact-form" onSubmit={handleSubmit}>
                     <div className="row">
                       <div className="col-md-6">
-                        <div className="form-group">
+                        <div className="form-group mb-5">
                           <input 
                             className={`form-control ${errors.con_name ? 'is-invalid' : ''}`} 
                             type="text" 
@@ -89,7 +92,7 @@ export const Contact = () => {
                         </div>
                       </div>
                       <div className="col-md-6">
-                        <div className="form-group">
+                        <div className="form-group mb-5">
                           <input 
                             className={`form-control ${errors.con_lastName ? 'is-invalid' : ''}`} 
                             type="text" 
@@ -102,7 +105,7 @@ export const Contact = () => {
                         </div>
                       </div>
                       <div className="col-12">
-                        <div className="form-group">
+                        <div className="form-group mb-5 mt-2">
                           <input 
                             className={`form-control ${errors.con_email ? 'is-invalid' : ''}`} 
                             type="email" 
@@ -147,7 +150,6 @@ export const Contact = () => {
                 <img className="icon" src={callIcon} width="30" height="30" alt="Icon" />
                 <div>
                   <a href="tel:+11020303023" className='text-decoration-none'>+11 0203 03023</a>
-                  <a href="tel:+11020303023" className='text-decoration-none'>+11 0203 03023</a>
                 </div>
               </div>
 
@@ -155,7 +157,6 @@ export const Contact = () => {
                 <img className="icon" src={emailIcon} width="30" height="30" alt="Icon" />
                 <div>
                   <a href="mailto:example@demo.com" className='text-decoration-none'>example@demo.com</a>
-                  <a href="mailto:demo@example.com" className='text-decoration-none'>demo@example.com</a>
                 </div>
               </div>
 

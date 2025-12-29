@@ -251,8 +251,8 @@ if (isset($_POST['submit'])) {
                         <h6>
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="ProductList.php">Cosmetic List</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Add Cosmetic</li>
+                                    <li class="breadcrumb-item"><a href="ProductList.php">Product List</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Add Product</li>
                                 </ol>
                             </nav>
                         </h6>

@@ -26,12 +26,13 @@ const ProductFourColumns = () => {
     }, []);
 
   const categories = [
-    { id: 1, category:'haircare', title: 'Hair care', image: category1, bgColor: '#FFF3DA', badge: 'new'},
-    { id: 2, category:'skincare', title: 'Skin care', image: category2, bgColor: '#FFEDB4',  },
-    { id: 3, category:'lipstick', title: 'Lip stick', image: category3, bgColor: '#DFE4FF',  },
-    { id: 4, category:'faceskin', title: 'Face skin', image: category4, bgColor: '#FFEACC', badge: 'sale', badgeBgColor: '#835BF4', },
-    { id: 5, category:'blusher', title: 'Blusher', image: category5, bgColor: '#FFDAE0', },
-    { id: 6, category:'natural', title: 'Natural', image: category6, bgColor: '#FFF3DA', },
+    { id: 1, category:'natural', title: 'All products', image: category6, bgColor: '#FFF3DA', },
+    { id: 2, category:'haircare', title: 'Hair care', image: category1, bgColor: '#FFF3DA', badge: 'new'},
+    { id: 3, category:'skincare', title: 'Skin care', image: category2, bgColor: '#FFEDB4',  },
+    { id: 4, category:'lipstick', title: 'Lip stick', image: category3, bgColor: '#DFE4FF',  },
+    { id: 5, category:'faceskin', title: 'Face skin', image: category4, bgColor: '#FFEACC', badge: 'sale', badgeBgColor: '#835BF4', },
+    { id: 6, category:'blusher', title: 'Blusher', image: category5, bgColor: '#FFDAE0', },
+    { id: 7, category:'natural', title: 'Natural', image: category6, bgColor: '#FFF3DA', },
   ];
     
   const filteredProducts =
