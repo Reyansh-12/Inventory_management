@@ -2,6 +2,7 @@ import logo from "../assets/images/brand-logo/logo.webp";
 import { FaRegUser } from "react-icons/fa";
 import { TbLogout2 } from "react-icons/tb";
 import { IoSettingsOutline } from "react-icons/io5";
+import { FaRegHeart} from "react-icons/fa";
 import { HiOutlineShoppingCart } from "react-icons/hi";
 import Dropdown from 'react-bootstrap/Dropdown';
 import {NavLink} from 'react-router-dom';
@@ -25,16 +26,16 @@ const handleLogout=()=>{
               <div className="header-navigation ps-7">
                 <ul className="main-nav justify-content-start">
                   <li className="has-submenu">
-                    <NavLink to='/' className="text-decoration-none nav-link">Home</NavLink>
+                    <NavLink to='/' className="text-decoration-none nav-link"><span className="pb-2">Home</span></NavLink>
                   </li>
                   <li>
-                    <NavLink to='/about' className="text-decoration-none nav-link">About</NavLink>
+                    <NavLink to='/about' className="text-decoration-none nav-link"><span className="pb-2">About</span></NavLink>
                   </li>
                   <li className="has-submenu position-static">
-                    <NavLink to='/shop' className="text-decoration-none nav-link">Shop</NavLink>
+                    <NavLink to='/shop' className="text-decoration-none nav-link"><span className="pb-2">Shop</span></NavLink>
                   </li>
                   <li className="has-submenu">
-                    <a href="blog.html" className="text-decoration-none">Brands</a>
+                    <a href="blog.html" className="text-decoration-none"><span className="pb-2">Brands</span></a>
                     <ul className="submenu-nav">
                       <li className="has-submenu">
                         <a href="#/">Blog Layout</a>
@@ -63,7 +64,7 @@ const handleLogout=()=>{
                     <NavLink to='/category' className="text-decoration-none nav-link">Categories</NavLink>
                   </li>
                   <li>
-                    <NavLink to='/contact' className="text-decoration-none nav-link">Contact</NavLink>
+                    <NavLink to='/contact' className="text-decoration-none nav-link"><span className="pb-2">Contact</span></NavLink>
                   </li>
                 </ul>
               </div>
@@ -72,8 +73,11 @@ const handleLogout=()=>{
               <div className="header-action justify-content-end">
                 <button className="header-action-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#AsideOffcanvasCart" aria-controls="AsideOffcanvasCart">
                   <span className="icon">
-                    <HiOutlineShoppingCart  className="fs-4 me-3"/>
+                    <HiOutlineShoppingCart  className="fs-4"/>
                   </span>
+                </button>
+                <button className="header-action-btn ms-4 me-4" type="button" data-bs-toggle="offcanvas" data-bs-target="#AsideOffcanvasCart" aria-controls="AsideOffcanvasCart">
+                  <span className="icon"><FaRegHeart className="fs-5"/></span>
                 </button>
                 <Dropdown>
       <Dropdown.Toggle className="bg-transparent text-black border-0 no-caret" id="dropdown-basic">

@@ -60,34 +60,36 @@ const firstSix = products.slice(0, 6);
           <div className="container">
             <div className="row">
               <div className="col-sm-6 col-lg-4">
-                <a href="product.html" className="product-banner-item">
+                <Link to="/shop" className="product-banner-item">
+                
                   <img
                     src={banner1}
                     width="370"
                     height="370"
                     alt="Image-HasTech"
                   />
-                </a>
+              
+                </Link>
               </div>
               <div className="col-sm-6 col-lg-4 mt-sm-0 mt-6">
-                <a href="product.html" className="product-banner-item">
+                <Link to="/shop" className="product-banner-item">
                   <img
                     src={banner2}
                     width="370"
                     height="370"
                     alt="Image-HasTech"
                   />
-                </a>
+                </Link>
               </div>
               <div className="col-sm-6 col-lg-4 mt-lg-0 mt-6">
-                <a href="product.html" className="product-banner-item">
+                <Link to="/shop" className="product-banner-item">
                   <img
                     src={banner3}
                     width="370"
                     height="370"
                     alt="Image-HasTech"
                   />
-                </a>
+                </Link>
               </div>
             </div>
           </div>
@@ -109,7 +111,7 @@ const firstSix = products.slice(0, 6);
           </div>
         </section>
         <div className="d-flex justify-content-center text-white">
-          <Link to="/shop" className="rounded-3 p-3 ps-4 pe-4 text-decoration-none text-wite" id="sow_all_products">See All Products <FaArrowRightLong className="ms-2" /></Link>
+          <Link to="/shop" className="rounded-3 p-3 ps-4 pe-4 text-decoration-none text-wite" style={{background: 'linear-gradient(180deg,rgb(149, 218, 250),rgb(80, 170, 87))', boxShadow: '1px 1px 9px 1px grey'}} id="sow_all_products">See All Products <FaArrowRightLong className="ms-2" /></Link>
         </div>
       </main>
     </section>

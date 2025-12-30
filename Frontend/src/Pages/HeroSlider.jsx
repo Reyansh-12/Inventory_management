@@ -36,9 +36,9 @@ const HeroSlider = () => {
                   <div className="col-12 col-md-6">
                     <div className="hero-slide-content">
                     <div class="hero-slide-text-img"><img src={textTheme} width="427" height="232" alt="Image" style={{marginTop: '-150px'}}></img></div>
-                      <h2 className="hero-slide-title" style={{marginTop: '100px'}} >{slide.title}</h2>
+                      <h2 className="hero-slide-title" style={{marginTop: '100px', fontSize: '75px'}} >{slide.title}</h2>
                       <p className="hero-slide-desc">{slide.description}</p>
-                      <a className="btn btn-border-dark rounded-pill ps-5 pe-4 align-items-center" href="/product" style={{lineHeight: '2.5'}}>BUY NOW</a>
+                      <a className="btn rounded-3 ps-5 pe-5 align-items-center text-dark fw-bold" style={{background: 'linear-gradient(180deg,rgb(149, 218, 250),rgb(80, 170, 87))', boxShadow: '5px 2px 9px 2px grey', lineHeight: '2.5'}}>BUY NOW</a>
                     </div>
                   </div>
                   <div className="col-12 col-md-6">

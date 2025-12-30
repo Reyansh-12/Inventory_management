@@ -300,6 +300,7 @@ hr {
 .main-nav .has-submenu .submenu-nav-mega > li.active:after,
 .main-nav .has-submenu .submenu-nav > li.active:after {
   color: #ff6565;
+  
 }
 .main-nav .has-submenu .submenu-nav-mega > li a,
 .main-nav .has-submenu .submenu-nav > li a {
@@ -811,7 +812,7 @@ hr {
   }
 }
 .section-title .title {
-  font-size: 50px;
+  font-size: 75px;
   font-weight: 400;
   margin-bottom: 13px;
   line-height: 39px;
@@ -2024,7 +2025,9 @@ hr {
   color: #FF6F61 !important;
   font-weight: 600;
 }
-
+.nav-link.active span{
+  border-bottom: 2px solid #ff6565;
+}
 @media only screen and (min-width: 768px) and (max-width: 991px),
   only screen and (min-width: 992px) and (max-width: 1199px) {
   .hero-slide-thumb {
@@ -5788,7 +5791,7 @@ hr {
 .post-item .thumb + .content {
   margin-top: 30px;
 }
-.post-item .content .post-category {
+/* .post-item .content .post-category {
   background-color: #ff9c9c;
   color: #fff;
   font-size: 13px;
@@ -5834,7 +5837,7 @@ hr {
   .post-item .content .post-category + .title {
     margin-top: 10px;
   }
-}
+} */
 .post-item .content .title {
   font-size: 28px;
   line-height: 37px;

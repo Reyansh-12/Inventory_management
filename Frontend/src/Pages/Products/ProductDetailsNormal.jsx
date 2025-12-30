@@ -39,7 +39,7 @@ const ProductDetailsNormal = () => {
   const handleSubmitReview = (e) => { e.preventDefault(); console.log('submit review', review); };
 
 if (!product) {
-    return <h3 className="text-center mt-5">Loading...</h3>;  // ✅ show loading while fetch
+    return <h3 className="text-center mt-5">Loading...</h3>; 
   }
 
   return (

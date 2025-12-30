@@ -27,11 +27,12 @@ const BlogPage = () => {
                       src={blog1}
                       width="370"
                       height="320"
-                      alt="Image-HasTech"
+                      alt="Image-HasTech" 
+                      style={{boxShadow: '10px 20px 10px 20px grey'}}
                     />
                   </a>
                   <div className="content">
-                    <a className="post-category text-decoration-none" href="blog.html">
+                    <a className="post-category text-decoration-none ps-4 pe-4" style={{padding: '7px',background: 'linear-gradient(180deg,rgb(149, 218, 250),rgb(80, 170, 87))'}}>
                       beauty
                     </a>
                     <h4 className="title">

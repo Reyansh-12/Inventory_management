@@ -117,7 +117,7 @@ const relatedProducts = products.slice(0, 3);
         </div>
       </section>
 
-      <section className="section-space pb-0">
+      <section className="section-space">
         <div className="container">
           <div className="row">
             <div className="col-12">
@@ -131,7 +131,7 @@ const relatedProducts = products.slice(0, 3);
           </div>
         </div>
       </section>
-      <section className="section-space pb-5">
+      <section className="section-space pb-5 pt-0">
         <div className="container">
           <h2>Related Products</h2>
           <div className="row g-3 g-sm-6">
