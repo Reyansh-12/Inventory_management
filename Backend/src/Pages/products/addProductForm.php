@@ -3,38 +3,42 @@ define("BASE_PATH", dirname(__DIR__, 3));
 include BASE_PATH . "/src/Layouts/Links.php";
 include BASE_PATH . "/src/controllers/dbConnection.php";
 
-$productId = $_GET['productId'] ?? null;
+$productId = $_GET['productId'] ?? $_POST['user_id'] ?? null;
 $isEdit = false;
 $editData = [];
 $existingGalleryImages = [];
 
 if ($productId) {
     $isEdit = true;
-    $stmt = mysqli_prepare($con, "SELECT * FROM `product_list` WHERE id = ?");
+    $stmt = mysqli_prepare($con, "SELECT gallery_images FROM product_list WHERE id=?");
     mysqli_stmt_bind_param($stmt, "i", $productId);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
-    $editData = mysqli_fetch_assoc($res) ?? [];
+    $row = mysqli_fetch_assoc($res);
     mysqli_stmt_close($stmt);
 
-    $existingGalleryImages = json_decode($editData['gallery_images'] ?? '[]', true) ?? [];
+    $existingGalleryImages = json_decode($row['gallery_images'] ?? '[]', true) ?? [];
 }
-if (isset($_POST['submit'])) {
 
+if (isset($_POST['submit'])) {
+    $galleryImages = $existingGalleryImages;
     // 3.1 Handle removed images
     $removedGalleryImages = json_decode($_POST['removed_gallery_images'] ?? '[]', true);
-    $galleryImages = $existingGalleryImages;
+
 
     if (!empty($removedGalleryImages)) {
-        $galleryImages = array_values(array_diff($galleryImages, $removedGalleryImages));
+        $galleryImages = array_values(
+            array_diff($galleryImages, $removedGalleryImages)
+        );
     }
 
-    // 3.2 Handle new uploads
     if (!empty($_FILES['gallery_images']['name'][0])) {
 
         $uploadDir = BASE_PATH . "/src/uploads/products/gallery/";
 
-        if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
 
         foreach ($_FILES['gallery_images']['tmp_name'] as $key => $tmpName) {
             if ($_FILES['gallery_images']['error'][$key] !== 0) continue;
@@ -728,94 +732,92 @@ if (isset($_POST['submit'])) {
         });
     </script>
     <script>
-        const MAX_IMAGES = 5;
-        let selectedFiles = [];
-        let removedImages = [];
+const MAX_IMAGES = 5;
+let selectedFiles = [];
+let removedImages = [];
+let existingCount = 0;
 
-        const input = document.getElementById('galleryInput');
-        const preview = document.getElementById('galleryPreview');
-        const uploadBox = document.getElementById('uploadBox');
-        const counterText = document.getElementById('counterText');
+const input = document.getElementById('galleryInput');
+const preview = document.getElementById('galleryPreview');
+const uploadBox = document.getElementById('uploadBox');
+const counterText = document.getElementById('counterText');
 
-        function addPreview(file = null, imagePath = null) {
+function addPreview(file = null, imagePath = null) {
 
-            const div = document.createElement('div');
-            div.className = 'gallery-item';
+    const div = document.createElement('div');
+    div.className = 'gallery-item';
 
-            const img = document.createElement('img');
-            img.src = imagePath ? imagePath : URL.createObjectURL(file);
+    const img = document.createElement('img');
+    img.src = imagePath ? imagePath : URL.createObjectURL(file);
 
-            const remove = document.createElement('div');
-            remove.className = 'remove-btn';
-            remove.innerHTML = '&times;';
+    const remove = document.createElement('div');
+    remove.className = 'remove-btn';
+    remove.innerHTML = '&times;';
 
-            remove.onclick = function() {
-                div.remove();
+    remove.onclick = function () {
+        div.remove();
 
-                if (file) {
-                    selectedFiles = selectedFiles.filter(f => f !== file);
-                }
-
-                if (imagePath) {
-                    removedImages.push(imagePath);
-                    document.getElementById('removedGalleryImages').value =
-                        JSON.stringify(removedImages);
-                    selectedFiles.pop();
-                }
-
-                updateCounter();
-            };
-
-            div.appendChild(img);
-            div.appendChild(remove);
-            preview.appendChild(div);
+        if (file) {
+            selectedFiles = selectedFiles.filter(f => f !== file);
+            syncFilesToInput();
         }
 
-        input.addEventListener('change', function() {
-            const files = Array.from(this.files);
-
-            files.forEach(file => {
-                if (selectedFiles.length >= MAX_IMAGES) return;
-                selectedFiles.push(file);
-                addPreview(file);
-            });
-
-            input.value = '';
-            updateCounter();
-        });
-
-        function updateCounter() {
-            const left = MAX_IMAGES - selectedFiles.length;
-            counterText.innerText = `Select up to 5 images (${left} left)`;
-
-            uploadBox.style.display = left === 0 ? 'none' : 'flex';
-            input.disabled = left === 0;
+        if (imagePath) {
+            removedImages.push(imagePath);
+            existingCount--;
+            document.getElementById('removedGalleryImages').value =
+                JSON.stringify(removedImages);
         }
-    </script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const existingImages = <?= json_encode($existingGalleryImages) ?>;
 
-            existingImages.forEach(img => {
-                addPreview(null, img);
-                let selectedFiles = [];
-                let existingCount = 0;
-            });
+        updateCounter();
+    };
 
-            updateCounter();
-        });
-    </script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const existingImages = <?= json_encode($existingGalleryImages) ?>;
-            existingImages.forEach(img => {
-                addPreview(null, img);
-                let selectedFiles = [];
-                let existingCount = 0;
-            });
-            updateCounter();
-        });
-    </script>
+    div.appendChild(img);
+    div.appendChild(remove);
+    preview.appendChild(div);
+}
+
+input.addEventListener('change', function () {
+    const files = Array.from(this.files);
+
+    files.forEach(file => {
+        if ((selectedFiles.length + existingCount) >= MAX_IMAGES) return;
+        selectedFiles.push(file);
+        addPreview(file);
+    });
+
+    syncFilesToInput();
+    input.value = '';
+    updateCounter();
+});
+
+function updateCounter() {
+    const used = selectedFiles.length + existingCount;
+    const left = MAX_IMAGES - used;
+
+    counterText.innerText = `Select up to 5 images (${left} left)`;
+    uploadBox.style.display = left === 0 ? 'none' : 'flex';
+    input.disabled = left === 0;
+}
+
+function syncFilesToInput() {
+    const dataTransfer = new DataTransfer();
+    selectedFiles.forEach(file => dataTransfer.items.add(file));
+    input.files = dataTransfer.files;
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const existingImages = <?= json_encode($existingGalleryImages) ?>;
+
+    existingImages.forEach(img => {
+        addPreview(null, img);
+        existingCount++;
+    });
+
+    updateCounter();
+});
+</script>
+
 </body>
 
 </html>

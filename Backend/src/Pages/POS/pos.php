@@ -2,6 +2,7 @@
 define("BASE_PATH", dirname(__DIR__, 3));
 include BASE_PATH . "/src/Layouts/Links.php";
 include BASE_PATH . "/src/controllers/dbConnection.php";
+
 session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
@@ -48,8 +49,7 @@ if (isset($_POST['addCustomerSubmitButton'])) {
         .parsley-minlength {
             color: red !important;
         }
-    </style>
-    <style>
+
         .cart-product-name {
             max-width: 140px;
             white-space: nowrap;
@@ -58,8 +58,34 @@ if (isset($_POST['addCustomerSubmitButton'])) {
             display: inline-block;
             vertical-align: middle;
         }
-    </style>
 
+        #posCartTable td {
+            vertical-align: middle;
+        }
+
+        #posCartTable td:nth-child(2),
+        #posCartTable td:nth-child(3) {
+            white-space: nowrap;
+        }
+
+        #posCartTable td {
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .qty-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .qty-box span {
+            min-width: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+    </style>
 </head>
 
 <body>
@@ -181,7 +207,6 @@ if (isset($_POST['addCustomerSubmitButton'])) {
                                         <small class="text-muted">
                                             Transaction ID: #<?= $_SESSION['transaction_id']; ?>
                                         </small>
-
                                     </div>
 
                                     <div class="card-body">
@@ -249,8 +274,6 @@ if (isset($_POST['addCustomerSubmitButton'])) {
             </div>
         </div>
     </div>
-
-
     <div class="modal fade" id="addCustomerModal" tabindex="-1" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -316,23 +339,22 @@ if (isset($_POST['addCustomerSubmitButton'])) {
         </div>
     </div>
     <div class="toast-container position-fixed top-0 end-0 p-3">
-    <div id="clearCartToast" class="toast align-items-center text-bg-warning border-0"
-         role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="d-flex">
-            <div class="toast-body">
-                🗑️ Cart cleared successfully
+        <div id="clearCartToast" class="toast align-items-center text-bg-warning border-0"
+            role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    Cart cleared successfully
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                    data-bs-dismiss="toast"></button>
             </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto"
-                data-bs-dismiss="toast"></button>
         </div>
     </div>
-</div>
-
     <div class="toast-container position-fixed top-0 end-0 p-3">
         <div id="customerToast" class="toast text-bg-success border-0">
             <div class="d-flex">
                 <div class="toast-body">
-                    ✅ Customer added successfully
+                    Customer added successfully
                 </div>
                 <button type="button" class="btn-close btn-close-white me-2 m-auto"
                     data-bs-dismiss="toast"></button>
@@ -343,115 +365,149 @@ if (isset($_POST['addCustomerSubmitButton'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/Backend/src/assets/js/pos.js"></script>
     <script>
-        if (stock <= 0) {
-            showToast("Out of stock");
-            return;
+        let cart = [];
+
+        function showCartToast(msg) {
+            document.querySelector('#cartToast .toast-body').innerText = msg;
+            new bootstrap.Toast(document.getElementById('cartToast')).show();
         }
-        checkoutBtn.disabled = cart.length === 0;
-    </script>
-    <script>
-        $('#customerName').on('input', function() {
-            let value = $(this).val();
-            value = value.replace(/[^a-zA-Z\s]/g, '');
-            $(this).val(value);
-        });
-        $('#customerEmail').on('input', function() {
-            let value = $(this).val();
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkoutBtn = document.getElementById('checkoutBtn');
 
-            value = value.replace(/[^a-zA-Z0-9@.]/g, '');
+            function showCheckoutToast(msg) {
+                document.getElementById('checkoutToastMessage').innerText = msg;
+                new bootstrap.Toast(document.getElementById('checkoutToast')).show();
+            }
+document.querySelectorAll('.addToCartBtn').forEach(btn => {
+    btn.addEventListener('click', () => {
 
-            if (value.length === 1 && !/^[A-Za-z]$/.test(value)) {
-                value = '';
+        const id    = btn.dataset.id;
+        const name  = btn.dataset.name;
+        const price = parseFloat(btn.dataset.price);
+        const stock = parseInt(btn.dataset.stock);
+
+        let index = cart.findIndex(p => p.id == id);
+
+        // 🟢 Product already in cart
+        if (index !== -1) {
+
+            // ❗ qty already equal to stock
+            if (cart[index].qty >= cart[index].stock) {
+                showCartToast(`Only ${cart[index].stock} items available in stock`);
+                return; // 🔥 NO UI UPDATE
             }
 
-            $(this).val(value);
+            // 🟢 safe increase
+            cart[index].qty++;
+            updateCartUI();
+            return;
+        }
+
+        // 🟢 First time add
+        if (stock <= 0) {
+            showCartToast("Out of stock");
+            return;
+        }
+
+        cart.push({
+            id,
+            name,
+            price,
+            qty: 1,
+            stock
         });
-        $('#customerCity').on('input', function() {
-            let value = $(this).val();
-            value = value.replace(/[^a-zA-Z\s]/g, '');
-            $(this).val(value);
-        });
-        $('#customerCountry').on('input', function() {
-            let value = $(this).val();
-            value = value.replace(/[^a-zA-Z\s]/g, '');
-            $(this).val(value);
+
+        updateCartUI();
+    });
+});
+
+
+
+
+            function updateCartUI() {
+                const tbody = document.getElementById('cartBody');
+                tbody.innerHTML = '';
+                let total = 0;
+                let items = 0;
+                cart.forEach((item, i) => {
+                    total += item.price * item.qty;
+                    // let items = cart.length;
+                    tbody.innerHTML += `
+                <tr>
+                    <td>${item.name}</td>
+                    <td class="text-center">
+                        <div class="qty-box">
+                            <button class="btn btn-sm btn-outline-secondary" onclick="decreaseQty(${i})">−</button>
+                            <span>${item.qty}</span>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="increaseQty(${i})">+</button>
+                        </div>
+                    </td>
+                    <td>₹${(item.price * item.qty).toFixed(2)}</td>
+                    <td>
+                        <button class="btn btn-sm btn-danger" onclick="removeItem(${i})">✕</button>
+                    </td>
+                </tr>`;
+                });
+                document.getElementById('totalItems').innerText = cart.length;
+                document.getElementById('cartTotal').innerText = total.toFixed(2);
+                checkoutBtn.disabled = cart.length === 0;
+
+            }
+            window.removeItem = function(index) {
+                cart.splice(index, 1);
+                updateCartUI();
+            };
+            checkoutBtn.addEventListener('click', () => {
+                if (cart.length === 0) {
+                    showCartToast("Cart is empty");
+                    return;
+                }
+                fetch('/Backend/src/Pages/POS/checkout.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            transaction_id: "<?= $_SESSION['transaction_id']; ?>",
+                            customer_id: document.getElementById('customerSelect').value || null,
+                            cart: cart
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            showCheckoutToast(data.message);
+                            cart = [];
+                            updateCartUI();
+                            setTimeout(() => location.reload(), 1200);
+                        } else {
+                            showCartToast(data.message);
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        showCartToast("Server error");
+                    });
+            });
+            window.increaseQty = function(index) {
+                let item = cart[index];
+                if (item.qty >= item.stock) {
+                    showCartToast(`Only ${item.stock} items available in stock`);
+                    return;
+                }
+                item.qty++;
+                updateCartUI();
+            };
+            window.decreaseQty = function(index) {
+                if (cart[index].qty > 1) {
+                    cart[index].qty--;
+                } else {
+                    cart.splice(index, 1);
+                }
+                updateCartUI();
+            };
         });
     </script>
-    <?php if (!empty($_SESSION['customer_added'])): ?>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                var toastEl = document.getElementById('customerToast');
-                var toast = new bootstrap.Toast(toastEl, {
-                    delay: 3000
-                });
-                toast.show();
-            });
-        </script>
-    <?php unset($_SESSION['customer_added']);
-    endif; ?>
-<script>
-document.getElementById('checkoutBtn').addEventListener('click', function () {
-
-    if (cart.length === 0) {
-        showCartToast("Cart is empty");
-        return;
-    }
-
-    fetch('checkout.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            transaction_id: "<?= $_SESSION['transaction_id']; ?>",
-            customer_id: document.getElementById('customerSelect').value ?? null,
-            cart: cart
-        })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.status === 'success') {
-            showCheckoutToast(data.message);
-            cart = [];
-            updateCartUI();
-            setTimeout(() => location.reload(), 1500);
-        } else {
-            showCartToast(data.message);
-        }
-    });
-
-});
-
-function showCheckoutToast(msg) {
-    document.getElementById('checkoutToastMessage').innerText = msg;
-    new bootstrap.Toast(document.getElementById('checkoutToast')).show();
-}
-
-function showCartToast(msg) {
-    document.querySelector('#cartToast .toast-body').innerText = msg;
-    new bootstrap.Toast(document.getElementById('cartToast')).show();
-}
-document.getElementById('clearCartBtn').addEventListener('click', function () {
-
-    if (cart.length === 0) {
-        showCartToast("Cart is already empty");
-        return;
-    }
-
-    cart = [];
-    updateCartUI();
-
-    const toastEl = document.getElementById('clearCartToast');
-    const toast = new bootstrap.Toast(toastEl, { delay: 2500 });
-    toast.show();
-});
-function updateCartUI() {
-    document.getElementById('cartBody').innerHTML = '';
-    document.getElementById('totalItems').innerText = 0;
-    document.getElementById('cartTotal').innerText = '0.00';
-    checkoutBtn.disabled = true;
-}
-
-</script>
-
 </body>
 
 </html>
