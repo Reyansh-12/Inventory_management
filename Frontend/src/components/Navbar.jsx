@@ -34,35 +34,7 @@ const handleLogout=()=>{
                   <li className="has-submenu position-static">
                     <NavLink to='/shop' className="text-decoration-none nav-link"><span className="pb-2">Shop</span></NavLink>
                   </li>
-                  <li className="has-submenu">
-                    <a href="blog.html" className="text-decoration-none"><span className="pb-2">Brands</span></a>
-                    <ul className="submenu-nav">
-                      <li className="has-submenu">
-                        <a href="#/">Blog Layout</a>
-                        <ul className="submenu-nav">
-                          <li>
-                            <a href="blog.html">Blog Grid</a>
-                          </li>
-                          <li>
-                            <a href="blog-left-sidebar.html">
-                              Blog Left Sidebar
-                            </a>
-                          </li>
-                          <li>
-                            <a href="blog-right-sidebar.html">
-                              Blog Right Sidebar
-                            </a>
-                          </li>
-                        </ul>
-                      </li>
-                      <li>
-                        <a href="blog-details.html">Blog Details</a>
-                      </li>
-                    </ul>
-                  </li>
-                  <li className="has-submenu">
-                    <NavLink to='/category' className="text-decoration-none nav-link">Categories</NavLink>
-                  </li>
+                  
                   <li>
                     <NavLink to='/contact' className="text-decoration-none nav-link"><span className="pb-2">Contact</span></NavLink>
                   </li>

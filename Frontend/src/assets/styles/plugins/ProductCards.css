@@ -39,3 +39,40 @@
   -webkit-line-clamp: 3;   
   -webkit-box-orient: vertical;
   }
+
+  .product_quantity{
+    top: 10px;
+    right: 0px;
+    z-index: 999;
+    font-size: 14px;
+    padding: 8px 13px 7px 13px;
+    border-radius: 20px 20px 0 20px;
+  }
+  .low-stock{
+    background: #f80455;
+  }
+  
+  .medium-stock{
+    background: #fb8c00;
+  }
+  
+  .high-stock{
+    background: #43a047;
+  }
+  .out-stock{
+    content: 'Out of stock';
+    background: #f80404;
+    top: 10px;
+    right: 0px;
+    z-index: 999;
+    font-size: 14px;
+    padding: 8px 13px 7px 13px;
+    border-radius: 20px 20px 0 20px;
+  }
+  .product_card.out-of-stock{
+    opacity: 0.6;
+    pointer-events: none; 
+  }
+  .category .image{
+
+  }

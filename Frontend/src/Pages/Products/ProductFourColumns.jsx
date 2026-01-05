@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
  
 import Footer from '../../components/Footer';
 import banner7 from '../../assets/images/shop/banner/7.webp';
-import category1 from "../../assets/images/shop/category/category1.webp";
+import category1 from "../../assets/images/HairConditioner-removebg-preview.png";
 import category2 from "../../assets/images/shop/category/category2.webp";
-import category3 from "../../assets/images/shop/category/category3.webp";
+import category3 from "../../assets/images/lipbalm-removebg-preview.png";
 import category4 from "../../assets/images/shop/category/category4.webp";
-import category5 from "../../assets/images/shop/category/category5.webp";
+import category5 from "../../assets/images/Makeup-removebg-preview.png";
 import category6 from "../../assets/images/shop/category/category6.webp";
 import ProductItem from "@/Pages/Products/ProductItem.jsx";
 import Image from "../../../src/assets/images/product_not_found2.png";
@@ -26,13 +26,13 @@ const ProductFourColumns = () => {
     }, []);
 
   const categories = [
-    { id: 1, category:'natural', title: 'All products', image: category6, bgColor: '#FFF3DA', },
-    { id: 2, category:'haircare', title: 'Hair care', image: category1, bgColor: '#FFF3DA', badge: 'new'},
-    { id: 3, category:'skincare', title: 'Skin care', image: category2, bgColor: '#FFEDB4',  },
-    { id: 4, category:'lipstick', title: 'Lip stick', image: category3, bgColor: '#DFE4FF',  },
-    { id: 5, category:'faceskin', title: 'Face skin', image: category4, bgColor: '#FFEACC', badge: 'sale', badgeBgColor: '#835BF4', },
-    { id: 6, category:'blusher', title: 'Blusher', image: category5, bgColor: '#FFDAE0', },
-    { id: 7, category:'natural', title: 'Natural', image: category6, bgColor: '#FFF3DA', },
+    
+    { id: 2, category:'haircare', title: 'Hair care', image: category1, bgColor: '#FFF3DA', class: 'category'},
+    { id: 3, category:'skincare', title: 'Skin care', image: category2, bgColor: '#FFEDB4'},
+    { id: 4, category:'lipstick', title: 'Lip stick', image: category3, bgColor: '#DFE4FF'},
+    { id: 5, category:'faceskin', title: 'Face skin', image: category4, bgColor: '#FFEACC'},
+    { id: 6, category:'blusher', title: 'Blusher', image: category5, bgColor: '#FFDAE0'},
+    { id: 7, category:'natural', title: 'Natural', image: category6, bgColor: '#FFF3DA'},
   ];
     
   const filteredProducts =

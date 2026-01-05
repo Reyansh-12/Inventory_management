@@ -94,7 +94,7 @@ const Footer = () => {
         </div>
 
         <div className="footer-bottom">
-          <div className="container pt-0 pb-0">
+          <div className="container-fluid">
             <div className="footer-bottom-content">
               <p className="copyright text-white">© 2025 Brancy. All rights reserved. Designed & Developed by Reyansh.</p>
             </div>

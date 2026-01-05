@@ -8,7 +8,6 @@ header("Content-Type: application/json");
 define("BASE_PATH", dirname(__DIR__, 3));
 require_once BASE_PATH . "/src/controllers/dbConnection.php";
 
-// JSON input read karo
 $data = json_decode(file_get_contents("php://input"), true);
 
 if (!$data) {
@@ -40,7 +39,6 @@ try {
         $qty   = (int)$item['qty'];
         $price = (float)$item['price'];
 
-        // Stock lock
         $res = mysqli_query(
             $con,
             "SELECT quantity FROM product_list WHERE id=$pid FOR UPDATE"

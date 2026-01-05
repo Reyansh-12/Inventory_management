@@ -3,26 +3,31 @@ define("BASE_PATH", dirname(__DIR__, 3));
 include BASE_PATH . "/src/Layouts/Links.php";
 include BASE_PATH . "/src/controllers/dbConnection.php";
 
-$productId = $_GET['productId'] ?? $_POST['user_id'] ?? null;
+$productId = $_GET['productId'] ?? $_POST['product_id'] ?? null;
 $isEdit = false;
 $editData = [];
 $existingGalleryImages = [];
 
 if ($productId) {
     $isEdit = true;
-    $stmt = mysqli_prepare($con, "SELECT gallery_images FROM product_list WHERE id=?");
+    $stmt = mysqli_prepare($con, "SELECT * FROM product_list WHERE id=?");
     mysqli_stmt_bind_param($stmt, "i", $productId);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
-    $row = mysqli_fetch_assoc($res);
-    mysqli_stmt_close($stmt);
+    
+    if ($res && mysqli_num_rows($res) > 0) {
+        $editData = mysqli_fetch_assoc($res);
+        $existingGalleryImages = json_decode(
+            $editData['gallery_images'] ?? '[]',
+            true
+        ) ?? [];
+    }
 
-    $existingGalleryImages = json_decode($row['gallery_images'] ?? '[]', true) ?? [];
+    mysqli_stmt_close($stmt);
 }
 
 if (isset($_POST['submit'])) {
     $galleryImages = $existingGalleryImages;
-    // 3.1 Handle removed images
     $removedGalleryImages = json_decode($_POST['removed_gallery_images'] ?? '[]', true);
 
 
@@ -79,8 +84,10 @@ if (isset($_POST['submit'])) {
         }
     }
     if ($isEdit) {
-        $stmt = mysqli_prepare($con, "UPDATE product_list SET product_name=?, category=?, brand_name=?, minQuantity=?, price=?, quantity=?, description=?, discount=?, status=?, image_path=?, gallery_images=?, expired_date=? WHERE id=?");
-        mysqli_stmt_bind_param($stmt, "sssiddssssssi", $productname, $category, $brandName, $minquantity, $price, $quantity, $description, $discount, $status, $imagePath, $galleryJson, $expiredDate, $productId);
+        $stmt = mysqli_prepare($con, "UPDATE product_list SET product_name=?, category=?, brand_name=?, minQuantity=?, price=?, quantity=?,description=?, discount=?, status=?, image_path=?, gallery_images=?, expired_date=? WHERE id=?");
+        mysqli_stmt_bind_param($stmt, "sssiddssssssi", $productname, $category, $brandName, $minquantity, $price, $quantity, $description, $discount, $status, $imagePath, $galleryJson, $expiredDate, $productId
+);
+
     } else {
         $stmt = mysqli_prepare($con, "INSERT INTO product_list (product_name, category, brand_name, minQuantity, price, quantity, description, discount, status, image_path, gallery_images, expired_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         mysqli_stmt_bind_param($stmt, "sssiddssssss", $productname, $category, $brandName, $minquantity, $price, $quantity, $description, $discount, $status, $imagePath, $galleryJson, $expiredDate);
@@ -265,7 +272,7 @@ if (isset($_POST['submit'])) {
                 <div class="card">
                     <div class="card-body">
                         <form id="myForm" method="POST" enctype="multipart/form-data" data-parsley-validate>
-                            <input type="hidden" name="user_id" value="<?php echo $editData['id'] ?? ''; ?>">
+                            <input type="hidden" name="product_id" value="<?php $editData['id'] ?? ''; ?>">
                             <div class="row">
                                 <div class="col-lg-4 col-sm-6 col-12">
                                     <div class="form-group">
@@ -357,13 +364,13 @@ if (isset($_POST['submit'])) {
                                 </div>
                                 <div class="col-lg-4 col-sm-6 col-12">
                                     <div class="form-group">
-                                        <label for="discout">Discount <span class="text-danger">*</span></label>
+                                        <label for="discout">Discount</label>
                                         <div class="input-group has-validation">
-                                            <input type="text" name="discount" class="form-control" id="discountInput" oninput="this.value=this.value.replace(/[^0-9]/g,'')" aria-describedby="discountFeedback discount-suffix" placeholder="0 to 100" min="0" maxlength="2" step="1" required data-parsley-required-message="Discount field is required" data-parsley-errors-container="#discountError" value="<?= htmlspecialchars($editData['discount'] ?? '') ?>">
+                                            <input type="text" name="discount" class="form-control" id="discountInput" oninput="this.value=this.value.replace(/[^0-9]/g,'')" aria-describedby="discountFeedback discount-suffix" placeholder="0 to 100" min="0" maxlength="2" step="1" value="<?= htmlspecialchars($editData['discount'] ?? '') ?>">
                                             <span class="input-group-text" id="discount-suffix">%</span>
                                             <!-- <div id="discountFeedback" class="invalid-feedback"></div> -->
                                         </div>
-                                        <div id="discountError" class="parsley-required"><?php echo $discountError ?? ""; ?></div>
+                                        <!-- <div id="discountError" class="parsley-required"><?php echo $discountError ?? ""; ?></div> -->
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-6 col-12">

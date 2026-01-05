@@ -11,6 +11,10 @@ import '../../assets/styles/plugins/ProductCards.css';
 const ProductItem = ({ product }) => {
   const navigate = useNavigate();
 
+  const discountPercent = product?.discount;
+  const originalPrice = product?.price;
+  const discountedPrice = originalPrice - (originalPrice * discountPercent) / 100;
+
   console.log("Product received in ProductItem:", product);
 
   const addToCart = (id) => {
@@ -31,6 +35,7 @@ const ProductItem = ({ product }) => {
       .catch((error) => {
         toast.error("Error updating quantity.");
       });
+     
   };
 
   return (
@@ -73,7 +78,7 @@ const ProductItem = ({ product }) => {
     </div> */}
 
       <div className="">
-    <div class="container d-flex justify-content-center align-items-center mt-3">
+    <div class="container product_card d-flex overflow-hidden justify-content-center align-items-center mt-3">
   <div class="product-card position-relative text-white">
    
     <Link to={`/product/${product.id}`}>
@@ -82,19 +87,44 @@ const ProductItem = ({ product }) => {
     <div class="card-body mt-auto card-title">
       <h4 className="fw-semibold mb-3" data-bs-toggle='tooltip' title={product?.name}>{product?.name}</h4>
 
-      <div class="d-flex justify-content-between align-items-center">
-          <h4 class="fw-bold mb-0" style={{fontSize: '20px'}}>₹ {product?.price}</h4>
-          <button className="btn-like"><span className="position-absolute fs-" onClick={() => toast.success("Added to wishlist!")} style={{marginTop: '-15px', marginLeft: '-10px', fontSize: '20px'}}><FaRegHeart /></span></button>
+      <div class="d-flex justify-content-between align-items-center mt-4">
+          <h4 class="fw-bold mb-0" style={{fontSize: '20px'}}>₹{Math.round(discountedPrice)}{discountPercent > 0 && (<> &nbsp;<del>₹{Math.round(product?.price)}</del></>)}</h4>
+          {discountPercent > 0 && (<p style={{ fontSize: '18px', color: '#0043ff' }}>{discountPercent}% off</p>
+  )}
       </div>
-          <ToastContainer />
-
-      <div className="row align-items-center mt-4">
+          {/* <ToastContainer /> */}
+        
+      {/* <div className="row align-items-center mt-4">
         <button className="btn btn-light rounded-3" onClick={() => addToCart(product?.id)}>
-          <span className="text-nowrap">Add to basket</span> <span className="fs-5"><IoBagAddOutline /></span>
+          <span className="text-nowrap" style={{letterSpacing: '3px'}}>Add to basket</span> <span className="fs-5"><IoBagAddOutline /></span>
+          <ToastContainer />
+        </button>
+      </div> */}
+      <div className="row align-items-center mt-4">
+          <button className="btn btn-light rounded-3" onClick={() => toast.success("Added to wishlist!")}>
+          <span className="text-nowrap" style={{letterSpacing: '3px'}}>Add to whishlist</span> <span className="fs-5"><FaRegHeart /></span>
           <ToastContainer />
         </button>
       </div>
-      
+      {product.quantity === 0 ? (
+  <span className="position-absolute product_quantity out-stock">
+    Out of stock
+  </span>
+) : product.quantity <= 50 ? (
+  <span
+    className={`position-absolute product_quantity ${
+      product.quantity <= 4
+        ? "low-stock"
+        : product.quantity <= 10
+        ? "medium-stock"
+        : "high-stock"
+    }`}
+  >
+    {product.quantity} items left
+  </span>
+) : null}
+
+      {/* <p className="mt-2">127 Reviews</p> */}
     </div>
 
   </div>
