@@ -14,7 +14,7 @@ const handleLogout=()=>{
 }
   return(
     <>
-      <header className="header-area sticky-header header-transparent">
+      <header className="header-area sticky-header header-transparent ms-2 me-2">
         <div className="container">
           <div className="row align-items-center">
             <div className="col-5 col-lg-2 col-xl-1">

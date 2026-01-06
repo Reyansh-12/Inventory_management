@@ -78,7 +78,7 @@ const ProductItem = ({ product }) => {
     </div> */}
 
       <div className="">
-    <div class="container product_card d-flex overflow-hidden justify-content-center align-items-center mt-3">
+    <div class="container card border-0 d-flex overflow-hidden justify-content-center align-items-center mt-3">
   <div class="product-card position-relative text-white">
    
     <Link to={`/product/${product.id}`}>

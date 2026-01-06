@@ -73,6 +73,7 @@
     opacity: 0.6;
     pointer-events: none; 
   }
-  .category .image{
-
-  }
+ .product-card:hover{
+    margin-top: -10px;
+    transition: 0.5s;
+ }
