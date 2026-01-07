@@ -30,9 +30,6 @@
                     <li class="<?php echo ($currentPage == 'category.php') ? 'active' : ''; ?>">
                         <a href="/Backend/src/Pages/category.php"><i class="bi bi-tags"></i><span> Category</span> </a>
                     </li>
-                    <li class="<?php echo ($currentPage == 'category.php') ? 'active' : ''; ?>">
-                        <a href="/Backend/src/Pages/category.php"><i class="bi bi-tags"></i><span>Brands</span> </a>
-                    </li>
                     <li class="<?php echo ($currentPage == 'expiredProduct.php') ? 'active' : ''; ?>">
                         <a href="/Backend/src/Pages/expiredProduct.php"><i class="bi bi-calendar-x"></i><span> Expired Management</span> </a>
                     </li>

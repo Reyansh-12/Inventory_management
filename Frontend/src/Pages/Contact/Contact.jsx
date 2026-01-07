@@ -5,6 +5,8 @@ import callIcon from "../../assets/images/icons/1.webp";
 import emailIcon from "../../assets/images/icons/2.webp";
 import locationIcon from "../../assets/images/icons/3.webp";
 import Navbar from '../../components/Navbar';
+import Footer from '../../components/Footer';
+import bannerImage from '../../../src/assets/images/47.jpg';
 import image from '../../../src/assets/images/realistic-cosmetic-with-red-rose-flowers-transparent-background_649064-3161_1_-removebg-preview.png';
 
 export const Contact = () => {
@@ -60,84 +62,77 @@ export const Contact = () => {
   return (
     <>
     <Navbar />
-    <div className="wrapper">
+    {/* <div className='p-3 position-relative'>
+      <img src={bannerImage} alt="" className='rounded' />
+      <p className='position-absolute top-50 start-50'>Contact Us</p>
+    </div> */}
+    <div className="wrapper position-relative">
       <main className="main-content">
         <section className="contact-area">
           <div className="container">
+            <div className='mb-5 text-center mt-5'>
+              <h2 className="title fw-bold fs-1">Contact Us</h2>
+              <p>Have a question? Our team replies within 24 hours.</p>
+            </div>
             <div className="d-flex">
-              <div className="col-lg-6 col-md-6">
-                <img src={image} style={{marginTop: '60px', borderRadius: '9px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'}}></img>
-              </div>.
-              <div className="col-lg-6 col-md-6 mt-5">
-                <div className="section-title position-relative mb-4">
-                  <h2 className="title">Get in touch</h2>
-                  <p className="m-0">Lorem ipsum dolor sit amet, consectetur adipiscing aliquam, purus sit amet luctus venenatis</p>
-                  <div className="line-left-style mt-4 mb-1" />
-                </div>
-
-                <div className="contact-form">
+              <div className="col-lg-6 col-md-6 p-5 rounded-4 shadow-lg">
+                <div className="contact-form ">
                   <form id="contact-form" onSubmit={handleSubmit}>
                     <div className="row">
                       <div className="col-md-6">
-                        <div className="form-group mb-5">
-                          <input 
-                            className={`form-control ${errors.con_name ? 'is-invalid' : ''}`} 
-                            type="text" 
-                            name="con_name" 
-                            value={inputs.con_name} 
-                            onChange={handleChange} 
-                            placeholder="First Name"
-                          />
+                        <div className="form-group mb-4">
+                          <label htmlFor="firstName">First Name</label>
+                          <input className={`form-control ${errors.con_name ? 'is-invalid' : ''}`} id='firstName' type="text" name="con_name" value={inputs.con_name} onChange={handleChange}/>
                           {errors.con_name && <div className="invalid-feedback">{errors.con_name}</div>}
                         </div>
                       </div>
                       <div className="col-md-6">
-                        <div className="form-group mb-5">
-                          <input 
-                            className={`form-control ${errors.con_lastName ? 'is-invalid' : ''}`} 
-                            type="text" 
-                            name="con_lastName" 
-                            value={inputs.con_lastName} 
-                            onChange={handleChange} 
-                            placeholder="Last Name" 
-                          />
+                        <div className="form-group mb-4">
+                          <label htmlFor="lastName">Last Name</label>
+                          <input className={`form-control ${errors.con_lastName ? 'is-invalid' : ''}`} id='lastName' type="text" name="con_lastName" value={inputs.con_lastName} onChange={handleChange} style={{outline: 'none'}} />
                           {errors.con_lastName && <div className="invalid-feedback">{errors.con_lastName}</div>}
                         </div>
                       </div>
                       <div className="col-12">
-                        <div className="form-group mb-5 mt-2">
+                        <div className="form-group mb-4 mt-2 position-relative">
+                          <label htmlFor="eamil position-absolute">Email</label>
                           <input 
                             className={`form-control ${errors.con_email ? 'is-invalid' : ''}`} 
+                            id='eamil'
                             type="email" 
                             name="con_email" 
                             value={inputs.con_email} 
                             onChange={handleChange} 
-                            placeholder="Email address" 
+                            
                           />
                           {errors.con_email && <div className="invalid-feedback">{errors.con_email}</div>}
                         </div>
                       </div>
-                      <div className="col-12">
-                        <div className="form-group">
+                      <div className="col-12 mb-0">
+                        <div className="form-group position-relative">
+                          <label htmlFor="message">Message</label>
                           <textarea 
                             className={`form-control ${errors.con_message ? 'is-invalid' : ''}`} 
+                            id='message'
                             name="con_message" 
                             value={inputs.con_message} 
                             onChange={handleChange} 
-                            placeholder="Message" 
                           />
                           {errors.con_message && <div className="invalid-feedback">{errors.con_message}</div>}
                         </div>
                       </div>
                       <div className="col-12">
                         <div className="form-group mb-0">
-                          <button className="btn btn-sm rounded-pill" type="submit" style={{background: '#ff6565', color: 'white'}}>SUBMIT</button>
+                          <button className="btn contactButton btn-sm rounded" type="submit" style={{background: '#FF6F61',color: '#FFFFFF' , boxShadow: '5px 2px 9px 2px grey', lineHeight: '2.5'}}>SUBMIT</button>
                         </div>
                       </div>
                     </div>
                   </form>
                 </div>
                 <div className="form-message" />
+              </div>
+              <div className='col-lg-6 col-md-6 ps-5'>
+                <img src={bannerImage} alt="" />
               </div>
             </div>
           </div>
@@ -168,7 +163,7 @@ export const Contact = () => {
           </div>
         </section>
 
-        <div className="map-area">
+        <div className="map-area p-3">
           <iframe
             title="location"
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d802879.9165497769!2d144.83475730949783!3d-38.180874157285366!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad646b5d2ba4df7%3A0x4045675218ccd90!2sMelbourne%20VIC%2C%20Australia!5e0!3m2!1sen!2sbd!4v1636803638401!5m2!1sen!2sbd"
@@ -180,6 +175,7 @@ export const Contact = () => {
         </div>
       </main>
     </div>
+    <Footer />
     </>
   );
 };

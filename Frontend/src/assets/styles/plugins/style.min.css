@@ -649,22 +649,13 @@ hr {
   color: #ff6565;
   box-shadow: none;
   border-radius: 8px;
-  height: 70px;
+  height: 50px;
   font-size: 15px;
   font-weight: 500;
   line-height: 70px;
-  padding: 10px 75px 10px 24px;
+  /* padding: 10px 75px 10px 24px; */
 }
-.aside-search-form .form-control::-webkit-input-placeholder {
-  color: #ff6565;
-}
-.aside-search-form .form-control:-moz-placeholder,
-.aside-search-form .form-control::-moz-placeholder {
-  color: #ff6565;
-}
-.aside-search-form .form-control:-ms-input-placeholder {
-  color: #ff6565;
-}
+
 @media only screen and (max-width: 767px) {
   .aside-search-form .form-control {
     font-size: 13px;
@@ -3553,6 +3544,7 @@ hr {
   font-weight: 700;
   padding: 0 55px;
   text-align: center;
+  background: none;
 }
 @media only screen and (max-width: 767px),
   only screen and (min-width: 768px) and (max-width: 991px),
@@ -4141,19 +4133,8 @@ hr {
     padding: 0 0 45px;
   }
 }
-.product-reviews-form .form-control::-webkit-input-placeholder {
-  color: #1d3557;
-}
-.product-reviews-form .form-control:-moz-placeholder,
-.product-reviews-form .form-control::-moz-placeholder {
-  color: #1d3557;
-}
-.product-reviews-form .form-control:-ms-input-placeholder {
-  color: #1d3557;
-}
-.product-reviews-form textarea.form-control {
-  padding: 0 0 95px;
-}
+
+
 @media only screen and (max-width: 767px),
   only screen and (min-width: 768px) and (max-width: 991px),
   only screen and (min-width: 992px) and (max-width: 1199px) {
@@ -5031,7 +5012,7 @@ hr {
 }
 .billing-form-wrap form .form-group .form-control:active,
 .billing-form-wrap form .form-group .form-control:focus {
-  border-color: #000;
+  border-color: none;
 }
 .billing-form-wrap form .form-group textarea.form-control {
   min-height: 120px;
@@ -6685,7 +6666,7 @@ hr {
   color: #3f3f3f;
 }
 .contact-form textarea.form-control {
-  height: 138px;
+  height: 88px;
   resize: none;
 }
 @media only screen and (max-width: 767px),
@@ -6693,6 +6674,10 @@ hr {
   .contact-form textarea.form-control {
     height: 100px;
   }
+}
+.contactButton:hover {
+  background-color: #E85A4F;
+  box-shadow: 0 6px 18px rgba(255, 111, 97, 0.35);
 }
 .contact-info {
   background: #fffaef;

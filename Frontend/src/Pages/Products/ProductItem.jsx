@@ -103,9 +103,9 @@ const ProductItem = ({ product }) => {
       <div className="row align-items-center mt-4">
           <button className="btn btn-light rounded-3" onClick={() => toast.success("Added to wishlist!")}>
           <span className="text-nowrap" style={{letterSpacing: '3px'}}>Add to whishlist</span> <span className="fs-5"><FaRegHeart /></span>
-          <ToastContainer />
         </button>
       </div>
+          <ToastContainer />
       {product.quantity === 0 ? (
   <span className="position-absolute product_quantity out-stock">
     Out of stock

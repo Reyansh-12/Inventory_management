@@ -1,13 +1,9 @@
 
 import React from "react";
-import { FaRegHeart } from "react-icons/fa";
 import {Link} from 'react-router-dom';
 import banner1 from "../assets/images/shop/banner/1.webp";
 import banner2 from "../assets/images/shop/banner/2.webp";
 import banner3 from "../assets/images/shop/banner/3.webp";
-import { FaRegStar } from "react-icons/fa";
-import { FaStarHalfAlt } from "react-icons/fa";
-import { CgArrowsExpandRight } from "react-icons/cg";
 import { useEffect, useState } from "react";
 import { FaArrowRightLong } from "react-icons/fa6";
 import ProductItem from "../Pages/Products/ProductItem.jsx";
