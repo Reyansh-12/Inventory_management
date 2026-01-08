@@ -19,7 +19,7 @@ const ProductFourColumns = () => {
    
       
     useEffect(() => {
-      fetch("http://localhost:3000/Backend/src/Pages/APIs/productListAPI.php")
+      axios.get(`${import.meta.env.VITE_API_URL}/productListAPI.php`)
         .then((res) => res.json())
         .then((data) => setProducts(data))
         .catch((err) => console.log("API Error:", err));

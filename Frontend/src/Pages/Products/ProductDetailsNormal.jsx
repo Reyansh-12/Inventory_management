@@ -5,10 +5,7 @@ import shop2 from '../../assets/images/shop/product-details/2.webp';
 import ProductItem from "@/Pages/Products/ProductItem.jsx";
 import shop4 from '../../assets/images/shop/category/4.webp';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../../assets/styles/plugins/reviewCard.css';
-import '../../assets/styles/plugins/reviewCardBundle.css';
-import '../../assets/js/reviewCard.js';
-import '../../assets/js/reviewCardBundle.js';
+
 import { ToastContainer, toast } from 'react-toastify';
 import { useParams } from "react-router-dom";
 import { FaStar } from "react-icons/fa";
