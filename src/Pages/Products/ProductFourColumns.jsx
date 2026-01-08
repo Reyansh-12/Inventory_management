@@ -19,7 +19,7 @@ const ProductFourColumns = () => {
    
       
     useEffect(() => {
-      fetch("http://localhost:3000/Backend/src/Pages/APIs/productListAPI.php")
+      fetch("http://localhost/Inventory_management/Backend/src/Pages/APIs/productListAPI.php")
         .then((res) => res.json())
         .then((data) => setProducts(data))
         .catch((err) => console.log("API Error:", err));

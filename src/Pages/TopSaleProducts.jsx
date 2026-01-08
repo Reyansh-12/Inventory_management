@@ -1,13 +1,9 @@
 
 import React from "react";
-import { FaRegHeart } from "react-icons/fa";
 import {Link} from 'react-router-dom';
 import banner1 from "../assets/images/shop/banner/1.webp";
 import banner2 from "../assets/images/shop/banner/2.webp";
 import banner3 from "../assets/images/shop/banner/3.webp";
-import { FaRegStar } from "react-icons/fa";
-import { FaStarHalfAlt } from "react-icons/fa";
-import { CgArrowsExpandRight } from "react-icons/cg";
 import { useEffect, useState } from "react";
 import { FaArrowRightLong } from "react-icons/fa6";
 import ProductItem from "../Pages/Products/ProductItem.jsx";
@@ -111,7 +107,7 @@ const firstSix = products.slice(0, 6);
           </div>
         </section>
         <div className="d-flex justify-content-center text-white">
-          <Link to="/shop" className="rounded-3 p-3 ps-4 pe-4 text-decoration-none text-wite" style={{background: 'linear-gradient(180deg,rgb(149, 218, 250),rgb(80, 170, 87))', boxShadow: '1px 1px 9px 1px grey'}} id="sow_all_products">See All Products <FaArrowRightLong className="ms-2" /></Link>
+          <Link to="/shop" className="rounded-3 p-3 ps-4 pe-4 w-auto ms-5 me-5 text-decoration-none text-wite" style={{background: 'linear-gradient(90deg, #22c55e, #3b82f6)', boxShadow: ' 8px 20px rgba(0,0,0,0.15)'}} id="sow_all_products">See All Products <FaArrowRightLong className="ms-2" /></Link>
         </div>
       </main>
     </section>

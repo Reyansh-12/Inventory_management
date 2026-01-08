@@ -5,8 +5,13 @@ import shop2 from '../../assets/images/shop/product-details/2.webp';
 import ProductItem from "@/Pages/Products/ProductItem.jsx";
 import shop4 from '../../assets/images/shop/category/4.webp';
 import 'bootstrap/dist/css/bootstrap.min.css';
+
 import { ToastContainer, toast } from 'react-toastify';
 import { useParams } from "react-router-dom";
+import { FaStar } from "react-icons/fa";
+import { FaStarHalfAlt } from "react-icons/fa";
+import { FaRegStar } from "react-icons/fa";
+import { FaRegHeart } from "react-icons/fa";
 
 const ProductDetailsNormal = () => {
   const { id } = useParams();               
@@ -44,7 +49,7 @@ if (!product) {
 
   return (
     <main className="main-content" style={{marginTop: '80px'}}>
-      <section className="page-header-area pt-10 pb-9" style={{ backgroundColor: '#FFF3DA' }}>
+      {/* <section className="page-header-area pt-10 pb-9" style={{ backgroundColor: '#FFF3DA' }}>
         <div className="container">
           <div className="row">
             <div className="col-md-5">
@@ -57,13 +62,13 @@ if (!product) {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       <section className="section-space">
         <div className="container">
           <div className="row product-details">
             <div className="col-lg-6">
-              <div className="product-details-thumb">
+              <div className="product-details-thumb shadow-lg rounded-5">
                 <img src={product.image || shop2} width="570" height="693" alt={product.name} onError={(e) => e.target.src = shop4} />
                 <span className="flag-new">new</span>
               </div>
@@ -71,13 +76,11 @@ if (!product) {
 
             <div className="col-lg-6">
               <div className="product-details-content">
-                <h5 className="product-details-collection">Premium collection</h5>
                 <h3 className="product-details-title">{product.name}</h3>
 
                 <div className="product-details-review mb-7">
                   <div className="product-review-icon">
-                    <i className="fa fa-star-o" /><i className="fa fa-star-o" /><i className="fa fa-star-o" />
-                    <i className="fa fa-star-o" /><i className="fa fa-star-half-o" />
+                    <span><FaStar /><FaStar /><FaStar /><FaStarHalfAlt /><FaRegStar /></span>
                   </div>
                   <button type="button" className="product-review-show">150 reviews</button>
                 </div>
@@ -86,30 +89,25 @@ if (!product) {
 
                 <div className="product-details-pro-qty">
                   <div className="pro-qty" style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                    <button type="button" onClick={decrement}>-</button>
+                    <button type="button" className='rounded-3 border-2 rounded-circle' style={{background: 'none', borderColor: '#e63946'}} onClick={decrement}>-</button>
                     <input type="text" title="Quantity" value={String(qty).padStart(2, '0')} readOnly />
-                    <button type="button" onClick={increment}>+</button>
+                    <button type="button" className='rounded-3 border-2 rounded-circle' style={{background: 'none', borderColor: '#e63946'}} onClick={increment}>+</button>
                   </div>
-                </div>
-
-                <div className="product-details-shipping-cost" style={{ marginTop: 12 }}>
-                  <input className="form-check-input" type="checkbox" id="ShippingCost" checked={shipping} onChange={() => setShipping(s => !s)} />
-                  <label className="form-check-label" htmlFor="ShippingCost">Shipping from USA, Shipping Fees $4.22</label>
                 </div>
 
                 <div className="product-details-action" style={{ marginTop: 16 }}>
-                  <h4 className="price">₹{product.price}</h4>
-                  <div className="product-details-cart-wishlist" style={{ display: 'flex', gap: 8 }}>
-                    <button type="button" className="btn-wishlist"><i className="fa fa-heart-o" /></button>
-                    <button type="button" className="btn" onClick={handleAddToCart}>Add to cart</button>
-                    <ToastContainer />
+                  <h4 className="price text-success">₹{product.price}</h4>
+                  <div className="product-details-cart-wishlist">
+                    <button type="button" className="btn-wishlist" onClick={() => toast.success("Added to wishlist!")}><FaRegHeart style={{marginTop: '-25px', marginLeft: '-9px'}} /></button>
+                    <button type="button" className="btn border-2" onClick={handleAddToCart} style={{borderColor: '#e63946'}}>Add to cart</button>
                   </div>
+                    <ToastContainer />
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="row" style={{ marginTop: 24 }}>
+          {/* <div className="row" style={{ marginTop: 24 }}>
             <div className="col-lg-7">
               <div className="nav product-details-nav" role="tablist">
                 <button className={`nav-link ${activeTab === 'spec' ? 'active' : ''}`} onClick={() => setActiveTab('spec')}>Specification</button>
@@ -192,8 +190,111 @@ if (!product) {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
+      </section>
+
+      <section class="container">
+         <div class="card__container swiper">
+            <div class="card__content">
+               <div class="swiper-wrapper">
+                  <article class="card__article swiper-slide">
+                     <div class="card__image">
+                        <img src="assets/img/avatar-1.png" alt="image" class="card__img"></img>
+                        <div class="card__shadow"></div>
+                     </div>
+      
+                     <div class="card__data">
+                        <h3 class="card__name">Kell Dawx</h3>
+                        <p class="card__description">
+                           Passionate about development and design, 
+                           I carry out projects at the request of users.
+                        </p>
+      
+                        <a href="#" class="card__button">View More</a>
+                     </div>
+                  </article>
+      
+                  <article class="card__article swiper-slide">
+                     <div class="card__image">
+                        <img src="assets/img/avatar-2.png" alt="image" class="card__img"></img>
+                        <div class="card__shadow"></div>
+                     </div>
+      
+                     <div class="card__data">
+                        <h3 class="card__name">Lotw Fox</h3>
+                        <p class="card__description">
+                           Passionate about development and design, 
+                           I carry out projects at the request of users.
+                        </p>
+      
+                        <a href="#" class="card__button">View More</a>
+                     </div>
+                  </article>
+      
+                  <article class="card__article swiper-slide">
+                     <div class="card__image">
+                        <img src="assets/img/avatar-3.png" alt="image" class="card__img"></img>
+                        <div class="card__shadow"></div>
+                     </div>
+      
+                     <div class="card__data">
+                        <h3 class="card__name">Sara Mit</h3>
+                        <p class="card__description">
+                           Passionate about development and design, 
+                           I carry out projects at the request of users.
+                        </p>
+      
+                        <a href="#" class="card__button">View More</a>
+                     </div>
+                  </article>
+      
+                  <article class="card__article swiper-slide">
+                     <div class="card__image">
+                        <img src="assets/img/avatar-4.png" alt="image" class="card__img"></img>
+                        <div class="card__shadow"></div>
+                     </div>
+      
+                     <div class="card__data">
+                        <h3 class="card__name">Jenny Wert</h3>
+                        <p class="card__description">
+                           Passionate about development and design, 
+                           I carry out projects at the request of users.
+                        </p>
+      
+                        <a href="#" class="card__button">View More</a>
+                     </div>
+                  </article>
+
+                  <article class="card__article swiper-slide">
+                     <div class="card__image">
+                        <img src="assets/img/avatar-5.png" alt="image" class="card__img"></img>
+                        <div class="card__shadow"></div>
+                     </div>
+      
+                     <div class="card__data">
+                        <h3 class="card__name">Lexa Kin</h3>
+                        <p class="card__description">
+                           Passionate about development and design, 
+                           I carry out projects at the request of users.
+                        </p>
+      
+                        <a href="#" class="card__button">View More</a>
+                     </div>
+                  </article>
+               </div>
+            </div>
+
+            <div class="swiper-button-next">
+               <i class="ri-arrow-right-s-line"></i>
+            </div>
+            
+            <div class="swiper-button-prev">
+               <i class="ri-arrow-left-s-line"></i>
+            </div>
+
+            <div class="swiper-pagination"></div>
+         </div>
       </section>
 
       <div className="container" style={{ marginTop: 24 }}>
