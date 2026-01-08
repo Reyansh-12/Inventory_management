@@ -13,7 +13,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $id = (int)$item['id'];
         $qty = (int)$item['qty'];
 
-        // Reduce quantity
         $update = $con->prepare("UPDATE product_list SET quantity = quantity - ? WHERE id = ? AND quantity >= ?");
         $update->bind_param("iii", $qty, $id, $qty);
         $update->execute();
