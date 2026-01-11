@@ -107,7 +107,7 @@ const firstSix = products.slice(0, 6);
           </div>
         </section>
         <div className="d-flex justify-content-center text-white">
-          <Link to="/shop" className="rounded-3 p-3 ps-4 pe-4 w-auto ms-5 me-5 text-decoration-none text-wite" style={{background: 'linear-gradient(90deg, #22c55e, #3b82f6)', boxShadow: ' 8px 20px rgba(0,0,0,0.15)'}} id="sow_all_products">See All Products <FaArrowRightLong className="ms-2" /></Link>
+          <Link to="/shop" className="rounded-3 p-3 ps-4 pe-4 w-100 ms-5 me-5 text-decoration-none text-center" style={{background: 'transparent',border: '2px solid #3b82f6',boxShadow: ' 8px 20px rgba(0,0,0,0.15)'}} id="sow_all_products">View All Products <FaArrowRightLong className="ms-2" /></Link>
         </div>
       </main>
     </section>

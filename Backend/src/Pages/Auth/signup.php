@@ -97,7 +97,7 @@ if (!preg_match($strongPasswordPattern, $password)) {
                             <div class="form-login">
                                 <label for="contact">Phone Number</label>
                                 <div class="form-addons">
-                                    <input type="text" name='contact' id='contact' placeholder="Enter phone number" patter="^(?:(?:\+|0{0,2})91(\s*[\ -]\s*)?|[0]?)?[789]\d{9}|(\d[ -]?){10}\d$" maxlength="10" data-parsley-type="digits" data-parsley-length="10" data-parsley-required-message="Phone number is required" data-parsley-required>
+                                    <input type="text" name='contact' id='contact' placeholder="Enter phone number" patter="^[6-9][0-9]{9}$" maxlength="10" data-parsley-type="digits" data-parsley-length="10" data-parsley-pattern="^[6-9][0-9]{9}$" data-parsley-required-message="Phone number is required" data-parsley-pattern-message="Phone number must start with 6, 7, 8 or 9" data-parsley-required>
                                     <i class="fa-solid toggle-password pe-none fa-phone position-absolute" style="top: 20px; color:rgba(138, 135, 135, 0.93); font-size: 13px"></i>
                                 </div>
                             </div>
@@ -225,7 +225,17 @@ $('#password').on('input', function () {
     }
 });
 
-    </script>
+document.getElementById('contact').addEventListener('input', function (e) {
+    let value = e.target.value.replace(/\D/g, '');
+
+    if (value.length === 1 && !/^[6-9]$/.test(value)) {
+        value = '';
+    }
+
+    e.target.value = value.slice(0, 10);
+});
+</script>
+
 </body>
 
 </html>

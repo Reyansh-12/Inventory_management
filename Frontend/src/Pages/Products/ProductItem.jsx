@@ -82,7 +82,7 @@ const ProductItem = ({ product }) => {
   <div class="product-card position-relative text-white">
    
     <Link to={`/product/${product.id}`}>
-          <img src={product?.image || shop4} style={{width: '100%', height: '200px', objectFit: 'contain'}} onError={(e) => (e.target.src = shop4)} />
+          <img src={product?.image || shop4} style={{width: '100%', height: '200px', objectFit: 'contain'}} onError={(e) => (e.target.src = shop4)} className="mt-5"/>
         </Link>
     <div class="card-body mt-auto card-title">
       <h4 className="fw-semibold mb-3" data-bs-toggle='tooltip' title={product?.name}>{product?.name}</h4>
@@ -100,9 +100,9 @@ const ProductItem = ({ product }) => {
           <ToastContainer />
         </button>
       </div> */}
-      <div className="row align-items-center mt-4">
-          <button className="btn btn-light rounded-3" onClick={() => toast.success("Added to wishlist!")}>
-          <span className="text-nowrap" style={{letterSpacing: '3px'}}>Add to whishlist</span> <span className="fs-5"><FaRegHeart /></span>
+      <div className="row wishlist align-items-center mt-4 position-absolute" style={{top: '-10px', left: '28px', display: 'none'}}>
+          <button className="btn btn-light wishlistButton" style={{background: '#ffffff61', borderRadius: '12px'}} onClick={() => toast.success("Added to wishlist!")}>
+          <span className="fs-5"><FaRegHeart /></span>
         </button>
       </div>
           <ToastContainer />
