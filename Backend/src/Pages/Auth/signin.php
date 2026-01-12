@@ -15,14 +15,28 @@ if (isset($_POST['submit'])) {
     $user = mysqli_fetch_assoc($result);
 
     if (!$user) {
-        $_SESSION['toast_error'] = "Email not found";
+        $_SESSION['field_error'] = [
+            'type' => 'email',
+            'message' => 'Email not found'
+        ];
         $_SESSION['keep_email'] = $userEmail;
         header("Location: signin.php");
         exit();
+        // header("Location: signin.php");
+        // exit();
     }
 
+    // if (!password_verify($userPassword, $user['user_password'])) {
+    //     $_SESSION['toast_error'] = "Password is incorrect";
+    //     $_SESSION['keep_email'] = $userEmail;
+    //     header("Location: signin.php");
+    //     exit();
+    // }
     if (!password_verify($userPassword, $user['user_password'])) {
-        $_SESSION['toast_error'] = "Password is incorrect";
+        $_SESSION['field_error'] = [
+            'type' => 'password',
+            'message' => 'Password is incorrect'
+        ];
         $_SESSION['keep_email'] = $userEmail;
         header("Location: signin.php");
         exit();
@@ -59,7 +73,9 @@ if (isset($_POST['submit'])) {
     <link rel="stylesheet" href="/Backend/src/assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
-        .parsley-required, .parsley-minlength, .parsley-type{
+        .parsley-required,
+        .parsley-minlength,
+        .parsley-type {
             color: orangered;
         }
     </style>
@@ -88,6 +104,11 @@ if (isset($_POST['submit'])) {
                                     <input type="text" id='email' name='userEmail' value="<?= $_SESSION['keep_email'] ?? '' ?>" placeholder="Enter your email address" data-parsley-type="email" data-parsley-pattern="^[A-Za-z][A-Za-z0-9]*@[A-Za-z0-9]+\.[A-Za-z]{2,}$" data-parsley-required-message="Email is required" data-parsley-required>
                                     <img src="/Backend/src/assets/images/icons/mail.svg" alt="img">
                                 </div>
+                                <?php if (isset($_SESSION['field_error']) && $_SESSION['field_error']['type'] === 'email'): ?>
+                                    <small class="text-danger field-error email-error">
+                                        <?= $_SESSION['field_error']['message']; ?>
+                                    </small>
+                                <?php endif; ?>
                             </div>
                             <div class="form-login">
                                 <div class="pass-group">
@@ -95,6 +116,11 @@ if (isset($_POST['submit'])) {
                                     <input type="password" id='password' name='userPassword' class="pass-input" placeholder="........." data-parsley-minlength="6" data-parsley-required-message="Password is required" data-parsley-required>
                                     <span class="fas toggle-password fa-eye-slash position-absolute" style="top: 53px"></span>
                                 </div>
+                                <?php if (isset($_SESSION['field_error']) && $_SESSION['field_error']['type'] === 'password'): ?>
+                                    <small class="text-danger field-error password-error">
+                                        <?= $_SESSION['field_error']['message']; ?>
+                                    </small>
+                                <?php endif; ?>
                             </div>
                             <div class="form-login">
                                 <div class="alreadyuser">
@@ -105,6 +131,7 @@ if (isset($_POST['submit'])) {
                                 <button class="btn btn-login" name='submit' type="submit">Sign In</button>
                             </div>
                         </form>
+                        <?php unset($_SESSION['field_error']); ?>
                         <div class="signinform text-center">
                             <h4>Don’t have an account? <a href="/Backend/src/Pages/Auth/signup.php" class="hover-a">Sign Up</a></h4>
                         </div>
@@ -136,17 +163,18 @@ if (isset($_POST['submit'])) {
         </div>
     </div>
     <?php if (isset($_SESSION['toast_error'])): ?>
-<div class="toast-container position-fixed top-0 end-0 p-3">
-  <div class="toast align-items-center text-bg-danger show" data-bs-delay="3000" data-bs-autohide="true">
-    <div class="d-flex">
-      <div class="toast-body">
-        <?= $_SESSION['toast_error']; ?>
-      </div>
-      <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
-    </div>
-  </div>
-</div>
-<?php unset($_SESSION['toast_error']); endif; ?>
+        <div class="toast-container position-fixed top-0 end-0 p-3">
+            <div class="toast align-items-center text-bg-danger show" data-bs-delay="3000" data-bs-autohide="true">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <?= $_SESSION['toast_error']; ?>
+                    </div>
+                    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        </div>
+    <?php unset($_SESSION['toast_error']);
+    endif; ?>
 
     <script src="/Backend/src/assets/js/jquery-3.6.0.min.js"></script>
     <script src="/Backend/src/assets/js/feather.min.js"></script>
@@ -155,43 +183,51 @@ if (isset($_POST['submit'])) {
     <script src="/Backend/src/assets/js/script.js"></script>
     <script>
         if ($('.toggle-password').length > 0) {
-    $(document).on('click', '.toggle-password', function () {
-        const input = $('.pass-input');
+            $(document).on('click', '.toggle-password', function() {
+                const input = $('.pass-input');
 
-        if (input.attr('type') === 'password') {
-            input.attr('type', 'text');
-            $(this)
-                .removeClass('fa-eye-slash')
-                .addClass('fa-eye');
-        } else {
-            input.attr('type', 'password');
-            $(this)
-                .removeClass('fa-eye')
-                .addClass('fa-eye-slash');
+                if (input.attr('type') === 'password') {
+                    input.attr('type', 'text');
+                    $(this)
+                        .removeClass('fa-eye-slash')
+                        .addClass('fa-eye');
+                } else {
+                    input.attr('type', 'password');
+                    $(this)
+                        .removeClass('fa-eye')
+                        .addClass('fa-eye-slash');
+                }
+            });
         }
-    });
-}
-$('#email').on('input', function () {
-    let value = $(this).val();
+        $('#email').on('input', function() {
+            let value = $(this).val();
 
-    value = value.replace(/[^a-zA-Z0-9@.]/g, '');
+            value = value.replace(/[^a-zA-Z0-9@.]/g, '');
 
-    if (value.length === 1 && !/^[A-Za-z]$/.test(value)) {
-        value = '';
-    }
+            if (value.length === 1 && !/^[A-Za-z]$/.test(value)) {
+                value = '';
+            }
 
-    $(this).val(value);
-});
-
+            $(this).val(value);
+        });
     </script>
     <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const toastElList = document.querySelectorAll('.toast');
-    toastElList.forEach(function (toastEl) {
-        const toast = new bootstrap.Toast(toastEl);
-        toast.show();
+        document.addEventListener('DOMContentLoaded', function() {
+            const toastElList = document.querySelectorAll('.toast');
+            toastElList.forEach(function(toastEl) {
+                const toast = new bootstrap.Toast(toastEl);
+                toast.show();
+            });
+        });
+    </script>
+<script>
+    $('#email').on('input', function () {
+        $('.email-error').fadeOut();
     });
-});
+
+    $('#password').on('input', function () {
+        $('.password-error').fadeOut();
+    });
 </script>
 
 </body>
