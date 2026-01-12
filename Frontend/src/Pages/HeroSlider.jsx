@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import "../../src/assets/styles/plugins/ProductCards.css";
 import image from '../assets/images/17839.jpg';
+import { FaLessThan } from "react-icons/fa6";
 
 const HeroSlider = () => {
 
@@ -74,7 +75,7 @@ const HeroSlider = () => {
       <div className="mockup"></div>
 
       <div className="arrow">
-        <button id="prev">Prev</button>
+        <button id="prev"><FaLessThan className="text-center"/></button>
         <button id="next">Next</button>
       </div>
     </div>

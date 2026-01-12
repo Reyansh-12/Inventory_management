@@ -40,43 +40,6 @@ const ProductItem = ({ product }) => {
 
   return (
     <>
-    {/* <div className="product-item text-start" style={{position: 'relative'}}>
-      <div className="product-thumb">
-        <Link to={`/product/${product.id}`}>
-          <img src={product?.image || shop4} style={{width: '100%', height: '350px', objectFit: 'contain'}} onError={(e) => (e.target.src = shop4)} />
-        </Link>
-        <span className="flag-new">new</span>
-        <div className="product-action">
-          <button type="button" className="product-action-btn action-btn-quick-view">
-            <CgArrowsExpandRight style={{ marginRight: "10px" }} />
-          </button>
-
-          <button type="button" className="product-action-btn action-btn-cart" onClick={() => addToCart(product?.id)}>
-            <span>Add to cart</span>
-          </button>
-            <ToastContainer />
-
-          <button type="button" className="product-action-btn action-btn-wishlist" onClick={() => toast.success("Added to wishlist!")}>
-            <FaRegHeart className="me-5" />
-          </button>
-          <ToastContainer />
-        </div>
-      </div>
-
-      <div className="product-info">
-        <h4 className="title">
-          <a href="product-details.html" className="text-decoration-none">
-            {product?.name} 
-          </a>
-        </h4>
-
-        <div className="prices">
-          <span className="price">${product?.price}</span>
-        </div>
-      </div>
-      
-    </div> */}
-
       <div className="">
     <div class="container card border-0 d-flex overflow-hidden justify-content-center align-items-center mt-3">
   <div class="product-card position-relative text-white">
@@ -100,11 +63,12 @@ const ProductItem = ({ product }) => {
           <ToastContainer />
         </button>
       </div> */}
-      <div className="row wishlist align-items-center mt-4 position-absolute" style={{top: '-10px', left: '28px', display: 'none'}}>
-          <button className="btn btn-light wishlistButton" style={{background: '#ffffff61', borderRadius: '12px'}} onClick={() => toast.success("Added to wishlist!")}>
-          <span className="fs-5"><FaRegHeart /></span>
+      <div className="row wishlistButton align-items-center mt-4 position-absolute" style={{top: '-14px', left: '26px', display: 'none'}}>
+          <button className="btn btn-light" style={{background: '#ffffff42', borderRadius: '17px'}} onClick={() => toast.success("Added to wishlist!")}>
+          <span className="fs-5" style={{background: 'none'}}><FaRegHeart /></span>
         </button>
       </div>
+      
           <ToastContainer />
       {product.quantity === 0 ? (
   <span className="position-absolute product_quantity out-stock">

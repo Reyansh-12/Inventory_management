@@ -45,6 +45,26 @@ const ProductDetailsNormal = () => {
 if (!product) {
     return <h3 className="text-center mt-5">Loading...</h3>; 
   }
+  const addToCart = (id) => {
+      if (!id) {
+        console.error("No product id. Can't update quantity.");
+        return;
+      }
+  
+      fetch("http://localhost/Inventory_management/Backend/src/Pages/APIs/updateQuantityAPI.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, quantity: qty })
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          toast.success("Product added to cart!");
+        })
+        .catch((error) => {
+          toast.error("Error updating quantity.");
+        });
+       
+    };
 
   return (
     <main className="main-content" style={{marginTop: '80px'}}>
@@ -98,7 +118,7 @@ if (!product) {
                   <h4 className="price text-success">₹{product.price}</h4>
                   <div className="product-details-cart-wishlist">
                     <button type="button" className="btn-wishlist" onClick={() => toast.success("Added to wishlist!")}><FaRegHeart style={{marginTop: '-25px', marginLeft: '-9px'}} /></button>
-                    <button type="button" className="btn border-2" onClick={handleAddToCart} style={{borderColor: '#e63946'}}>Add to cart</button>
+                    <button type="button" className="btn border-2" onClick={() => addToCart(product?.id, qty)} style={{borderColor: '#e63946'}}>Add to cart</button>
                   </div>
                     <ToastContainer />
                 </div>

@@ -1,7 +1,7 @@
 <?php
 header("Content-Type: application/json");
-// include __DIR__ . "/../../controllers/dbConnection.php";
-include __DIR__ . "/dbConnection.php";
+include __DIR__ . "/../../controllers/dbConnection.php";
+// include __DIR__ . "/dbConnection.php";
 
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type");
