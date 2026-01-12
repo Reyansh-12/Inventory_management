@@ -14,7 +14,7 @@ if ($productId) {
     mysqli_stmt_bind_param($stmt, "i", $productId);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
-    
+
     if ($res && mysqli_num_rows($res) > 0) {
         $editData = mysqli_fetch_assoc($res);
         $existingGalleryImages = json_decode(
@@ -85,9 +85,23 @@ if (isset($_POST['submit'])) {
     }
     if ($isEdit) {
         $stmt = mysqli_prepare($con, "UPDATE product_list SET product_name=?, category=?, brand_name=?, minQuantity=?, price=?, quantity=?,description=?, discount=?, status=?, image_path=?, gallery_images=?, expired_date=? WHERE id=?");
-        mysqli_stmt_bind_param($stmt, "sssiddssssssi", $productname, $category, $brandName, $minquantity, $price, $quantity, $description, $discount, $status, $imagePath, $galleryJson, $expiredDate, $productId
-);
-
+        mysqli_stmt_bind_param(
+            $stmt,
+            "sssiddssssssi",
+            $productname,
+            $category,
+            $brandName,
+            $minquantity,
+            $price,
+            $quantity,
+            $description,
+            $discount,
+            $status,
+            $imagePath,
+            $galleryJson,
+            $expiredDate,
+            $productId
+        );
     } else {
         $stmt = mysqli_prepare($con, "INSERT INTO product_list (product_name, category, brand_name, minQuantity, price, quantity, description, discount, status, image_path, gallery_images, expired_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         mysqli_stmt_bind_param($stmt, "sssiddssssss", $productname, $category, $brandName, $minquantity, $price, $quantity, $description, $discount, $status, $imagePath, $galleryJson, $expiredDate);
@@ -431,6 +445,8 @@ if (isset($_POST['submit'])) {
                                                 accept="image/*"
                                                 multiple
                                                 hidden>
+                                                <small id="galleryError" class="parsley-required" style="display:none;"></small>
+
                                             <div class="gallery-wrapper">
 
                                                 <div class="upload-box" id="uploadBox"
@@ -704,17 +720,50 @@ if (isset($_POST['submit'])) {
             const file = this.files[0];
             const preview = document.getElementById('imagePreview');
             const title = document.getElementById('imageUploadTitle');
+            const errorBox = document.getElementById('imageError');
 
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-                title.textContent = file.name;
+            errorBox.style.display = 'none';
+            errorBox.innerText = '';
+
+            if (!file) return;
+
+            // ❌ Type validation
+            if (!ALLOWED_TYPES.includes(file.type)) {
+                errorBox.innerText = "Only JPG, PNG, and WEBP image formats are allowed.";
+                errorBox.style.display = 'block';
+                resetImageInput();
+                return;
             }
+
+            // ❌ Size validation
+            if (file.size > MAX_IMAGE_SIZE) {
+                errorBox.innerText = "Image size must be less than 100KB.";
+                errorBox.style.display = 'block';
+                resetImageInput();
+                return;
+            }
+
+            // ✅ Preview
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+            title.textContent = file.name;
         });
+
+        function resetImageInput() {
+            const input = document.getElementById('productImage');
+            const preview = document.getElementById('imagePreview');
+            const title = document.getElementById('imageUploadTitle');
+
+            input.value = '';
+            preview.src = '/Backend/assets/images/icons/upload.svg';
+            title.textContent = 'Drag and drop a file to upload';
+        }
     </script>
+
+
     <script>
         document.getElementById('price').addEventListener('input', function() {
             let value = this.value;
@@ -739,91 +788,95 @@ if (isset($_POST['submit'])) {
         });
     </script>
     <script>
-const MAX_IMAGES = 5;
-let selectedFiles = [];
-let removedImages = [];
-let existingCount = 0;
+        const MAX_IMAGES = 5;
+        let selectedFiles = [];
+        let removedImages = [];
+        let existingCount = 0;
 
-const input = document.getElementById('galleryInput');
-const preview = document.getElementById('galleryPreview');
-const uploadBox = document.getElementById('uploadBox');
-const counterText = document.getElementById('counterText');
+        const input = document.getElementById('galleryInput');
+        const preview = document.getElementById('galleryPreview');
+        const uploadBox = document.getElementById('uploadBox');
+        const counterText = document.getElementById('counterText');
 
-function addPreview(file = null, imagePath = null) {
+        function addPreview(file = null, imagePath = null) {
 
-    const div = document.createElement('div');
-    div.className = 'gallery-item';
+            const div = document.createElement('div');
+            div.className = 'gallery-item';
 
-    const img = document.createElement('img');
-    img.src = imagePath ? imagePath : URL.createObjectURL(file);
+            const img = document.createElement('img');
+            img.src = imagePath ? imagePath : URL.createObjectURL(file);
 
-    const remove = document.createElement('div');
-    remove.className = 'remove-btn';
-    remove.innerHTML = '&times;';
+            const remove = document.createElement('div');
+            remove.className = 'remove-btn';
+            remove.innerHTML = '&times;';
 
-    remove.onclick = function () {
-        div.remove();
+            remove.onclick = function() {
+                div.remove();
 
-        if (file) {
-            selectedFiles = selectedFiles.filter(f => f !== file);
+                if (file) {
+                    selectedFiles = selectedFiles.filter(f => f !== file);
+                    syncFilesToInput();
+                }
+
+                if (imagePath) {
+                    removedImages.push(imagePath);
+                    existingCount--;
+                    document.getElementById('removedGalleryImages').value =
+                        JSON.stringify(removedImages);
+                }
+
+                updateCounter();
+            };
+
+            div.appendChild(img);
+            div.appendChild(remove);
+            preview.appendChild(div);
+        }
+
+        input.addEventListener('change', function() {
+            const files = Array.from(this.files);
+
+            files.forEach(file => {
+                if ((selectedFiles.length + existingCount) >= MAX_IMAGES) return;
+                selectedFiles.push(file);
+                addPreview(file);
+            });
+
             syncFilesToInput();
+            input.value = '';
+            updateCounter();
+        });
+
+        function updateCounter() {
+            const used = selectedFiles.length + existingCount;
+            const left = MAX_IMAGES - used;
+
+            counterText.innerText = `Select up to 5 images (${left} left)`;
+            uploadBox.style.display = left === 0 ? 'none' : 'flex';
+            input.disabled = left === 0;
         }
 
-        if (imagePath) {
-            removedImages.push(imagePath);
-            existingCount--;
-            document.getElementById('removedGalleryImages').value =
-                JSON.stringify(removedImages);
+        function syncFilesToInput() {
+            const dataTransfer = new DataTransfer();
+            selectedFiles.forEach(file => dataTransfer.items.add(file));
+            input.files = dataTransfer.files;
         }
 
-        updateCounter();
-    };
+        document.addEventListener("DOMContentLoaded", function() {
+            const existingImages = <?= json_encode($existingGalleryImages) ?>;
 
-    div.appendChild(img);
-    div.appendChild(remove);
-    preview.appendChild(div);
-}
+            existingImages.forEach(img => {
+                addPreview(null, img);
+                existingCount++;
+            });
 
-input.addEventListener('change', function () {
-    const files = Array.from(this.files);
-
-    files.forEach(file => {
-        if ((selectedFiles.length + existingCount) >= MAX_IMAGES) return;
-        selectedFiles.push(file);
-        addPreview(file);
-    });
-
-    syncFilesToInput();
-    input.value = '';
-    updateCounter();
-});
-
-function updateCounter() {
-    const used = selectedFiles.length + existingCount;
-    const left = MAX_IMAGES - used;
-
-    counterText.innerText = `Select up to 5 images (${left} left)`;
-    uploadBox.style.display = left === 0 ? 'none' : 'flex';
-    input.disabled = left === 0;
-}
-
-function syncFilesToInput() {
-    const dataTransfer = new DataTransfer();
-    selectedFiles.forEach(file => dataTransfer.items.add(file));
-    input.files = dataTransfer.files;
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-    const existingImages = <?= json_encode($existingGalleryImages) ?>;
-
-    existingImages.forEach(img => {
-        addPreview(null, img);
-        existingCount++;
-    });
-
-    updateCounter();
-});
-</script>
+            updateCounter();
+        });
+    </script>
+    <script>
+        const MAX_IMAGE_SIZE = 100 * 1024;
+        const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
+    </script>
 
 </body>
 
