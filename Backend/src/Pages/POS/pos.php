@@ -378,48 +378,48 @@ if (isset($_POST['addCustomerSubmitButton'])) {
                 document.getElementById('checkoutToastMessage').innerText = msg;
                 new bootstrap.Toast(document.getElementById('checkoutToast')).show();
             }
-document.querySelectorAll('.addToCartBtn').forEach(btn => {
-    btn.addEventListener('click', () => {
+            document.querySelectorAll('.addToCartBtn').forEach(btn => {
+                btn.addEventListener('click', () => {
 
-        const id    = btn.dataset.id;
-        const name  = btn.dataset.name;
-        const price = parseFloat(btn.dataset.price);
-        const stock = parseInt(btn.dataset.stock);
+                    const id = btn.dataset.id;
+                    const name = btn.dataset.name;
+                    const price = parseFloat(btn.dataset.price);
+                    const stock = parseInt(btn.dataset.stock);
 
-        let index = cart.findIndex(p => p.id == id);
+                    let index = cart.findIndex(p => p.id == id);
 
-        // 🟢 Product already in cart
-        if (index !== -1) {
+                    // 🟢 Product already in cart
+                    if (index !== -1) {
 
-            // ❗ qty already equal to stock
-            if (cart[index].qty >= cart[index].stock) {
-                showCartToast(`Only ${cart[index].stock} items available in stock`);
-                return; // 🔥 NO UI UPDATE
-            }
+                        // ❗ qty already equal to stock
+                        if (cart[index].qty >= cart[index].stock) {
+                            showCartToast(`Only ${cart[index].stock} items available in stock`);
+                            return; // 🔥 NO UI UPDATE
+                        }
 
-            // 🟢 safe increase
-            cart[index].qty++;
-            updateCartUI();
-            return;
-        }
+                        // 🟢 safe increase
+                        cart[index].qty++;
+                        updateCartUI();
+                        return;
+                    }
 
-        // 🟢 First time add
-        if (stock <= 0) {
-            showCartToast("Out of stock");
-            return;
-        }
+                    // 🟢 First time add
+                    if (stock <= 0) {
+                        showCartToast("Out of stock");
+                        return;
+                    }
 
-        cart.push({
-            id,
-            name,
-            price,
-            qty: 1,
-            stock
-        });
+                    cart.push({
+                        id,
+                        name,
+                        price,
+                        qty: 1,
+                        stock
+                    });
 
-        updateCartUI();
-    });
-});
+                    updateCartUI();
+                });
+            });
 
 
 
@@ -507,7 +507,14 @@ document.querySelectorAll('.addToCartBtn').forEach(btn => {
                 updateCartUI();
             };
         });
+        const clearCartBtn = document.getElementById('clearCartBtn');
+        clearCartBtn.addEventListener('click', () => {
+            cart = [];
+            updateCartUI();
+            new bootstrap.Toast(
+                document.getElementById('clearCartToast')
+            ).show();
+        });
     </script>
 </body>
-
 </html>

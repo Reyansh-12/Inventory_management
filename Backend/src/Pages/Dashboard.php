@@ -3,6 +3,10 @@ require_once __DIR__ . "/../config/path.php";
 include(BASE_PATH . "/Backend/src/Layouts/Links.php");
 include(BASE_PATH . '/Backend/src/controllers/dbConnection.php');
 session_start();
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Admin') {
+    header("Location: /Backend/src/Pages/Auth/signin.php");
+    exit();
+}
 
 // header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 // header("Pragma: no-cache");
