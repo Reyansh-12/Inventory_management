@@ -27,7 +27,7 @@
                     <li class="<?php echo in_array($currentPage, ['ProductList.php', 'addProductForm.php']) ? 'active' : ''; ?>">
                         <a href="/Backend/src/Pages/products/ProductList.php"><i class="bi bi-box-seam"></i><span>Cosmetic Products</span> </a>
                     </li>
-                    <li class="<?php echo ($currentPage == 'category.php') ? 'active' : ''; ?>">
+                    <li class="<?php echo in_array($currentPage, ['category.php', 'addcategory.php']) ? 'active' : ''; ?>">
                         <a href="/Backend/src/Pages/category.php"><i class="bi bi-tags"></i><span> Category</span> </a>
                     </li>
                     <li class="<?php echo ($currentPage == 'expiredProduct.php') ? 'active' : ''; ?>">
