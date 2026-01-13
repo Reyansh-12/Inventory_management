@@ -32,7 +32,7 @@ const handleLogout=()=>{
                     <NavLink to='/about' className="text-decoration-none nav-link"><span className="pb-2">About</span></NavLink>
                   </li>
                   <li className="has-submenu position-static">
-                    <NavLink to='/shop' className="text-decoration-none nav-link"><span className="pb-2">Shop</span></NavLink>
+                    <NavLink to='/shop' className="text-decoration-none nav-link"><span className="pb-2">Products</span></NavLink>
                   </li>
                   
                   <li>

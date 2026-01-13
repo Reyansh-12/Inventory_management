@@ -77,3 +77,224 @@
     margin-top: -10px;
     transition: 0.5s;
  }
+ .card:hover .wishlistButton{
+  display: block !important;
+ }
+
+.carousel{
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+.list{
+    width: 100%;
+    height: 100%;
+}
+
+.item{
+    width: 100%;
+    height: 100%;
+    background-color: var(--background);
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    display: none;
+}
+.item img.fruit{
+    width: 600px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    z-index: 5;
+    pointer-events: none;
+}
+.item .content{
+    position: absolute;
+    top: 50%;
+    left: 60%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-size: 8rem;
+    color: #eee;
+    font-weight: bold;
+    font-family: system-ui;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+.item.active{
+    display: block;
+}
+.item.hidden{
+    display: block;
+    pointer-events: none;
+    background-color: transparent;
+    z-index: 1;
+}
+
+
+#prev,
+#next{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: transparent;
+    border: 1px solid rgba(202, 56, 56, 0.6);
+    background-color: #eee5;
+    color: #000000;
+    font-size: x-large;
+    font-family: monospace;
+    cursor: pointer;
+    z-index: 15;
+}
+.prevSliderIcon, .nextSliderIcon{
+    margin-left: -10px;
+    margin-top: -7px;
+}
+
+#prev{
+    left: 20px;
+}
+#next{
+    right: 20px;
+}
+
+
+@keyframes toActive{
+    from{
+        top: 100%;
+        opacity: 0;
+    }
+}
+@keyframes toOut{
+    from{
+        top: 50%;
+        opacity: 1;
+    }
+}
+.item.active img.fruit{
+    animation: imgUp 0.8s ease forwards;
+}
+.item.hidden img.fruit{
+    animation: toOut 0.8s ease-in-out 1;
+    top: -100%;
+    opacity: 0;
+}
+.item.active .content{
+    animation: toActive 0.8s ease-in-out 1;
+    left: 50%;                 
+    opacity: 1;
+}
+.item.hidden{
+    display: none;
+}
+
+
+.carousel.right .item.active img.fruit{
+    animation: imgUpPrev 0.8s ease forwards;
+}
+.carousel.right .item.hidden img.fruit{
+    animation: toOut 0.8s ease-in-out 1;
+    top: 100%;
+    opacity: 0;
+}
+.carousel.right .item.active .content{
+    animation: toActivePrev 0.8s ease-in-out 1;
+}
+
+
+@keyframes toActivePrev{
+    from{
+        top: 20%;
+        opacity: 0;
+    }
+    to{
+        top: 50%;
+        opacity: 1;
+    }
+}
+
+:root{
+    --width-mockup: calc(371px / 1.5);
+    --height-mockup: calc(673px / 1.5);
+}
+
+.mockup {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    --left: 0%;
+    transform: translate(-50%, -50%);
+    height: var(--height-mockup);
+    width: var(--width-mockup);
+    background: 
+        url(drink-soda.png)  0 0 no-repeat, 
+        url(listSoda.jpg) var(--left) 0;
+    background-size: auto 100%;
+    background-blend-mode: multiply;
+    -webkit-mask-image: 
+    url(drink-soda.png);
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: auto 100%;
+    transition: background 0.5s;
+}
+
+.leaves{
+    position: absolute;
+    width: 170px;
+    height: 170px;
+    background-image: url(leaves.png);
+    background-size: 100%;
+    top: calc((50% - (var(--height-mockup) / 1.7)));
+    left: calc((50% + (var(--width-mockup) / 5)));
+}
+.shadow{
+    width: var(--width-mockup);
+    height: 100px;
+    background-color: #0008;
+    border-radius: 50%;
+    position: absolute;
+    top:  calc((50% + (var(--height-mockup) / 2)));
+    left: 50%;
+    transform: translateX(-50%);
+    filter: blur(20px);
+}
+@media screen and (max-width: 768px) {
+    .item .content{
+        transform: translate(-50%, -50%) scale(.5);
+    }
+    .item img.fruit{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+} 
+
+ 
+@keyframes imgUp{
+    from{
+        top: 80%;
+        opacity: 0;
+    }
+    to{
+        top: 50%;
+        opacity: 1;
+    }
+}
+@keyframes imgUpPrev{
+    from{
+        top: 20%;
+        opacity: 0;
+    }
+    to{
+        top: 50%;
+        opacity: 1;
+    }
+}
