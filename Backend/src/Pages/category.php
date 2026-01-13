@@ -8,14 +8,16 @@ $result = $con->query($sql);
 
 if (isset($_GET['categoryId'])) {
     $categoryId = intval($_GET['categoryId']);
+
     $stmt = $con->prepare("DELETE FROM category WHERE id = ?");
-    $stmt->bind_param("i", $supplierId);
+    $stmt->bind_param("i", $categoryId);
 
     if ($stmt->execute()) {
         header("Location: category.php?deleted=1");
         exit();
     }
 }
+
 
 ?>
 <!DOCTYPE html>
@@ -42,40 +44,44 @@ if (isset($_GET['categoryId'])) {
             z-index: 999;
             animation: shrink 4s linear forwards;
         }
-        .swal2-icon-content{
+
+        .swal2-icon-content {
             margin-left: 537%;
             margin-top: 48%;
         }
+
         .dataTables_paginate .pagination {
-    justify-content: end;
-}
+            justify-content: end;
+        }
 
-.dataTables_paginate .page-item .page-link {
-    border-radius: 6px;
-    margin: 0 3px;
-    border: 1px solid #dee2e6;
-    color: #333;
-}
+        .dataTables_paginate .page-item .page-link {
+            border-radius: 6px;
+            margin: 0 3px;
+            border: 1px solid #dee2e6;
+            color: #333;
+        }
 
-.dataTables_paginate .page-item.active .page-link {
-    background-color: #0d6efd;
-    border-color: #0d6efd;
-    color: #fff;
-}
+        .dataTables_paginate .page-item.active .page-link {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+            color: #fff;
+        }
 
-.dataTables_paginate .page-item.disabled .page-link {
-    opacity: 0.5;
-}
-table.dataTable thead .sorting:before,
-table.dataTable thead .sorting:after,
-table.dataTable thead .sorting_asc:before,
-table.dataTable thead .sorting_asc:after,
-table.dataTable thead .sorting_desc:before,
-table.dataTable thead .sorting_desc:after {
-    display: none !important;
-}
+        .dataTables_paginate .page-item.disabled .page-link {
+            opacity: 0.5;
+        }
+
+        table.dataTable thead .sorting:before,
+        table.dataTable thead .sorting:after,
+        table.dataTable thead .sorting_asc:before,
+        table.dataTable thead .sorting_asc:after,
+        table.dataTable thead .sorting_desc:before,
+        table.dataTable thead .sorting_desc:after {
+            display: none !important;
+        }
     </style>
 </head>
+
 <body>
     <div id="global-loader">
         <div class="whirly-loader"> </div>
@@ -100,42 +106,6 @@ table.dataTable thead .sorting_desc:after {
                     <div class="page-btn">
                         <a href="/Backend/src/Pages/category/addcategory.php" class="btn btn-added"><img src="/Backend/src/assets/images/icons/plus.svg" alt="img">Add Category</a>
                     </div>
-                </div>
-                <div class="card shadow-lg p-3">
-                <form action="#" id="myForm" method="POST" enctype="multipart/form-data" data-parsley-validate>
-                            <input type="hidden" name="user_id">
-                            <div class="row">
-                                <div class="col-lg-3 col-sm-3 col-12">
-                                    <div class="form-group">
-                                        <label for="categoryName">Category Name <span class="text-danger">*</span></label>
-                                        <input type="text" id="categoryName" name="categoryname" placeholder="Category name" maxlength="150" data-parsley-required data-parsley-required-message="Category name is required">
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-3 col-sm-3 col-12">
-                                    <div class="form-group">
-                                        <label for="brandName">Brand Name <span class="text-danger">*</span></label>
-                                        <input type="text" id="brandName" name="brandname" placeholder="Brand name" maxlength="150" data-parsley-required data-parsley-required-message="Brand name is required">
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-3 col-12">
-                                    <div class="form-group">
-                                        <label for="label"> Status</label>
-                                        <select class="form-select" name="status" id="label" data-parsley-id="1601" maxlength="200">
-                                            <option value="" disabled <?= empty($editData['status']) ? 'selected' : '' ?>>Choose Status</option>
-                                            <option value="Active" <?= ($editData['status'] ?? '') == 'Active' ? 'selected' : '' ?>>Active</option>
-                                            <option value="Inactive" <?= ($editData['status'] ?? '') == 'Inactive' ? 'selected' : '' ?>>Inactive</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-3 col-12">
-                                    <div class="form-group">
-                                        <button class="w-100 btn btn-success" style='margin-top: 30px'>Add brand</button>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                        </form>
                 </div>
                 <div class="card">
                     <div class="card-body">
@@ -178,7 +148,7 @@ table.dataTable thead .sorting_desc:after {
                                                 echo "    </td>";
                                                 echo "    <td>" . $row['brands'] . "</td>";
                                                 echo "    <td>" . $row['created_on'] . "</td>";
-                                                echo "    <td>" .$row['status']."</td>";
+                                                echo "    <td>" . $row['status'] . "</td>";
                                                 echo "    <td>";
                                                 echo "        <a class='me-3 confirm-text' href='/Backend/src/Pages/category/addcategory.php?categoryId=" . $row['id'] . "' data-bs-toggle='tooltip' data-bs-title='Edit'>";
                                                 echo "            <img src='/Backend/src/assets/images/icons/edit.svg' alt='img'>";
@@ -199,20 +169,20 @@ table.dataTable thead .sorting_desc:after {
             </div>
         </div>
     </div>
-    
+
     <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
-    <div id="actionToast" class="toast border-0" role="alert">
-        <div class="d-flex">
-            <div class="toast-body text-white" id="toastMessage"></div>
-            <button type="button"
-                class="btn-close btn-close-white me-2 m-auto"
-                data-bs-dismiss="toast"></button>
-        </div>
-        <div class="toast-timer"
-             style="height:4px;background:rgba(255,255,255,0.6);
+        <div id="actionToast" class="toast border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body text-white" id="toastMessage"></div>
+                <button type="button"
+                    class="btn-close btn-close-white me-2 m-auto"
+                    data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-timer"
+                style="height:4px;background:rgba(255,255,255,0.6);
              animation: shrink 3s linear forwards;"></div>
+        </div>
     </div>
-</div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -240,65 +210,73 @@ table.dataTable thead .sorting_desc:after {
             });
         });
 
-document.addEventListener("DOMContentLoaded", function () {
-    const params = new URLSearchParams(window.location.search);
-    const toastEl = document.getElementById("actionToast");
-    const toastMsg = document.getElementById("toastMessage");
+        document.addEventListener("DOMContentLoaded", function() {
+            const params = new URLSearchParams(window.location.search);
+            const toastEl = document.getElementById("actionToast");
+            const toastMsg = document.getElementById("toastMessage");
 
-    toastEl.classList.remove("bg-success", "bg-danger");
+            toastEl.classList.remove("bg-success", "bg-danger");
 
-    if (params.get("added") === "1") {
-        toastMsg.innerText = "Supplier added successfully!";
-        toastEl.classList.add("bg-success");
-    }
-    else if (params.get("updated") === "1") {
-        toastMsg.innerText = "Supplier updated successfully!";
-        toastEl.classList.add("bg-success");
-    }
-    else if (params.get("deleted") === "1") {
-        toastMsg.innerText = "Supplier deleted successfully!";
-        toastEl.classList.add("bg-danger");
-    }
-    else {
-        return;
-    }
+            if (params.get("added") === "1") {
+                toastMsg.innerText = "Category added successfully!";
+                toastEl.classList.add("bg-success");
+            } else if (params.get("updated") === "1") {
+                toastMsg.innerText = "Category updated successfully!";
+                toastEl.classList.add("bg-success");
+            } else if (params.get("deleted") === "1") {
+                toastMsg.innerText = "Category deleted successfully!";
+                toastEl.classList.add("bg-danger");
+            } else {
+                return;
+            }
 
-    const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
-    toast.show();
+            const toast = new bootstrap.Toast(toastEl, {
+                delay: 3000
+            });
+            toast.show();
 
-    setTimeout(() => {
-        window.history.replaceState({}, document.title, window.location.pathname);
-    }, 3500);
-});
-</script>
-<script>
-$(document).ready(function () {
+            setTimeout(() => {
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }, 3500);
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
 
-    if ($.fn.DataTable.isDataTable('.datanew')) {
-        $('.datanew').DataTable().destroy();
-    }
+            if ($.fn.DataTable.isDataTable('.datanew')) {
+                $('.datanew').DataTable().destroy();
+            }
 
-    $('.datanew').DataTable({
-        order: [[0, 'desc']],
+            $('.datanew').DataTable({
+                order: [
+                    [0, 'desc']
+                ],
 
-        columnDefs: [
-            { targets: 0, visible: false, searchable: false },
-            { targets: '_all', orderable: true } 
-        ],
+                columnDefs: [{
+                        targets: 0,
+                        visible: false,
+                        searchable: false
+                    },
+                    {
+                        targets: '_all',
+                        orderable: true
+                    }
+                ],
 
-        autoWidth: false,
-        responsive: false,
+                autoWidth: false,
+                responsive: false,
 
-        searching: false,       
-        lengthChange: true,    
-        pageLength: 10,
+                searching: false,
+                lengthChange: true,
+                pageLength: 10,
 
-        pagingType: "simple_numbers",
+                pagingType: "simple_numbers",
 
-        dom: 'rt<"row mt-3"<"col-md-6"l><"col-md-6 text-end"p>>'
-    });
-});
-</script>
+                dom: 'rt<"row mt-3"<"col-md-6"l><"col-md-6 text-end"p>>'
+            });
+        });
+    </script>
 
 </body>
+
 </html>

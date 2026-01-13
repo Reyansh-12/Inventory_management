@@ -31,6 +31,13 @@ if (isset($_POST['addCustomerSubmitButton'])) {
         exit;
     }
 }
+$categories = [];
+$catQuery = mysqli_query($con, "SELECT id, category, image_path FROM category WHERE status='Active'");
+
+while ($row = mysqli_fetch_assoc($catQuery)) {
+    $categories[] = $row;
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -130,32 +137,47 @@ if (isset($_POST['addCustomerSubmitButton'])) {
                                     <button class="carousel-control-next slider-btn" type="button" data-bs-target="#categorySlider" data-bs-slide="next" id="nextBtn">
                                         <span class="carousel-control-next-icon"></span>
                                     </button>
-                                    <div class="carousel-inner">
-                                        <div class="carousel-item active">
-                                            <div class="card m-2 category-card">
-                                                <img src="/Backend/assets/images/product/product62.png" class="card-img-top" alt="Hair care">
-                                                <div class="card-body text-center"><span>Hair care</span></div>
-                                            </div>
-                                        </div>
-                                        <div class="carousel-item">
-                                            <div class="card m-2 category-card">
-                                                <img src="/Backend/assets/images/product/product63.png" class="card-img-top" alt="Face skin">
-                                                <div class="card-body text-center"><span>Face skin</span></div>
-                                            </div>
-                                        </div>
-                                        <div class="carousel-item">
-                                            <div class="card m-2 category-card">
-                                                <img src="/Backend/assets/images/product/product64.png" class="card-img-top" alt="Skin Care">
-                                                <div class="card-body text-center"><span>Skin Care</span></div>
-                                            </div>
-                                        </div>
-                                        <div class="carousel-item">
-                                            <div class="card m-2 category-card">
-                                                <img src="/Backend/assets/images/product/product65.png" class="card-img-top" alt="Blusher">
-                                                <div class="card-body text-center"><span>Blusher</span></div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                   <div class="carousel-inner">
+
+<?php
+$chunkedCategories = array_chunk($categories, 3);
+$slideIndex = 0;
+
+foreach ($chunkedCategories as $group) {
+    $activeClass = ($slideIndex === 0) ? 'active' : '';
+    ?>
+    
+    <div class="carousel-item <?= $activeClass ?>">
+        <div class="row justify-content-center">
+
+            <?php foreach ($group as $cat) { ?>
+                <div class="col-md-4">
+                    <div class="card m-2 category-card text-center"
+                         data-category="<?= htmlspecialchars($cat['category']) ?>">
+
+                        <img src="<?= !empty($cat['image_path']) 
+                                ? htmlspecialchars($cat['image_path']) 
+                                : '/Backend/assets/images/product/default-category.png'; ?>"
+                             class="card-img-top">
+
+                        <div class="card-body">
+                            <?= htmlspecialchars($cat['category']) ?>
+                        </div>
+                    </div>
+                </div>
+            <?php } ?>
+
+        </div>
+    </div>
+
+<?php 
+$slideIndex++;
+} 
+?>
+
+</div>
+
+
                                 </div>
                                 <div class="tabs_container">
                                     <div class="tab_content active" data-tab="fruits">
@@ -515,6 +537,7 @@ if (isset($_POST['addCustomerSubmitButton'])) {
                 document.getElementById('clearCartToast')
             ).show();
         });
+        
     </script>
 </body>
 </html>

@@ -2,6 +2,7 @@
 define("BASE_PATH", dirname(__DIR__, 3));
 include BASE_PATH . "/src/Layouts/Links.php";
 include BASE_PATH . "/src/controllers/dbConnection.php";
+// include BASE_PATH . '/src/Pages/products/get_brands.php';
 
 $productId = $_GET['productId'] ?? $_POST['product_id'] ?? null;
 $isEdit = false;
@@ -113,6 +114,8 @@ if (isset($_POST['submit'])) {
     header("Location: ProductList.php?" . ($isEdit ? "updated=1" : "added=1"));
     exit();
 }
+$catResult = mysqli_query($con, "SELECT id, category FROM category WHERE status='Active'");
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -300,41 +303,23 @@ if (isset($_POST['submit'])) {
                                 <div class="col-lg-4 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for='categorySelector'>Category <span class="text-danger">*</span></label>
-                                        <select class="form-select" onchange="filterBrandsByCategory()" name="categoryselector" id="categorySelector" data-parsley-required-message="Select category" maxlength="200" data-parsley-required>
+                                        <select class="form-select" onchange="loadBrands(this.value)" name="categoryselector" id="categorySelector" data-parsley-required-message="Select category" maxlength="200" data-parsley-required>
                                             <option disabled selected>Choose Category</option>
-                                            <?php
-                                            $categories = ['haircare' => 'Hair care', 'skincare' => 'Skin care', 'lipstick' => 'Lip Stick', 'faceskin' => 'Face Skin', 'blusher' => 'Blusher', 'natural' => 'Natural'];
-                                            foreach ($categories as $key => $value) {
-                                                $selected = ($editData['category'] ?? '') == $key ? 'selected' : '';
-                                                echo "<option value=\"$key\" $selected>$value</option>";
-                                            }
-                                            ?>
+                                            <?php while ($row = mysqli_fetch_assoc($catResult)) { ?>
+                                                <option value="<?= $row['id'] ?>">
+                                                    <?= htmlspecialchars($row['category']) ?>
+                                                </option>
+                                            <?php } ?>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for='brand'>Brand <span class="text-danger">*</span></label>
-                                        <select class="form-select" id="brandSelect" name="brand" disabled data-parsley-required-message="Select brand" maxlength="500" data-parsley-required>
-                                            <option disabled selected>Choose Brand</option>
-                                            <?php
-                                            $brands = [
-                                                'haircare' => ['loreal' => "L'Oréal", 'Pantene' => 'Pantene', 'Dove' => 'Dove', 'Moroccanoil' => 'Moroccanoil', 'Herbal Essences' => 'Herbal Essences'],
-                                                'skincare' => ['CeraVe' => 'CeraVe', 'The Ordinary' => 'The Ordinary', 'Neutrogena' => 'Neutrogena', 'Biotique' => 'Biotique', 'La Roche-Posay' => 'La Roche-Posay', 'Clinique' => 'Clinique'],
-                                                'lipstick' => ['MAC Cosmetics' => 'MAC Cosmetics', 'Charlotte Tilbury' => 'Charlotte Tilbury', 'Revlon' => 'Revlon', 'Huda Beauty' => 'Huda Beauty', 'Maybelline' => 'Maybelline'],
-                                                'natural' => ['Burt’s Bees' => 'Burt’s Bees', 'The Body Shop' => 'The Body Shop', 'Dr. Bronner’s' => 'Dr. Bronner’s', 'Weleda' => 'Weleda'],
-                                                'blusher' => ['Dandelion' => 'Dandelion', 'Rockateur' => 'Rockateur', 'Tarte (Amazonian Clay Blush)' => 'Tarte (Amazonian Clay Blush)', 'NARS (“Orgasm”)' => 'NARS (“Orgasm”)', 'Milani' => 'Milani', 'Rare Beauty' => 'Rare Beauty'],
-                                                'faceskin' => ['Fenty Beauty' => 'Fenty Beauty', 'Estée Lauder' => 'Estée Lauder', 'Maybelline Fit Me' => 'DermaCare', 'L’Oréal True Match' => 'L’Oréal True Match', 'Revlon ColorStay' => 'Revlon ColorStay'],
-                                            ];
-
-                                            foreach ($brands as $cat => $brandList) {
-                                                foreach ($brandList as $bKey => $bName) {
-                                                    $selected = ($editData['brand_name'] ?? '') == $bKey ? 'selected' : '';
-                                                    echo "<option class=\"$cat\" value=\"$bKey\" $selected>$bName</option>";
-                                                }
-                                            }
-                                            ?>
+                                        <select class="form-select" name="brand" id="brandSelect" disabled required>
+                                            <option value="">Choose Brand</option>
                                         </select>
+
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-4 col-12">
@@ -445,7 +430,7 @@ if (isset($_POST['submit'])) {
                                                 accept="image/*"
                                                 multiple
                                                 hidden>
-                                                <small id="galleryError" class="parsley-required" style="display:none;"></small>
+                                            <small id="galleryError" class="parsley-required" style="display:none;"></small>
 
                                             <div class="gallery-wrapper">
 
@@ -874,9 +859,33 @@ if (isset($_POST['submit'])) {
         });
     </script>
     <script>
-        const MAX_IMAGE_SIZE = 100 * 1024;
+        const MAX_IMAGE_SIZE = 100 * 5120;
         const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
     </script>
+<script>
+function loadBrands(categoryId) {
+    const brandSelect = document.getElementById("brandSelect");
+    brandSelect.innerHTML = '<option value="">Loading...</option>';
+    brandSelect.disabled = true;
+
+    if (!categoryId) return;
+
+    fetch("/Backend/src/Pages/products/get_brands.php?category_id=" + categoryId)
+        .then(res => res.json())
+        .then(data => {
+            brandSelect.innerHTML = '<option value="">Choose Brand</option>';
+
+            data.forEach(brand => {
+                const opt = document.createElement("option");
+                opt.value = brand;
+                opt.textContent = brand;
+                brandSelect.appendChild(opt);
+            });
+
+            brandSelect.disabled = false;
+        });
+}
+</script>
 
 </body>
 

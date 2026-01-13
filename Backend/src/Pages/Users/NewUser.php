@@ -150,7 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <label for="contact">Phone number <span class="text-danger">*</span></label>
                                         <div class="input-group">
                                             <span class="input-group-text">+91</span>
-                                            <input type="text" class="form-control" id="contact" name="phoneNumber" value="<?php echo htmlspecialchars($editData['user_contact'] ?? ''); ?>" placeholder="Phone number" maxlength="10" data-parsley-minlength="10" data-parsley-required="true" data-parsley-required-message="Phone number is required" data-parsley-errors-container="#contactError" />
+                                            <input type="text" class="form-control" pattern="^[6-9][0-9]{9}$" data-parsley-pattern="^[6-9][0-9]{9}$" id="contact" name="phoneNumber" value="<?php echo htmlspecialchars($editData['user_contact'] ?? ''); ?>" placeholder="Phone number" maxlength="10" data-parsley-minlength="10" data-parsley-required="true" data-parsley-required-message="Phone number is required" data-parsley-errors-container="#contactError" />
                                         </div>
                                         <div id="contactError" class="parsley-required"><?php echo $contactError ?? ""; ?></div>
                                     </div>
@@ -228,11 +228,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             value = value.replace(/[^a-zA-Z\s]/g, '');
             $(this).val(value);
         });
-        $('#contact').on('input', function() {
-            let inputValue = $(this).val();
-            let filteredValue = inputValue.replace(/[^0-9]/g, '');
-            $(this).val(filteredValue);
-        });
+$('#contact').on('input', function () {
+    let value = $(this).val();
+
+    // Sirf numbers allow
+    value = value.replace(/[^0-9]/g, '');
+
+    // Pehla digit 6-9 hona chahiye
+    if (value.length === 1 && !/^[6-9]$/.test(value)) {
+        value = '';
+    }
+
+    // Max 10 digits
+    if (value.length > 10) {
+        value = value.substring(0, 10);
+    }
+
+    $(this).val(value);
+});
+
         $('#userEmail').on('input', function() {
             let value = $(this).val();
 
