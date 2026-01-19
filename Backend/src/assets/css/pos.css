@@ -95,3 +95,12 @@
 .parsley-required{
     color: red !important;
 }
+.cart-product-name {
+    max-width: 100px;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+    cursor: pointer;
+}

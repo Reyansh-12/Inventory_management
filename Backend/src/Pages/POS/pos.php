@@ -162,10 +162,19 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
                                         <h5 class="text-truncate" data-bs-toggle='tooltip' data-bs-title="<?php echo $name ?>"><?= $name ?></h5>
                                         <h6 class="text-primary">₹<?= $price ?></h6>
                                         <div class="d-grid">
-                                            <button class="btn btn-primary addToCartBtn"
-                                                data-id="<?= $id ?>" data-name="<?= $name ?>" data-price="<?= (float)$price ?>" data-stock="<?= (int)$row['quantity'] ?>">
-                                                Add to Cart
+                                            <?php $outOfStock = ((int)$row['quantity'] <= 0); ?>
+
+                                            <button class="btn <?= $outOfStock ? 'btn-secondary' : 'btn-primary' ?> addToCartBtn"
+                                                <?= $outOfStock ? 'disabled' : '' ?>
+                                                data-id="<?= $id ?>"
+                                                data-name="<?= $name ?>"
+                                                data-price="<?= (float)$price ?>"
+                                                data-stock="<?= (int)$row['quantity'] ?>">
+
+                                                <?= $outOfStock ? 'Out of Stock' : 'Add to Cart' ?>
+
                                             </button>
+
                                         </div>
                                     </div>
                                 </div>
@@ -265,7 +274,7 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         let cart = [];
 
@@ -273,10 +282,18 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
             const tbody = document.getElementById('cartBody');
             tbody.innerHTML = '';
             let total = 0;
+
             cart.forEach((item, i) => {
                 total += item.price * item.qty;
-                tbody.innerHTML += `<tr>
-            <td>${item.name}</td>
+                tbody.innerHTML += `
+        <tr>
+            <td>
+                <span class="cart-product-name"
+                      data-bs-toggle="tooltip"
+                      title="${item.name}">
+                    ${item.name}
+                </span>
+            </td>
             <td class="text-center">
                 <div class="qty-box">
                     <button class="btn btn-sm btn-outline-secondary" onclick="decreaseQty(${i})">−</button>
@@ -285,12 +302,18 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
                 </div>
             </td>
             <td>₹${(item.price * item.qty).toFixed(2)}</td>
-            <td><button class="btn btn-sm btn-danger" onclick="removeItem(${i})">✕</button></td>
+            <td>
+                <button class="btn btn-sm btn-danger" onclick="removeItem(${i})">✕</button>
+            </td>
         </tr>`;
             });
+
             document.getElementById('totalItems').innerText = cart.length;
             document.getElementById('cartTotal').innerText = total.toFixed(2);
-            document.getElementById('checkoutBtn').disabled = cart.length === 0;
+
+            document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
+                new bootstrap.Tooltip(el);
+            });
         }
 
         function removeItem(i) {
@@ -370,9 +393,32 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
             }).catch(() => alert("Server error"));
         });
         document.getElementById('clearCartBtn').addEventListener('click', () => {
-            cart = [];
-            updateCartUI();
-            alert("Cart cleared");
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "All products in the cart will be removed!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, clear cart!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Clear the cart
+                    cart = [];
+                    updateCartUI();
+
+                    // Success alert
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Cart Cleared',
+                        text: 'All products have been removed from the cart.',
+                        timer: 1500,
+                        showConfirmButton: false,
+                        timerProgressBar: true
+                    });
+                }
+            });
         });
     </script>
 

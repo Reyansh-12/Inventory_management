@@ -304,9 +304,10 @@ $catResult = mysqli_query($con, "SELECT id, category FROM category WHERE status=
                                     <div class="form-group">
                                         <label for='categorySelector'>Category <span class="text-danger">*</span></label>
                                         <select class="form-select" onchange="loadBrands(this.value)" name="categoryselector" id="categorySelector" data-parsley-required-message="Select category" maxlength="200" data-parsley-required>
-                                            <option disabled selected>Choose Category</option>
+                                            <option disabled <?= empty($editData['category']) ? 'selected' : '' ?>>Choose Category</option>
                                             <?php while ($row = mysqli_fetch_assoc($catResult)) { ?>
-                                                <option value="<?= $row['id'] ?>">
+                                                <option value="<?= $row['id'] ?>"
+                                                    <?= ($isEdit && $editData['category'] == $row['id']) ? 'selected' : '' ?>>
                                                     <?= htmlspecialchars($row['category']) ?>
                                                 </option>
                                             <?php } ?>
@@ -726,7 +727,7 @@ $catResult = mysqli_query($con, "SELECT id, category FROM category WHERE status=
                 return;
             }
 
-        
+
             const reader = new FileReader();
             reader.onload = function(e) {
                 preview.src = e.target.result;
@@ -860,8 +861,8 @@ $catResult = mysqli_query($con, "SELECT id, category FROM category WHERE status=
         const MAX_IMAGE_SIZE = 100 * 5120;
         const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
     </script>
-<script>
-function loadBrands(categoryId) {
+   <script>
+function loadBrands(categoryId, selectedBrand = "") {
     const brandSelect = document.getElementById("brandSelect");
     brandSelect.innerHTML = '<option value="">Loading...</option>';
     brandSelect.disabled = true;
@@ -871,19 +872,56 @@ function loadBrands(categoryId) {
     fetch("/Backend/src/Pages/products/get_brands.php?category_id=" + categoryId)
         .then(res => res.json())
         .then(data => {
+
             brandSelect.innerHTML = '<option value="">Choose Brand</option>';
+
+            let found = false;
 
             data.forEach(brand => {
                 const opt = document.createElement("option");
-                opt.value = brand;
-                opt.textContent = brand;
+                opt.value = brand.trim();
+                opt.textContent = brand.trim();
+
+                // ✅ SAFE compare
+                if (
+                    selectedBrand &&
+                    brand.trim().toLowerCase() === selectedBrand.trim().toLowerCase()
+                ) {
+                    opt.selected = true;
+                    found = true;
+                }
+
                 brandSelect.appendChild(opt);
             });
+
+            // 🛑 If saved brand NOT found
+            if (selectedBrand && !found) {
+                const opt = document.createElement("option");
+                opt.value = selectedBrand;
+                opt.textContent = selectedBrand + " (saved)";
+                opt.selected = true;
+                brandSelect.appendChild(opt);
+            }
 
             brandSelect.disabled = false;
         });
 }
 </script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const isEditMode = <?= $isEdit ? 'true' : 'false' ?>;
+
+    if (isEditMode) {
+        const savedCategory = "<?= $editData['category'] ?? '' ?>";
+        const savedBrand = "<?= addslashes($editData['brand_name'] ?? '') ?>";
+
+        if (savedCategory) {
+            loadBrands(savedCategory, savedBrand);
+        }
+    }
+});
+</script>
+
 
 </body>
 

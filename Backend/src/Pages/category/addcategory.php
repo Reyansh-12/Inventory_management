@@ -4,6 +4,21 @@ define("BASE_PATH", dirname(__DIR__, 3));
 include BASE_PATH . "/src/Layouts/Links.php";
 include BASE_PATH . "/src/controllers/dbConnection.php";
 $editData = [];
+$categoryId = null;
+
+if (isset($_GET['categoryId'])) {
+    $categoryId = intval($_GET['categoryId']);
+
+    $stmt = $con->prepare("SELECT * FROM category WHERE id = ?");
+    $stmt->bind_param("i", $categoryId);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        $editData = $result->fetch_assoc();
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $categoryName = trim($_POST['categoryname']);
@@ -34,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     } else {
 
-        $sql ="INSERT INTO category (category, brands, status, image_path, created_on)
+        $sql = "INSERT INTO category (category, brands, status, image_path, created_on)
         VALUES ( '$categoryName', '$brandName', '$status', " . ($imagePath ? "'$imagePath'" : "NULL") . ", '$createdOn')";
         mysqli_query($con, $sql);
         header("Location: /Backend/src/Pages/category.php?added=1");
@@ -103,7 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div class="col-lg-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="categoryName">Category Name <span class="text-danger">*</span></label>
-                                        <input type="text" id="categoryName" name="categoryname" placeholder="Category name" value="<?= $editData['categoryname'] ?? '' ?>" maxlength="150" data-parsley-required data-parsley-required-message="Category name is required">
+                                        <input type="text" id="categoryName" name="categoryname" placeholder="Category name" value="<?= htmlspecialchars($editData['category'] ?? '') ?>" maxlength="150" data-parsley-required data-parsley-required-message="Category name is required">
                                     </div>
                                 </div>
                                 <div class="col-lg-6 col-sm-6 col-12">
@@ -135,14 +150,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div class="image-upload image-upload-new">
                                     <input type="file" id="uploadImage" name="uploadImage" accept="image/*">
                                     <div class="image-uploads" id="uploadBox">
-                                        <img src="/Backend/src/assets/images/icons/upload.svg" id="previewImg" alt="img" style="max-height:60px;">
-                                        <h4 id="fileName">Drag and drop a file to upload</h4>
+                                        <img src="<?= !empty($editData['image_path'])
+                                                        ? htmlspecialchars($editData['image_path'])
+                                                        : '/Backend/src/assets/images/icons/upload.svg' ?>" id="previewImg" alt="img" style="max-height:60px;">
+                                        <h4 id="fileName">
+                                            <?= !empty($editData['image_path']) ? 'Current image' : 'Drag and drop a file to upload' ?>
+                                        </h4>
+
                                     </div>
                                 </div>
                             </div>
                             <div class="col-lg-12 d-flex justify-content-end">
                                 <button class="btn btn-cancel me-2" type="<?= $categoryId ? 'button' : 'Reset' ?>" name="reset" id="resetButton">Reset</button>
-                                <button class="btn btn-submit" name="submit" type="submit">Submit</button>
+                                <button class="btn btn-submit" type="submit">
+                                    <?= $categoryId ? 'Update Category' : 'Add Category' ?>
+                                </button>
                             </div>
                         </form>
                     </div>
