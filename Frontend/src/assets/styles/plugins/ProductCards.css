@@ -104,10 +104,10 @@
     display: none;
 }
 .item img.fruit{
-    width: 220px;
+    width: 460px;
     position: absolute;
     top: 50%;
-    left: 60%;
+    left: 50%;
     transform: translate(-50%, -50%);
     opacity: 0;
     z-index: 5;
@@ -119,7 +119,7 @@
     left: 60%;
     transform: translate(-50%, -50%);
     text-align: center;
-    font-size: 10rem;
+    font-size: 8rem;
     color: #eee;
     font-weight: bold;
     font-family: system-ui;
@@ -148,11 +148,12 @@
     background-color: transparent;
     border: 1px solid #eee9;
     background-color: #eee5;
-    color: #eee;
+    color: #131212;
     font-size: x-large;
     font-family: monospace;
     cursor: pointer;
     z-index: 15;
+    border-color: red;
 }
 .prevSliderIcon, .nextSliderIcon{
     margin-left: -10px;

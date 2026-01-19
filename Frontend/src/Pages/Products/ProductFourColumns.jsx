@@ -34,7 +34,6 @@ const ProductFourColumns = () => {
   return (
     <main className="main-content" style={{ marginTop: '80px' }}>
 
-      {/* PAGE HEADER */}
       <section className="page-header-area pt-10 pb-9 mb-5" style={{ backgroundColor: '#FFF3DA' }}>
         <div className="container">
           <div className="row">
@@ -48,14 +47,12 @@ const ProductFourColumns = () => {
         </div>
       </section>
 
-      {/* ✅ CATEGORY SLIDER */}
       <section className="section-space pb-0">
         <div className="container">
           <CategorySlider onSelectCategory={setSelectedCategory} />
         </div>
       </section>
 
-      {/* PRODUCTS */}
       <section className="section-space pb-5">
         <div className="container">
           <div className="row g-3 g-sm-6">
@@ -74,14 +71,13 @@ const ProductFourColumns = () => {
         </div>
       </section>
 
-      {/* BANNER */}
+ 
       <section>
         <div className="container">
           <img src={banner7} width="1170" height="240" alt="Product Banner" />
         </div>
       </section>
 
-      {/* RELATED PRODUCTS */}
       <section className="section-space pb-5">
         <div className="container">
           <div className="row g-3 g-sm-6">

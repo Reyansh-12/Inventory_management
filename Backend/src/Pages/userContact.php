@@ -22,7 +22,7 @@ if (!$stmt) {
 $created_at = date('Y-m-d H:i:s');
 $stmt->bind_param(
     "sssss",
-    $user['name'],
+    $user['firstName'],
     $user['lastName'],
     $user['email'],
     $user['message'],

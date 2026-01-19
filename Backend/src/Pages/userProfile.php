@@ -3,9 +3,6 @@ session_start();
 define("BASE_PATH", dirname(__DIR__, 2));
 include BASE_PATH . "/src/controllers/dbConnection.php";
 
-/* =======================
-   AUTH CHECK
-======================= */
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit;
@@ -13,18 +10,12 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
-/* =======================
-   FETCH USER DATA
-======================= */
 $query = "SELECT user_name, user_email, user_contact FROM new_user WHERE id = ?";
 $stmt = $con->prepare($query);
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $user = $stmt->get_result()->fetch_assoc();
 
-/* =======================
-   UPDATE PROFILE
-======================= */
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
 
     $username = trim($_POST['username']);
@@ -51,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
     }
 
     if ($stmt->execute()) {
-        header("Location: profile.php?updated=1");
+        header("Location: userProfile.php?updated=1");
         exit;
     }
 }
@@ -101,12 +92,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
                                     <div class="profile-contentimg">
                                         <img src="/Backend/src/assets/images/customer/customer5.jpg" alt="img" id="blah">
                                         <div class="profileupload">
-                                            <input type="file" id="imgInp">
+                                            <input type="file" id="imgInp" class="pe-auto">
                                             <a href="javascript:void(0);"><img src="/Backend/src/assets/images/icons/edit-set.svg" alt="img"></a>
                                         </div>
                                     </div>
                                     <div class="profile-contentname">
-                                        <h2>William Castillo</h2>
+                                        <h2><?php echo $username ?></h2>
                                         <h4>Updates Your Photo and Personal Details.</h4>
                                     </div>
                                 </div>
@@ -118,16 +109,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
                                 <div class="col-lg-6 col-sm-12">
                                     <div class="form-group">
                                         <label>User Name</label>
-                                        <input type="text" name="username"
-                                            value="<?= htmlspecialchars($user['user_name']); ?>" required>
+                                        <input type="text" name="username" value="<?= htmlspecialchars($user['user_name']); ?>" required>
                                     </div>
                                 </div>
 
                                 <div class="col-lg-6 col-sm-12">
                                     <div class="form-group">
                                         <label>Email</label>
-                                        <input type="email" name="email"
-                                            value="<?= htmlspecialchars($user['user_email']); ?>" required>
+                                        <input type="text" name="email" value="<?= htmlspecialchars($user['user_email']); ?>" required>
                                     </div>
                                 </div>
 
@@ -142,14 +131,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
                                 <div class="col-lg-6 col-sm-12">
                                     <div class="form-group">
                                         <label>Password (optional)</label>
-                                        <input type="password" name="password" class="pass-input">
+                                        <input type="password" name="password" class="pass-input" disabled>
                                     </div>
                                 </div>
 
                                 <div class="col-12 d-flex justify-content-end">
-                                    <button type="submit" name="update_profile" class="btn btn-submit">
-                                        Update Profile
-                                    </button>
+                                    <button type="submit" name="update_profile" class="btn btn-submit">Update Profile</button>
                                 </div>
 
                             </div>

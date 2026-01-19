@@ -148,7 +148,8 @@ if (isset($_GET['categoryId'])) {
                                                 echo "    </td>";
                                                 echo "    <td>" . $row['brands'] . "</td>";
                                                 echo "    <td>" . $row['created_on'] . "</td>";
-                                                echo "    <td>" . $row['status'] . "</td>";
+                                                $statusClass = strtolower($row['status']) === 'active' ? 'bg-success' : 'bg-danger';
+                                                echo "    <td><span class='badge $statusClass shadow-sm'>" . htmlspecialchars($row['status']) . "</span></td>";
                                                 echo "    <td>";
                                                 echo "        <a class='me-3 confirm-text' href='/Backend/src/Pages/category/addcategory.php?categoryId=" . $row['id'] . "' data-bs-toggle='tooltip' data-bs-title='Edit'>";
                                                 echo "            <img src='/Backend/src/assets/images/icons/edit.svg' alt='img'>";

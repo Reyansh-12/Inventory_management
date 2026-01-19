@@ -49,7 +49,7 @@
 
 .swiper-button-next,
 .swiper-button-prev {
-    color: #000 !important;
+    color: #080808 !important;
     background: #fff;
     width: 42px;
     height: 42px;
@@ -62,7 +62,12 @@
     font-size: 18px !important;
     font-weight: bold;
 }
-
+.category-slide {
+    height: 220px;
+}
+.category-card{
+    height: 208px !important;
+}
 .swiper-button-next:hover,
 .swiper-button-prev:hover {
     background: #000;
@@ -75,10 +80,8 @@
     position: relative; 
 }
 .slider-btn { 
-    background: red !important; 
-    border-radius: 50%; 
-    width: 10px; 
-    height: 15px; 
+    background: rgb(3, 3, 3) !important;  
+    height: 45px; 
     color: black !important; 
 }
         .pos-column { max-height: calc(100vh - 0px); overflow-y: auto; }

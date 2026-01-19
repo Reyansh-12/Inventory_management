@@ -7,7 +7,6 @@ import locationIcon from "../../assets/images/icons/3.webp";
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import bannerImage from '../../../src/assets/images/47.jpg';
-import image from '../../../src/assets/images/realistic-cosmetic-with-red-rose-flowers-transparent-background_649064-3161_1_-removebg-preview.png';
 
 export const Contact = () => {
   const [inputs, setInputs] = useState({

@@ -712,7 +712,6 @@ $catResult = mysqli_query($con, "SELECT id, category FROM category WHERE status=
 
             if (!file) return;
 
-            // ❌ Type validation
             if (!ALLOWED_TYPES.includes(file.type)) {
                 errorBox.innerText = "Only JPG, PNG, and WEBP image formats are allowed.";
                 errorBox.style.display = 'block';
@@ -720,7 +719,6 @@ $catResult = mysqli_query($con, "SELECT id, category FROM category WHERE status=
                 return;
             }
 
-            // ❌ Size validation
             if (file.size > MAX_IMAGE_SIZE) {
                 errorBox.innerText = "Image size must be less than 100KB.";
                 errorBox.style.display = 'block';
@@ -728,7 +726,7 @@ $catResult = mysqli_query($con, "SELECT id, category FROM category WHERE status=
                 return;
             }
 
-            // ✅ Preview
+        
             const reader = new FileReader();
             reader.onload = function(e) {
                 preview.src = e.target.result;

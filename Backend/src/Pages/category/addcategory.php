@@ -25,39 +25,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    if (empty($categoryName) || empty($brandName)) {
-        die("Category aur Brand required hai");
-    }
-
     if (isset($_GET['categoryId'])) {
 
         $id = intval($_GET['categoryId']);
-
-        $sql = "
-        UPDATE category SET
-            category = '$categoryName',
-            brands = '$brandName',
-            status = '$status',
-            image_path = " . ($imagePath ? "'$imagePath'" : "image_path") . "
-        WHERE id = $id
-        ";
-
+        $sql = "UPDATE category SET category = '$categoryName', brands = '$brandName', status = '$status', image_path = " . ($imagePath ? "'$imagePath'" : "image_path") . "WHERE id = $id";
         mysqli_query($con, $sql);
         header("Location: /Backend/src/Pages/category.php?updated=1");
         exit;
     } else {
 
-        $sql = "
-        INSERT INTO category (category, brands, status, image_path, created_on)
-        VALUES (
-            '$categoryName',
-            '$brandName',
-            '$status',
-            " . ($imagePath ? "'$imagePath'" : "NULL") . ",
-            '$createdOn'
-        )
-        ";
-
+        $sql ="INSERT INTO category (category, brands, status, image_path, created_on)
+        VALUES ( '$categoryName', '$brandName', '$status', " . ($imagePath ? "'$imagePath'" : "NULL") . ", '$createdOn')";
         mysqli_query($con, $sql);
         header("Location: /Backend/src/Pages/category.php?added=1");
         exit;
@@ -125,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div class="col-lg-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="categoryName">Category Name <span class="text-danger">*</span></label>
-                                        <input type="text" id="categoryName" name="categoryname" placeholder="Category name" value="<?= $editData['category'] ?? '' ?>" maxlength="150" data-parsley-required data-parsley-required-message="Category name is required">
+                                        <input type="text" id="categoryName" name="categoryname" placeholder="Category name" value="<?= $editData['categoryname'] ?? '' ?>" maxlength="150" data-parsley-required data-parsley-required-message="Category name is required">
                                     </div>
                                 </div>
                                 <div class="col-lg-6 col-sm-6 col-12">
@@ -140,17 +118,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-10 col-sm-12 col-12">
+                                <div class="col-lg-12 col-sm-12 col-12">
                                     <div class="form-group">
                                         <label for="brandName">Brand Name <span class="text-danger">*</span></label>
                                         <input type="text" id="brandName" name="brandname" value="<?= $editData['brands'] ?? '' ?>" placeholder="Brand name" maxlength="150" data-parsley-required data-parsley-required-message="Brand name is required">
                                     </div>
                                 </div>
-                                <div class="col-lg-2">
+                                <!-- <div class="col-lg-2">
                                     <div class="form-group">
                                         <button class="w-100 btn btn-success" style='margin-top: 30px'>Add brand</button>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                             <div class="form-group">
                                 <label for="uploadImage">Profile Picture (optional)</label>
@@ -163,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </div>
                             </div>
                             <div class="col-lg-12 d-flex justify-content-end">
-                                <button class="btn btn-cancel me-2" type="<?= $userId ? 'button' : 'reset' ?>" name="reset" id="resetButton">Reset</button>
+                                <button class="btn btn-cancel me-2" type="<?= $categoryId ? 'button' : 'Reset' ?>" name="reset" id="resetButton">Reset</button>
                                 <button class="btn btn-submit" name="submit" type="submit">Submit</button>
                             </div>
                         </form>

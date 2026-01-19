@@ -14,7 +14,7 @@ const CategorySlider = ({ onSelectCategory }) => {
       .catch(err => console.error(err));
   }, []);
 
-  if (categories.length === 0) return null; // 👈 important
+  if (categories.length === 0) return null; 
 
   const settings = {
     dots: false,

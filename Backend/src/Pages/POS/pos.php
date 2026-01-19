@@ -11,11 +11,9 @@ if (!isset($_SESSION['transaction_id'])) {
     $_SESSION['transaction_id'] = 'ID' . date('YmdHis') . rand(100, 999);
 }
 
-// Fetch products
 $sql = "SELECT `id`,`product_name`, `category`, `brand_name`, `price`, `quantity`, `image_path` FROM `product_list`";
 $result = $con->query($sql);
 
-// Add customer
 if (isset($_POST['addCustomerSubmitButton'])) {
     $customerId = 'CUST' . time();
     $name = $_POST['customername'];
@@ -34,7 +32,6 @@ if (isset($_POST['addCustomerSubmitButton'])) {
     }
 }
 
-// Fetch categories
 $categories = [];
 $catQuery = mysqli_query($con, "SELECT id, category, image_path FROM category WHERE status='Active'");
 while ($row = mysqli_fetch_assoc($catQuery)) {
@@ -124,7 +121,6 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
             </div>
 
             <div class="row">
-                <!-- LEFT: Categories & Products -->
                 <div class="col-lg-8" style="max-height: 80vh; overflow-y: auto; padding-right:15px;">
                     <div id="categorySlider" class="slider-container mb-3 position-relative">
                         <button id="prevBtn" class="carousel-control-prev slider-btn" type="button">
@@ -138,7 +134,7 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
                             <div class="category-track">
                                 <?php foreach ($categories as $cat) { ?>
                                     <div class="category-slide">
-                                        <div class="card category-card text-center" data-category="<?= strtolower(trim($cat['category'])) ?>">
+                                        <div class="card category-card text-center" data-category="<?= strtolower(trim($cat['category'])) ?>" style="cursor:pointer">
                                             <img src="<?= !empty($cat['image_path']) ? htmlspecialchars($cat['image_path']) : '/Backend/assets/images/product/default-category.png'; ?>" class="card-img-top">
                                             <div class="card-body"><?= htmlspecialchars($cat['category']) ?></div>
                                         </div>
@@ -148,7 +144,6 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
                         </div>
                     </div>
 
-                    <!-- Products -->
                     <div class="row row-cols-1 row-cols-md-3">
                         <?php if ($result && $result->num_rows > 0) {
                             while ($row = $result->fetch_assoc()) {
@@ -164,7 +159,7 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
                                             <img src="<?= $image ?>" class="img-fluid mb-2">
                                         </div>
                                         <h6 class="text-muted small"><?= $row['category'] ?></h6>
-                                        <h5 class="text-truncate"><?= $name ?></h5>
+                                        <h5 class="text-truncate" data-bs-toggle='tooltip' data-bs-title="<?php echo $name ?>"><?= $name ?></h5>
                                         <h6 class="text-primary">₹<?= $price ?></h6>
                                         <div class="d-grid">
                                             <button class="btn btn-primary addToCartBtn"
@@ -179,12 +174,10 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
                     </div>
 
                     <div id="noProductFound" class="text-center w-100 mt-4" style="display:none;">
-                        <img src="/Backend/src/assets/images/product_not_found2.png" class="img-fluid" style="max-width:300px;">
-                        <h6 class="text-muted mt-2">No products found in this category</h6>
+                        <img src="/Backend/src/assets/images/product_not_found2.png" class="img-fluid" style="max-width:400px;">
                     </div>
                 </div>
 
-                <!-- RIGHT: Order List (Sticky) -->
                 <div class="col-lg-4">
                     <div class="card position-sticky" style="top:20px;">
                         <div class="card-header">
@@ -239,7 +232,6 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
         </div>
     </div>
 
-    <!-- Add Customer Modal -->
     <div class="modal fade" id="addCustomerModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -274,7 +266,6 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- CART JS -->
     <script>
         let cart = [];
 
@@ -385,7 +376,6 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
         });
     </script>
 
-    <!-- CATEGORY SLIDER & FILTER JS -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const track = document.querySelector(".category-track");

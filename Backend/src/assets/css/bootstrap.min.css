@@ -5240,7 +5240,8 @@ fieldset:disabled .btn {
 .card-img,
 .card-img-top {
     border-top-left-radius: calc(.25rem - 1px);
-    border-top-right-radius: calc(.25rem - 1px)
+    border-top-right-radius: calc(.25rem - 1px);
+    height: 150px;
 }
 
 .card-img,
@@ -6919,20 +6920,20 @@ fieldset:disabled .btn {
 .carousel-control-next,
 .carousel-control-prev {
     position: absolute;
-    top: 0;
+    top: 38%;
     bottom: 0;
     z-index: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 15%;
+    width: 8%;
     padding: 0;
     color: #fff;
     text-align: center;
     background: 0 0;
     border: 0;
     opacity: .5;
-    transition: opacity .15s ease
+    transition: opacity .15s ease;
 }
 
 @media (prefers-reduced-motion:reduce) {
