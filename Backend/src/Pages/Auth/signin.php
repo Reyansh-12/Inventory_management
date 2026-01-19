@@ -2,7 +2,8 @@
 session_start();
 define("BASE_PATH", dirname(__DIR__, 3));
 include BASE_PATH . "/src/controllers/dbConnection.php";
-
+session_start();
+$_SESSION['user_id'] = $user['id'];
 if (isset($_POST['submit'])) {
 
     $userEmail = trim($_POST['userEmail']);
