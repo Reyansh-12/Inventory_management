@@ -17,6 +17,32 @@ if ($userId) {
         $editData = mysqli_fetch_assoc($result);
     }
 }
+$imagePath = $editData['image_path'] ?? null;
+
+if (!empty($_FILES['uploadImage']['name'])) {
+
+    $allowedTypes = ['jpg', 'jpeg', 'png', 'webp'];
+    $fileName = $_FILES['uploadImage']['name'];
+    $tmpName  = $_FILES['uploadImage']['tmp_name'];
+
+    $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+    if (!in_array($ext, $allowedTypes)) {
+        $_SESSION['toast'] = ['type' => 'danger', 'msg' => 'Invalid image type'];
+        header("Location: " . $_SERVER['REQUEST_URI']);
+        exit;
+    }
+
+    // 🔥 New unique image name
+    $newName = 'user_' . time() . '_' . rand(1000,9999) . '.' . $ext;
+
+    $uploadDir = BASE_PATH . '/src/Pages/Users/userImage/';
+    $uploadPath = $uploadDir . $newName;
+
+    if (move_uploaded_file($tmpName, $uploadPath)) {
+        $imagePath = '/Backend/src/Pages/Users/userImage/' . $newName;
+    }
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -40,7 +66,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $phoneCheck = mysqli_query(
-        $con,"SELECT id FROM new_user WHERE user_contact='$contact' AND id != '$userId'"
+        $con,
+        "SELECT id FROM new_user WHERE user_contact='$contact' AND id != '$userId'"
     );
 
     if (mysqli_num_rows($phoneCheck) > 0) {
@@ -54,14 +81,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
     if ($userId) {
-        mysqli_query($con, "UPDATE new_user SET user_name='$userName', user_email='$userEmail', user_contact='$contact', user_role='$userRole', status='$status'WHERE id='$userId'");
+        mysqli_query($con," UPDATE new_user SET user_name='$userName', user_email='$userEmail', user_contact='$contact', user_role='$userRole', status='$status', image_path='$imagePath' WHERE id='$userId'");
         $_SESSION['toast'] = ['type' => 'success', 'msg' => 'User updated successfully'];
         header("Location: UsersList.php?updated=1");
         exit;
-
     } else {
         $hash = password_hash($password, PASSWORD_DEFAULT);
-        mysqli_query($con, " INSERT INTO new_user (user_name,user_email,user_contact,user_password,user_role,status) VALUES ('$userName','$userEmail','$contact','$hash','$userRole','$status')");
+        mysqli_query($con," INSERT INTO new_user (user_name,user_email,user_contact,user_password,user_role,status,image_path) VALUES ('$userName','$userEmail','$contact','$hash','$userRole','$status','$imagePath') ");
         $_SESSION['toast'] = ['type' => 'success', 'msg' => 'User added successfully'];
         header("Location: UsersList.php?added=1");
         exit;
@@ -181,15 +207,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </div>
                                 <div class="col-lg-4 col-12">
                                     <div class="form-group">
-                                        <label for='uploadImage'> Profile Picture (optional)</label>
-                                        <div class="image-upload image-upload-new">
-                                            <input type="file" id="uploadImage" name="uploadImage">
-                                            <div class="image-uploads">
-                                                <img src="/Backend/src/assets/images/icons/upload.svg" alt="img">
-                                                <h4>Drag and drop a file to upload</h4>
+                                        <label>Profile Picture (optional)</label>
+
+                                        <div class="image-upload image-upload-new text-center">
+                                            <input type="file" id="uploadImage" name="uploadImage" accept="image/*">
+
+                                            <div class="image-uploads" id="imagePreviewBox">
+                                                <img id="previewImg"
+                                                    src="<?= !empty($editData['image_path']) ? $editData['image_path'] : '/Backend/src/assets/images/icons/upload.svg' ?>"
+                                                    style="max-width:100px; display:block; margin:auto">
+
+                                                <h6 id="imageName" class="mt-2 text-muted">
+                                                    <?= !empty($editData['image_path']) ? basename($editData['image_path']) : 'Choose image' ?>
+                                                </h6>
                                             </div>
                                         </div>
                                     </div>
+
                                 </div>
                                 <div class="col-lg-12 d-flex justify-content-end">
                                     <button class="btn btn-cancel me-2" type="<?= $userId ? 'button' : 'reset' ?>" name="reset" id="resetButton"><?= $userId ? 'Back' : 'Reset' ?></button>
@@ -203,24 +237,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
     <div class="toast position-fixed top-0 end-0 m-3 text-white" style="z-index: 999" id="actionToast" role="alert">
-    <div class="d-flex">
-    <div class="toast-body" id="toastMessage"></div>
-        <button type="button" class="btn-close btn-close-white me-2 m-auto"data-bs-dismiss="toast"></button>
+        <div class="d-flex">
+            <div class="toast-body" id="toastMessage"></div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
     </div>
-    </div>
-<?php if (!empty($_SESSION['toast'])): ?>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const toastEl = document.getElementById("actionToast");
-        const toastMsg = document.getElementById("toastMessage");
+    <?php if (!empty($_SESSION['toast'])): ?>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const toastEl = document.getElementById("actionToast");
+                const toastMsg = document.getElementById("toastMessage");
 
-        toastEl.classList.add("bg-<?= $_SESSION['toast']['type'] ?>");
-        toastMsg.innerText = "<?= $_SESSION['toast']['msg'] ?>";
+                toastEl.classList.add("bg-<?= $_SESSION['toast']['type'] ?>");
+                toastMsg.innerText = "<?= $_SESSION['toast']['msg'] ?>";
 
-        new bootstrap.Toast(toastEl, { delay: 3000 }).show();
-    });
-</script>
-<?php unset($_SESSION['toast']); endif; ?>
+                new bootstrap.Toast(toastEl, {
+                    delay: 3000
+                }).show();
+            });
+        </script>
+    <?php unset($_SESSION['toast']);
+    endif; ?>
 
     <script>
         $('#userName').on('input', function() {
@@ -228,24 +265,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             value = value.replace(/[^a-zA-Z\s]/g, '');
             $(this).val(value);
         });
-$('#contact').on('input', function () {
-    let value = $(this).val();
+        $('#contact').on('input', function() {
+            let value = $(this).val();
 
-    // Sirf numbers allow
-    value = value.replace(/[^0-9]/g, '');
+            // Sirf numbers allow
+            value = value.replace(/[^0-9]/g, '');
 
-    // Pehla digit 6-9 hona chahiye
-    if (value.length === 1 && !/^[6-9]$/.test(value)) {
-        value = '';
-    }
+            // Pehla digit 6-9 hona chahiye
+            if (value.length === 1 && !/^[6-9]$/.test(value)) {
+                value = '';
+            }
 
-    // Max 10 digits
-    if (value.length > 10) {
-        value = value.substring(0, 10);
-    }
+            // Max 10 digits
+            if (value.length > 10) {
+                value = value.substring(0, 10);
+            }
 
-    $(this).val(value);
-});
+            $(this).val(value);
+        });
 
         $('#userEmail').on('input', function() {
             let value = $(this).val();
@@ -263,22 +300,22 @@ $('#contact').on('input', function () {
             parsleyForm.reset();
             $('#confirmPasswordError').text('');
         });
-        
-        $(document).on('click', '.toggle-password', function () {
-    const input = $(this).prev('input'); 
 
-    if (input.attr('type') === 'password') {
-        input.attr('type', 'text');
-        $(this)
-            .removeClass('fa-eye-slash')
-            .addClass('fa-eye');
-    } else {
-        input.attr('type', 'password');
-        $(this)
-            .removeClass('fa-eye')
-            .addClass('fa-eye-slash');
-    }
-});
+        $(document).on('click', '.toggle-password', function() {
+            const input = $(this).prev('input');
+
+            if (input.attr('type') === 'password') {
+                input.attr('type', 'text');
+                $(this)
+                    .removeClass('fa-eye-slash')
+                    .addClass('fa-eye');
+            } else {
+                input.attr('type', 'password');
+                $(this)
+                    .removeClass('fa-eye')
+                    .addClass('fa-eye-slash');
+            }
+        });
 
         $('#resetButton').on('click', function() {
             if (<?= $userId ? 'true' : 'false' ?>) {
@@ -286,37 +323,52 @@ $('#contact').on('input', function () {
             }
         });
         const passwordRules = {
-    upper: /[A-Z]/,
-    lower: /[a-z]/,
-    number: /[0-9]/,
-    special: /[^A-Za-z0-9]/,
-    length: /^.{6,16}$/
-};
+            upper: /[A-Z]/,
+            lower: /[a-z]/,
+            number: /[0-9]/,
+            special: /[^A-Za-z0-9]/,
+            length: /^.{6,16}$/
+        };
 
-$('#password').on('input', function () {
-    let val = $(this).val();
+        $('#password').on('input', function() {
+            let val = $(this).val();
 
-    const isValid =
-        passwordRules.length.test(val) &&
-        passwordRules.upper.test(val) &&
-        passwordRules.lower.test(val) &&
-        passwordRules.number.test(val) &&
-        passwordRules.special.test(val);
+            const isValid =
+                passwordRules.length.test(val) &&
+                passwordRules.upper.test(val) &&
+                passwordRules.lower.test(val) &&
+                passwordRules.number.test(val) &&
+                passwordRules.special.test(val);
 
-    if (!isValid) {
-        $('#passwordError').text(
-            'Password must be 6–16 characters with uppercase, lowercase, number & special character'
-        );
-    } else {
-        $('#passwordError').text('');
-    }
-});
-        $('#confirmPassword').on('input', function () {
-    if ($('#password').val() !== $(this).val()) {
-        $('#confirmPasswordError').text('Passwords do not match');
-    } else {
-        $('#confirmPasswordError').text('');
-    }
+            if (!isValid) {
+                $('#passwordError').text(
+                    'Password must be 6–16 characters with uppercase, lowercase, number & special character'
+                );
+            } else {
+                $('#passwordError').text('');
+            }
+        });
+        $('#confirmPassword').on('input', function() {
+            if ($('#password').val() !== $(this).val()) {
+                $('#confirmPasswordError').text('Passwords do not match');
+            } else {
+                $('#confirmPasswordError').text('');
+            }
+        });
+        document.getElementById('uploadImage').addEventListener('change', function () {
+    const file = this.files[0];
+
+    if (!file) return;
+
+    // Show image preview
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        document.getElementById('previewImg').src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+
+    // Show image name
+    document.getElementById('imageName').innerText = file.name;
 });
 
     </script>

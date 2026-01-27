@@ -97,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
                                         </div>
                                     </div>
                                     <div class="profile-contentname">
-                                        <h2><?php echo $username ?></h2>
+                                        <h2><?= htmlspecialchars($user['user_name']); ?></h2>
                                         <h4>Updates Your Photo and Personal Details.</h4>
                                     </div>
                                 </div>
