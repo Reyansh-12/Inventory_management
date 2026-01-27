@@ -7,7 +7,6 @@ import locationIcon from "../../assets/images/icons/3.webp";
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import bannerImage from '../../../src/assets/images/47.jpg';
-import image from '../../../src/assets/images/realistic-cosmetic-with-red-rose-flowers-transparent-background_649064-3161_1_-removebg-preview.png';
 
 export const Contact = () => {
   const [inputs, setInputs] = useState({
@@ -82,14 +81,14 @@ export const Contact = () => {
                       <div className="col-md-6">
                         <div className="form-group mb-4">
                           <label htmlFor="firstName">First Name</label>
-                          <input className={`form-control ${errors.con_name ? 'is-invalid' : ''}`} id='firstName' type="text" name="con_name" value={inputs.con_name} onChange={handleChange}/>
+                          <input className={`form-control ${errors.con_name ? 'is-invalid' : ''} pt-4`} id='firstName' type="text" name="con_name" value={inputs.con_name} onChange={handleChange}/>
                           {errors.con_name && <div className="invalid-feedback">{errors.con_name}</div>}
                         </div>
                       </div>
                       <div className="col-md-6">
                         <div className="form-group mb-4">
                           <label htmlFor="lastName">Last Name</label>
-                          <input className={`form-control ${errors.con_lastName ? 'is-invalid' : ''}`} id='lastName' type="text" name="con_lastName" value={inputs.con_lastName} onChange={handleChange} style={{outline: 'none'}} />
+                          <input className={`form-control ${errors.con_lastName ? 'is-invalid' : ''} pt-4`} id='lastName' type="text" name="con_lastName" value={inputs.con_lastName} onChange={handleChange} style={{outline: 'none'}} />
                           {errors.con_lastName && <div className="invalid-feedback">{errors.con_lastName}</div>}
                         </div>
                       </div>
@@ -97,7 +96,7 @@ export const Contact = () => {
                         <div className="form-group mb-4 mt-2 position-relative">
                           <label htmlFor="eamil position-absolute">Email</label>
                           <input 
-                            className={`form-control ${errors.con_email ? 'is-invalid' : ''}`} 
+                            className={`form-control ${errors.con_email ? 'is-invalid' : ''} pt-4`} 
                             id='eamil'
                             type="email" 
                             name="con_email" 
@@ -112,7 +111,7 @@ export const Contact = () => {
                         <div className="form-group position-relative">
                           <label htmlFor="message">Message</label>
                           <textarea 
-                            className={`form-control ${errors.con_message ? 'is-invalid' : ''}`} 
+                            className={`form-control ${errors.con_message ? 'is-invalid' : ''} pt-4`} 
                             id='message'
                             name="con_message" 
                             value={inputs.con_message} 

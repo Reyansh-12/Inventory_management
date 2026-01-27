@@ -6653,7 +6653,10 @@ hr {
   border-radius: 0;
   border-width: 0 0 1px;
   border-color: #b9b9b9;
-  padding-bottom: 16px;
+  padding-bottom: 5px;
+}
+.contact-form .form-control:focus{
+  outline: none;
 }
 .contact-form .form-control::-webkit-input-placeholder {
   color: #3f3f3f;
@@ -6668,6 +6671,15 @@ hr {
 .contact-form textarea.form-control {
   height: 88px;
   resize: none;
+}
+.cartCounter{
+  color: red;
+  margin-top: -10px;
+  background: green;
+  border-radius: 50px;
+  width: 10px;
+  height: 10px;
+  padding: 2px;
 }
 @media only screen and (max-width: 767px),
   only screen and (min-width: 768px) and (max-width: 991px) {

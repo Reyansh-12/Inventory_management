@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import "../../src/assets/styles/plugins/ProductCards.css";
-import image from '../assets/images/4127915_3-removebg-preview.png';
-import image1 from '../assets/images/sunscreen.png';
-import image2 from '../assets/images/1256-removebg-preview.png';
+import image from '../assets/images/1256-removebg-preview.png';
+import image2 from '../assets/images/4127915_3-removebg-preview.png';
+import image3 from '../assets/images/f099014a-f3f3-4022-a60a-fb049f5fb58a-removebg-preview.png';
 import { FaLessThan } from "react-icons/fa6";
 import { FaGreaterThan } from "react-icons/fa6";
 
@@ -61,19 +61,19 @@ const HeroSlider = () => {
   }, []);
 
   return (
-    <div className="carousel border-bottom border-5">
+    <div className="carousel">
       <div className="list">
         <div className="item active">
             <img src={image} className="fruit" alt="" />
-          <div className="content" style={{ color: "#2D5643" }}>Body Lotion</div>
+          <div className="content" style={{color: "#128ba3"}}>Men's Skincare</div>
         </div>
         <div className="item">
-          <img src={image1} className="fruit" alt="" />
-          <div className="content" style={{ color: "#E7A043" }}>Sunscreen</div>
-        </div>
-        <div className="item hidden" >
         <img src={image2} className="fruit" alt="" />
-          <div className="content" style={{ color: "#157DB0" }}>Men's Skincare</div>
+          <div className="content" style={{ color: "#2D5643" }}>Avocado</div>
+        </div>
+        <div className="item hidden">
+        <img src={image3} className="fruit" alt="" />
+          <div className="content" style={{color: '#E7A043'}}>Sunscreen</div>
         </div>
       </div>
 

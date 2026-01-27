@@ -104,7 +104,7 @@
     display: none;
 }
 .item img.fruit{
-    width: 600px;
+    width: 460px;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -146,13 +146,14 @@
     height: 50px;
     border-radius: 50%;
     background-color: transparent;
-    border: 1px solid rgba(202, 56, 56, 0.6);
+    border: 1px solid #eee9;
     background-color: #eee5;
-    color: #000000;
+    color: #131212;
     font-size: x-large;
     font-family: monospace;
     cursor: pointer;
     z-index: 15;
+    border-color: red;
 }
 .prevSliderIcon, .nextSliderIcon{
     margin-left: -10px;
@@ -297,4 +298,17 @@
         top: 50%;
         opacity: 1;
     }
+}
+
+.slick-prev, .slick-next{
+    width: 40px !important;
+    height: 39px !important;
+    background: black !important;
+    border-radius: 50px !important;
+}
+.slick-prev{
+    margin-left: -15px !important;
+}
+.slick-next{
+    margin-right: -15px !important;
 }

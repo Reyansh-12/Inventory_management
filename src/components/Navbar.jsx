@@ -32,7 +32,7 @@ const handleLogout=()=>{
                     <NavLink to='/about' className="text-decoration-none nav-link"><span className="pb-2">About</span></NavLink>
                   </li>
                   <li className="has-submenu position-static">
-                    <NavLink to='/shop' className="text-decoration-none nav-link"><span className="pb-2">Products</span></NavLink>
+                    <NavLink to='/shop' className="text-decoration-none nav-link"><span className="pb-2">Shop</span></NavLink>
                   </li>
                   
                   <li>
@@ -47,6 +47,7 @@ const handleLogout=()=>{
                   <span className="icon">
                     <HiOutlineShoppingCart  className="fs-4"/>
                   </span>
+                  <span className="cartCounter">1</span>
                 </button>
                 <button className="header-action-btn ms-4 me-4" type="button" data-bs-toggle="offcanvas" data-bs-target="#AsideOffcanvasCart" aria-controls="AsideOffcanvasCart">
                   <span className="icon"><FaRegHeart className="fs-5"/></span>

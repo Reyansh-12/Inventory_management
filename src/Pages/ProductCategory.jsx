@@ -17,16 +17,12 @@ const ProductCategory = () => {
   ];
 
   return (
-    <section className="section-space pb-0">
+    <section className="section-space pb-0 pt-0">
       <div className="container">
         <div className="row g-3 g-sm-6">
           {categories.map((cat) => (
             <div key={cat.id} className="col-6 col-lg-2">
-              <a
-                href="/product"
-                className="product-category-item"
-                style={cat.bgColor ? { backgroundColor: cat.bgColor } : {}}
-              >
+              <a href="/product" className="product-category-item" style={cat.bgColor ? { backgroundColor: cat.bgColor } : {}}>
                 <img className="icon" src={cat.image} width="80" height="80" alt={cat.title} />
                 <h3 className="title">{cat.title}</h3>
                 {cat.badge && (

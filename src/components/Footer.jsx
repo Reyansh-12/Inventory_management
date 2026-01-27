@@ -71,6 +71,8 @@ const Footer = () => {
                 <div className="widget-item">
                   <h4 className="widget-title">Customer Support</h4>
                   <ul>
+                    <li className="mb-3"><Link to='/about' className="text-decoration-none text-black">About us</Link></li>
+                    <li className="mb-3"><Link to='/contact' className="text-decoration-none text-black">Contact</Link></li>
                     <li className="mb-3"><Link to='/contact' className="text-decoration-none text-black">FAQs</Link></li>
                     <li><Link to='/contact' className="text-decoration-none text-black">Privacy & Policy</Link></li>
                   </ul>
