@@ -11,26 +11,53 @@ if (!isset($_SESSION['transaction_id'])) {
     $_SESSION['transaction_id'] = 'ID' . date('YmdHis') . rand(100, 999);
 }
 
-$sql = "SELECT `id`,`product_name`, `category`, `brand_name`, `price`, `quantity`, `image_path` FROM `product_list`";
+$sql = "
+SELECT 
+    p.id,
+    p.product_name,
+    p.category AS category_id,
+    c.category AS category_name,
+    p.price,
+    p.quantity,
+    p.image_path
+FROM product_list p
+LEFT JOIN category c ON p.category = c.id
+";
+
 $result = $con->query($sql);
 
-if (isset($_POST['addCustomerSubmitButton'])) {
-    $customerId = 'CUST' . time();
-    $name = $_POST['customername'];
-    $phone = $_POST['customerphone'];
-    $email = $_POST['customeremail'];
-    $address = $_POST['customeraddress'];
+if (isset($_POST['ajax']) && $_POST['ajax'] == 'addCustomer') {
 
-    $sql = "INSERT INTO customers (customer_id, name, phone, email, address)
-            VALUES ('$customerId', '$name', '$phone', '$email', '$address')";
+    $name    = mysqli_real_escape_string($con, $_POST['customername']);
+    $phone   = mysqli_real_escape_string($con, $_POST['customerphone']);
+    $email   = mysqli_real_escape_string($con, $_POST['customeremail']);
+    $address = mysqli_real_escape_string($con, $_POST['customeraddress']);
 
-    if (mysqli_query($con, $sql)) {
-        $_SESSION['customer_added'] = true;
-        $_SESSION['selected_customer_id'] = mysqli_insert_id($con);
-        header("Location: " . $_SERVER['PHP_SELF']);
+    $errors = [];
+
+    // Check duplicates
+    $check = mysqli_query($con, "SELECT phone, email FROM customers WHERE phone='$phone' OR email='$email'");
+    if (mysqli_num_rows($check) > 0) {
+        $row = mysqli_fetch_assoc($check);
+        if ($row['phone'] == $phone) $errors['phone'] = "Phone number already exists";
+        if ($row['email'] == $email) $errors['email'] = "Email already exists";
+        echo json_encode(['status'=>'error','errors'=>$errors]);
         exit;
     }
+
+    // Insert new customer
+    $customerId = 'CUST' . time();
+    $insert = mysqli_query($con, "INSERT INTO customers (customer_id, name, phone, email, address)
+                                  VALUES ('$customerId', '$name', '$phone', '$email', '$address')");
+
+    if ($insert) {
+        echo json_encode(['status'=>'success','customer_id'=>$customerId,'customer_name'=>$name]);
+    } else {
+        echo json_encode(['status'=>'error','errors'=>['general'=>'Failed to add customer']]);
+    }
+    exit;
 }
+
 
 $categories = [];
 $catQuery = mysqli_query($con, "SELECT id, category, image_path FROM category WHERE status='Active'");
@@ -108,16 +135,17 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
                             while ($row = $result->fetch_assoc()) {
                                 $id = (int)$row['id'];
                                 $name = htmlspecialchars($row['product_name']);
-                                $category = (int)$row['category'];
+                                $categoryId   = (int)$row['category_id'];
+$categoryName = htmlspecialchars($row['category_name']);
                                 $price = number_format((float)$row['price'], 2);
                                 $image = !empty($row['image_path']) ? $row['image_path'] : "/Inventory_managment/Backend/assets/images/favicon1.png";
                         ?>
                                 <div class="col-12 col-md-4 col-lg-4 shadow-md" style="padding: 5px">
-                                    <div class="product-card p-3 shadow-sm rounded h-100" data-category="<?= $category ?>">
+                                    <div class="product-card p-3 shadow-sm rounded h-100" data-category="<?= $categoryId ?>">
                                         <div class="text-center">
                                             <img src="<?= $image ?>" class="img-fluid mb-2">
                                         </div>
-                                        <h6 class="text-muted small"><?= $row['category'] ?></h6>
+                                        <h6 class="text-muted small"><?= $categoryName ?></h6>
                                         <h5 class="text-truncate" data-bs-toggle='tooltip' data-bs-title="<?php echo $name ?>"><?= $name ?></h5>
                                         <h6 class="text-primary">₹<?= $price ?></h6>
                                         <div class="d-grid">
@@ -216,10 +244,12 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
                         <div class="mb-3">
                             <label>Phone <span class="text-danger">*</span></label>
                             <input type="text" name="customerphone" id="customerPhone" class="form-control" maxlength="10" data-parsley-required data-parsley-error-message="Phone number is required">
+                            <small class="text-danger d-none" id="phoneError"></small>
                         </div>
                         <div class="mb-3">
                             <label>Email <span class="text-danger">*</span></label>
                             <input type="email" name="customeremail" id="customerEmail" class="form-control" data-parsley-required data-parsley-error-message="Email is required">
+                            <small class="text-danger d-none" id="emailError"></small>
                         </div>
                         <div class="mb-3">
                             <label>Address</label>
@@ -253,6 +283,29 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
             </div>
         </div>
     </div>
+<!-- Customer Exists Toast -->
+<div class="toast-container position-fixed top-0 end-0 p-3">
+    <div id="customerExistsToast" class="toast align-items-center text-bg-danger border-0">
+        <div class="d-flex">
+            <div class="toast-body">
+                Phone or Email already exists!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+</div>
+
+<!-- Customer Success Toast -->
+<div class="toast-container position-fixed top-0 end-0 p-3">
+    <div id="customerSuccessToast" class="toast align-items-center text-bg-success border-0">
+        <div class="d-flex">
+            <div class="toast-body">
+                Customer added successfully!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+</div>
 
 
 
@@ -522,6 +575,78 @@ document.getElementById('customerPhone').addEventListener('input', function (e) 
     e.target.value = value.slice(0, 10);
 });
     </script>
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    <?php if (isset($_SESSION['customer_error'])) { ?>
+        new bootstrap.Toast(
+            document.getElementById('customerExistsToast'),
+            { delay: 4000 }
+        ).show();
+    <?php unset($_SESSION['customer_error']); } ?>
+
+    <?php if (isset($_SESSION['customer_success'])) { ?>
+        new bootstrap.Toast(
+            document.getElementById('customerSuccessToast'),
+            { delay: 3000 }
+        ).show();
+    <?php unset($_SESSION['customer_success']); } ?>
+
+});
+</script>
+<script>
+document.getElementById('customerForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // Clear previous errors
+    const phoneEl = document.getElementById('phoneError');
+    const emailEl = document.getElementById('emailError');
+    phoneEl.innerText = '';
+    phoneEl.classList.add('d-none');
+    emailEl.innerText = '';
+    emailEl.classList.add('d-none');
+
+    const formData = new FormData(this);
+    formData.append('ajax','addCustomer');
+
+    fetch("", { method:'POST', body:formData })
+    .then(res => res.json())
+    .then(data => {
+        if(data.status === 'error') {
+            if(data.errors.phone) {
+                phoneEl.innerText = data.errors.phone;
+                phoneEl.classList.remove('d-none');
+            }
+            if(data.errors.email) {
+                emailEl.innerText = data.errors.email;
+                emailEl.classList.remove('d-none');
+            }
+            if(data.errors.general) {
+                alert(data.errors.general);
+            }
+        } 
+        else if(data.status === 'success') {
+            // Success toast
+            const toastEl = document.getElementById('customerSuccessToast');
+            const toast = new bootstrap.Toast(toastEl, {delay:3000});
+            toast.show();
+
+            // Reset form
+            this.reset();
+            $('#addCustomerModal').modal('hide');
+
+            // Add new customer to dropdown
+            const select = document.getElementById('customerSelect');
+            const option = document.createElement('option');
+            option.value = data.customer_id;
+            option.text = data.customer_name;
+            select.prepend(option);
+            select.value = data.customer_id;
+        }
+    })
+    .catch(err => console.error(err));
+});
+</script>
 </body>
 
 </html>
