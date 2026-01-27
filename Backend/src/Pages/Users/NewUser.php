@@ -230,23 +230,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         });
 $('#contact').on('input', function () {
     let value = $(this).val();
-
-    // Sirf numbers allow
     value = value.replace(/[^0-9]/g, '');
-
-    // Pehla digit 6-9 hona chahiye
     if (value.length === 1 && !/^[6-9]$/.test(value)) {
         value = '';
     }
-
-    // Max 10 digits
     if (value.length > 10) {
         value = value.substring(0, 10);
     }
 
     $(this).val(value);
 });
-
         $('#userEmail').on('input', function() {
             let value = $(this).val();
 

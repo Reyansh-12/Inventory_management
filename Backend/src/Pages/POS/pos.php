@@ -49,49 +49,7 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <style>
-        .cart-product-name {
-            max-width: 140px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: inline-block;
-            vertical-align: middle;
-        }
-
-        #posCartTable td {
-            vertical-align: middle;
-            white-space: nowrap;
-        }
-
-        .qty-box {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .category-track {
-            display: flex;
-            transition: transform 0.5s ease;
-        }
-
-        .category-slide {
-            flex: 0 0 26.3333%;
-            padding: 5px;
-            /* padding-right: 10px; */
-        }
-
-        @media (max-width: 768px) {
-            .category-slide {
-                flex: 0 0 50%;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .category-slide {
-                flex: 0 0 100%;
-            }
-        }
+        
     </style>
 </head>
 

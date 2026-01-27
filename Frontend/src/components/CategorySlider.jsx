@@ -38,7 +38,8 @@ const CategorySlider = ({ onSelectCategory }) => {
               padding: "20px",
               width: "100%",
               justifyItems: "center",
-              borderRadius: '15px'
+              borderRadius: '15px',
+              height: '160px'
             }}
           >
             <img
@@ -46,7 +47,7 @@ const CategorySlider = ({ onSelectCategory }) => {
               alt={cat.name}
               style={{ width: 80, height: 80, objectFit: "contain" }}
             />
-            <h6 className="mt-2">{cat.name}</h6>
+            <h6 className="mt-2" style={{width: '90%', overflow: 'hidden'}}>{cat.name}</h6>
           </button>
         </div>
       ))}
