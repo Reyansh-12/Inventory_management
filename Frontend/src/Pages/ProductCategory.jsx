@@ -17,7 +17,7 @@ const ProductCategory = () => {
   ];
 
   return (
-    <section className="section-space pb-0">
+    <section className="section-space pb-0 pt-0">
       <div className="container">
         <div className="row g-3 g-sm-6">
           {categories.map((cat) => (

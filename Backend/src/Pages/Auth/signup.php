@@ -181,7 +181,6 @@ if (!preg_match($strongPasswordPattern, $password)) {
     value = value.replace(/[^a-zA-Z\s]/g, '');
     $(this).val(value);
 });
-
         $('#contact').on('input', function() {
             let inputValue = $(this).val();
             let filteredValue = inputValue.replace(/[^0-9]/g, '');

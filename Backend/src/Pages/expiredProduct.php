@@ -16,7 +16,7 @@ if(isset($_GET['expiredProductId'])) {
     exit();
 }
 
-$sql = "SELECT `id`, `product_name`, `expired_date` FROM `product_list` WHERE expired_date <= CURDATE()";
+$sql = "SELECT `id`, `product_name`, `expired_date`, `image_path` FROM `product_list` WHERE expired_date <= CURDATE()";
 $result = $con->query($sql);
 ?>
 <!DOCTYPE html>
@@ -47,6 +47,13 @@ $result = $con->query($sql);
         .swal2-icon-content{
             margin-left: 537%;
             margin-top: 48%;
+        }
+        .productimgname img{
+            min-width: 40px;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    object-fit: contain;
         }
     </style>
 </head>
@@ -107,6 +114,7 @@ $result = $con->query($sql);
                                             while ($row = $result->fetch_assoc()) {
                                                 echo "<tr>";
                                                 echo "    <td class='productimgname' style='width: 400px'>";
+                                                echo "        <img src='" . $row['image_path'] . "' alt='product' class=''>";
                                                 echo "        <a href='javascript:void(0);' class='text-truncate' data-bs-toggle='tooltip' data-bs-title='" . $row['product_name'] . "'>" . $row['product_name'] . "</a>";
                                                 echo "    </td>";
                                                 echo "    <td>" . $row['expired_date'] . "</td>";

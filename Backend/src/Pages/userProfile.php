@@ -1,6 +1,7 @@
 <?php
 session_start();
 define("BASE_PATH", dirname(__DIR__, 2));
+include BASE_PATH . "/src/Layouts/Links.php";
 include BASE_PATH . "/src/controllers/dbConnection.php";
 
 if (!isset($_SESSION['user_id'])) {
@@ -48,11 +49,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
 }
 ?>
 
-
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
@@ -61,10 +59,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
     <meta name="author" content="Dreamguys - Bootstrap Admin Template">
     <meta name="robots" content="noindex, nofollow">
     <title>User Profile</title>
+    <style>
+        .parsley-custom-error-message{
+            color: #f94a4a;
+        }
+    </style>
 </head>
 
 <body>
-   
+    <div id="global-loader">
+        <div class="whirly-loader"> </div>
+    </div>
     <div class="main-wrapper">
         <div class="d-flx row">
             <div class="col-md-3">
@@ -97,34 +102,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
                                         </div>
                                     </div>
                                     <div class="profile-contentname">
-                                        <h2><?= htmlspecialchars($user['user_name']); ?></h2>
+                                        <h2><?= htmlspecialchars ($user['user_name']) ?></h2>
                                         <h4>Updates Your Photo and Personal Details.</h4>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <form method="POST" action="">
+                        <form method="POST" data-parsley-validate>
                             <div class="row">
 
                                 <div class="col-lg-6 col-sm-12">
                                     <div class="form-group">
                                         <label>User Name</label>
-                                        <input type="text" name="username" value="<?= htmlspecialchars($user['user_name']); ?>" required>
+                                        <input type="text" id="userName" name="username" value="<?= htmlspecialchars($user['user_name']); ?>" data-parsley-required data-parsley-error-message="Name is required">
                                     </div>
                                 </div>
 
                                 <div class="col-lg-6 col-sm-12">
                                     <div class="form-group">
                                         <label>Email</label>
-                                        <input type="text" name="email" value="<?= htmlspecialchars($user['user_email']); ?>" required>
+                                        <input type="text" name="email" id="userEmail" value="<?= htmlspecialchars($user['user_email']); ?>" data-parsley-required data-parsley-error-message="Email is required">
                                     </div>
                                 </div>
 
                                 <div class="col-lg-6 col-sm-12">
                                     <div class="form-group">
                                         <label>Phone</label>
-                                        <input type="text" name="phone"
-                                            value="<?= htmlspecialchars($user['user_contact']); ?>">
+                                        <input type="text" name="phone" id="contact" value="<?= htmlspecialchars($user['user_contact']); ?>" data-parsley-required data-parsley-error-message="Phone number is required" data-parsley-minlength="10">
                                     </div>
                                 </div>
 
@@ -138,15 +142,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
                                 <div class="col-12 d-flex justify-content-end">
                                     <button type="submit" name="update_profile" class="btn btn-submit">Update Profile</button>
                                 </div>
-
                             </div>
                         </form>
-
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        $('#userName').on('input', function() {
+            let value = $(this).val();
+            value = value.replace(/[^a-zA-Z\s]/g, '');
+            $(this).val(value);
+        });
+$('#contact').on('input', function () {
+    let value = $(this).val();
+    value = value.replace(/[^0-9]/g, '');
+    if (value.length === 1 && !/^[6-9]$/.test(value)) {
+        value = '';
+    }
+    if (value.length > 10) {
+        value = value.substring(0, 10);
+    }
+
+    $(this).val(value);
+});
+        $('#userEmail').on('input', function() {
+            let value = $(this).val();
+
+            value = value.replace(/[^a-zA-Z0-9@.]/g, '');
+
+            if (value.length === 1 && !/^[A-Za-z]$/.test(value)) {
+                value = '';
+            }
+
+            $(this).val(value);
+        });
+    </script>
 </body>
 
 </html>

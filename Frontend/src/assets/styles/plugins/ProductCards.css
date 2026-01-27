@@ -299,3 +299,16 @@
         opacity: 1;
     }
 }
+
+.slick-prev, .slick-next{
+    width: 40px !important;
+    height: 39px !important;
+    background: black !important;
+    border-radius: 50px !important;
+}
+.slick-prev{
+    margin-left: -15px !important;
+}
+.slick-next{
+    margin-right: -15px !important;
+}

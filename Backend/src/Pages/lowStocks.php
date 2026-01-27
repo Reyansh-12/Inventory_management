@@ -4,7 +4,7 @@ include BASE_PATH . "/src/Layouts/Links.php";
 include BASE_PATH . "/src/controllers/dbConnection.php";
 
 $sql = "SELECT `id`, `product_name`, `category`, `brand_name`, `minQuantity`, 
-        `price`, `quantity`, `description`, `discount`, `status`, `expired_date` 
+        `price`, `quantity`, `description`, `discount`, `status`, `image_path`, `expired_date` 
         FROM `product_list` 
         WHERE `quantity` <= `minQuantity`";
 
@@ -50,6 +50,13 @@ if (isset($_GET['lowStockId'])) {
         .swal2-icon-content{
             margin-left: 537%;
             margin-top: 48%;
+        }
+        .productimgname img{
+            min-width: 40px;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    object-fit: contain;
         }
     </style>
 </head>
@@ -110,7 +117,9 @@ if (isset($_GET['lowStockId'])) {
                                     if ($result->num_rows > 0) {
                                         while ($row = $result->fetch_assoc()) {
                                             echo "<tr>";
-                                            echo "<td style='max-width: 100px; overflow:hidden'><a class='text-truncate' data-bs-toggle='tooltip' data-bs-title='" . $row['product_name'] . "'>" . $row['product_name'] . "</a></td>";
+                                            echo "<td class='productimgname' style='max-width: 200px; overflow:hidden'>";
+                                            echo "<img src='" . $row['image_path'] . "' alt='product' class=''>";
+                                            echo "<a class='text-truncate' data-bs-toggle='tooltip' data-bs-title='" . $row['product_name'] . "'>" . $row['product_name'] . "</a></td>";
                                             echo "<td>" . $row['category'] . "</td>";
                                             echo "<td>" . $row['brand_name'] . "</td>";
                                             echo "<td>" . $row['quantity'] . "</td>";

@@ -5,6 +5,7 @@ import banner7 from '../../assets/images/shop/banner/7.webp';
 import ProductItem from "@/Pages/Products/ProductItem.jsx";
 import Image from "../../../src/assets/images/product_not_found2.png";
 import CategorySlider from "@/components/CategorySlider";
+import '../../assets/styles/plugins/ProductCards.css';
 
 
 const ProductFourColumns = () => {
@@ -47,7 +48,7 @@ const ProductFourColumns = () => {
         </div>
       </section>
 
-      <section className="section-space pb-0">
+      <section className="section-space pb-0 pt-3">
         <div className="container">
           <CategorySlider onSelectCategory={setSelectedCategory} />
         </div>

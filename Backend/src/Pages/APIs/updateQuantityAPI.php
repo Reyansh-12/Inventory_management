@@ -12,7 +12,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 include __DIR__ . "/../../controllers/dbConnection.php";
-// include __DIR__ . "/dbConnection.php";
 
 $input = json_decode(file_get_contents("php://input"), true);
 

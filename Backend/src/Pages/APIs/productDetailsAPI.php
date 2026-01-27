@@ -24,7 +24,6 @@ $result = $con->query($sql);
 
 if ($result && $result->num_rows > 0) {
     $row = $result->fetch_assoc();
-    // Full URL
     $row['image'] = $BASE_URL . $row['image_path'];
     echo json_encode($row);
 } else {

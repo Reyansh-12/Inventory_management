@@ -1,6 +1,6 @@
 
 import aboutLogo from "../../assets/images/photos/about-title.webp";
-import about1 from "../../assets/images/photos/about1.webp";
+import about1 from "../../../src/assets/images/photos/about1.webp";
 import about2 from "../../assets/images/photos/about2.webp";
 import funfact1 from "../../assets/images/icons/funfact1.webp";
 import funfact2 from "../../assets/images/icons/funfact2.webp";

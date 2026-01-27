@@ -191,8 +191,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <div class="form-group">
                                         <label for='userStatus'>Status</label>
                                         <select class="form-select" id="userStatus" name="status" data-parsley-required="true" data-parsley-required-message="Status is required">
-                                            <option disabled selected>Select role</option>
-                                            <option <?php if (($editData['status'] ?? '') == 'Active') echo 'selected'; ?>>Active</option>
+                                            <option disabled selected>Status</option>
+                                            <option selected <?php if (($editData['status'] ?? '') == 'Active') echo 'selected'; ?>>Active</option>
                                             <option <?php if (($editData['status'] ?? '') == 'Inactive') echo 'selected'; ?>>Inactive</option>
                                         </select>
                                     </div>
@@ -265,25 +265,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             value = value.replace(/[^a-zA-Z\s]/g, '');
             $(this).val(value);
         });
-        $('#contact').on('input', function() {
-            let value = $(this).val();
+$('#contact').on('input', function () {
+    let value = $(this).val();
+    value = value.replace(/[^0-9]/g, '');
+    if (value.length === 1 && !/^[6-9]$/.test(value)) {
+        value = '';
+    }
+    if (value.length > 10) {
+        value = value.substring(0, 10);
+    }
 
-            // Sirf numbers allow
-            value = value.replace(/[^0-9]/g, '');
-
-            // Pehla digit 6-9 hona chahiye
-            if (value.length === 1 && !/^[6-9]$/.test(value)) {
-                value = '';
-            }
-
-            // Max 10 digits
-            if (value.length > 10) {
-                value = value.substring(0, 10);
-            }
-
-            $(this).val(value);
-        });
-
+    $(this).val(value);
+});
         $('#userEmail').on('input', function() {
             let value = $(this).val();
 
