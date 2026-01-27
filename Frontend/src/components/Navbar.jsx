@@ -47,6 +47,7 @@ const handleLogout=()=>{
                   <span className="icon">
                     <HiOutlineShoppingCart  className="fs-4"/>
                   </span>
+                  <span className="cartCounter">1</span>
                 </button>
                 <button className="header-action-btn ms-4 me-4" type="button" data-bs-toggle="offcanvas" data-bs-target="#AsideOffcanvasCart" aria-controls="AsideOffcanvasCart">
                   <span className="icon"><FaRegHeart className="fs-5"/></span>
