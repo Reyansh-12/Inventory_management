@@ -388,7 +388,7 @@ $catResult = mysqli_query($con, "SELECT id, category FROM category WHERE status=
                                         <label for="label"> Status</label>
                                         <select class="form-select" name="status" id="label" data-parsley-id="1601" maxlength="200">
                                             <option value="" disabled <?= empty($editData['status']) ? 'selected' : '' ?>>Choose Status</option>
-                                            <option value="Active" <?= ($editData['status'] ?? '') == 'Active' ? 'selected' : '' ?>>Active</option>
+                                            <option selected value="Active" <?= ($editData['status'] ?? '') == 'Active' ? 'selected' : '' ?>>Active</option>
                                             <option value="Inactive" <?= ($editData['status'] ?? '') == 'Inactive' ? 'selected' : '' ?>>Inactive</option>
                                         </select>
                                     </div>

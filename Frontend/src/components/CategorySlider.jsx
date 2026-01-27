@@ -3,6 +3,7 @@ import Slider from "react-slick";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import '../../src/assets/styles/plugins/ProductCards.css';
 
 const CategorySlider = ({ onSelectCategory }) => {
   const [categories, setCategories] = useState([]);
@@ -33,9 +34,11 @@ const CategorySlider = ({ onSelectCategory }) => {
             onClick={() => onSelectCategory(cat.name.toLowerCase().replace(/\s+/g, ""))}
             style={{
               border: "none",
-              background: "#FFF3DA",
+              background: "linear-gradient(180deg, #acd9ee, #6B8E6E)",
               padding: "20px",
-              width: "100%"
+              width: "100%",
+              justifyItems: "center",
+              borderRadius: '15px'
             }}
           >
             <img

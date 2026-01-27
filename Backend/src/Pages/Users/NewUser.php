@@ -165,8 +165,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <div class="form-group">
                                         <label for='userStatus'>Status</label>
                                         <select class="form-select" id="userStatus" name="status" data-parsley-required="true" data-parsley-required-message="Status is required">
-                                            <option disabled selected>Select role</option>
-                                            <option <?php if (($editData['status'] ?? '') == 'Active') echo 'selected'; ?>>Active</option>
+                                            <option disabled selected>Status</option>
+                                            <option selected <?php if (($editData['status'] ?? '') == 'Active') echo 'selected'; ?>>Active</option>
                                             <option <?php if (($editData['status'] ?? '') == 'Inactive') echo 'selected'; ?>>Inactive</option>
                                         </select>
                                     </div>

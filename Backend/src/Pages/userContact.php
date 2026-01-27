@@ -7,26 +7,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 header("Content-Type: application/json");
-$con = new mysqli("localhost", "root", "", "Inventory_management");
-if ($con->connect_error) {
-    die(json_encode(['status' => 0, 'message' => 'Database connection failed: ' . $con->connect_error]));
-}
+include __DIR__ . "/../../controllers/dbConnection.php";
+
 $user = json_decode(file_get_contents('php://input'), true);
 if (!$user) {
     die(json_encode(['status' => 0, 'message' => 'Invalid JSON input']));
 }
-$stmt = $con->prepare("INSERT INTO user_contact (firstName, lastName, Email, `message`, created_at) VALUES (?, ?, ?, ?, ?)");
+$stmt = $con->prepare("INSERT INTO user_contact (firstName, lastName, Email, `message`) VALUES (?, ?, ?, ?)");
 if (!$stmt) {
     die(json_encode(['status' => 0, 'message' => 'Prepare failed', 'error' => $con->error]));
 }
 $created_at = date('Y-m-d H:i:s');
 $stmt->bind_param(
-    "sssss",
+    "ssss",
     $user['firstName'],
     $user['lastName'],
     $user['email'],
-    $user['message'],
-    $created_at
+    $user['message']
 );
 if ($stmt->execute()) {
     echo json_encode(['status' => 1, 'message' => 'Record created successfully']);

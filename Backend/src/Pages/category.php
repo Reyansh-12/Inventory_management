@@ -79,6 +79,13 @@ if (isset($_GET['categoryId'])) {
         table.dataTable thead .sorting_desc:after {
             display: none !important;
         }
+        .productimgname img{
+            min-width: 40px;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    object-fit: contain;
+        }
     </style>
 </head>
 
@@ -144,7 +151,8 @@ if (isset($_GET['categoryId'])) {
                                                 echo "<tr>";
                                                 echo "<td style='display:none;'>" . $row['id'] . "</td>";
                                                 echo "    <td class='productimgname' style='width: 200px'>";
-                                                echo "        <aclass='text-truncate w-100' data-bs-toggle='tooltip' data-bs-title='" . $row['category'] . "'>" . $row['category'] . "</a>";
+                                                echo "        <img src='" . $row['image_path'] . "' alt='product' class=''>";
+                                                echo "        <a class='text-truncate w-100' data-bs-toggle='tooltip' data-bs-title='" . $row['category'] . "'>" . $row['category'] . "</a>";
                                                 echo "    </td>";
                                                 echo "    <td>" . $row['brands'] . "</td>";
                                                 echo "    <td>" . $row['created_on'] . "</td>";

@@ -41,14 +41,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (isset($_GET['categoryId'])) {
-
         $id = intval($_GET['categoryId']);
-        $sql = "UPDATE category SET category = '$categoryName', brands = '$brandName', status = '$status', image_path = " . ($imagePath ? "'$imagePath'" : "image_path") . "WHERE id = $id";
+
+        $sql = "UPDATE category SET category = '$categoryName', brands = '$brandName', status = '$status', image_path = " . ($imagePath ? "'$imagePath'" : "image_path") . " WHERE id = $id";
         mysqli_query($con, $sql);
         header("Location: /Backend/src/Pages/category.php?updated=1");
         exit;
     } else {
-
         $sql = "INSERT INTO category (category, brands, status, image_path, created_on)
         VALUES ( '$categoryName', '$brandName', '$status', " . ($imagePath ? "'$imagePath'" : "NULL") . ", '$createdOn')";
         mysqli_query($con, $sql);
@@ -126,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <label for="label"> Status</label>
                                         <select class="form-select" name="status" id="label" data-parsley-id="1601" maxlength="200">
                                             <option value="" disabled <?= empty($editData['status']) ? 'selected' : '' ?>>Choose Status</option>
-                                            <option value="Active" <?= ($editData['status'] ?? '') == 'Active' ? 'selected' : '' ?>>Active</option>
+                                            <option selected value="Active" <?= ($editData['status'] ?? '') == 'Active' ? 'selected' : '' ?>>Active</option>
                                             <option value="Inactive" <?= ($editData['status'] ?? '') == 'Inactive' ? 'selected' : '' ?>>Inactive</option>
                                         </select>
                                     </div>

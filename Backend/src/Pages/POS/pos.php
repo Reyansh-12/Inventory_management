@@ -76,8 +76,9 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
         }
 
         .category-slide {
-            flex: 0 0 33.3333%;
-            padding: 8px;
+            flex: 0 0 26.3333%;
+            padding: 5px;
+            /* padding-right: 10px; */
         }
 
         @media (max-width: 768px) {
@@ -122,7 +123,7 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
 
             <div class="row">
                 <div class="col-lg-8" style="max-height: 80vh; overflow-y: auto; padding-right:15px;">
-                    <div id="categorySlider" class="slider-container mb-3 position-relative">
+                    <div id="categorySlider" class="slider-container mb-3 position-relative" style="background:rgba(40, 0, 84, 0.18)">
                         <button id="prevBtn" class="carousel-control-prev slider-btn" type="button">
                             <span class="carousel-control-prev-icon"></span>
                         </button>
@@ -135,7 +136,7 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
                                 <?php foreach ($categories as $cat) { ?>
                                     <div class="category-slide">
                                         <div class="card category-card text-center" data-category="<?= strtolower(trim($cat['category'])) ?>" style="cursor:pointer">
-                                            <img src="<?= !empty($cat['image_path']) ? htmlspecialchars($cat['image_path']) : '/Backend/assets/images/product/default-category.png'; ?>" class="card-img-top">
+                                            <img src="<?= !empty($cat['image_path']) ? htmlspecialchars($cat['image_path']) : '/Backend/assets/images/product/default-category.png'; ?>" class="card-img-top" style="object-fit: contain">
                                             <div class="card-body"><?= htmlspecialchars($cat['category']) ?></div>
                                         </div>
                                     </div>
@@ -153,7 +154,7 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
                                 $price = number_format((float)$row['price'], 2);
                                 $image = !empty($row['image_path']) ? $row['image_path'] : "/Inventory_managment/Backend/assets/images/favicon1.png";
                         ?>
-                                <div class="col-12 col-md-4 col-lg-4">
+                                <div class="col-12 col-md-4 col-lg-4 shadow-md" style="padding: 5px">
                                     <div class="product-card p-3 shadow-sm rounded h-100" data-category="<?= $category ?>">
                                         <div class="text-center">
                                             <img src="<?= $image ?>" class="img-fluid mb-2">
@@ -246,21 +247,21 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Add Customer</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"><i class="bi bi-x-lg"></i></button>
                 </div>
                 <div class="modal-body">
                     <form method="POST" id="customerForm" data-parsley-validate>
                         <div class="mb-3">
                             <label>Customer Name <span class="text-danger">*</span></label>
-                            <input type="text" name="customername" class="form-control" required>
+                            <input type="text" name="customername" id="customerName" class="form-control" data-parsley-required data-parsley-error-message="Customer name is required">
                         </div>
                         <div class="mb-3">
                             <label>Phone <span class="text-danger">*</span></label>
-                            <input type="text" name="customerphone" class="form-control" maxlength="10" required>
+                            <input type="text" name="customerphone" id="customerPhone" class="form-control" maxlength="10" data-parsley-required data-parsley-error-message="Phone number is required">
                         </div>
                         <div class="mb-3">
                             <label>Email <span class="text-danger">*</span></label>
-                            <input type="email" name="customeremail" class="form-control" required>
+                            <input type="email" name="customeremail" id="customerEmail" class="form-control" data-parsley-required data-parsley-error-message="Email is required">
                         </div>
                         <div class="mb-3">
                             <label>Address</label>
@@ -470,9 +471,43 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
 
             window.addEventListener("resize", updateSlider);
         });
+        
     </script>
 
     <?php unset($_SESSION['selected_customer_id']); ?>
+    <script>
+        $('#customerName').on('input', function () {
+    let value = $(this).val();
+    value = value.replace(/[^a-zA-Z\s]/g, '');
+    $(this).val(value);
+});
+        $('#customerPhone').on('input', function() {
+            let inputValue = $(this).val();
+            let filteredValue = inputValue.replace(/[^0-9]/g, '');
+            $(this).val(filteredValue);
+        });
+
+$('#customerEmail').on('input', function () {
+    let value = $(this).val();
+
+    value = value.replace(/[^a-zA-Z0-9@.]/g, '');
+
+    if (value.length === 1 && !/^[A-Za-z]$/.test(value)) {
+        value = '';
+    }
+
+    $(this).val(value);
+});
+document.getElementById('customerPhone').addEventListener('input', function (e) {
+    let value = e.target.value.replace(/\D/g, '');
+
+    if (value.length === 1 && !/^[6-9]$/.test(value)) {
+        value = '';
+    }
+
+    e.target.value = value.slice(0, 10);
+});
+    </script>
 </body>
 
 </html>

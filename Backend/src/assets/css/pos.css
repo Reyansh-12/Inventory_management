@@ -46,33 +46,13 @@
     border-radius: 12px;
     font-weight: 600;
 }
-
-.swiper-button-next,
-.swiper-button-prev {
-    color: #080808 !important;
-    background: #fff;
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    box-shadow: 0px 3px 8px rgba(0,0,0,0.12);
-}
-
-.swiper-button-next:after,
-.swiper-button-prev:after {
-    font-size: 18px !important;
-    font-weight: bold;
-}
 .category-slide {
     height: 220px;
 }
 .category-card{
     height: 208px !important;
 }
-.swiper-button-next:hover,
-.swiper-button-prev:hover {
-    background: #000;
-    color: #fff !important;
-}
+
 .category-card { 
     width: 10rem; 
 }
@@ -103,4 +83,14 @@
     text-overflow: ellipsis;
     vertical-align: middle;
     cursor: pointer;
+}
+.parsley-custom-error-message{
+    color: rgb(217 46 48);
+}
+.swal2-icon{
+    margin-left: 39%;
+    margin-top: 5%;
+}
+.swal2-title{
+    padding-top: 0px;
 }
