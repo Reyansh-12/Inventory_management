@@ -35,7 +35,6 @@ if (isset($_POST['ajax']) && $_POST['ajax'] == 'addCustomer') {
 
     $errors = [];
 
-    // Check duplicates
     $check = mysqli_query($con, "SELECT phone, email FROM customers WHERE phone='$phone' OR email='$email'");
     if (mysqli_num_rows($check) > 0) {
         $row = mysqli_fetch_assoc($check);
@@ -45,7 +44,6 @@ if (isset($_POST['ajax']) && $_POST['ajax'] == 'addCustomer') {
         exit;
     }
 
-    // Insert new customer
     $customerId = 'CUST' . time();
     $insert = mysqli_query($con, "INSERT INTO customers (customer_id, name, phone, email, address)
                                   VALUES ('$customerId', '$name', '$phone', '$email', '$address')");
@@ -214,17 +212,14 @@ $categoryName = htmlspecialchars($row['category_name']);
                                 <div id="cartTotals">Total: ₹<span id="cartTotal">0.00</span></div>
                             </div>
 
-                            <div class="d-grid mb-2">
-                                <button class="btn btn-success" id="checkoutBtn"><i class="bi bi-cart-check"></i> Checkout</button>
+                            <div class="d-grid">
+                                <button class="btn btn-success mb-2" id="checkoutBtn"><i class="bi bi-cart-check"></i> Checkout</button>
+                                <button class="btn btn-danger btn-sm w-100" id="clearCartBtn">Clear All</button>
                             </div>
-                        </div>
-                        <div class="card-footer text-end">
-                            <button class="btn btn-danger btn-sm" id="clearCartBtn">Clear All</button>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -261,7 +256,6 @@ $categoryName = htmlspecialchars($row['category_name']);
             </div>
         </div>
     </div>
-    <!-- Bootstrap Toast -->
     <div class="toast-container position-fixed top-0 end-0 p-3">
         <div id="customerToast" class="toast align-items-center text-bg-danger border-0" role="alert">
             <div class="d-flex">
@@ -272,7 +266,6 @@ $categoryName = htmlspecialchars($row['category_name']);
             </div>
         </div>
     </div>
-    <!-- Cart Empty Toast -->
     <div class="toast-container position-fixed top-0 end-0 p-3">
         <div id="cartEmptyToast" class="toast align-items-center text-bg-warning border-0" role="alert">
             <div class="d-flex">
@@ -283,7 +276,6 @@ $categoryName = htmlspecialchars($row['category_name']);
             </div>
         </div>
     </div>
-<!-- Customer Exists Toast -->
 <div class="toast-container position-fixed top-0 end-0 p-3">
     <div id="customerExistsToast" class="toast align-items-center text-bg-danger border-0">
         <div class="d-flex">
@@ -295,7 +287,6 @@ $categoryName = htmlspecialchars($row['category_name']);
     </div>
 </div>
 
-<!-- Customer Success Toast -->
 <div class="toast-container position-fixed top-0 end-0 p-3">
     <div id="customerSuccessToast" class="toast align-items-center text-bg-success border-0">
         <div class="d-flex">
