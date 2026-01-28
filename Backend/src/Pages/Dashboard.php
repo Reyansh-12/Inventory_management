@@ -143,6 +143,69 @@ $orderListResult = $con->query($orderList);
 .c6 { background:#9c36b5; }
 .c7 { background:#20c997; }
 .c8 { background:#fcc419; }
+
+
+
+
+
+
+.legend li {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: legendFade 0.6s ease forwards;
+}
+
+.legend li:nth-child(1) { animation-delay: 0.2s; }
+.legend li:nth-child(2) { animation-delay: 0.3s; }
+.legend li:nth-child(3) { animation-delay: 0.4s; }
+.legend li:nth-child(4) { animation-delay: 0.5s; }
+.legend li:nth-child(5) { animation-delay: 0.6s; }
+.legend li:nth-child(6) { animation-delay: 0.7s; }
+.legend li:nth-child(7) { animation-delay: 0.8s; }
+.legend li:nth-child(8) { animation-delay: 0.9s; }
+
+@keyframes legendFade {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.pie-chart {
+  animation: pieRotate 1.5s ease-out forwards;
+  transform: scale(0.8) rotate(-90deg);
+}
+
+@keyframes pieRotate {
+  0% {
+    transform: scale(0.6) rotate(-90deg);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+
+.pie-chart-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip {
+  position: absolute;
+  padding: 6px 10px;
+  background: #24284a;
+  color: #fff;
+  font-size: 13px;
+  border-radius: 6px;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -120%);
+  transition: opacity 0.2s ease;
+  white-space: nowrap;
+}
+
     </style>
 </head>
 <body>
@@ -165,7 +228,7 @@ $orderListResult = $con->query($orderList);
                     <div class="col-lg-3 col-sm-6 col-12">
                         <div class="dash-widget">
                             <div class="dash-widgetimg">
-                                <span><img src="/Backend/src/assets/images/icons/dash1.svg" alt="img"></span>
+                                <span><img src="/Backend/src/assets/images/box.png" alt="img" style="100%"></span>
                             </div>
                             <div class="dash-widgetcontent">
                                 <h5><?= getCount('product_list') ?></h5>
@@ -176,7 +239,7 @@ $orderListResult = $con->query($orderList);
                     <div class="col-lg-3 col-sm-6 col-12">
                         <div class="dash-widget dash1">
                             <div class="dash-widgetimg">
-                                <span><img src="/Backend/src/assets/images/lowStock.svg" alt="img" style="width: 22px"></span>
+                                <span><img src="/Backend/src/assets/images/expired.png" alt="img" style="width: 100%"></span>
                             </div>
                             <div class="dash-widgetcontent">
                                 <h5>$<span class="counters" data-count="4385.00">$4,385.00</span></h5>
@@ -309,19 +372,20 @@ $orderListResult = $con->query($orderList);
                         <div class="pie-center">
                             <p>Inventory<br><span>Status</span></p>
                         </div>
+                        <div class="tooltip" id="tooltip"></div>
                     </div>
                     </div>
                     <div class="col-lg-6">
       
         <ul class="legend">
-          <li><span class="c1"></span>Total Products</li>
-          <li><span class="c2"></span>Expired Products</li>
-          <li><span class="c3"></span>Low Stock</li>
-          <li><span class="c4"></span>Total Sales</li>
-          <li><span class="c5"></span>Online Customers</li>
-          <li><span class="c6"></span>Walk-in Customers</li>
-          <li><span class="c7"></span>Total Suppliers</li>
-          <li><span class="c8"></span>Total Orders</li>
+          <li><span class="c1"></span>Total Products<b>20%</b></li>
+          <li><span class="c2"></span>Expired Products<b>4%</b></li>
+          <li><span class="c3"></span>Low Stock<b>8%</b></li>
+          <li><span class="c4"></span>Total Sales<b>20%</b></li>
+          <li><span class="c5"></span>Online Customers<b>12%</b></li>
+          <li><span class="c6"></span>Walk-in Customers<b>15%</b></li>
+          <li><span class="c7"></span>Total Suppliers<b>5%</b></li>
+          <li><span class="c8"></span>Total Orders<b>16%</b></li>
         </ul>
 </div>
         </div>
@@ -404,5 +468,52 @@ $orderListResult = $con->query($orderList);
                 </div>
             </div>
     </div>
+</div>
+
+        <script>
+const pie = document.getElementById("pieChart");
+const tooltip = document.getElementById("tooltip");
+
+const slices = [
+  { label: "Total Products", percent: 20 },
+  { label: "Expired Products", percent: 4 },
+  { label: "Low Stock", percent: 8 },
+  { label: "Total Sales", percent: 20 },
+  { label: "Online Customers", percent: 12 },
+  { label: "Walk-in Customers", percent: 15 },
+  { label: "Total Suppliers", percent: 5 },
+  { label: "Total Orders", percent: 16 }
+];
+
+pie.addEventListener("mousemove", (e) => {
+  const rect = pie.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+
+  const x = e.clientX - cx;
+  const y = e.clientY - cy;
+
+  let angle = Math.atan2(y, x) * (180 / Math.PI);
+  angle = (angle + 360 + 90) % 360; // normalize
+
+  let currentAngle = 0;
+  for (let slice of slices) {
+    const sliceAngle = slice.percent * 3.6;
+    if (angle >= currentAngle && angle < currentAngle + sliceAngle) {
+      tooltip.innerHTML = `${slice.label} – ${slice.percent}%`;
+      break;
+    }
+    currentAngle += sliceAngle;
+  }
+
+  tooltip.style.left = e.offsetX + "px";
+  tooltip.style.top = e.offsetY + "px";
+  tooltip.style.opacity = 1;
+});
+
+pie.addEventListener("mouseleave", () => {
+  tooltip.style.opacity = 0;
+});
+</script>
 </body>
 </html>
