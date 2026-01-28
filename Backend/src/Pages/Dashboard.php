@@ -41,9 +41,89 @@ function getCount($table) {
 }
 
 $expiredProducts = "SELECT `id`, `product_name`, `category`, `brand_name`, `minQuantity`, `price`, `quantity`, `description`, `discount`, `status`, `image_path`, `gallery_images`, `expired_date`, `created_at` FROM `product_list` WHERE 1 ORDER BY `id` DESC LIMIT 3";
-$result = $con->query($expiredProducts);
+$expiredResult = $con->query($expiredProducts);
 $orderList = "SELECT `id`, `order_id`, `customer`, `product`, `category`, `brand`, `quantity`, `status`, `created` FROM `order_list` WHERE 1 ORDER BY `id` DESC LIMIT 3";
 $orderListResult = $con->query($orderList);
+
+
+
+$sql = "SELECT COUNT(*) AS total_expired 
+        FROM product_list 
+        WHERE expired_date <= CURDATE()";
+
+$result = mysqli_query($con, $sql);
+$row = mysqli_fetch_assoc($result);
+
+$expiredCount = (int)$row['total_expired'];
+
+// Inventory status counts
+$inventorySql = "
+SELECT
+  SUM(CASE WHEN quantity > minQuantity AND expired_date >= CURDATE() THEN 1 ELSE 0 END) AS in_stock,
+  SUM(CASE WHEN quantity <= minQuantity AND quantity > 0 AND expired_date >= CURDATE() THEN 1 ELSE 0 END) AS low_stock,
+  SUM(CASE WHEN expired_date < CURDATE() THEN 1 ELSE 0 END) AS expired,
+  SUM(CASE WHEN quantity = 0 THEN 1 ELSE 0 END) AS out_stock
+FROM product_list
+
+";
+
+$inventoryResult = mysqli_query($con, $inventorySql);
+$inventory = mysqli_fetch_assoc($inventoryResult);
+
+$inventoryData = [
+  "In Stock"     => (int)$inventory['in_stock'],
+  "Low Stock"    => (int)$inventory['low_stock'],
+  "Expired"      => (int)$inventory['expired'],
+  "Out of Stock" => (int)$inventory['out_stock'],
+];
+$salesSql = "
+SELECT 
+  DATE_FORMAT(created, '%b') AS month,
+  SUM(total_amount) AS total
+FROM order_list
+WHERE YEAR(created) = YEAR(CURDATE())
+GROUP BY MONTH(created)
+ORDER BY MONTH(created)
+";
+
+$salesResult = mysqli_query($con, $salesSql);
+
+$salesLabels = [];
+$salesData = [];
+
+$inventorySql = "
+SELECT
+  SUM(CASE 
+        WHEN quantity > minQuantity AND expired_date >= CURDATE() 
+        THEN 1 ELSE 0 
+      END) AS in_stock,
+
+  SUM(CASE 
+        WHEN quantity <= minQuantity AND quantity > 0 AND expired_date >= CURDATE() 
+        THEN 1 ELSE 0 
+      END) AS low_stock,
+
+  SUM(CASE 
+        WHEN expired_date < CURDATE() 
+        THEN 1 ELSE 0 
+      END) AS expired,
+
+  SUM(CASE 
+        WHEN quantity = 0 
+        THEN 1 ELSE 0 
+      END) AS out_stock
+FROM product_list
+";
+
+$inventoryResult = mysqli_query($con, $inventorySql);
+
+if (!$inventoryResult) {
+    die("Inventory Query Error: " . mysqli_error($con));
+}
+
+$inventory = mysqli_fetch_assoc($inventoryResult);
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -228,7 +308,7 @@ $orderListResult = $con->query($orderList);
                     <div class="col-lg-3 col-sm-6 col-12">
                         <div class="dash-widget">
                             <div class="dash-widgetimg">
-                                <span><img src="/Backend/src/assets/images/box.png" alt="img" style="100%"></span>
+                                <span><img src="/Backend/src/assets/images/box.png" alt="img" style="width:100%"></span>
                             </div>
                             <div class="dash-widgetcontent">
                                 <h5><?= getCount('product_list') ?></h5>
@@ -242,7 +322,7 @@ $orderListResult = $con->query($orderList);
                                 <span><img src="/Backend/src/assets/images/expired.png" alt="img" style="width: 100%"></span>
                             </div>
                             <div class="dash-widgetcontent">
-                                <h5>$<span class="counters" data-count="4385.00">$4,385.00</span></h5>
+                                <h5><?= $expiredCount ?></h5>
                                 <h6>Expired Products</h6>
                             </div>
                         </div>
@@ -264,7 +344,7 @@ $orderListResult = $con->query($orderList);
                                 <span><img src="/Backend/src/assets/images/sale.svg" alt="img" style="width: 100%"></span>
                             </div>
                             <div class="dash-widgetcontent">
-                                <h5>$<span class="counters" data-count="40000.00">400.00</span></h5>
+                                <h5>0</h5>
                                 <h6>Total Sale Amount</h6>
                             </div>
                         </div>
@@ -364,32 +444,30 @@ $orderListResult = $con->query($orderList);
 
 
 
-                <div class="pie-card w-100 mb-4">
-                    <h3>Inventory Overview</h3>
-                    <div class="row">
-                        <div class="col-lg-6">
-                    <div class="pie-chart">
-                        <div class="pie-center">
-                            <p>Inventory<br><span>Status</span></p>
-                        </div>
-                        <div class="tooltip" id="tooltip"></div>
-                    </div>
-                    </div>
-                    <div class="col-lg-6">
-      
-        <ul class="legend">
-          <li><span class="c1"></span>Total Products<b>20%</b></li>
-          <li><span class="c2"></span>Expired Products<b>4%</b></li>
-          <li><span class="c3"></span>Low Stock<b>8%</b></li>
-          <li><span class="c4"></span>Total Sales<b>20%</b></li>
-          <li><span class="c5"></span>Online Customers<b>12%</b></li>
-          <li><span class="c6"></span>Walk-in Customers<b>15%</b></li>
-          <li><span class="c7"></span>Total Suppliers<b>5%</b></li>
-          <li><span class="c8"></span>Total Orders<b>16%</b></li>
-        </ul>
-</div>
+                <div class="row mb-4">
+  <div class="col-lg-6">
+    <div class="pie-card w-100">
+      <h3>Inventory Status</h3>
+
+      <div class="pie-chart" id="inventoryPie">
+        <div class="pie-center">
+          <p>Inventory<br><span>Status</span></p>
         </div>
+        <div class="tooltip" id="tooltip"></div>
       </div>
+
+      <ul class="legend mt-3" id="inventoryLegend"></ul>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card shadow-lg p-3">
+      <h4 class="text-center mb-3">Monthly Sales</h4>
+      <canvas id="salesChart" height="180"></canvas>
+    </div>
+  </div>
+</div>
+
 
 
 
@@ -410,8 +488,8 @@ $orderListResult = $con->query($orderList);
                                         </thead>
                                         <tbody>
                                             <?php
-                                            if ($result->num_rows > 0) {
-                                                while ($row = $result->fetch_assoc()) {
+                                            if ($expiredResult->num_rows > 0) {
+                                                while ($row = $expiredResult->fetch_assoc()) {
                                                     echo "<tr>";
                                                     echo "<td class='text-truncate' style='max-width: 95px' data-bs-toggle='tooltip' data-bs-title='".$row['product_name']."'>" . htmlspecialchars($row['product_name']) . "</td>";
                                                     echo "<td class='text-truncate' style='max-width: 95px' data-bs-toggle='tooltip' data-bs-title='".$row['category']."'>" . htmlspecialchars($row['category']) . "</td>";
@@ -470,23 +548,56 @@ $orderListResult = $con->query($orderList);
     </div>
 </div>
 
-        <script>
-const pie = document.getElementById("pieChart");
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+// ================= INVENTORY PIE =================
+const inventoryData = <?php echo json_encode($inventoryData); ?>;
+
+const inventoryPie = document.getElementById("inventoryPie");
+const legend = document.getElementById("inventoryLegend");
 const tooltip = document.getElementById("tooltip");
 
-const slices = [
-  { label: "Total Products", percent: 20 },
-  { label: "Expired Products", percent: 4 },
-  { label: "Low Stock", percent: 8 },
-  { label: "Total Sales", percent: 20 },
-  { label: "Online Customers", percent: 12 },
-  { label: "Walk-in Customers", percent: 15 },
-  { label: "Total Suppliers", percent: 5 },
-  { label: "Total Orders", percent: 16 }
-];
+const colors = {
+  "In Stock": "#20c997",
+  "Low Stock": "#ffa94d",
+  "Expired": "#ff6b6b",
+  "Out of Stock": "#495057"
+};
 
-pie.addEventListener("mousemove", (e) => {
-  const rect = pie.getBoundingClientRect();
+let total = Object.values(inventoryData).reduce((a, b) => a + b, 0) || 1;
+let startDeg = 0;
+let gradientParts = [];
+let slices = [];
+
+// Build pie + legend
+Object.entries(inventoryData).forEach(([label, value]) => {
+  const percent = Math.round((value / total) * 100);
+  const deg = percent * 3.6;
+
+  slices.push({ label, percent, start: startDeg, end: startDeg + deg });
+
+  gradientParts.push(
+    `${colors[label]} ${startDeg}deg ${startDeg + deg}deg`
+  );
+
+  legend.innerHTML += `
+    <li>
+      <span style="background:${colors[label]}"></span>
+      ${label} <b>${percent}%</b>
+    </li>
+  `;
+
+  startDeg += deg;
+});
+
+inventoryPie.style.background = `conic-gradient(${gradientParts.join(",")})`;
+
+// Tooltip logic
+inventoryPie.addEventListener("mousemove", (e) => {
+  const rect = inventoryPie.getBoundingClientRect();
   const cx = rect.left + rect.width / 2;
   const cy = rect.top + rect.height / 2;
 
@@ -494,16 +605,13 @@ pie.addEventListener("mousemove", (e) => {
   const y = e.clientY - cy;
 
   let angle = Math.atan2(y, x) * (180 / Math.PI);
-  angle = (angle + 360 + 90) % 360; // normalize
+  angle = (angle + 360 + 90) % 360;
 
-  let currentAngle = 0;
   for (let slice of slices) {
-    const sliceAngle = slice.percent * 3.6;
-    if (angle >= currentAngle && angle < currentAngle + sliceAngle) {
+    if (angle >= slice.start && angle < slice.end) {
       tooltip.innerHTML = `${slice.label} – ${slice.percent}%`;
       break;
     }
-    currentAngle += sliceAngle;
   }
 
   tooltip.style.left = e.offsetX + "px";
@@ -511,9 +619,38 @@ pie.addEventListener("mousemove", (e) => {
   tooltip.style.opacity = 1;
 });
 
-pie.addEventListener("mouseleave", () => {
+inventoryPie.addEventListener("mouseleave", () => {
   tooltip.style.opacity = 0;
 });
+
+
+// ================= SALES BAR CHART =================
+const salesLabels = <?php echo json_encode($salesLabels); ?>;
+const salesData = <?php echo json_encode($salesData); ?>;
+
+new Chart(document.getElementById("salesChart"), {
+  type: "bar",
+  data: {
+    labels: salesLabels,
+    datasets: [{
+      data: salesData,
+      backgroundColor: "#6792ff",
+      borderRadius: 8
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false }
+    },
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  }
+});
 </script>
+
 </body>
 </html>
