@@ -21,7 +21,6 @@ if (!isset($data['product_id'])) {
 $userId = $_SESSION['user_id'];
 $productId = $data['product_id'];
 
-/* PREVENT DUPLICATES */
 $check = $con->prepare(
     "SELECT id FROM wishlist WHERE user_id = ? AND product_id = ?"
 );

@@ -3,9 +3,9 @@ define("BASE_PATH", dirname(__DIR__, 3));
 include BASE_PATH . "/src/Layouts/Links.php";
 include BASE_PATH . "/src/controllers/dbConnection.php";
 
-session_start();
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+// session_start();
+// error_reporting(E_ALL);
+// ini_set('display_errors', 1);
 
 if (!isset($_SESSION['transaction_id'])) {
     $_SESSION['transaction_id'] = 'ID' . date('YmdHis') . rand(100, 999);
@@ -28,34 +28,28 @@ $result = $con->query($sql);
 
 if (isset($_POST['ajax']) && $_POST['ajax'] == 'addCustomer') {
 
-    $name    = mysqli_real_escape_string($con, $_POST['customername']);
-    $phone   = mysqli_real_escape_string($con, $_POST['customerphone']);
-    $email   = mysqli_real_escape_string($con, $_POST['customeremail']);
-    $address = mysqli_real_escape_string($con, $_POST['customeraddress']);
-
-    $errors = [];
-
-    $check = mysqli_query($con, "SELECT phone, email FROM customers WHERE phone='$phone' OR email='$email'");
-    if (mysqli_num_rows($check) > 0) {
-        $row = mysqli_fetch_assoc($check);
-        if ($row['phone'] == $phone) $errors['phone'] = "Phone number already exists";
-        if ($row['email'] == $email) $errors['email'] = "Email already exists";
-        echo json_encode(['status'=>'error','errors'=>$errors]);
-        exit;
-    }
+    // $check = mysqli_query($con, "SELECT phone, email FROM customers WHERE phone='$phone' OR email='$email'");
+    // if (mysqli_num_rows($check) > 0) {
+    //     $row = mysqli_fetch_assoc($check);
+    //     if ($row['phone'] == $phone)
+    //         $errors['phone'] = "Phone number already exists";
+    //     if ($row['email'] == $email)
+    //         $errors['email'] = "Email already exists";
+    //     echo json_encode(['status' => 'error', 'errors' => $errors]);
+    //     exit;
+    // }
 
     $customerId = 'CUST' . time();
     $insert = mysqli_query($con, "INSERT INTO customers (customer_id, name, phone, email, address)
                                   VALUES ('$customerId', '$name', '$phone', '$email', '$address')");
 
     if ($insert) {
-        echo json_encode(['status'=>'success','customer_id'=>$customerId,'customer_name'=>$name]);
+        echo json_encode(['status' => 'success', 'customer_id' => $customerId, 'customer_name' => $name]);
     } else {
-        echo json_encode(['status'=>'error','errors'=>['general'=>'Failed to add customer']]);
+        echo json_encode(['status' => 'error', 'errors' => ['general' => 'Failed to add customer']]);
     }
     exit;
 }
-
 
 $categories = [];
 $catQuery = mysqli_query($con, "SELECT id, category, image_path FROM category WHERE status='Active'");
@@ -71,10 +65,11 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dreams POS Admin Template</title>
     <link rel="stylesheet" href="/Backend/src/assets/css/pos.css" />
+    <link rel="stylesheet" href="/Backend/src/assets/css/bootstrap.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <style>
-        
+
     </style>
 </head>
 
@@ -106,7 +101,8 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
 
             <div class="row">
                 <div class="col-lg-8" style="max-height: 80vh; overflow-y: auto; padding-right:15px;">
-                    <div id="categorySlider" class="slider-container mb-3 position-relative" style="background:rgba(40, 0, 84, 0.18)">
+                    <div id="categorySlider" class="slider-container mb-3 position-relative"
+                        style="background:rgba(40, 0, 84, 0.18)">
                         <button id="prevBtn" class="carousel-control-prev slider-btn" type="button">
                             <span class="carousel-control-prev-icon"></span>
                         </button>
@@ -117,12 +113,15 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
                         <div class="overflow-hidden">
                             <div class="category-track">
                                 <?php foreach ($categories as $cat) { ?>
-                                    <div class="category-slide">
-                                        <div class="card category-card text-center" data-category="<?= $cat['id'] ?>" style="cursor:pointer">
-                                            <img src="<?= !empty($cat['image_path']) ? htmlspecialchars($cat['image_path']) : '/Backend/assets/images/product/default-category.png'; ?>" class="card-img-top">
-                                            <div class="card-body"><?= htmlspecialchars($cat['category']) ?></div>
-                                        </div>
+                                <div class="category-slide">
+                                    <div class="card category-card text-center" data-category="<?= $cat['id'] ?>"
+                                        style="cursor:pointer">
+                                        <img style="object-fit: contain"
+                                            src="<?= !empty($cat['image_path']) ? htmlspecialchars($cat['image_path']) : '/Backend/assets/images/product/default-category.png'; ?>"
+                                            class="card-img-top">
+                                        <div class="card-body"><?= htmlspecialchars($cat['category']) ?></div>
                                     </div>
+                                </div>
                                 <?php } ?>
                             </div>
                         </div>
@@ -131,44 +130,46 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
                     <div class="row row-cols-1 row-cols-md-3">
                         <?php if ($result && $result->num_rows > 0) {
                             while ($row = $result->fetch_assoc()) {
-                                $id = (int)$row['id'];
+                                $id = (int) $row['id'];
                                 $name = htmlspecialchars($row['product_name']);
-                                $categoryId   = (int)$row['category_id'];
-$categoryName = htmlspecialchars($row['category_name']);
-                                $price = number_format((float)$row['price'], 2);
+                                $categoryId = (int) $row['category_id'];
+                                $categoryName = htmlspecialchars($row['category_name']);
+                                $price = number_format((float) $row['price'], 2);
                                 $image = !empty($row['image_path']) ? $row['image_path'] : "/Inventory_managment/Backend/assets/images/favicon1.png";
-                        ?>
-                                <div class="col-12 col-md-4 col-lg-4 shadow-md" style="padding: 5px">
-                                    <div class="product-card p-3 shadow-sm rounded h-100" data-category="<?= $categoryId ?>">
-                                        <div class="text-center">
-                                            <img src="<?= $image ?>" class="img-fluid mb-2">
-                                        </div>
-                                        <h6 class="text-muted small"><?= $categoryName ?></h6>
-                                        <h5 class="text-truncate" data-bs-toggle='tooltip' data-bs-title="<?php echo $name ?>"><?= $name ?></h5>
-                                        <h6 class="text-primary">₹<?= $price ?></h6>
-                                        <div class="d-grid">
-                                            <?php $outOfStock = ((int)$row['quantity'] <= 0); ?>
-
-                                            <button class="btn <?= $outOfStock ? 'btn-secondary' : 'btn-primary' ?> addToCartBtn"
-                                                <?= $outOfStock ? 'disabled' : '' ?>
-                                                data-id="<?= $id ?>"
-                                                data-name="<?= $name ?>"
-                                                data-price="<?= (float)$price ?>"
-                                                data-stock="<?= (int)$row['quantity'] ?>">
-
-                                                <?= $outOfStock ? 'Out of Stock' : 'Add to Cart' ?>
-
-                                            </button>
-
-                                        </div>
-                                    </div>
+                                ?>
+                        <div class="col-12 col-md-4 col-lg-4 shadow-md" style="padding: 5px">
+                            <div class="product-card p-3 shadow-sm rounded h-100" data-category="<?= $categoryId ?>">
+                                <div class="text-center">
+                                    <img src="<?= $image ?>" class="img-fluid mb-2">
                                 </div>
+                                <h6 class="text-muted small"><?= $categoryName ?></h6>
+                                <h5 class="text-truncate" data-bs-toggle='tooltip' data-bs-title="<?php echo $name ?>">
+                                    <?= $name ?>
+                                </h5>
+                                <h6 class="text-primary">₹<?= $price ?></h6>
+                                <div class="d-grid">
+                                    <?php $outOfStock = ((int) $row['quantity'] <= 0); ?>
+
+                                    <button
+                                        class="btn <?= $outOfStock ? 'btn-secondary' : 'btn-primary' ?> addToCartBtn"
+                                        <?= $outOfStock ? 'disabled' : '' ?> data-id="<?= $id ?>"
+                                        data-name="<?= $name ?>" data-price="<?= (float) $price ?>"
+                                        data-stock="<?= (int) $row['quantity'] ?>">
+
+                                        <?= $outOfStock ? 'Out of Stock' : 'Add to Cart' ?>
+
+                                    </button>
+
+                                </div>
+                            </div>
+                        </div>
                         <?php }
                         } ?>
                     </div>
 
                     <div id="noProductFound" class="text-center w-100 mt-4" style="display:none;">
-                        <img src="/Backend/src/assets/images/product_not_found2.png" class="img-fluid" style="max-width:400px;">
+                        <img src="/Backend/src/assets/images/product_not_found2.png" class="img-fluid"
+                            style="max-width:400px;">
                     </div>
                 </div>
 
@@ -213,7 +214,8 @@ $categoryName = htmlspecialchars($row['category_name']);
                             </div>
 
                             <div class="d-grid">
-                                <button class="btn btn-success mb-2" id="checkoutBtn"><i class="bi bi-cart-check"></i> Checkout</button>
+                                <button class="btn btn-success mb-2" id="checkoutBtn"><i class="bi bi-cart-check"></i>
+                                    Checkout</button>
                                 <button class="btn btn-danger btn-sm w-100" id="clearCartBtn">Clear All</button>
                             </div>
                         </div>
@@ -234,23 +236,28 @@ $categoryName = htmlspecialchars($row['category_name']);
                     <form method="POST" id="customerForm" data-parsley-validate>
                         <div class="mb-3">
                             <label>Customer Name <span class="text-danger">*</span></label>
-                            <input type="text" name="customername" id="customerName" class="form-control" data-parsley-required data-parsley-error-message="Customer name is required">
+                            <input type="text" name="customername" id="customerName" class="form-control"
+                                data-parsley-required data-parsley-error-message="Customer name is required">
                         </div>
                         <div class="mb-3">
                             <label>Phone <span class="text-danger">*</span></label>
-                            <input type="text" name="customerphone" id="customerPhone" class="form-control" maxlength="10" data-parsley-required data-parsley-error-message="Phone number is required">
+                            <input type="text" name="customerphone" id="customerPhone" class="form-control"
+                                maxlength="10" data-parsley-required
+                                data-parsley-error-message="Phone number is required">
                             <small class="text-danger d-none" id="phoneError"></small>
                         </div>
                         <div class="mb-3">
                             <label>Email <span class="text-danger">*</span></label>
-                            <input type="email" name="customeremail" id="customerEmail" class="form-control" data-parsley-required data-parsley-error-message="Email is required">
+                            <input type="email" name="customeremail" id="customerEmail" class="form-control"
+                                data-parsley-required data-parsley-error-message="Email is required">
                             <small class="text-danger d-none" id="emailError"></small>
                         </div>
                         <div class="mb-3">
                             <label>Address</label>
                             <input type="text" name="customeraddress" class="form-control">
                         </div>
-                        <button type="submit" name="addCustomerSubmitButton" class="btn btn-primary">Add Customer</button>
+                        <button type="submit" name="addCustomerSubmitButton" class="btn btn-primary">Add
+                            Customer</button>
                     </form>
                 </div>
             </div>
@@ -276,362 +283,55 @@ $categoryName = htmlspecialchars($row['category_name']);
             </div>
         </div>
     </div>
-<div class="toast-container position-fixed top-0 end-0 p-3">
-    <div id="customerExistsToast" class="toast align-items-center text-bg-danger border-0">
-        <div class="d-flex">
-            <div class="toast-body">
-                Phone or Email already exists!
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div id="customerExistsToast" class="toast align-items-center text-bg-danger border-0">
+            <div class="d-flex">
+                <div class="toast-body">
+                    Phone or Email already exists!
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
             </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
         </div>
     </div>
-</div>
 
-<div class="toast-container position-fixed top-0 end-0 p-3">
-    <div id="customerSuccessToast" class="toast align-items-center text-bg-success border-0">
-        <div class="d-flex">
-            <div class="toast-body">
-                Customer added successfully!
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div id="customerSuccessToast" class="toast align-items-center text-bg-success border-0">
+            <div class="d-flex">
+                <div class="toast-body">
+                    Customer added successfully!
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
             </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
         </div>
     </div>
-</div>
-
-
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/Backend/src/assets/js/pos.js"></script>
     <script>
-        let cart = [];
-
-        function updateCartUI() {
-            const tbody = document.getElementById('cartBody');
-            tbody.innerHTML = '';
-            let total = 0;
-
-            cart.forEach((item, i) => {
-                total += item.price * item.qty;
-                tbody.innerHTML += `
-        <tr>
-            <td>
-                <span class="cart-product-name"
-                      data-bs-toggle="tooltip"
-                      title="${item.name}">
-                    ${item.name}
-                </span>
-            </td>
-            <td class="text-center">
-                <div class="qty-box">
-                    <button class="btn btn-sm btn-outline-secondary" onclick="decreaseQty(${i})">−</button>
-                    <span>${item.qty}</span>
-                    <button class="btn btn-sm btn-outline-secondary" onclick="increaseQty(${i})">+</button>
-                </div>
-            </td>
-            <td>₹${(item.price * item.qty).toFixed(2)}</td>
-            <td>
-                <button class="btn btn-sm btn-danger" onclick="removeItem(${i})">✕</button>
-            </td>
-        </tr>`;
-            });
-
-            document.getElementById('totalItems').innerText = cart.length;
-            document.getElementById('cartTotal').innerText = total.toFixed(2);
-
-            document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
-                new bootstrap.Tooltip(el);
-            });
-        }
-
-        function removeItem(i) {
-            cart.splice(i, 1);
-            updateCartUI();
-        }
-
-        function increaseQty(i) {
-            if (cart[i].qty < cart[i].stock) {
-                cart[i].qty++;
-                updateCartUI();
-            }
-        }
-
-        function decreaseQty(i) {
-            if (cart[i].qty > 1) {
-                cart[i].qty--;
-            } else {
-                cart.splice(i, 1);
-            }
-            updateCartUI();
-        }
-        document.querySelectorAll('.addToCartBtn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const id = btn.dataset.id,
-                    name = btn.dataset.name,
-                    price = parseFloat(btn.dataset.price),
-                    stock = parseInt(btn.dataset.stock);
-                let index = cart.findIndex(p => p.id == id);
-                if (index !== -1) {
-                    if (cart[index].qty >= cart[index].stock) {
-                        alert(`Only ${cart[index].stock} items available`);
-                        return;
-                    }
-                    cart[index].qty++;
-                    updateCartUI();
-                    return;
-                }
-                if (stock <= 0) {
-                    alert("Out of stock");
-                    return;
-                }
-                cart.push({
-                    id,
-                    name,
-                    price,
-                    qty: 1,
-                    stock
-                });
-                updateCartUI();
-            });
-        });
-        document.getElementById('checkoutBtn').addEventListener('click', () => {
-    const customerId = document.getElementById('customerSelect').value;
-
-    if (cart.length === 0) {
-        new bootstrap.Toast(
-            document.getElementById('cartEmptyToast'),
-            { delay: 3000 }
-        ).show();
-        return;
-    }
-
-    if (!customerId) {
-        new bootstrap.Toast(
-            document.getElementById('customerToast'),
-            { delay: 3000 }
-        ).show();
-        return;
-    }
-    fetch('/Backend/src/Pages/POS/checkout.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            transaction_id: "<?= $_SESSION['transaction_id']; ?>",
-            customer_id: customerId,
-            cart: cart
-        })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.status === 'success') {
-            Swal.fire({
-                icon: 'success',
-                title: data.message,
-                timer: 1500,
-                showConfirmButton: false
-            });
-            cart = [];
-            updateCartUI();
-            setTimeout(() => location.reload(), 1200);
-        }
-    })
-    .catch(() => {
-        Swal.fire({
-            icon: 'error',
-            title: 'Checkout failed'
-        });
-    });
-});
-
-
-
-        document.getElementById('clearCartBtn').addEventListener('click', () => {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "All products in the cart will be removed!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Yes, clear cart!',
-                cancelButtonText: 'Cancel'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    
-                    cart = [];
-                    updateCartUI();
-
-        
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Cart Cleared',
-                        text: 'All products have been removed from the cart.',
-                        timer: 1500,
-                        showConfirmButton: false,
-                        timerProgressBar: true
-                    });
-                }
-            });
-        });
-    </script>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const track = document.querySelector(".category-track");
-            const slides = document.querySelectorAll(".category-slide");
-            const products = document.querySelectorAll(".product-card");
-            const noProduct = document.getElementById("noProductFound");
-            const nextBtn = document.getElementById("nextBtn");
-            const prevBtn = document.getElementById("prevBtn");
-            const visibleCards = 3;
-            let currentIndex = 0;
-
-            function updateSlider() {
-                const slideWidth = slides[0].offsetWidth;
-                track.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
-            }
-
-            nextBtn.addEventListener("click", () => {
-                if (currentIndex < slides.length - visibleCards) {
-                    currentIndex++;
-                    updateSlider();
-                }
-            });
-            prevBtn.addEventListener("click", () => {
-                if (currentIndex > 0) {
-                    currentIndex--;
-                    updateSlider();
-                }
-            });
-
-            document.querySelectorAll(".category-card").forEach(card => {
-    card.addEventListener("click", function () {
-        const selectedCategory = this.dataset.category;
-        let found = false;
-
-        products.forEach(product => {
-            const wrapper = product.closest(".col-12");
-            if (product.dataset.category === selectedCategory) {
-                wrapper.style.display = "";
-                found = true;
-            } else {
-                wrapper.style.display = "none";
-            }
-        });
-
-        noProduct.style.display = found ? "none" : "block";
-    });
-});
-
-
-            window.addEventListener("resize", updateSlider);
-        });
-        
-    </script>
-
     <?php unset($_SESSION['selected_customer_id']); ?>
-    <script>
-        $('#customerName').on('input', function () {
-    let value = $(this).val();
-    value = value.replace(/[^a-zA-Z\s]/g, '');
-    $(this).val(value);
-});
-        $('#customerPhone').on('input', function() {
-            let inputValue = $(this).val();
-            let filteredValue = inputValue.replace(/[^0-9]/g, '');
-            $(this).val(filteredValue);
-        });
+    document.addEventListener("DOMContentLoaded", function() {
 
-$('#customerEmail').on('input', function () {
-    let value = $(this).val();
+        <?php if (isset($_SESSION['customer_error'])) { ?>
+        new bootstrap.Toast(
+            document.getElementById('customerExistsToast'), {
+                delay: 4000
+            }
+        ).show();
+        <?php unset($_SESSION['customer_error']);
+    } ?>
 
-    value = value.replace(/[^a-zA-Z0-9@.]/g, '');
+        <?php if (isset($_SESSION['customer_success'])) { ?>
+        new bootstrap.Toast(
+            document.getElementById('customerSuccessToast'), {
+                delay: 3000
+            }
+        ).show();
+        <?php unset($_SESSION['customer_success']);
+    } ?>
 
-    if (value.length === 1 && !/^[A-Za-z]$/.test(value)) {
-        value = '';
-    }
-
-    $(this).val(value);
-});
-document.getElementById('customerPhone').addEventListener('input', function (e) {
-    let value = e.target.value.replace(/\D/g, '');
-
-    if (value.length === 1 && !/^[6-9]$/.test(value)) {
-        value = '';
-    }
-
-    e.target.value = value.slice(0, 10);
-});
+    });
     </script>
-    <script>
-document.addEventListener("DOMContentLoaded", function () {
-
-    <?php if (isset($_SESSION['customer_error'])) { ?>
-        new bootstrap.Toast(
-            document.getElementById('customerExistsToast'),
-            { delay: 4000 }
-        ).show();
-    <?php unset($_SESSION['customer_error']); } ?>
-
-    <?php if (isset($_SESSION['customer_success'])) { ?>
-        new bootstrap.Toast(
-            document.getElementById('customerSuccessToast'),
-            { delay: 3000 }
-        ).show();
-    <?php unset($_SESSION['customer_success']); } ?>
-
-});
-</script>
-<script>
-document.getElementById('customerForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    const phoneEl = document.getElementById('phoneError');
-    const emailEl = document.getElementById('emailError');
-    phoneEl.innerText = '';
-    phoneEl.classList.add('d-none');
-    emailEl.innerText = '';
-    emailEl.classList.add('d-none');
-
-    const formData = new FormData(this);
-    formData.append('ajax','addCustomer');
-
-    fetch("", { method:'POST', body:formData })
-    .then(res => res.json())
-    .then(data => {
-        if(data.status === 'error') {
-            if(data.errors.phone) {
-                phoneEl.innerText = data.errors.phone;
-                phoneEl.classList.remove('d-none');
-            }
-            if(data.errors.email) {
-                emailEl.innerText = data.errors.email;
-                emailEl.classList.remove('d-none');
-            }
-            if(data.errors.general) {
-                alert(data.errors.general);
-            }
-        } 
-        else if(data.status === 'success') {
-            const toastEl = document.getElementById('customerSuccessToast');
-            const toast = new bootstrap.Toast(toastEl, {delay:3000});
-            toast.show();
-
-            this.reset();
-            $('#addCustomerModal').modal('hide');
-
-            
-            const select = document.getElementById('customerSelect');
-            const option = document.createElement('option');
-            option.value = data.customer_id;
-            option.text = data.customer_name;
-            select.prepend(option);
-            select.value = data.customer_id;
-        }
-    })
-    .catch(err => console.error(err));
-});
-
-</script>
 </body>
 
 </html>

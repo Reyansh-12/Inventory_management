@@ -16,9 +16,9 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Admin') {
 //     exit();
 // }
 
-function getCount($table) {
+function getCount($table)
+{
     global $con;
-
     $allowedTables = [
         'new_user',
         'supplier',
@@ -45,8 +45,6 @@ $expiredResult = $con->query($expiredProducts);
 $orderList = "SELECT `id`, `order_id`, `customer`, `product`, `category`, `brand`, `quantity`, `status`, `created` FROM `order_list` WHERE 1 ORDER BY `id` DESC LIMIT 3";
 $orderListResult = $con->query($orderList);
 
-
-
 $sql = "SELECT COUNT(*) AS total_expired 
         FROM product_list 
         WHERE expired_date <= CURDATE()";
@@ -54,9 +52,27 @@ $sql = "SELECT COUNT(*) AS total_expired
 $result = mysqli_query($con, $sql);
 $row = mysqli_fetch_assoc($result);
 
-$expiredCount = (int)$row['total_expired'];
+$expiredCount = (int) $row['total_expired'];
 
-// Inventory status counts
+$lowStocksql = mysqli_query($con, "
+    SELECT COUNT(*) AS total_low_stock 
+    FROM product_list 
+    WHERE quantity <= minQuantity AND quantity > 0
+");
+$lowStockRow = mysqli_fetch_assoc($lowStocksql);
+$lowStockCount = (int) $lowStockRow['total_low_stock'];
+
+$result = mysqli_query($con, "
+    SELECT SUM(total_amount) AS grand_total
+    FROM order_list
+");
+
+$row = mysqli_fetch_assoc($result);
+$grandTotal = $row['grand_total'] ?? 0;
+$total = (float) $grandTotal;
+
+
+
 $inventorySql = "
 SELECT
   SUM(CASE WHEN quantity > minQuantity AND expired_date >= CURDATE() THEN 1 ELSE 0 END) AS in_stock,
@@ -71,25 +87,32 @@ $inventoryResult = mysqli_query($con, $inventorySql);
 $inventory = mysqli_fetch_assoc($inventoryResult);
 
 $inventoryData = [
-  "In Stock"     => (int)$inventory['in_stock'],
-  "Low Stock"    => (int)$inventory['low_stock'],
-  "Expired"      => (int)$inventory['expired'],
-  "Out of Stock" => (int)$inventory['out_stock'],
+    "In Stock" => (int) $inventory['in_stock'],
+    "Low Stock" => (int) $inventory['low_stock'],
+    "Expired" => (int) $inventory['expired'],
+    "Out of Stock" => (int) $inventory['out_stock'],
 ];
+$salesLabels = [];
+$salesData = [];
+
 $salesSql = "
 SELECT 
-  DATE_FORMAT(created, '%b') AS month,
-  SUM(total_amount) AS total
+  DATE_FORMAT(MIN(created), '%b') AS month,
+  SUM(price * quantity) AS total
 FROM order_list
 WHERE YEAR(created) = YEAR(CURDATE())
-GROUP BY MONTH(created)
-ORDER BY MONTH(created)
+GROUP BY YEAR(created), MONTH(created)
+ORDER BY YEAR(created), MONTH(created)
 ";
 
 $salesResult = mysqli_query($con, $salesSql);
 
-$salesLabels = [];
-$salesData = [];
+if ($salesResult) {
+    while ($row = mysqli_fetch_assoc($salesResult)) {
+        $salesLabels[] = $row['month'];
+        $salesData[] = (float) $row['total'];
+    }
+}
 
 $inventorySql = "
 SELECT
@@ -127,167 +150,23 @@ $inventory = mysqli_fetch_assoc($inventoryResult);
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
     <meta name="description" content="POS - Bootstrap Admin Template">
-    <meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern,  html5, responsive">
+    <meta name="keywords"
+        content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern,  html5, responsive">
     <meta name="author" content="Dreamguys - Bootstrap Admin Template">
     <meta name="robots" content="noindex, nofollow">
     <title>BRANCY – Cosmetic Store</title>
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.dataTables.css" />
+    <link rel="stylesheet" href="/Backend/src/assets/css/dashboard/dashboard.css">
     <style>
-        .pie-card {
-  width: 360px;
-  padding: 25px;
-  background: #fff;
-  border-radius: 20px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-}
-
-.pie-card h3 {
-  text-align: center;
-  margin-bottom: 20px;
-  color: #24284a;
-}
-
-.pie-chart {
-  width: 220px;
-  height: 220px;
-  margin: auto;
-  border-radius: 50%;
-  background: conic-gradient(
-    #6792ff 0deg 72deg,
-    #ff6b6b 72deg 90deg,
-    #ffa94d 90deg 126deg,
-    #4dabf7 126deg 198deg,
-    #845ef7 198deg 241deg,
-    #9c36b5 241deg 295deg,
-    #20c997 295deg 324deg,
-    #fcc419 324deg 360deg
-  );
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.pie-center {
-  width: 140px;
-  height: 140px;
-  background: #fff;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: inset 0 5px 10px rgba(0,0,0,0.08);
-}
-
-.pie-center p {
-  text-align: center;
-  font-weight: 600;
-  color: #24284a;
-}
-
-.pie-center span {
-  font-size: 14px;
-  font-weight: 400;
-  color: #666;
-}
-
-.legend {
-  list-style: none;
-  margin-top: 20px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  font-size: 14px;
-}
-
-.legend li {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.legend span {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-}
-
-.c1 { background:#6792ff; }
-.c2 { background:#ff6b6b; }
-.c3 { background:#ffa94d; }
-.c4 { background:#4dabf7; }
-.c5 { background:#845ef7; }
-.c6 { background:#9c36b5; }
-.c7 { background:#20c997; }
-.c8 { background:#fcc419; }
-
-
-
-
-
-
-.legend li {
-  opacity: 0;
-  transform: translateY(10px);
-  animation: legendFade 0.6s ease forwards;
-}
-
-.legend li:nth-child(1) { animation-delay: 0.2s; }
-.legend li:nth-child(2) { animation-delay: 0.3s; }
-.legend li:nth-child(3) { animation-delay: 0.4s; }
-.legend li:nth-child(4) { animation-delay: 0.5s; }
-.legend li:nth-child(5) { animation-delay: 0.6s; }
-.legend li:nth-child(6) { animation-delay: 0.7s; }
-.legend li:nth-child(7) { animation-delay: 0.8s; }
-.legend li:nth-child(8) { animation-delay: 0.9s; }
-
-@keyframes legendFade {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-.pie-chart {
-  animation: pieRotate 1.5s ease-out forwards;
-  transform: scale(0.8) rotate(-90deg);
-}
-
-@keyframes pieRotate {
-  0% {
-    transform: scale(0.6) rotate(-90deg);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1) rotate(0deg);
-    opacity: 1;
-  }
-}
-
-
-.pie-chart-wrapper {
-  position: relative;
-  display: inline-block;
-}
-
-.tooltip {
-  position: absolute;
-  padding: 6px 10px;
-  background: #24284a;
-  color: #fff;
-  font-size: 13px;
-  border-radius: 6px;
-  pointer-events: none;
-  opacity: 0;
-  transform: translate(-50%, -120%);
-  transition: opacity 0.2s ease;
-  white-space: nowrap;
-}
 
     </style>
 </head>
+
 <body>
     <div id="global-loader">
         <div class="whirly-loader"> </div>
@@ -303,100 +182,103 @@ $inventory = mysqli_fetch_assoc($inventoryResult);
         </div>
     </div>
     <div class="page-wrapper">
-            <div class="content">
-                <div class="row">
-                    <div class="col-lg-3 col-sm-6 col-12">
-                        <div class="dash-widget">
-                            <div class="dash-widgetimg">
-                                <span><img src="/Backend/src/assets/images/box.png" alt="img" style="width:100%"></span>
-                            </div>
-                            <div class="dash-widgetcontent">
-                                <h5><?= getCount('product_list') ?></h5>
-                                <h6>Total Products</h6>
-                            </div>
+        <div class="content">
+            <div class="row">
+                <div class="col-lg-3 col-sm-6 col-12">
+                    <div class="dash-widget">
+                        <div class="dash-widgetimg">
+                            <span><img src="/Backend/src/assets/images/box.png" alt="img" style="width:100%"></span>
+                        </div>
+                        <div class="dash-widgetcontent">
+                            <h5><?= getCount('product_list') ?></h5>
+                            <h6>Total Products</h6>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
-                        <div class="dash-widget dash1">
-                            <div class="dash-widgetimg">
-                                <span><img src="/Backend/src/assets/images/expired.png" alt="img" style="width: 100%"></span>
-                            </div>
-                            <div class="dash-widgetcontent">
-                                <h5><?= $expiredCount ?></h5>
-                                <h6>Expired Products</h6>
-                            </div>
+                </div>
+                <div class="col-lg-3 col-sm-6 col-12">
+                    <div class="dash-widget dash1">
+                        <div class="dash-widgetimg">
+                            <span><img src="/Backend/src/assets/images/expired.png" alt="img"
+                                    style="width: 100%"></span>
+                        </div>
+                        <div class="dash-widgetcontent">
+                            <h5><?= $expiredCount ?></h5>
+                            <h6>Expired Products</h6>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
-                        <div class="dash-widget dash2">
-                            <div class="dash-widgetimg">
-                                <span><img src="/Backend/src/assets/images/lowStock.svg" alt="img" style="width: 22px"></span>
-                            </div>
-                            <div class="dash-widgetcontent">
-                                <h5>$<span class="counters" data-count="385656.50">385,656.50</span></h5>
-                                <h6>Low stocks</h6>
-                            </div>
+                </div>
+                <div class="col-lg-3 col-sm-6 col-12">
+                    <div class="dash-widget dash2">
+                        <div class="dash-widgetimg">
+                            <span><img src="/Backend/src/assets/images/lowStock.svg" alt="img"
+                                    style="width: 22px"></span>
+                        </div>
+                        <div class="dash-widgetcontent">
+                            <h5><?= $lowStockCount ?></h5>
+                            <h6>Low stocks</h6>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
-                        <div class="dash-widget dash3">
-                            <div class="dash-widgetimg">
-                                <span><img src="/Backend/src/assets/images/sale.svg" alt="img" style="width: 100%"></span>
-                            </div>
-                            <div class="dash-widgetcontent">
-                                <h5>0</h5>
-                                <h6>Total Sale Amount</h6>
-                            </div>
+                </div>
+                <div class="col-lg-3 col-sm-6 col-12">
+                    <div class="dash-widget dash3">
+                        <div class="dash-widgetimg">
+                            <span><img src="/Backend/src/assets/images/sale.svg" alt="img" style="width: 100%"></span>
+                        </div>
+                        <div class="dash-widgetcontent">
+                            <h5><?= '₹ '.$total ?></h5>
+                            <h6>Total Sale Amount</h6>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
-                        <div class="dash-widget">
-                            <div class="dash-widgetimg">
-                                <span><img src="/Backend/src/assets/images/onlineCutomer.svg" alt="img" style="width: 100%"></span>
-                            </div>
-                            <div class="dash-widgetcontent">
-                                <h5><?= getCount('new_user') ?></h5>
-                                <h6>Online Cutomers</h6>
-                            </div>
+                </div>
+                <div class="col-lg-3 col-sm-6 col-12">
+                    <div class="dash-widget">
+                        <div class="dash-widgetimg">
+                            <span><img src="/Backend/src/assets/images/onlineCutomer.svg" alt="img"
+                                    style="width: 100%"></span>
+                        </div>
+                        <div class="dash-widgetcontent">
+                            <h5><?= getCount('new_user') ?></h5>
+                            <h6>Online Cutomers</h6>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
-                        <div class="dash-widget dash1">
-                            <div class="dash-widgetimg">
-                                <span><img src="/Backend/src/assets/images/offlineCutomer.svg" alt="img" style="width: 100%"></span>
-                            </div>
-                            <div class="dash-widgetcontent">
-                                <h5><?= getCount('customers') ?></h5>
-                                <h6>Walk In Cutomers</h6>
-                            </div>
+                </div>
+                <div class="col-lg-3 col-sm-6 col-12">
+                    <div class="dash-widget dash1">
+                        <div class="dash-widgetimg">
+                            <span><img src="/Backend/src/assets/images/offlineCutomer.svg" alt="img"
+                                    style="width: 100%"></span>
+                        </div>
+                        <div class="dash-widgetcontent">
+                            <h5><?= getCount('customers') ?></h5>
+                            <h6>Walk In Cutomers</h6>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
-                        <div class="dash-widget dash2">
-                            <div class="dash-widgetimg">
-                                <span><img src="/Backend/src/assets/images/supplier.svg" alt="img" style="width: 100%"></span>
-                            </div>
-                            <div class="dash-widgetcontent">
-                                <h5><?= getCount('supplier') ?></h5>
-                                <h6>Total Suppliers</h6>
-                            </div>
+                </div>
+                <div class="col-lg-3 col-sm-6 col-12">
+                    <div class="dash-widget dash2">
+                        <div class="dash-widgetimg">
+                            <span><img src="/Backend/src/assets/images/supplier.svg" alt="img"
+                                    style="width: 100%"></span>
+                        </div>
+                        <div class="dash-widgetcontent">
+                            <h5><?= getCount('supplier') ?></h5>
+                            <h6>Total Suppliers</h6>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
-                        <div class="dash-widget dash3">
-                            <div class="dash-widgetimg">
-                                <span><img src="/Backend/src/assets/images/orders.jpg" alt="img" width="100%"></span>
-                            </div>
-                            <div class="dash-widgetcontent">
-                                <h5><?= getCount('order_list') ?></h5>
-                                <h6>Total Orders</h6>
-                            </div>
+                </div>
+                <div class="col-lg-3 col-sm-6 col-12">
+                    <div class="dash-widget dash3">
+                        <div class="dash-widgetimg">
+                            <span><img src="/Backend/src/assets/images/orders.jpg" alt="img" width="100%"></span>
+                        </div>
+                        <div class="dash-widgetcontent">
+                            <h5><?= getCount('order_list') ?></h5>
+                            <h6>Total Orders</h6>
                         </div>
                     </div>
+                </div>
 
-
-
-                    <!-- <div class="col-lg-3 col-sm-6 col-12 d-flex">
+                <!-- <div class="col-lg-3 col-sm-6 col-12 d-flex">
                         <div class="dash-count">
                             <div class="dash-counts">
                                 <h4><?= getCount('new_user') ?></h4>
@@ -440,217 +322,234 @@ $inventory = mysqli_fetch_assoc($inventoryResult);
                             </div>
                         </div>
                     </div> -->
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-lg-6">
+                    <div class="pie-card w-100" style="height: 400px">
+                        <h3>Inventory Status</h3>
+
+                        <div class="pie-chart" id="inventoryPie">
+                            <div class="pie-center">
+                                <p>Inventory<br><span>Status</span></p>
+                            </div>
+                            <div class="tooltip" id="tooltip"></div>
+                        </div>
+                        <ul class="legend mt-3" id="inventoryLegend"></ul>
+                    </div>
                 </div>
 
-
-
-                <div class="row mb-4">
-  <div class="col-lg-6">
-    <div class="pie-card w-100">
-      <h3>Inventory Status</h3>
-
-      <div class="pie-chart" id="inventoryPie">
-        <div class="pie-center">
-          <p>Inventory<br><span>Status</span></p>
-        </div>
-        <div class="tooltip" id="tooltip"></div>
-      </div>
-
-      <ul class="legend mt-3" id="inventoryLegend"></ul>
-    </div>
-  </div>
-
-  <div class="col-lg-6">
-    <div class="card shadow-lg p-3">
-      <h4 class="text-center mb-3">Monthly Sales</h4>
-      <canvas id="salesChart" height="180"></canvas>
-    </div>
-  </div>
-</div>
-
-
-
-
-                <div class="row">
-                    <div class="col-lg-6">
-                        <h4>Recently added products</h4>
-                        <div class="card shadow-lg">
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-center mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th>Product Name</th>
-                                                <th>Category</th>
-                                                <th>Brand</th>
-                                                <th>Expired Date</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php
-                                            if ($expiredResult->num_rows > 0) {
-                                                while ($row = $expiredResult->fetch_assoc()) {
-                                                    echo "<tr>";
-                                                    echo "<td class='text-truncate' style='max-width: 95px' data-bs-toggle='tooltip' data-bs-title='".$row['product_name']."'>" . htmlspecialchars($row['product_name']) . "</td>";
-                                                    echo "<td class='text-truncate' style='max-width: 95px' data-bs-toggle='tooltip' data-bs-title='".$row['category']."'>" . htmlspecialchars($row['category']) . "</td>";
-                                                    echo "<td class='text-truncate' style='max-width: 95px' data-bs-toggle='tooltip' data-bs-title='".$row['brand_name']."'>" . htmlspecialchars($row['brand_name']) . "</td>";
-                                                    echo "<td>" . htmlspecialchars($row['expired_date']) . "</td>";
-                                                    echo "</tr>";
-                                                }
-                                            } else {
-                                                echo "<tr><td colspan='4'>No expired products found.</td></tr>";
-                                            }
-                                            ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <h4>Recently order list</h4>
-                        <div class="card shadow-lg">
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-center mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th>Order ID</th>
-                                                <th>Customer</th>
-                                                <th>Product</th>
-                                                <th>Quantity</th>
-                                                <th>Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php
-                                            if ($orderListResult->num_rows > 0) {
-                                                while ($row = $orderListResult->fetch_assoc()) {
-                                                    echo "<tr>";
-                                                    echo "<td>". htmlspecialchars($row['order_id']) . "</td>";
-                                                    echo "<td class='text-truncate' style='max-width: 95px' data-bs-toggle='tooltip' data-bs-title='".$row['customer']."'>" . htmlspecialchars($row['customer']) . "</td>";
-                                                    echo "<td class='text-truncate' style='max-width: 95px' data-bs-toggle='tooltip' data-bs-title='".$row['product']."'>" . htmlspecialchars($row['product']) . "</td>";
-                                                    echo "<td>" . htmlspecialchars($row['quantity']) . "</td>";
-                                                    echo "<td>" . htmlspecialchars($row['status']) . "</td>";
-                                                    echo "</tr>";
-                                                } 
-                                            } else {
-                                                echo "<tr><td colspan='5'>No orders found.</td></tr>";
-                                            }
-                                            ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                <div class="col-lg-6">
+                    <div class="card shadow-lg p-3" style="height: 400px">
+                        <h4 class="text-center mb-3">Monthly Sales</h4>
+                        <!-- <div class="mb-4 mt-3 d-flex justify-content-end">
+                            <button class="me-2 btn btn-white border border-primary">Daily</button>
+                            <button class="me-2 btn btn-white">Monthly</button>
+                            <button class="btn btn-white text-center">Yearly</button>
+                        </div> -->
+                        <canvas id="salesChart" height="180"></canvas>
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <h4>Recently added products</h4>
+                    <div class="card shadow-lg">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-center mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Product Name</th>
+                                            <th>Category</th>
+                                            <th>Brand</th>
+                                            <th>Expired Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        if ($expiredResult->num_rows > 0) {
+                                            while ($row = $expiredResult->fetch_assoc()) {
+                                                echo "<tr>";
+                                                echo "<td class='text-truncate' style='max-width: 95px' data-bs-toggle='tooltip' data-bs-title='" . $row['product_name'] . "'>" . htmlspecialchars($row['product_name']) . "</td>";
+                                                echo "<td class='text-truncate' style='max-width: 95px' data-bs-toggle='tooltip' data-bs-title='" . $row['category'] . "'>" . htmlspecialchars($row['category']) . "</td>";
+                                                echo "<td class='text-truncate' style='max-width: 95px' data-bs-toggle='tooltip' data-bs-title='" . $row['brand_name'] . "'>" . htmlspecialchars($row['brand_name']) . "</td>";
+                                                echo "<td>" . htmlspecialchars($row['expired_date']) . "</td>";
+                                                echo "</tr>";
+                                            }
+                                        } else {
+                                            echo "<tr><td colspan='4'>No expired products found.</td></tr>";
+                                        }
+                                        ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <h4>Recently order list</h4>
+                    <div class="card shadow-lg">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-center mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Order ID</th>
+                                            <th>Customer</th>
+                                            <th>Product</th>
+                                            <th>Quantity</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        if ($orderListResult->num_rows > 0) {
+                                            while ($row = $orderListResult->fetch_assoc()) {
+                                                echo "<tr>";
+                                                echo "<td>" . htmlspecialchars($row['order_id']) . "</td>";
+                                                echo "<td class='text-truncate' style='max-width: 95px' data-bs-toggle='tooltip' data-bs-title='" . $row['customer'] . "'>" . htmlspecialchars($row['customer']) . "</td>";
+                                                echo "<td class='text-truncate' style='max-width: 95px' data-bs-toggle='tooltip' data-bs-title='" . $row['product'] . "'>" . htmlspecialchars($row['product']) . "</td>";
+                                                echo "<td>" . htmlspecialchars($row['quantity']) . "</td>";
+                                                $statusClass = '';
+
+                                                switch (strtolower($row['status'])) {
+                                                    case 'pending':
+                                                        $statusClass = 'bg-warning';
+                                                        break;
+                                                    case 'delivered':
+                                                        $statusClass = 'bg-success';
+                                                        break;
+                                                    case 'canceled':
+                                                        $statusClass = 'bg-danger';
+                                                        break;
+                                                    default:
+                                                        $statusClass = 'bg-secondary';
+                                                }
+
+                                                echo "<td><span class='badge $statusClass'>" . htmlspecialchars($row['status']) . "</span></td>";
+                                                echo "</tr>";
+                                            }
+                                        } else {
+                                            echo "<tr><td colspan='5'>No orders found.</td></tr>";
+                                        }
+                                        ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 
 
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<script>
-// ================= INVENTORY PIE =================
-const inventoryData = <?php echo json_encode($inventoryData); ?>;
+    <script>
+    const inventoryData = <?php echo json_encode($inventoryData); ?>;
 
-const inventoryPie = document.getElementById("inventoryPie");
-const legend = document.getElementById("inventoryLegend");
-const tooltip = document.getElementById("tooltip");
+    const inventoryPie = document.getElementById("inventoryPie");
+    const legend = document.getElementById("inventoryLegend");
+    const tooltip = document.getElementById("tooltip");
 
-const colors = {
-  "In Stock": "#20c997",
-  "Low Stock": "#ffa94d",
-  "Expired": "#ff6b6b",
-  "Out of Stock": "#495057"
-};
+    const colors = {
+        "In Stock": "#20c997",
+        "Low Stock": "#ffa94d",
+        "Expired": "#ff6b6b",
+        "Out of Stock": "#495057"
+    };
 
-let total = Object.values(inventoryData).reduce((a, b) => a + b, 0) || 1;
-let startDeg = 0;
-let gradientParts = [];
-let slices = [];
+    let total = Object.values(inventoryData).reduce((a, b) => a + b, 0) || 1;
+    let startDeg = 0;
+    let gradientParts = [];
+    let slices = [];
 
-// Build pie + legend
-Object.entries(inventoryData).forEach(([label, value]) => {
-  const percent = Math.round((value / total) * 100);
-  const deg = percent * 3.6;
+    Object.entries(inventoryData).forEach(([label, value]) => {
+        const percent = Math.round((value / total) * 100);
+        const deg = percent * 3.6;
 
-  slices.push({ label, percent, start: startDeg, end: startDeg + deg });
+        slices.push({
+            label,
+            percent,
+            start: startDeg,
+            end: startDeg + deg
+        });
 
-  gradientParts.push(
-    `${colors[label]} ${startDeg}deg ${startDeg + deg}deg`
-  );
+        gradientParts.push(
+            `${colors[label]} ${startDeg}deg ${startDeg + deg}deg`
+        );
 
-  legend.innerHTML += `
+        legend.innerHTML += `
     <li>
       <span style="background:${colors[label]}"></span>
       ${label} <b>${percent}%</b>
     </li>
   `;
 
-  startDeg += deg;
-});
+        startDeg += deg;
+    });
 
-inventoryPie.style.background = `conic-gradient(${gradientParts.join(",")})`;
+    inventoryPie.style.background = `conic-gradient(${gradientParts.join(",")})`;
 
-// Tooltip logic
-inventoryPie.addEventListener("mousemove", (e) => {
-  const rect = inventoryPie.getBoundingClientRect();
-  const cx = rect.left + rect.width / 2;
-  const cy = rect.top + rect.height / 2;
+    inventoryPie.addEventListener("mousemove", (e) => {
+        const rect = inventoryPie.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
 
-  const x = e.clientX - cx;
-  const y = e.clientY - cy;
+        const x = e.clientX - cx;
+        const y = e.clientY - cy;
 
-  let angle = Math.atan2(y, x) * (180 / Math.PI);
-  angle = (angle + 360 + 90) % 360;
+        let angle = Math.atan2(y, x) * (180 / Math.PI);
+        angle = (angle + 360 + 90) % 360;
 
-  for (let slice of slices) {
-    if (angle >= slice.start && angle < slice.end) {
-      tooltip.innerHTML = `${slice.label} – ${slice.percent}%`;
-      break;
-    }
-  }
+        for (let slice of slices) {
+            if (angle >= slice.start && angle < slice.end) {
+                tooltip.innerHTML = `${slice.label} – ${slice.percent}%`;
+                break;
+            }
+        }
 
-  tooltip.style.left = e.offsetX + "px";
-  tooltip.style.top = e.offsetY + "px";
-  tooltip.style.opacity = 1;
-});
+        tooltip.style.left = e.offsetX + "px";
+        tooltip.style.top = e.offsetY + "px";
+        tooltip.style.opacity = 1;
+    });
 
-inventoryPie.addEventListener("mouseleave", () => {
-  tooltip.style.opacity = 0;
-});
+    inventoryPie.addEventListener("mouseleave", () => {
+        tooltip.style.opacity = 0;
+    });
 
 
-// ================= SALES BAR CHART =================
-const salesLabels = <?php echo json_encode($salesLabels); ?>;
-const salesData = <?php echo json_encode($salesData); ?>;
+    const salesLabels = <?php echo json_encode($salesLabels); ?>;
+    const salesData = <?php echo json_encode($salesData); ?>;
 
-new Chart(document.getElementById("salesChart"), {
-  type: "bar",
-  data: {
-    labels: salesLabels,
-    datasets: [{
-      data: salesData,
-      backgroundColor: "#6792ff",
-      borderRadius: 8
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: { display: false }
-    },
-    scales: {
-      y: {
-        beginAtZero: true
-      }
-    }
-  }
-});
-</script>
+    new Chart(document.getElementById("salesChart"), {
+        type: "bar",
+        data: {
+            labels: salesLabels,
+            datasets: [{
+                data: salesData,
+                backgroundColor: "#6792ff",
+                borderRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+    </script>
 
 </body>
+
 </html>
