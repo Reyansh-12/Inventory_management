@@ -396,7 +396,6 @@ $categoryName = htmlspecialchars($row['category_name']);
         document.getElementById('checkoutBtn').addEventListener('click', () => {
     const customerId = document.getElementById('customerSelect').value;
 
-    // ❌ Cart empty → Bootstrap Toast
     if (cart.length === 0) {
         new bootstrap.Toast(
             document.getElementById('cartEmptyToast'),
@@ -405,7 +404,6 @@ $categoryName = htmlspecialchars($row['category_name']);
         return;
     }
 
-    // ❌ Customer not selected → Bootstrap Toast
     if (!customerId) {
         new bootstrap.Toast(
             document.getElementById('customerToast'),
@@ -413,8 +411,6 @@ $categoryName = htmlspecialchars($row['category_name']);
         ).show();
         return;
     }
-
-    // ✅ Checkout request
     fetch('/Backend/src/Pages/POS/checkout.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -460,11 +456,11 @@ $categoryName = htmlspecialchars($row['category_name']);
                 cancelButtonText: 'Cancel'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Clear the cart
+                    
                     cart = [];
                     updateCartUI();
 
-                    // Success alert
+        
                     Swal.fire({
                         icon: 'success',
                         title: 'Cart Cleared',
@@ -589,7 +585,6 @@ document.addEventListener("DOMContentLoaded", function () {
 document.getElementById('customerForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
-    // Clear previous errors
     const phoneEl = document.getElementById('phoneError');
     const emailEl = document.getElementById('emailError');
     phoneEl.innerText = '';
@@ -617,16 +612,14 @@ document.getElementById('customerForm').addEventListener('submit', function(e) {
             }
         } 
         else if(data.status === 'success') {
-            // Success toast
             const toastEl = document.getElementById('customerSuccessToast');
             const toast = new bootstrap.Toast(toastEl, {delay:3000});
             toast.show();
 
-            // Reset form
             this.reset();
             $('#addCustomerModal').modal('hide');
 
-            // Add new customer to dropdown
+            
             const select = document.getElementById('customerSelect');
             const option = document.createElement('option');
             option.value = data.customer_id;
@@ -637,6 +630,7 @@ document.getElementById('customerForm').addEventListener('submit', function(e) {
     })
     .catch(err => console.error(err));
 });
+
 </script>
 </body>
 

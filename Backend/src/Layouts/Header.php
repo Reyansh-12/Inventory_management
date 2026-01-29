@@ -75,8 +75,8 @@
             </li>
 
             <li class="nav-item dropdown">
-                <a href="javascript:void(0);" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
-                    <img src="/Backend/src/assets/images/icons/notification-bing.svg" alt="img"> <span class="badge rounded-pill">4</span>
+                <a href="javascript:void(0);" class="dropdown-toggle nav-link header-icon" data-bs-toggle="dropdown" id="header-icon">
+                    <img src="/Backend/src/assets/images/icons/notification-bing.svg" alt="img"> <span class="badge rounded-pill"></span>
                 </a>
                 <div class="dropdown-menu notifications">
                     <div class="topnav-dropdown-header">
@@ -191,6 +191,16 @@
             </div>
         </div>
     </div>
+    <script src="/Backend/src/assets/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('click', function(e) {
+    const icon = e.target.closest('.header-icon');
+    if(icon) {
+        console.log("Navbar icon clicked:", icon);
+    }
+});
+
+    </script>
 </body>
 
 </html>
