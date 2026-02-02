@@ -347,3 +347,6 @@ fetch("/Backend/src/Pages/products/get_brands.php?category_id=" + categoryId)
 });
 }
 
+
+
+

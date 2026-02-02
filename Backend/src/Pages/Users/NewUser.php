@@ -33,7 +33,6 @@ if (!empty($_FILES['uploadImage']['name'])) {
         exit;
     }
 
-    // 🔥 New unique image name
     $newName = 'user_' . time() . '_' . rand(1000,9999) . '.' . $ext;
 
     $uploadDir = BASE_PATH . '/src/Pages/Users/userImage/';
@@ -404,7 +403,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Show image name
         document.getElementById('imageName').innerText = file.name;
     });
+
+
+
+
+
+    // Check email exists
+    $('#userEmail').on('blur', function() {
+        let email = $(this).val().trim();
+        let userId = $('input[name="user_id"]').val() || 0;
+
+        if (email) {
+            $.post('checkExists.php', {
+                type: 'email',
+                value: email,
+                userId: userId
+            }, function(data) {
+                let res = JSON.parse(data);
+                if (res.exists) {
+                    $('#emailError').text('Email already exists');
+                } else {
+                    $('#emailError').text('');
+                }
+            });
+        }
+    });
+
+    // Check phone exists
+    $('#contact').on('blur', function() {
+        let phone = $(this).val().trim();
+        let userId = $('input[name="user_id"]').val() || 0;
+
+        if (phone) {
+            $.post('checkExists.php', {
+                type: 'phone',
+                value: phone,
+                userId: userId
+            }, function(data) {
+                let res = JSON.parse(data);
+                if (res.exists) {
+                    $('#contactError').text('Phone number already exists');
+                } else {
+                    $('#contactError').text('');
+                }
+            });
+        }
+    });
     </script>
+
 </body>
 
 </html>

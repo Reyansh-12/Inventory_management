@@ -2,6 +2,8 @@
 define("BASE_PATH", dirname(__DIR__, 3));
 include BASE_PATH . "/src/Layouts/Links.php";
 include BASE_PATH . "/src/controllers/dbConnection.php";
+$order_list = "SELECT `id`, `order_id`, `customer`, `product`, `category`, `brand`, `quantity`, `status`, `total_amount`, `price`, `created` FROM `order_list` ORDER BY `id` DESC";
+$resut = mysqli_query($con, $order_list);
 
 ?>
 
@@ -12,12 +14,14 @@ include BASE_PATH . "/src/controllers/dbConnection.php";
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
     <meta name="description" content="POS - Bootstrap Admin Template">
-    <meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern,  html5, responsive">
+    <meta name="keywords"
+        content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern,  html5, responsive">
     <meta name="author" content="Dreamguys - Bootstrap Admin Template">
     <meta name="robots" content="noindex, nofollow">
     <title>User List</title>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="/Backend/src/assets/css/history.css">
 </head>
 
 <body>
@@ -35,87 +39,70 @@ include BASE_PATH . "/src/controllers/dbConnection.php";
         </div>
     </div>
     <div class="page-wrapper">
-    <div class="content">
-                <div class="page-header">
-                    <div class="page-title">
-                        <h4>All Notifications</h4>
-                        <h6>View your all activities</h6>
-                    </div>
-                </div>
-
-                <div class="activity">
-                    <div class="activity-box">
-                        <ul class="activity-list">
-                            <li>
-                                <div class="activity-user">
-                                    <a href="profile.html" title="" data-toggle="tooltip"
-                                        data-original-title="Lesley Grauer">
-                                        <img alt="Lesley Grauer" src="/Backend/src/assets/images/img-01.jpg"
-                                            class=" img-fluid">
-                                    </a>
-                                </div>
-                                <div class="activity-content">
-                                    <div class="timeline-content">
-                                        <a href="profile.html" class="name">Elwis Mathew </a> added a new product <a
-                                            href="javascript:void(0);">Redmi Pro 7 Mobile</a>
-                                        <span class="time">4 mins ago</span>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="activity-user">
-                                    <a href="profile.html" title="" data-toggle="tooltip"
-                                        data-original-title="Lesley Grauer">
-                                        <img alt="Lesley Grauer" src="/Backend/src/assets/images/img-01.jpg"
-                                            class=" img-fluid">
-                                    </a>
-                                </div>
-                                <div class="activity-content">
-                                    <div class="timeline-content">
-                                        <a href="profile.html" class="name">Elizabeth Olsen</a> added a new product
-                                        category <a href="javascript:void(0);">Desktop Computers</a>
-                                        <span class="time">6 mins ago</span>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="activity-user">
-                                    <a href="profile.html" title="" data-toggle="tooltip"
-                                        data-original-title="Lesley Grauer">
-                                        <img alt="Lesley Grauer" src="/Backend/src/assets/images/img-01.jpg"
-                                            class=" img-fluid">
-                                    </a>
-                                </div>
-                                <div class="activity-content">
-                                    <div class="timeline-content">
-                                        <div class="timeline-content">
-                                            <a href="profile.html" class="name">William Smith</a> added a new sales list
-                                            for<a href="javascript:void(0);">January Month</a>
-                                            <span class="time">12 mins ago</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="activity-user">
-                                    <a href="" title="" data-toggle="tooltip"
-                                        data-original-title="Lesley Grauer">
-                                        <img alt="Lesley Grauer" src="/Backend/src/assets/images/img-01.jpg"
-                                            class=" img-fluid">
-                                    </a>
-                                </div>
-                                <div class="activity-content">
-                                    <div class="timeline-content">
-                                        <a href="profile.html" class="name">Lesley Grauer</a> has updated invoice <a
-                                            href="javascript:void(0);">#987654</a>
-                                        <span class="time">4 mins ago</span>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
+        <div class="content">
+            <div class="page-header">
+                <div class="page-title">
+                    <h4>All Notifications</h4>
+                    <h6>View your all activities</h6>
                 </div>
             </div>
+
+            <div class="activity">
+                <div class="activity-box">
+                    <ul class="activity-list">
+                        <?php 
+                        while ($row = mysqli_fetch_assoc($resut)) {
+                            
+                        echo "<div class='order-card mb-3'>";
+                        echo "    <div class='order-header'>";
+                        echo "        <div class='order-left'>";
+                        echo "            <input type='checkbox' />";
+                        echo "            <span class='order-id'>Order #".$row['order_id']."</span>";
+                        echo "            <span class='badge paid'>Paid</span>";
+                        echo "        </div>";
+                        echo "        <div class='order-total'>₹ ".$row['total_amount']."</div>";
+                        echo "    </div>";
+
+                        echo "    <div class='order-meta'>";
+                        echo "        <span class='meta-item'>";
+                        echo "           Name: <a href='#'>".$row['customer']."</a>";
+                        echo "       </span>";
+                        echo "       <span class='meta-item'>";
+                        echo "           | Transaction ID: <a href='#'>#ID20260202061023742</a>";
+                        echo "       </span>";
+                        echo "       <span class='meta-item'>";
+                        echo "           | ".$row['created']."";
+                        echo "       </span>";
+                        echo "   </div>";
+
+                        echo "    <div class='product'>";
+                        echo "        <img src='/Backend/src/uploads/products/featured/product_6979a7b1479cf2.85124957.webp' alt='Product' class='product-img' />";
+                        echo "        <div class='product-info'>";
+                        echo "            <div class='product-name'>";
+                        echo $row['product'];
+                        echo "            </div>";
+                        echo "            <div class='product-meta'>";
+                        echo "                <span>Category: <a href='#'>".$row['category']."</a></span>";
+                        echo "                <span>Brand: <a href='#'>".$row['brand']."</a></span>";
+                        echo "                <span>Quantity: ".$row['quantity']."</span>";
+                        echo "            </div>";
+                        // echo "            <div class='product-meta'>";
+                        // echo "                <span class='meta-item'>";
+                        // echo "                    Payment mode: <a href='#'>Cash</a>";
+                        // echo "                </span>";
+                        // echo "            </div>";
+                        echo "        </div>";
+                        echo "    </div>";
+
+                        echo "</div>";
+                    }
+                        ?>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
+
 </html>

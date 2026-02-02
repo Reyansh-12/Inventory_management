@@ -159,7 +159,6 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
                                         <?= $outOfStock ? 'Out of Stock' : 'Add to Cart' ?>
 
                                     </button>
-
                                 </div>
                             </div>
                         </div>
