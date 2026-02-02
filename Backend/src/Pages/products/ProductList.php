@@ -14,18 +14,18 @@ if (isset($_GET['deleteId'])) {
 }
 $sql = "
 SELECT 
-    p.id,
-    p.product_name,
-    c.category AS category_name,
-    p.brand_name,
-    p.price,
-    p.quantity,
-    p.image_path,
-    p.status
-FROM product_list p
-LEFT JOIN category c ON p.category = c.id
-ORDER BY p.id DESC
+    id,
+    product_name,
+    category,
+    brand_name,
+    price,
+    quantity,
+    image_path,
+    status
+FROM product_list
+ORDER BY id DESC
 ";
+
 
 $result = $con->query($sql);
 
@@ -162,7 +162,7 @@ table.dataTable thead .sorting_desc:after {
                                                 echo "        </a>";
                                                 echo "        <a href='javascript:void(0);' class='text-truncate w-100' data-bs-toggle='tooltip' data-bs-title='" . $row['product_name'] . "'>" . $row['product_name'] . "</a>";
                                                 echo "    </td>";
-                                                echo "    <td>" . $row['category_name'] . "</td>";
+                                                echo "    <td>" . htmlspecialchars($row['category']) .  "</td>";
                                                 echo "    <td>" . $row['brand_name'] . "</td>";
                                                 echo "    <td>" . $row['price'] . "</td>";
                                                 echo "    <td>" . $row['quantity'] . "</td>";

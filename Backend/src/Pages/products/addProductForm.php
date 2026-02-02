@@ -65,7 +65,7 @@ if (isset($_POST['submit'])) {
     }
     $galleryJson = json_encode($galleryImages);
     $productname = $_POST['productname'] ?? '';
-    $category = $_POST['categoryselector'] ?? '';
+    // $category = $_POST['categoryselector'] ?? '';
     $brandName = $_POST['brand'] ?? '';
     $minquantity = $_POST['minquantity'] ?? 0;
     $quantity = $_POST['quantity'] ?? 0;
@@ -74,6 +74,19 @@ if (isset($_POST['submit'])) {
     $price = $_POST['price'] ?? 0;
     $status = $_POST['status'] ?? '';
     $expiredDate = $_POST['expiredDate'] ?? '';
+
+    $categoryId = $_POST['categoryselector'] ?? '';
+$category = '';
+
+if ($categoryId) {
+    $stmtCat = mysqli_prepare($con, "SELECT category FROM category WHERE id = ?");
+    mysqli_stmt_bind_param($stmtCat, "i", $categoryId);
+    mysqli_stmt_execute($stmtCat);
+    mysqli_stmt_bind_result($stmtCat, $category);
+    mysqli_stmt_fetch($stmtCat);
+    mysqli_stmt_close($stmtCat);
+}
+
 
     $imagePath = $_POST['existing_image'] ?? '';
     if (isset($_FILES['imageBox']) && $_FILES['imageBox']['error'] === 0) {

@@ -1,3 +1,12 @@
+<?php 
+$lastOrders = mysqli_query($con, "
+    SELECT o.*, c.name as customer_name, p.product_name 
+    FROM order_list o
+    LEFT JOIN customers c ON o.customer = c.id
+    LEFT JOIN product_list p ON o.product = p.id
+    ORDER BY o.created DESC LIMIT 5
+");
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -67,81 +76,33 @@
                     </div>
                     <div class="noti-content">
                         <ul class="notification-list">
-                            <li class="notification-message">
-                                <a href="/Backend/src/Pages/notification/notification.php">
-                                    <div class="media d-flex">
-                                        <span class="avatar flex-shrink-0">
-                                            <img alt="" src="/Backend/src/assets/images/profiles/avatar-02.jpg">
-                                        </span>
-                                        <div class="media-body flex-grow-1">
-                                            <p class="noti-details"><span class="noti-title">John Doe</span> added new
-                                                task <span class="noti-title">Patient appointment booking</span></p>
-                                            <p class="noti-time"><span class="notification-time">4 mins ago</span></p>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="notification-message">
-                                <a href="/Backend/src/Pages/notification/notification.php">
-                                    <div class="media d-flex">
-                                        <span class="avatar flex-shrink-0">
-                                            <img alt="" src="/Backend/src/assets/images/profiles/avatar-03.jpg">
-                                        </span>
-                                        <div class="media-body flex-grow-1">
-                                            <p class="noti-details"><span class="noti-title">Tarah Shropshire</span>
-                                                changed the task name <span class="noti-title">Appointment booking with
-                                                    payment gateway</span></p>
-                                            <p class="noti-time"><span class="notification-time">6 mins ago</span></p>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="notification-message">
-                                <a href="/Backend/src/Pages/notification/notification.php">
-                                    <div class="media d-flex">
-                                        <span class="avatar flex-shrink-0">
-                                            <img alt="" src="/Backend/src/assets/images/profiles/avatar-06.jpg">
-                                        </span>
-                                        <div class="media-body flex-grow-1">
-                                            <p class="noti-details"><span class="noti-title">Misty Tison</span> added
-                                                <span class="noti-title">Domenic Houston</span> and <span
-                                                    class="noti-title">Claire Mapes</span> to project <span
-                                                    class="noti-title">Doctor available module</span>
-                                            </p>
-                                            <p class="noti-time"><span class="notification-time">8 mins ago</span></p>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="notification-message">
-                                <a href="activities.html">
-                                    <div class="media d-flex">
-                                        <span class="avatar flex-shrink-0">
-                                            <img alt="" src="/Backend/src/assets/images/profiles/avatar-17.jpg">
-                                        </span>
-                                        <div class="media-body flex-grow-1">
-                                            <p class="noti-details"><span class="noti-title">Rolland Webber</span>
-                                                completed task <span class="noti-title">Patient and Doctor video
-                                                    conferencing</span></p>
-                                            <p class="noti-time"><span class="notification-time">12 mins ago</span></p>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="notification-message">
-                                <a href="activities.html">
-                                    <div class="media d-flex">
-                                        <span class="avatar flex-shrink-0">
-                                            <img alt="" src="/Backend/src/assets/images/profiles/avatar-13.jpg">
-                                        </span>
-                                        <div class="media-body flex-grow-1">
-                                            <p class="noti-details"><span class="noti-title">Bernardo Galaviz</span>
-                                                added new task <span class="noti-title">Private chat module</span></p>
-                                            <p class="noti-time"><span class="notification-time">2 days ago</span></p>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
+                            <?php
+
+while ($row = mysqli_fetch_assoc($lastOrders)) {
+    
+    echo "<li class='notification-message'>";
+    echo "    <a href='/Backend/src/Pages/notification/notification.php'>";
+    echo "        <div class='media d-flex'>";
+    echo "            <span class='avatar flex-shrink-0'>";
+    echo "                <img alt='' src='/Backend/src/assets/images/profiles/avatar-01.jpg'>";
+    echo "            </span>";
+    echo "            <div class='media-body flex-grow-1'>";
+    echo "                <p class='noti-details'>";
+    echo "                    <span class='noti-title'>" . $row['customer_name'].  "</span>";
+    echo "                    purchased <span class='noti-title'>" .$row['product_name']. " </span>";
+    echo "                    (Qty: ". $row['quantity'] .")";
+    echo "                </p>";
+    echo "                <p class='noti-time'>";
+    echo "                    <span class='notification-time'>" .$row['created'] . "</span>";
+    echo "                </p>";
+    echo "            </div>";
+    echo "        </div>";
+    echo "    </a>";
+    echo "</li>";
+    
+}
+?>
+
                         </ul>
                     </div>
                     <div class="topnav-dropdown-footer">

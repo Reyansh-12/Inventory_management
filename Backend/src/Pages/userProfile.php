@@ -11,11 +11,38 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
-$query = "SELECT user_name, user_email, user_contact FROM new_user WHERE id = ?";
+$query = "SELECT 
+    id, user_name, user_contact, user_email, user_role, 
+    user_password, status, image_path 
+FROM new_user 
+WHERE id = ?
+";
+
 $stmt = $con->prepare($query);
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $user = $stmt->get_result()->fetch_assoc();
+
+$profileImg = !empty($user['image_path'])
+    ? $user['image_path']
+    : '/Backend/src/assets/images/customer/default-user.png';
+$imagePath = $user['image_path'] ?? null;
+
+if (!empty($_FILES['profile_image']['name'])) {
+
+    $uploadDir = BASE_PATH . "/uploads/profile/";
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
+    }
+
+    $ext = pathinfo($_FILES['profile_image']['name'], PATHINFO_EXTENSION);
+    $fileName = "user_" . $user_id . "." . $ext;
+
+    if (move_uploaded_file($_FILES['profile_image']['tmp_name'], $uploadDir . $fileName)) {
+        $imagePath = "/Backend/uploads/profile/" . $fileName;
+    }
+}
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
 
@@ -24,33 +51,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
     $phone    = trim($_POST['phone']);
     $password = $_POST['password'];
 
-    if (!empty($password)) {
+    // ✅ IMAGE UPLOAD
+    if (!empty($_FILES['profile_image']['name'])) {
 
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        $uploadDir = BASE_PATH . "/uploads/profile/";
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
 
-        $sql = "UPDATE new_user 
-                SET user_name=?, user_email=?, user_contact=?, user_password=? 
-                WHERE id=?";
-        $stmt = $con->prepare($sql);
-        $stmt->bind_param("ssssi", $username, $email, $phone, $hashed_password, $user_id);
-    } else {
+        $ext = pathinfo($_FILES['profile_image']['name'], PATHINFO_EXTENSION);
+        $fileName = "user_" . $user_id . "." . $ext;
 
-        $sql = "UPDATE new_user 
-                SET user_name=?, user_email=?, user_contact=? 
-                WHERE id=?";
-        $stmt = $con->prepare($sql);
-        $stmt->bind_param("sssi", $username, $email, $phone, $user_id);
+        if (move_uploaded_file($_FILES['profile_image']['tmp_name'], $uploadDir . $fileName)) {
+            $imagePath = "/Backend/uploads/profile/" . $fileName;
+        }
     }
+
+    // UPDATE QUERY
+    $sql = "UPDATE new_user 
+            SET user_name=?, user_contact=?, user_email=?, image_path=? 
+            WHERE id=?";
+
+    $stmt = $con->prepare($sql);
+    $stmt->bind_param("ssssi", $username, $phone, $email, $imagePath, $user_id);
 
     if ($stmt->execute()) {
         header("Location: userProfile.php?updated=1");
         exit;
     }
 }
+
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
@@ -60,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
     <meta name="robots" content="noindex, nofollow">
     <title>User Profile</title>
     <style>
-        .parsley-custom-error-message{
+        .parsley-custom-error-message {
             color: #f94a4a;
         }
     </style>
@@ -89,26 +124,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
                 </div>
                 <div class="card">
                     <div class="card-body">
-                        <div class="profile-set">
-                            <div class="profile-head">
-                            </div>
-                            <div class="profile-top">
-                                <div class="profile-content">
-                                    <div class="profile-contentimg">
-                                        <img src="/Backend/src/assets/images/customer/customer5.jpg" alt="img" id="blah">
-                                        <div class="profileupload">
-                                            <input type="file" id="imgInp" class="pe-auto">
-                                            <a href="javascript:void(0);"><img src="/Backend/src/assets/images/icons/edit-set.svg" alt="img"></a>
+                        <form method="POST" enctype="multipart/form-data" data-parsley-validate>
+                            <div class="profile-set">
+                                <div class="profile-head">
+                                </div>
+                                <div class="profile-top">
+                                    <div class="profile-content">
+                                        <div class="profile-contentimg">
+                                            <img src="<?= htmlspecialchars($profileImg) ?>" alt="Profile Image" id="blah">
+                                            <div class="profileupload">
+                                                <input type="file" name="profile_image" id="imgInp" accept="image/*">
+                                                <a href="javascript:void(0);"><img src="/Backend/src/assets/images/icons/edit-set.svg" alt="img"></a>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="profile-contentname">
-                                        <h2><?= htmlspecialchars ($user['user_name']) ?></h2>
-                                        <h4>Updates Your Photo and Personal Details.</h4>
+                                        <div class="profile-contentname">
+                                            <h2><?= htmlspecialchars($user['user_name']) ?></h2>
+                                            <h4>Updates Your Photo and Personal Details.</h4>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <form method="POST" data-parsley-validate>
+
                             <div class="row">
 
                                 <div class="col-lg-6 col-sm-12">
@@ -155,18 +191,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
             value = value.replace(/[^a-zA-Z\s]/g, '');
             $(this).val(value);
         });
-$('#contact').on('input', function () {
-    let value = $(this).val();
-    value = value.replace(/[^0-9]/g, '');
-    if (value.length === 1 && !/^[6-9]$/.test(value)) {
-        value = '';
-    }
-    if (value.length > 10) {
-        value = value.substring(0, 10);
-    }
+        $('#contact').on('input', function() {
+            let value = $(this).val();
+            value = value.replace(/[^0-9]/g, '');
+            if (value.length === 1 && !/^[6-9]$/.test(value)) {
+                value = '';
+            }
+            if (value.length > 10) {
+                value = value.substring(0, 10);
+            }
 
-    $(this).val(value);
-});
+            $(this).val(value);
+        });
         $('#userEmail').on('input', function() {
             let value = $(this).val();
 

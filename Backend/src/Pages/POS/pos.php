@@ -331,6 +331,60 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
     } ?>
 
     });
+
+
+
+
+
+
+    document.getElementById('checkoutBtn').addEventListener('click', function () {
+    const customerId = document.getElementById('customerSelect').value;
+    const cartItems = JSON.parse(localStorage.getItem('posCart') || '[]');
+
+    if (!customerId) {
+        new bootstrap.Toast(document.getElementById('customerToast')).show();
+        return;
+    }
+    if (!cartItems.length) {
+        new bootstrap.Toast(document.getElementById('cartEmptyToast')).show();
+        return;
+    }
+
+    fetch('/Backend/src/Pages/posCheckout.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ customerId, cartItems })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'success') {
+            localStorage.removeItem('posCart'); // clear cart
+            Swal.fire({
+                icon: 'success',
+                title: 'Order Placed',
+                text: 'Order ID: ' + data.order_id,
+                timer: 3000,
+                showConfirmButton: false
+            }).then(() => location.reload());
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Checkout Failed',
+                text: data.message || 'Something went wrong!'
+            });
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        Swal.fire({
+            icon: 'error',
+            title: 'Checkout Failed',
+            text: 'Server error!'
+        });
+    });
+});
+
+
     </script>
 </body>
 

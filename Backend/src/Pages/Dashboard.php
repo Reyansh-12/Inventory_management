@@ -100,15 +100,14 @@ SELECT
     SUM(total) AS total
 FROM (
     SELECT 
-        DATE(created) AS sale_date,
+        DATE(`created`) AS sale_date,
         price * quantity AS total
     FROM order_list
-    WHERE created >= CURDATE() - INTERVAL 6 DAY
+    WHERE `created` >= CURDATE() - INTERVAL 6 DAY
 ) t
 GROUP BY sale_date
 ORDER BY sale_date
 ";
-
 
 $weeklySql = "
 SELECT 
@@ -116,17 +115,15 @@ SELECT
     SUM(total) AS total
 FROM (
     SELECT 
-        CONCAT('Week ', WEEK(created,1)) AS sale_week,
-        YEAR(created) AS sale_year,
+        CONCAT('Week ', WEEK(`created`, 1)) AS sale_week,
+        YEAR(`created`) AS sale_year,
         price * quantity AS total
     FROM order_list
-    WHERE YEAR(created) = YEAR(CURDATE())
+    WHERE YEAR(`created`) = YEAR(CURDATE())
 ) t
 GROUP BY sale_year, sale_week
 ORDER BY sale_year, sale_week
 ";
-
-
 
 $monthlySql = "
 SELECT 
@@ -134,16 +131,17 @@ SELECT
     SUM(total) AS total
 FROM (
     SELECT 
-        DATE_FORMAT(created, '%b') AS sale_month,
-        YEAR(created) AS sale_year,
-        MONTH(created) AS sale_month_num,
+        DATE_FORMAT(`created`, '%b') AS sale_month,
+        YEAR(`created`) AS sale_year,
+        MONTH(`created`) AS sale_month_num,
         price * quantity AS total
     FROM order_list
-    WHERE YEAR(created) = YEAR(CURDATE())
+    WHERE YEAR(`created`) = YEAR(CURDATE())
 ) t
 GROUP BY sale_year, sale_month_num, sale_month
 ORDER BY sale_year, sale_month_num
 ";
+
 
 
 
@@ -153,7 +151,7 @@ SELECT
     SUM(total) AS total
 FROM (
     SELECT 
-        YEAR(created) AS sale_year,
+        YEAR(`created`) AS sale_year,
         price * quantity AS total
     FROM order_list
 ) t
@@ -162,15 +160,27 @@ ORDER BY sale_year
 ";
 
 
+
 function fetchSales($con, $sql)
 {
     $labels = [];
     $data = [];
+
     $result = mysqli_query($con, $sql);
+
+    if (!$result) {
+        die(
+            "Sales Query Error: " .
+            mysqli_error($con) .
+            "<br><pre>$sql</pre>"
+        );
+    }
+
     while ($row = mysqli_fetch_assoc($result)) {
         $labels[] = $row['label'];
         $data[] = (float) $row['total'];
     }
+
     return [$labels, $data];
 }
 
@@ -178,6 +188,7 @@ function fetchSales($con, $sql)
 [$weeklyLabels, $weeklyData] = fetchSales($con, $weeklySql);
 [$monthlyLabels, $monthlyData] = fetchSales($con, $monthlySql);
 [$yearlyLabels, $yearlyData] = fetchSales($con, $yearlySql);
+
 
 
 $inventorySql = "
