@@ -208,16 +208,20 @@
             </div>
         </div>
     </div>
-    <!-- <script src="/Backend/src/assets/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.addEventListener('click', function(e) {
-    const icon = e.target.closest('.header-icon');
-    if(icon) {
-        console.log("Navbar icon clicked:", icon);
+    <script src="/Backend/src/assets/js/bootstrap.bundle.min.js"></script>
+    
+  <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const dropdownEl = document.getElementById('header-icon');
+
+    if (dropdownEl) {
+        dropdownEl.addEventListener('show.bs.dropdown', function () {
+            console.log('Notification dropdown opened');
+        });
     }
 });
+</script>
 
-    </script> -->
 </body>
 
 </html>
