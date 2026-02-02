@@ -26,7 +26,8 @@ $result = $con->query($sql);
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
     <meta name="description" content="POS - Bootstrap Admin Template">
-    <meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern,  html5, responsive">
+    <meta name="keywords"
+        content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern,  html5, responsive">
     <meta name="author" content="Dreamguys - Bootstrap Admin Template">
     <meta name="robots" content="noindex, nofollow">
     <title>Cosmetic product form</title>
@@ -34,27 +35,33 @@ $result = $con->query($sql);
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
     <style>
-        .toast-timer {
-            height: 4px;
-            width: 100%;
-            background: rgba(231, 10, 10, 0.6);
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            z-index: 999;
-            animation: shrink 4s linear forwards;
-        }
-        .swal2-icon-content{
-            margin-left: 537%;
-            margin-top: 48%;
-        }
-        .productimgname img{
-            min-width: 40px;
-    width: 40px;
-    height: 40px;
-    border: 0;
-    object-fit: contain;
-        }
+    .toast-timer {
+        height: 4px;
+        width: 100%;
+        background: rgba(231, 10, 10, 0.6);
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        z-index: 999;
+        animation: shrink 4s linear forwards;
+    }
+
+    .swal2-icon-content {
+        margin-left: 537%;
+        margin-top: 48%;
+    }
+
+    .productimgname img {
+        min-width: 40px;
+        width: 40px;
+        height: 40px;
+        border: 0;
+        object-fit: contain;
+    }
+
+    .dataTables_info {
+        display: none;
+    }
     </style>
 </head>
 
@@ -92,7 +99,8 @@ $result = $con->query($sql);
                                     </a>
                                 </div> -->
                                 <div class="search-input">
-                                    <a class="btn btn-searchset"><img src="/Backend/src/assets/images/icons/search-white.svg" alt="img"></a>
+                                    <a class="btn btn-searchset"><img
+                                            src="/Backend/src/assets/images/icons/search-white.svg" alt="img"></a>
                                 </div>
                             </div>
                         </div>
@@ -137,7 +145,8 @@ $result = $con->query($sql);
         </div>
     </div>
     <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:1100;">
-        <div id="actionToast" class="toast border-0 bg-danger" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000" data-bs-autohide="true">
+        <div id="actionToast" class="toast border-0 bg-danger" role="alert" aria-live="assertive" aria-atomic="true"
+            data-bs-delay="5000" data-bs-autohide="true">
             <div class="d-flex">
                 <div class="toast-body text-white" id="toastMessage">Delete Successfully!</div>
                 <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
@@ -149,37 +158,38 @@ $result = $con->query($sql);
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.querySelectorAll('.confirm-delete').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
+    document.querySelectorAll('.confirm-delete').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
 
-                const deleteUrl = this.getAttribute('href');
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "This product will be permanently deleted!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Yes, delete it!',
-                    cancelButtonText: 'Cancel'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = deleteUrl;
-                    }
-                });
+            const deleteUrl = this.getAttribute('href');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This product will be permanently deleted!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = deleteUrl;
+                }
             });
         });
+    });
 
-        document.addEventListener("DOMContentLoaded", function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('deleted') === '1') {
-                const toastEl = document.getElementById('actionToast');
-                const toast = new bootstrap.Toast(toastEl);
-                toast.show();
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
-        });
+    document.addEventListener("DOMContentLoaded", function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('deleted') === '1') {
+            const toastEl = document.getElementById('actionToast');
+            const toast = new bootstrap.Toast(toastEl);
+            toast.show();
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    });
     </script>
 </body>
+
 </html>
