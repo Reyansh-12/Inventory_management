@@ -58,6 +58,10 @@
                         <a href="/Backend/src/Pages/Users/UsersList.php"><i class="bi bi-people"></i><span>
                                 Users</span></a>
                     </li>
+                    <li class="<?php echo ($currentPage == 'notification.php') ? 'active' : ''; ?>">
+                        <a href="/Backend/src/Pages/notification/notification.php"><i
+                                class="bi bi-clipboard-data"></i><span>Order History</span> </a>
+                    </li>
                     <li class="<?php echo ($currentPage == 'userProfile.php') ? 'active' : ''; ?>">
                         <a href="/Backend/src/Pages/userProfile.php"><i
                                 class="bi bi-person-circle"></i><span>Profile</span> </a>

@@ -54,27 +54,6 @@
                 </div>
             </li>
 
-
-            <li class="nav-item dropdown has-arrow flag-nav">
-                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="javascript:void(0);" role="button">
-                    <img src="/Backend/src/assets/images/flags/us1.png" alt="" height="20">
-                </a>
-                <div class="dropdown-menu dropdown-menu-right">
-                    <a href="javascript:void(0);" class="dropdown-item">
-                        <img src="" alt="" height="16"> English
-                    </a>
-                    <a href="javascript:void(0);" class="dropdown-item">
-                        <img src="" alt="" height="16"> French
-                    </a>
-                    <a href="javascript:void(0);" class="dropdown-item">
-                        <img src="" alt="" height="16"> Spanish
-                    </a>
-                    <a href="javascript:void(0);" class="dropdown-item">
-                        <img src="" alt="" height="16"> German
-                    </a>
-                </div>
-            </li>
-
             <li class="nav-item dropdown">
                 <a href="javascript:void(0);" class="dropdown-toggle nav-link header-icon" data-bs-toggle="dropdown"
                     id="header-icon">
@@ -89,7 +68,7 @@
                     <div class="noti-content">
                         <ul class="notification-list">
                             <li class="notification-message">
-                                <a href="activities.html">
+                                <a href="/Backend/src/Pages/notification/notification.php">
                                     <div class="media d-flex">
                                         <span class="avatar flex-shrink-0">
                                             <img alt="" src="/Backend/src/assets/images/profiles/avatar-02.jpg">
@@ -103,7 +82,7 @@
                                 </a>
                             </li>
                             <li class="notification-message">
-                                <a href="activities.html">
+                                <a href="/Backend/src/Pages/notification/notification.php">
                                     <div class="media d-flex">
                                         <span class="avatar flex-shrink-0">
                                             <img alt="" src="/Backend/src/assets/images/profiles/avatar-03.jpg">
@@ -118,7 +97,7 @@
                                 </a>
                             </li>
                             <li class="notification-message">
-                                <a href="activities.html">
+                                <a href="/Backend/src/Pages/notification/notification.php">
                                     <div class="media d-flex">
                                         <span class="avatar flex-shrink-0">
                                             <img alt="" src="/Backend/src/assets/images/profiles/avatar-06.jpg">

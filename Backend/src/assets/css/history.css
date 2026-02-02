@@ -1,0 +1,110 @@
+.order-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 16px;
+    max-width: 900px;
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.order-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.order-id {
+    font-weight: 600;
+}
+
+.order-total {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.badge {
+    font-size: 12px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.badge.paid {
+    background: #22c55e;
+    color: #fff;
+}
+
+/* .badge.unfinished {
+    background: #f1f5f9;
+    color: #374151;
+    border: 1px solid #d1d5db;
+} */
+
+.order-meta {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.order-meta a {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+/* .order-status {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+} */
+
+/* .status-icon {
+    color: #dc2626;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+} */
+
+.product {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 14px;
+}
+
+.product-img {
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
+    object-fit: cover;
+    border: 1px solid #e5e7eb;
+}
+
+.product-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.product-name {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.product-meta {
+    font-size: 13px;
+    color: #6b7280;
+    display: flex;
+    gap: 16px;
+}
+
+.product-meta a {
+    color: #2563eb;
+    text-decoration: none;
+}

@@ -40,9 +40,9 @@ function getCount($table)
     return 0;
 }
 
-$expiredProducts = "SELECT `id`, `product_name`, `category`, `brand_name`, `minQuantity`, `price`, `quantity`, `description`, `discount`, `status`, `image_path`, `gallery_images`, `expired_date`, `created_at` FROM `product_list` WHERE 1 ORDER BY `id` DESC LIMIT 3";
+$expiredProducts = "SELECT `id`, `product_name`, `category`, `brand_name`, `minQuantity`, `price`, `quantity`, `description`, `discount`, `status`, `image_path`, `gallery_images`, `expired_date`, `created_at` FROM `product_list` WHERE 1 ORDER BY `id` DESC LIMIT 5";
 $expiredResult = $con->query($expiredProducts);
-$orderList = "SELECT `id`, `order_id`, `customer`, `product`, `category`, `brand`, `quantity`, `status`, `created` FROM `order_list` WHERE 1 ORDER BY `id` DESC LIMIT 3";
+$orderList = "SELECT `id`, `order_id`, `customer`, `product`, `category`, `brand`, `quantity`, `status`, `created` FROM `order_list` WHERE 1 ORDER BY `id` DESC LIMIT 5";
 $orderListResult = $con->query($orderList);
 
 $sql = "SELECT COUNT(*) AS total_expired 
@@ -92,27 +92,93 @@ $inventoryData = [
     "Expired" => (int) $inventory['expired'],
     "Out of Stock" => (int) $inventory['out_stock'],
 ];
-$salesLabels = [];
-$salesData = [];
 
-$salesSql = "
+
+$dailySql = "
 SELECT 
-  DATE_FORMAT(MIN(created), '%b') AS month,
-  SUM(price * quantity) AS total
-FROM order_list
-WHERE YEAR(created) = YEAR(CURDATE())
-GROUP BY YEAR(created), MONTH(created)
-ORDER BY YEAR(created), MONTH(created)
+    sale_date AS label,
+    SUM(total) AS total
+FROM (
+    SELECT 
+        DATE(created) AS sale_date,
+        price * quantity AS total
+    FROM order_list
+    WHERE created >= CURDATE() - INTERVAL 6 DAY
+) t
+GROUP BY sale_date
+ORDER BY sale_date
 ";
 
-$salesResult = mysqli_query($con, $salesSql);
 
-if ($salesResult) {
-    while ($row = mysqli_fetch_assoc($salesResult)) {
-        $salesLabels[] = $row['month'];
-        $salesData[] = (float) $row['total'];
+$weeklySql = "
+SELECT 
+    sale_week AS label,
+    SUM(total) AS total
+FROM (
+    SELECT 
+        CONCAT('Week ', WEEK(created,1)) AS sale_week,
+        YEAR(created) AS sale_year,
+        price * quantity AS total
+    FROM order_list
+    WHERE YEAR(created) = YEAR(CURDATE())
+) t
+GROUP BY sale_year, sale_week
+ORDER BY sale_year, sale_week
+";
+
+
+
+$monthlySql = "
+SELECT 
+    sale_month AS label,
+    SUM(total) AS total
+FROM (
+    SELECT 
+        DATE_FORMAT(created, '%b') AS sale_month,
+        YEAR(created) AS sale_year,
+        MONTH(created) AS sale_month_num,
+        price * quantity AS total
+    FROM order_list
+    WHERE YEAR(created) = YEAR(CURDATE())
+) t
+GROUP BY sale_year, sale_month_num, sale_month
+ORDER BY sale_year, sale_month_num
+";
+
+
+
+$yearlySql = "
+SELECT 
+    sale_year AS label,
+    SUM(total) AS total
+FROM (
+    SELECT 
+        YEAR(created) AS sale_year,
+        price * quantity AS total
+    FROM order_list
+) t
+GROUP BY sale_year
+ORDER BY sale_year
+";
+
+
+function fetchSales($con, $sql)
+{
+    $labels = [];
+    $data = [];
+    $result = mysqli_query($con, $sql);
+    while ($row = mysqli_fetch_assoc($result)) {
+        $labels[] = $row['label'];
+        $data[] = (float) $row['total'];
     }
+    return [$labels, $data];
 }
+
+[$dailyLabels, $dailyData] = fetchSales($con, $dailySql);
+[$weeklyLabels, $weeklyData] = fetchSales($con, $weeklySql);
+[$monthlyLabels, $monthlyData] = fetchSales($con, $monthlySql);
+[$yearlyLabels, $yearlyData] = fetchSales($con, $yearlySql);
+
 
 $inventorySql = "
 SELECT
@@ -163,7 +229,22 @@ $inventory = mysqli_fetch_assoc($inventoryResult);
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.dataTables.css" />
     <link rel="stylesheet" href="/Backend/src/assets/css/dashboard/dashboard.css">
     <style>
+    .sales-filter .btn {
+        min-width: 90px;
+        font-weight: 500;
+        transition: all 0.25s ease;
+    }
 
+    .sales-filter .btn.active {
+        background-color: #0d6efd;
+        color: #fff;
+        box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3);
+    }
+
+    .sales-filter .btn:not(.active):hover {
+        background-color: rgba(13, 110, 253, 0.08);
+        color: black;
+    }
     </style>
 </head>
 
@@ -225,7 +306,7 @@ $inventory = mysqli_fetch_assoc($inventoryResult);
                             <span><img src="/Backend/src/assets/images/sale.svg" alt="img" style="width: 100%"></span>
                         </div>
                         <div class="dash-widgetcontent">
-                            <h5><?= '₹ '.$total ?></h5>
+                            <h5><?= '₹ ' . $total ?></h5>
                             <h6>Total Sale Amount</h6>
                         </div>
                     </div>
@@ -341,13 +422,19 @@ $inventory = mysqli_fetch_assoc($inventoryResult);
 
                 <div class="col-lg-6">
                     <div class="card shadow-lg p-3" style="height: 400px">
-                        <h4 class="text-center mb-3">Monthly Sales</h4>
-                        <!-- <div class="mb-4 mt-3 d-flex justify-content-end">
-                            <button class="me-2 btn btn-white border border-primary">Daily</button>
-                            <button class="me-2 btn btn-white">Monthly</button>
-                            <button class="btn btn-white text-center">Yearly</button>
-                        </div> -->
-                        <canvas id="salesChart" height="180"></canvas>
+                        <h4 class="text-center mb-3">Sales Overview 2026</h4>
+                        <canvas id="salesChart" height="250"></canvas>
+                        <div class="mb-4 mt-3 d-flex justify-content-end">
+                            <div class="btn-group sales-filter" role="group">
+                                <button class="btn btn-outline-secondary rounded me-2" data-range="daily">Daily</button>
+                                <button class="btn btn-outline-secondary me-2 rounded" data-range="weekly">Weekly
+                                    </buttonsecondary>
+                                    <button class="btn btn-outline-secondary me-2 rounded active"
+                                        data-range="monthly">Monthly</button>
+                                    <button class="btn btn-outline-secondary rounded"
+                                        data-range="yearly">Yearly</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -444,7 +531,6 @@ $inventory = mysqli_fetch_assoc($inventoryResult);
         </div>
     </div>
 
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
@@ -519,17 +605,48 @@ $inventory = mysqli_fetch_assoc($inventoryResult);
     inventoryPie.addEventListener("mouseleave", () => {
         tooltip.style.opacity = 0;
     });
+    </script>
+    <script>
+    const buttons = document.querySelectorAll('.sales-filter .btn');
 
+    buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            buttons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const range = btn.dataset.range;
+            updateSalesChart(range);
+        });
+    });
+    </script>
+    <script>
+    const salesDataSets = {
+        daily: {
+            labels: <?php echo json_encode($dailyLabels); ?>,
+            data: <?php echo json_encode($dailyData); ?>
+        },
+        weekly: {
+            labels: <?php echo json_encode($weeklyLabels); ?>,
+            data: <?php echo json_encode($weeklyData); ?>
+        },
+        monthly: {
+            labels: <?php echo json_encode($monthlyLabels); ?>,
+            data: <?php echo json_encode($monthlyData); ?>
+        },
+        yearly: {
+            labels: <?php echo json_encode($yearlyLabels); ?>,
+            data: <?php echo json_encode($yearlyData); ?>
+        }
+    };
+    </script>
+    <script>
+    const ctx = document.getElementById("salesChart");
 
-    const salesLabels = <?php echo json_encode($salesLabels); ?>;
-    const salesData = <?php echo json_encode($salesData); ?>;
-
-    new Chart(document.getElementById("salesChart"), {
+    let salesChart = new Chart(ctx, {
         type: "bar",
         data: {
-            labels: salesLabels,
+            labels: salesDataSets.monthly.labels,
             datasets: [{
-                data: salesData,
+                data: salesDataSets.monthly.data,
                 backgroundColor: "#6792ff",
                 borderRadius: 8
             }]
@@ -548,7 +665,15 @@ $inventory = mysqli_fetch_assoc($inventoryResult);
             }
         }
     });
+
+    function updateSalesChart(range) {
+        salesChart.data.labels = salesDataSets[range].labels;
+        salesChart.data.datasets[0].data = salesDataSets[range].data;
+        salesChart.update();
+    }
     </script>
+
+
 
 </body>
 
