@@ -39,7 +39,7 @@
                     </li>
                     <li class="<?php echo ($currentPage == 'expiredProduct.php') ? 'active' : ''; ?>">
                         <a href="/Backend/src/Pages/expiredProduct.php"><i class="bi bi-calendar-x"></i><span> Expired
-                                Management</span> </a>
+                                Products</span> </a>
                     </li>
                     <li class="<?php echo ($currentPage == 'lowStocks.php') ? 'active' : ''; ?>">
                         <a href="/Backend/src/Pages/lowStocks.php"><i class="bi bi-graph-down-arrow"></i><span>Low Stock

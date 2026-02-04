@@ -37,7 +37,7 @@ if (isset($_GET['categoryId'])) {
         .toast-timer {
             height: 4px;
             width: 100%;
-            background: rgba(231, 10, 10, 0.6);
+            background: rgba(10, 231, 39, 0.6);
             position: absolute;
             bottom: 0;
             left: 0;
@@ -200,7 +200,6 @@ if (isset($_GET['categoryId'])) {
         document.querySelectorAll('.confirm-delete').forEach(btn => {
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
-
                 const deleteUrl = this.getAttribute('href');
                 Swal.fire({
                     title: 'Are you sure?',
@@ -218,14 +217,11 @@ if (isset($_GET['categoryId'])) {
                 });
             });
         });
-
         document.addEventListener("DOMContentLoaded", function() {
             const params = new URLSearchParams(window.location.search);
             const toastEl = document.getElementById("actionToast");
             const toastMsg = document.getElementById("toastMessage");
-
             toastEl.classList.remove("bg-success", "bg-danger");
-
             if (params.get("added") === "1") {
                 toastMsg.innerText = "Category added successfully!";
                 toastEl.classList.add("bg-success");
@@ -238,7 +234,6 @@ if (isset($_GET['categoryId'])) {
             } else {
                 return;
             }
-
             const toast = new bootstrap.Toast(toastEl, {
                 delay: 3000
             });
@@ -251,16 +246,13 @@ if (isset($_GET['categoryId'])) {
     </script>
     <script>
         $(document).ready(function() {
-
             if ($.fn.DataTable.isDataTable('.datanew')) {
                 $('.datanew').DataTable().destroy();
             }
-
             $('.datanew').DataTable({
                 order: [
                     [0, 'desc']
                 ],
-
                 columnDefs: [{
                         targets: 0,
                         visible: false,
@@ -271,21 +263,15 @@ if (isset($_GET['categoryId'])) {
                         orderable: true
                     }
                 ],
-
                 autoWidth: false,
                 responsive: false,
-
                 searching: false,
                 lengthChange: true,
                 pageLength: 10,
-
                 pagingType: "simple_numbers",
-
                 dom: 'rt<"row mt-3"<"col-md-6"l><"col-md-6 text-end"p>>'
             });
         });
     </script>
-
 </body>
-
 </html>

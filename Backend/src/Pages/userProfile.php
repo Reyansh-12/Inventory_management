@@ -5,7 +5,7 @@ include BASE_PATH . "/src/Layouts/Links.php";
 include BASE_PATH . "/src/controllers/dbConnection.php";
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
+    header("Location: /Backend/src/Pages/Auth/signin.php");
     exit;
 }
 

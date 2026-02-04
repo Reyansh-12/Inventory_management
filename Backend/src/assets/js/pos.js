@@ -169,55 +169,46 @@ let cart = [];
         });
     });
    
-    document.addEventListener("DOMContentLoaded", function() {
-        const track = document.querySelector(".category-track");
-        const slides = document.querySelectorAll(".category-slide");
-        const products = document.querySelectorAll(".product-card");
-        const noProduct = document.getElementById("noProductFound");
-        const nextBtn = document.getElementById("nextBtn");
-        const prevBtn = document.getElementById("prevBtn");
-        const visibleCards = 3;
-        let currentIndex = 0;
 
-        function updateSlider() {
-            const slideWidth = slides[0].offsetWidth;
-            track.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
-        }
 
-        nextBtn.addEventListener("click", () => {
-            if (currentIndex < slides.length - visibleCards) {
-                currentIndex++;
-                updateSlider();
-            }
-        });
-        prevBtn.addEventListener("click", () => {
-            if (currentIndex > 0) {
-                currentIndex--;
-                updateSlider();
-            }
-        });
+document.addEventListener("DOMContentLoaded", function () {
 
-        document.querySelectorAll(".category-card").forEach(card => {
-            card.addEventListener("click", function() {
-                const selectedCategory = this.dataset.category;
-                let found = false;
+    const categoryCards = document.querySelectorAll(".category-card");
+    const productCards = document.querySelectorAll(".product-card");
+    const noProduct = document.getElementById("noProductFound");
 
-                products.forEach(product => {
-                    const wrapper = product.closest(".col-12");
-                    if (product.dataset.category === selectedCategory) {
-                        wrapper.style.display = "";
-                        found = true;
-                    } else {
-                        wrapper.style.display = "none";
-                    }
-                });
+    if (!categoryCards.length || !productCards.length) {
+        console.warn("Category or Product cards not found");
+        return;
+    }
 
-                noProduct.style.display = found ? "none" : "block";
+    categoryCards.forEach(card => {
+        card.addEventListener("click", function () {
+
+            const selectedCategory = this.getAttribute("data-category");
+            let found = false;
+
+            productCards.forEach(product => {
+                const wrapper = product.closest(".product-wrapper");
+                const productCategory = product.getAttribute("data-category");
+
+                if (productCategory === selectedCategory) {
+                    wrapper.style.display = "";
+                    found = true;
+                } else {
+                    wrapper.style.display = "none";
+                }
             });
-        });
 
-        window.addEventListener("resize", updateSlider);
+            noProduct.style.display = found ? "none" : "block";
+
+            // active UI
+            categoryCards.forEach(c => c.classList.remove("border-primary"));
+            this.classList.add("border-primary");
+        });
     });
+
+});
 
     
     $('#customerName').on('input', function() {

@@ -38,33 +38,33 @@ if (isset($_GET['lowStockId'])) {
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
     <style>
-    .toast-timer {
-        height: 4px;
-        width: 100%;
-        background: rgba(231, 10, 10, 0.6);
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        z-index: 999;
-        animation: shrink 4s linear forwards;
-    }
+        .toast-timer {
+            height: 4px;
+            width: 100%;
+            background: rgba(231, 10, 10, 0.6);
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            z-index: 999;
+            animation: shrink 4s linear forwards;
+        }
 
-    .swal2-icon-content {
-        margin-left: 537%;
-        margin-top: 48%;
-    }
+        .swal2-icon-content {
+            margin-left: 537%;
+            margin-top: 48%;
+        }
 
-    .productimgname img {
-        min-width: 40px;
-        width: 40px;
-        height: 40px;
-        border: 0;
-        object-fit: contain;
-    }
+        .productimgname img {
+            min-width: 40px;
+            width: 40px;
+            height: 40px;
+            border: 0;
+            object-fit: contain;
+        }
 
-    .dataTables_info {
-        display: none;
-    }
+        .dataTables_info {
+            display: none;
+        }
     </style>
 </head>
 
@@ -125,26 +125,24 @@ if (isset($_GET['lowStockId'])) {
                                     if ($result->num_rows > 0) {
                                         while ($row = $result->fetch_assoc()) {
                                             echo "<tr>";
-                                            echo "<td class='productimgname' style='max-width: 200px; overflow:hidden'>";
-                                            echo "<img src='" . $row['image_path'] . "' alt='product' class=''>";
-                                            echo "<a class='text-truncate' data-bs-toggle='tooltip' data-bs-title='" . $row['product_name'] . "'>" . $row['product_name'] . "</a></td>";
-                                            echo "<td>" . $row['category'] . "</td>";
-                                            echo "<td>" . $row['brand_name'] . "</td>";
-                                            echo "<td>" . $row['quantity'] . "</td>";
-                                            echo "<td>" . $row['minQuantity'] . "</td>";
-                                            echo "<td>" . $row['price'] . "</td>";
+                                            echo "<td class='productimgname' style='width: 300px'>";
+                                            echo "<img src='{$row['image_path']}' alt='product'>";
+                                            echo "<a class='text-truncate' data-bs-toggle='tooltip' data-bs-title='".$row['product_name']."'>{$row['product_name']}</a></td>";
+                                            echo "<td>{$row['category']}</td>";
+                                            echo "<td>{$row['brand_name']}</td>";
+                                            echo "<td>{$row['quantity']}</td>";
+                                            echo "<td>{$row['minQuantity']}</td>";
+                                            echo "<td>{$row['price']}</td>";
                                             echo "<td>
-                                                <a class='confirm-delete' href='/Backend/src/Pages/products/ProductList.php?deleteId=" . $row['id'] . "' data-bs-toggle='tooltip' data-bs-title='Delete'>
-                                                    <img src='/Backend/src/assets/images/icons/delete.svg' alt='img'>
-                                                </a>
-                                              </td>";
+                                            <a class='me-3' href='/Backend/src/Pages/products/addProductForm.php?productId=" . $row['id'] . "' data-bs-toggle='tooltip' data-bs-title='Edit'>
+                                                          <img src='/Backend/src/assets/images/icons/edit.svg' alt='img'>
+                                                      </a></td>";
                                             echo "</tr>";
                                         }
-                                    } else {
-                                        echo "<tr><td colspan='7'>No products at minimum stock.</td></tr>";
                                     }
                                     ?>
                                 </tbody>
+                                
                             </table>
                         </div>
                     </div>
@@ -166,37 +164,37 @@ if (isset($_GET['lowStockId'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-    document.querySelectorAll('.confirm-delete').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
+        document.querySelectorAll('.confirm-delete').forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
 
-            const deleteUrl = this.getAttribute('href');
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "This product will be permanently deleted!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Yes, delete it!',
-                cancelButtonText: 'Cancel'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = deleteUrl;
-                }
+                const deleteUrl = this.getAttribute('href');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "This product will be permanently deleted!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = deleteUrl;
+                    }
+                });
             });
         });
-    });
 
-    document.addEventListener("DOMContentLoaded", function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('deleted') === '1') {
-            const toastEl = document.getElementById('actionToast');
-            const toast = new bootstrap.Toast(toastEl);
-            toast.show();
-            window.history.replaceState({}, document.title, window.location.pathname);
-        }
-    });
+        document.addEventListener("DOMContentLoaded", function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('deleted') === '1') {
+                const toastEl = document.getElementById('actionToast');
+                const toast = new bootstrap.Toast(toastEl);
+                toast.show();
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        });
     </script>
 </body>
 

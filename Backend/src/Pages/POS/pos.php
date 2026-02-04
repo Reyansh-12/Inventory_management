@@ -21,33 +21,60 @@ SELECT
     p.quantity,
     p.image_path
 FROM product_list p
-LEFT JOIN category c ON p.category = c.id
+LEFT JOIN category c ON p.category = c.category
+WHERE p.status = 'Active'
 ";
 
 $result = $con->query($sql);
 
-if (isset($_POST['ajax']) && $_POST['ajax'] == 'addCustomer') {
+// if (isset($_POST['ajax']) && $_POST['ajax'] == 'addCustomer') {
 
-    // $check = mysqli_query($con, "SELECT phone, email FROM customers WHERE phone='$phone' OR email='$email'");
-    // if (mysqli_num_rows($check) > 0) {
-    //     $row = mysqli_fetch_assoc($check);
-    //     if ($row['phone'] == $phone)
-    //         $errors['phone'] = "Phone number already exists";
-    //     if ($row['email'] == $email)
-    //         $errors['email'] = "Email already exists";
-    //     echo json_encode(['status' => 'error', 'errors' => $errors]);
-    //     exit;
-    // }
+//     // $check = mysqli_query($con, "SELECT phone, email FROM customers WHERE phone='$phone' OR email='$email'");
+//     // if (mysqli_num_rows($check) > 0) {
+//     //     $row = mysqli_fetch_assoc($check);
+//     //     if ($row['phone'] == $phone)
+//     //         $errors['phone'] = "Phone number already exists";
+//     //     if ($row['email'] == $email)
+//     //         $errors['email'] = "Email already exists";
+//     //     echo json_encode(['status' => 'error', 'errors' => $errors]);
+//     //     exit;
+//     // }
+
+//     $customerId = 'CUST' . time();
+//     $insert = mysqli_query($con, "INSERT INTO customers (customer_id, name, phone, email, address)
+//                                   VALUES ('$customerId', '$name', '$phone', '$email', '$address')");
+
+//     if ($insert) {
+//         echo json_encode(['status' => 'success', 'customer_id' => $customerId, 'customer_name' => $name]);
+//     } else {
+//         echo json_encode(['status' => 'error', 'errors' => ['general' => 'Failed to add customer']]);
+//     }
+//     exit;
+// }
+
+
+
+if (['RequestMethod'] && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    $name = mysqli_real_escape_string($con, $_POST['customername']);
+    $phone = mysqli_real_escape_string($con, $_POST['customerphone']);
+    $email = mysqli_real_escape_string($con, $_POST['customeremail']);
+    $address = mysqli_real_escape_string($con, $_POST['customeraddress']);
+
+    $check = mysqli_query($con, "SELECT phone, email FROM customers WHERE phone='$phone' OR email='$email'");
+    if (mysqli_num_rows($check) > 0) {
+        $_SESSION['customer_error'] = true;
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit;
+    }
 
     $customerId = 'CUST' . time();
     $insert = mysqli_query($con, "INSERT INTO customers (customer_id, name, phone, email, address)
                                   VALUES ('$customerId', '$name', '$phone', '$email', '$address')");
 
     if ($insert) {
-        echo json_encode(['status' => 'success', 'customer_id' => $customerId, 'customer_name' => $name]);
-    } else {
-        echo json_encode(['status' => 'error', 'errors' => ['general' => 'Failed to add customer']]);
+        $_SESSION['customer_success'] = true;
     }
+    header("Location: " . $_SERVER['PHP_SELF']);
     exit;
 }
 
@@ -69,7 +96,18 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <style>
+        .category-track {
+            overflow-x: auto;
+        }
 
+        .category-slide {
+            flex: 0 0 auto;
+        }
+
+        .category-card {
+            cursor: pointer;
+            user-select: none;
+        }
     </style>
 </head>
 
@@ -103,25 +141,36 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
                 <div class="col-lg-8" style="max-height: 80vh; overflow-y: auto; padding-right:15px;">
                     <div id="categorySlider" class="slider-container mb-3 position-relative"
                         style="background:rgba(40, 0, 84, 0.18)">
-                        <button id="prevBtn" class="carousel-control-prev slider-btn" type="button">
+                        <!-- <button id="prevBtn" class="carousel-control-prev slider-btn" type="button">
                             <span class="carousel-control-prev-icon"></span>
                         </button>
                         <button id="nextBtn" class="carousel-control-next slider-btn" type="button">
                             <span class="carousel-control-next-icon"></span>
-                        </button>
+                        </button> -->
 
                         <div class="overflow-hidden">
                             <div class="category-track">
-                                <?php foreach ($categories as $cat) { ?>
                                 <div class="category-slide">
-                                    <div class="card category-card text-center" data-category="<?= $cat['id'] ?>"
-                                        style="cursor:pointer">
-                                        <img style="object-fit: contain; height: 115px; margin-top: 5px;"
-                                            src="<?= !empty($cat['image_path']) ? htmlspecialchars($cat['image_path']) : '/Backend/assets/images/product/default-category.png'; ?>"
-                                            class="card-img-top mb-3">
-                                        <div class="card-body" style="padding: 2px;"><?= htmlspecialchars($cat['category']) ?></div>
+                                    <div class="card category-card text-center border-primary" data-category="all">
+                                        
+                                        <div class="card-body text-center">
+                                        <img src="/Backend/src/assets/images/allProducts.png" alt="">
+                                        All products</div>
                                     </div>
                                 </div>
+
+                                <?php foreach ($categories as $cat) { ?>
+                                    <div class="category-slide">
+                                        <div class="card category-card text-center" data-category="<?= $cat['id'] ?>"
+                                            style="cursor:pointer">
+                                            <img style="object-fit: contain; height: 115px; margin-top: 5px;"
+                                                src="<?= !empty($cat['image_path']) ? htmlspecialchars($cat['image_path']) : '/Backend/assets/images/product/default-category.png'; ?>"
+                                                class="card-img-top mb-3">
+                                            <div class="card-body" style="padding: 2px;">
+                                                <?= htmlspecialchars($cat['category']) ?>
+                                            </div>
+                                        </div>
+                                    </div>
                                 <?php } ?>
                             </div>
                         </div>
@@ -137,30 +186,30 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
                                 $price = number_format((float) $row['price'], 2);
                                 $image = !empty($row['image_path']) ? $row['image_path'] : "/Inventory_managment/Backend/assets/images/favicon1.png";
                                 ?>
-                        <div class="col-12 col-md-4 col-lg-4 shadow-md" style="padding: 5px">
-                            <div class="product-card p-3 shadow-sm rounded h-100" data-category="<?= $categoryId ?>">
-                                <div class="text-center">
-                                    <img src="<?= $image ?>" class="img-fluid mb-2">
-                                </div>
-                                <h6 class="text-muted small"><?= $categoryName ?></h6>
-                                <h5 class="text-truncate" data-bs-toggle='tooltip' data-bs-title="<?php echo $name ?>">
-                                    <?= $name ?>
-                                </h5>
-                                <h6 class="text-primary">₹<?= $price ?></h6>
-                                <div class="d-grid">
-                                    <?php $outOfStock = ((int) $row['quantity'] <= 0); ?>
-                                    <button
-                                        class="btn <?= $outOfStock ? 'btn-secondary' : 'btn-primary' ?> addToCartBtn"
-                                        <?= $outOfStock ? 'disabled' : '' ?> data-id="<?= $id ?>"
-                                        data-name="<?= $name ?>" data-price="<?= (float) $price ?>"
-                                        data-stock="<?= (int) $row['quantity'] ?>">
-                                        <?= $outOfStock ? 'Out of Stock' : 'Add to Cart' ?>
-                                    </button>
+                                <div class="col-12 col-md-4 col-lg-4 shadow-md product-wrapper" style="padding: 5px">
+                                    <div class="product-card p-3 shadow-sm rounded h-100" data-category="<?= $categoryId ?>">
+                                        <div class="text-center">
+                                            <img src="<?= $image ?>" class="img-fluid mb-2">
+                                        </div>
+                                        <h6 class="text-muted small"><?= $categoryName ?></h6>
+                                        <h5 class="text-truncate" data-bs-toggle='tooltip' data-bs-title="<?php echo $name ?>">
+                                            <?= $name ?>
+                                        </h5>
+                                        <h6 class="text-primary">₹<?= $price ?></h6>
+                                        <div class="d-grid">
+                                            <?php $outOfStock = ((int) $row['quantity'] <= 0); ?>
+                                            <button
+                                                class="btn <?= $outOfStock ? 'btn-secondary' : 'btn-primary' ?> addToCartBtn"
+                                                <?= $outOfStock ? 'disabled' : '' ?> data-id="<?= $id ?>"
+                                                data-name="<?= $name ?>" data-price="<?= (float) $price ?>"
+                                                data-stock="<?= (int) $row['quantity'] ?>">
+                                                <?= $outOfStock ? 'Out of Stock' : 'Add to Cart' ?>
+                                            </button>
 
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <?php }
+                            <?php }
                         } ?>
                     </div>
 
@@ -232,8 +281,9 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
                     <form method="POST" id="customerForm" data-parsley-validate>
                         <div class="mb-3">
                             <label>Customer Name <span class="text-danger">*</span></label>
-                            <input type="text" name="customername" id="customerName" class="form-control" maxlength="100"
-                                data-parsley-required data-parsley-error-message="Customer name is required">
+                            <input type="text" name="customername" id="customerName" class="form-control"
+                                maxlength="100" data-parsley-required
+                                data-parsley-error-message="Customer name is required">
                         </div>
                         <div class="mb-3">
                             <label>Phone <span class="text-danger">*</span></label>
@@ -244,8 +294,8 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
                         </div>
                         <div class="mb-3">
                             <label>Email <span class="text-danger">*</span></label>
-                            <input type="email" name="customeremail" id="customerEmail" class="form-control" maxlength="200"
-                                data-parsley-required data-parsley-error-message="Email is required">
+                            <input type="email" name="customeremail" id="customerEmail" class="form-control"
+                                maxlength="200" data-parsley-required data-parsley-error-message="Email is required">
                             <small class="text-danger d-none" id="emailError"></small>
                         </div>
                         <div class="mb-3">
@@ -305,77 +355,107 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="/Backend/src/assets/js/pos.js"></script>
     <script>
-    <?php unset($_SESSION['selected_customer_id']); ?>
-    document.addEventListener("DOMContentLoaded", function() {
+        <?php unset($_SESSION['selected_customer_id']); ?>
+        document.addEventListener("DOMContentLoaded", function () {
 
-        <?php if (isset($_SESSION['customer_error'])) { ?>
-        new bootstrap.Toast(
-            document.getElementById('customerExistsToast'), {
-                delay: 4000
-            }
-        ).show();
-        <?php unset($_SESSION['customer_error']);
-    } ?>
+            <?php if (isset($_SESSION['customer_error'])) { ?>
+                new bootstrap.Toast(
+                    document.getElementById('customerExistsToast'), {
+                    delay: 4000
+                }
+                ).show();
+                <?php unset($_SESSION['customer_error']);
+            } ?>
 
-        <?php if (isset($_SESSION['customer_success'])) { ?>
-        new bootstrap.Toast(
-            document.getElementById('customerSuccessToast'), {
-                delay: 3000
-            }
-        ).show();
-        <?php unset($_SESSION['customer_success']);
-    } ?>
+            <?php if (isset($_SESSION['customer_success'])) { ?>
+                new bootstrap.Toast(
+                    document.getElementById('customerSuccessToast'), {
+                    delay: 3000
+                }
+                ).show();
+                <?php unset($_SESSION['customer_success']);
+            } ?>
 
-    });
+        });
 
-    document.getElementById('checkoutBtn').addEventListener('click', function () {
-    const customerId = document.getElementById('customerSelect').value;
-    const cartItems = JSON.parse(localStorage.getItem('posCart') || '[]');
+        //     document.getElementById('checkoutBtn').addEventListener('click', () => {
+        //     const customerId = document.getElementById('customerSelect').value;
 
-    if (!customerId) {
-        new bootstrap.Toast(document.getElementById('customerToast')).show();
-        return;
-    }
-    if (!cartItems.length) {
-        new bootstrap.Toast(document.getElementById('cartEmptyToast')).show();
-        return;
-    }
+        //     if (cart.length === 0) {
+        //         new bootstrap.Toast(document.getElementById('cartEmptyToast'), { delay: 3000 }).show();
+        //         return;
+        //     }
 
-    fetch('/Backend/src/controllers/checkout.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ customerId, cartItems })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.status === 'success') {
-            localStorage.removeItem('posCart');
-            Swal.fire({
-                icon: 'success',
-                title: 'Order Placed',
-                text: 'Order ID: ' + data.order_id,
-                timer: 3000,
-                showConfirmButton: false
-            }).then(() => location.reload());
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Checkout Failed',
-                text: data.message || 'Something went wrong!'
+        //     if (!customerId) {
+        //         new bootstrap.Toast(document.getElementById('customerToast'), { delay: 3000 }).show();
+        //         return;
+        //     }
+
+        //     .then(res => res.json())
+        //     .then(data => {
+        //         if (data.status === 'success') {
+        //             Swal.fire({
+        //                 icon: 'success',
+        //                 title: data.message,
+        //                 timer: 1500,
+        //                 showConfirmButton: false
+        //             });
+        //             cart = [];
+        //             updateCartUI();
+        //             setTimeout(() => location.reload(), 1200);
+        //         } else {
+        //             Swal.fire({
+        //                 icon: 'error',
+        //                 title: 'Checkout failed',
+        //                 text: data.message
+        //             });
+        //         }
+        //     })
+        //     .catch(err => {
+        //         Swal.fire({
+        //             icon: 'error',
+        //             title: 'Checkout failed',
+        //             text: err.message || 'Something went wrong'
+        //         });
+        //     });
+        // });
+        
+    </script>
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+    const categoryCards = document.querySelectorAll(".category-card");
+    const productCards = document.querySelectorAll(".product-card");
+    const noProduct = document.getElementById("noProductFound");
+
+    categoryCards.forEach(card => {
+        card.addEventListener("click", function () {
+            const selectedCategory = this.dataset.category;
+            let found = false;
+
+            productCards.forEach(product => {
+                const wrapper = product.closest(".product-wrapper");
+                const productCategory = product.dataset.category;
+
+                // Use == to allow string/int comparison
+                if (selectedCategory === "all" || productCategory == selectedCategory) {
+                    wrapper.style.display = "";
+                    found = true;
+                } else {
+                    wrapper.style.display = "none";
+                }
             });
-        }
-    })
-    .catch(err => {
-        console.error(err);
-        Swal.fire({
-            icon: 'error',
-            title: 'Checkout Failed',
-            text: 'Server error!'
+
+            // Show "No products found" if nothing matches
+            noProduct.style.display = found ? "none" : "block";
+
+            // Highlight selected category
+            categoryCards.forEach(c => c.classList.remove("border-primary"));
+            this.classList.add("border-primary");
         });
     });
 });
 
-    </script>
-</body>
+</script>
 
+</body>
 </html>

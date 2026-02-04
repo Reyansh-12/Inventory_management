@@ -3,21 +3,22 @@ define("BASE_PATH", dirname(__DIR__, 2));
 include BASE_PATH . "/src/Layouts/Links.php";
 include BASE_PATH . "/src/controllers/dbConnection.php";
 
+$sql = "SELECT `id`, `product_name`, `expired_date`, `image_path` FROM `product_list` WHERE expired_date <= CURDATE()";
+$result = $con->query($sql);
 
-if(isset($_GET['expiredProductId'])) {
-    $expiredProductId = $_GET['expiredProductId'];
+$result = $con->query($sql);
+if (isset($_GET['deleteId'])) {
+    $expiredProductId = $_GET['deleteId'];
 
     $stmt = $con->prepare("DELETE FROM product_list WHERE id = ?");
     $stmt->bind_param("i", $expiredProductId);
     $stmt->execute();
     $stmt->close();
 
-    header("Location: expiredProduct.php");
+    header("Location: expiredProduct.php?deleted=1");
     exit();
 }
 
-$sql = "SELECT `id`, `product_name`, `expired_date`, `image_path` FROM `product_list` WHERE expired_date <= CURDATE()";
-$result = $con->query($sql);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -127,7 +128,7 @@ $result = $con->query($sql);
                                                 echo "    </td>";
                                                 echo "    <td>" . $row['expired_date'] . "</td>";
                                                 echo "    <td>";
-                                                echo "        <a class='confirm-delete' href='/Backend/src/Pages/products/expiredProduct.php?deleteId=" . $row['id'] . "' data-bs-toggle='tooltip' data-bs-title='Delete'>";
+                                                echo "        <a class='confirm-delete' href='/Backend/src/Pages/expiredProduct.php?deleteId=" . $row['id'] . "' data-bs-toggle='tooltip' data-bs-title='Delete'>";
                                                 echo "            <img src='/Backend/src/assets/images/icons/delete.svg' alt='img'>";
                                                 echo "        </a>";
                                                 echo "    </td>";
@@ -179,7 +180,6 @@ $result = $con->query($sql);
             });
         });
     });
-
     document.addEventListener("DOMContentLoaded", function() {
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('deleted') === '1') {
@@ -191,5 +191,4 @@ $result = $con->query($sql);
     });
     </script>
 </body>
-
 </html>
