@@ -158,14 +158,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <label for='userName'>User Name <span class="text-danger">*</span></label>
                                         <input type="text" id="userName" name="userName"
                                             value="<?php echo htmlspecialchars($editData['user_name'] ?? '') ?>"
-                                            placeholder="User name"
+                                            placeholder="User name" maxlength="100" data-parsley-pattern="^[a-zA-Z\s]+$"
+                                            data-parsley-pattern-message="User name must contain only letters and spaces"
                                             data-parsley-required-message="User name is required" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="userEmail">Email <span class="text-danger">*</span></label>
                                         <input type="text" id="userEmail" name="userEmail"
                                             value="<?php echo htmlspecialchars($editData['user_email'] ?? ''); ?>"
-                                            placeholder="User email" data-parsley-type="email"
+                                            placeholder="User email" data-parsley-type="email" maxlength="200"
                                             data-parsley-pattern="^[A-Za-z][A-Za-z0-9]*@[A-Za-z0-9]+\.[A-Za-z]{2,}$"
                                             data-parsley-required-message="Email is required" data-parsley-required
                                             data-parsley-pattern-message="Email must start with a letter and contain only letters & numbers"
@@ -179,7 +180,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <label for="password">Password
                                                 <?php if (!$isEdit) echo '<span class="text-danger">*</span>'; ?></label>
                                             <input type="password" class="pass-input" id="password" name="password"
-                                                placeholder=".........."
+                                                placeholder=".........." maxlength="16"
                                                 <?php echo !$isEdit ? 'required' : 'disabled'; ?>>
                                             <span class="fas toggle-password fa-eye-slash position-absolute"
                                                 style="top: 50px; color:rgba(138, 135, 135, 0.93); font-size: 13px"></span>
@@ -234,7 +235,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <?php if (!$isEdit) echo '<span class="text-danger">*</span>'; ?></label>
                                         <div class="pass-group">
                                             <input type="password" class="pass-input" id="confirmPassword"
-                                                name="confirmPassword" placeholder=".........."
+                                                name="confirmPassword" placeholder=".........." maxlength="16"
                                                 <?php echo !$isEdit ? 'required data-parsley-required-message="Confirm password"' : 'disabled'; ?>>
                                             <span class="fas toggle-password fa-eye-slash position-absolute"
                                                 style="top: 20px; color:rgba(138, 135, 135, 0.93); font-size: 13px"></span>
@@ -393,22 +394,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (!file) return;
 
-        // Show image preview
         const reader = new FileReader();
         reader.onload = function(e) {
             document.getElementById('previewImg').src = e.target.result;
         };
         reader.readAsDataURL(file);
 
-        // Show image name
         document.getElementById('imageName').innerText = file.name;
     });
 
-
-
-
-
-    // Check email exists
     $('#userEmail').on('blur', function() {
         let email = $(this).val().trim();
         let userId = $('input[name="user_id"]').val() || 0;
@@ -429,7 +423,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     });
 
-    // Check phone exists
     $('#contact').on('blur', function() {
         let phone = $(this).val().trim();
         let userId = $('input[name="user_id"]').val() || 0;

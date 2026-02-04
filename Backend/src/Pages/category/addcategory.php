@@ -117,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div class="col-lg-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="categoryName">Category Name <span class="text-danger">*</span></label>
-                                        <input type="text" id="categoryName" name="categoryname" placeholder="Category name" value="<?= htmlspecialchars($editData['category'] ?? '') ?>" maxlength="150" data-parsley-required data-parsley-required-message="Category name is required">
+                                        <input type="text" id="categoryName" name="categoryname" placeholder="Category name"  value="<?= htmlspecialchars($editData['category'] ?? '') ?>" maxlength="150" data-parsley-required data-parsley-required-message="Category name is required">
                                     </div>
                                 </div>
                                 <div class="col-lg-6 col-sm-6 col-12">

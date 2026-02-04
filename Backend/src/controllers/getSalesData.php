@@ -36,7 +36,7 @@ switch ($type) {
         ";
         break;
 
-    default: // monthly
+    default: 
         $sql = "
             SELECT DATE_FORMAT(created, '%b') as label, SUM(price * quantity) as total
             FROM order_list

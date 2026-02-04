@@ -51,7 +51,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
     $phone    = trim($_POST['phone']);
     $password = $_POST['password'];
 
-    // ✅ IMAGE UPLOAD
     if (!empty($_FILES['profile_image']['name'])) {
 
         $uploadDir = BASE_PATH . "/uploads/profile/";
@@ -67,7 +66,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
         }
     }
 
-    // UPDATE QUERY
     $sql = "UPDATE new_user 
             SET user_name=?, user_contact=?, user_email=?, image_path=? 
             WHERE id=?";
@@ -131,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
                                 <div class="profile-top">
                                     <div class="profile-content">
                                         <div class="profile-contentimg">
-                                            <img src="<?= htmlspecialchars($profileImg) ?>" alt="Profile Image" id="blah">
+                                            <img src="<?= htmlspecialchars($profileImg) ?>" alt="Profile Image" id="blah" style="height: 110px;">
                                             <div class="profileupload">
                                                 <input type="file" name="profile_image" id="imgInp" accept="image/*">
                                                 <a href="javascript:void(0);"><img src="/Backend/src/assets/images/icons/edit-set.svg" alt="img"></a>
@@ -150,14 +148,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
                                 <div class="col-lg-6 col-sm-12">
                                     <div class="form-group">
                                         <label>User Name</label>
-                                        <input type="text" id="userName" name="username" value="<?= htmlspecialchars($user['user_name']); ?>" data-parsley-required data-parsley-error-message="Name is required">
+                                        <input type="text" id="userName" name="username" maxlength="100" value="<?= htmlspecialchars($user['user_name']); ?>" data-parsley-required data-parsley-error-message="Name is required">
                                     </div>
                                 </div>
 
                                 <div class="col-lg-6 col-sm-12">
                                     <div class="form-group">
                                         <label>Email</label>
-                                        <input type="text" name="email" id="userEmail" value="<?= htmlspecialchars($user['user_email']); ?>" data-parsley-required data-parsley-error-message="Email is required">
+                                        <input type="text" name="email" id="userEmail" maxlength="200" value="<?= htmlspecialchars($user['user_email']); ?>" data-parsley-required data-parsley-error-message="Email is required">
                                     </div>
                                 </div>
 
@@ -171,7 +169,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
                                 <div class="col-lg-6 col-sm-12">
                                     <div class="form-group">
                                         <label>Password (optional)</label>
-                                        <input type="password" name="password" class="pass-input" disabled>
+                                        <input type="password" name="password" maxlength="16" class="pass-input" disabled>
                                     </div>
                                 </div>
 

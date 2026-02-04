@@ -1,4 +1,4 @@
-<?php 
+<?php
 $lastOrders = mysqli_query($con, "
     SELECT o.*, c.name as customer_name, p.product_name 
     FROM order_list o
@@ -6,6 +6,15 @@ $lastOrders = mysqli_query($con, "
     LEFT JOIN product_list p ON o.product = p.id
     ORDER BY o.created DESC LIMIT 5
 ");
+
+// $lastOrders = mysqli_query($con, "
+//     SELECT o.*, c.name as customer_name, p.product_name 
+//     FROM order_list o
+//     LEFT JOIN customers c ON o.customer = c.id
+//     LEFT JOIN product_list p ON o.product = p.id
+//     ORDER BY o.created DESC LIMIT 5
+// ");
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -78,31 +87,29 @@ $lastOrders = mysqli_query($con, "
                         <ul class="notification-list">
                             <?php
 
-while ($row = mysqli_fetch_assoc($lastOrders)) {
-    
-    echo "<li class='notification-message'>";
-    echo "    <a href='/Backend/src/Pages/notification/notification.php'>";
-    echo "        <div class='media d-flex'>";
-    echo "            <span class='avatar flex-shrink-0'>";
-    echo "                <img alt='' src='/Backend/src/assets/images/profiles/avatar-01.jpg'>";
-    echo "            </span>";
-    echo "            <div class='media-body flex-grow-1'>";
-    echo "                <p class='noti-details'>";
-    echo "                    <span class='noti-title'>" . $row['customer_name'].  "</span>";
-    echo "                    purchased <span class='noti-title'>" .$row['product_name']. " </span>";
-    echo "                    (Qty: ". $row['quantity'] .")";
-    echo "                </p>";
-    echo "                <p class='noti-time'>";
-    echo "                    <span class='notification-time'>" .$row['created'] . "</span>";
-    echo "                </p>";
-    echo "            </div>";
-    echo "        </div>";
-    echo "    </a>";
-    echo "</li>";
-    
-}
-?>
+                            while ($row = mysqli_fetch_assoc($lastOrders)) {
 
+                                echo "<li class='notification-message'>";
+                                echo "    <a href='/Backend/src/Pages/notification/notification.php'>";
+                                echo "        <div class='media d-flex'>";
+                                echo "            <span class='avatar flex-shrink-0'>";
+                                echo "                <img alt='' src='/Backend/src/assets/images/profiles/avatar-01.jpg'>";
+                                echo "            </span>";
+                                echo "            <div class='media-body flex-grow-1'>";
+                                echo "                <p class='noti-details'>";
+                                echo "                    <span class='noti-title'>" . $row['customer_name'] . "</span>";
+                                echo "                    purchased <span class='noti-title'>" . $row['product_name'] . " </span>";
+                                echo "                    (Qty: " . $row['quantity'] . ")";
+                                echo "                </p>";
+                                echo "                <p class='noti-time'>";
+                                echo "                    <span class='notification-time'>" . $row['created'] . "</span>";
+                                echo "                </p>";
+                                echo "            </div>";
+                                echo "        </div>";
+                                echo "    </a>";
+                                echo "</li>";
+                            }
+                            ?>
                         </ul>
                     </div>
                     <div class="topnav-dropdown-footer">
@@ -129,8 +136,8 @@ while ($row = mysqli_fetch_assoc($lastOrders)) {
                         <hr class="m-0">
                         <a class="dropdown-item" href="/Backend/src/Pages/userProfile.php"> <i class="me-2"
                                 data-feather="user"></i> My Profile</a>
-                        <a class="dropdown-item" href="generalsettings.html"><i class="me-2"
-                                data-feather="settings"></i>Settings</a>
+                        <!-- <a class="dropdown-item" href="generalsettings.html"><i class="me-2"
+                                data-feather="settings"></i>Settings</a> -->
                         <hr class="m-0">
                         <a class="dropdown-item logout pb-0" href="/Backend/src/Pages/Auth/signin.php"><img
                                 src="/Backend/src/assets/images/icons/log-out.svg" class="me-2" alt="img">Logout</a>
@@ -143,25 +150,22 @@ while ($row = mysqli_fetch_assoc($lastOrders)) {
                 aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
             <div class="dropdown-menu dropdown-menu-right">
                 <a class="dropdown-item" href="profile.html">My Profile</a>
-                <a class="dropdown-item" href="generalsettings.html">Settings</a>
+                <!-- <a class="dropdown-item" href="generalsettings.html">Settings</a> -->
                 <a class="dropdown-item" href="/Backend/src/Pages/Auth/logout.php">Logout</a>
             </div>
         </div>
     </div>
     <script src="/Backend/src/assets/js/bootstrap.bundle.min.js"></script>
-    
-  <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const dropdownEl = document.getElementById('header-icon');
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const dropdownEl = document.getElementById('header-icon');
 
-    if (dropdownEl) {
-        dropdownEl.addEventListener('show.bs.dropdown', function () {
-            console.log('Notification dropdown opened');
+            if (dropdownEl) {
+                dropdownEl.addEventListener('show.bs.dropdown', function () {
+                    console.log('Notification dropdown opened');
+                });
+            }
         });
-    }
-});
-</script>
-
+    </script>
 </body>
-
 </html>

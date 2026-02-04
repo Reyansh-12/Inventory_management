@@ -1,11 +1,11 @@
 <?php
 session_start();
-include "../../controllers/dbConnection.php";
+define("BASE_PATH", dirname(__DIR__, 3));
+include BASE_PATH . "/src/Layouts/Links.php";
+include BASE_PATH . "/src/controllers/dbConnection.php";
 
-// Enable mysqli errors for debugging
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-// Get JSON input from AJAX
 $data = json_decode(file_get_contents('php://input'), true);
 $customerId = $data['customerId'] ?? null;
 $cartItems = $data['cartItems'] ?? [];
@@ -15,7 +15,6 @@ if (!$customerId || empty($cartItems)) {
     exit;
 }
 
-// Generate unique order ID
 $orderId = 'ORD' . date('YmdHis') . rand(100, 999);
 
 foreach ($cartItems as $item) {
@@ -24,7 +23,6 @@ foreach ($cartItems as $item) {
     $price     = (float) $item['price'];
     $total     = $quantity * $price;
 
-    // Get product category and brand
     $res = $con->query("SELECT category, brand FROM product_list WHERE id=$productId LIMIT 1");
     if ($res && $res->num_rows > 0) {
         $row = $res->fetch_assoc();
@@ -35,7 +33,6 @@ foreach ($cartItems as $item) {
         $brand = '';
     }
 
-    // Insert into order_list
     $stmt = $con->prepare("INSERT INTO order_list 
         (order_id, customer, product, category, brand, quantity, status, price, total_amount, created) 
         VALUES (?, ?, ?, ?, ?, ?, 'Pending', ?, ?, NOW())");

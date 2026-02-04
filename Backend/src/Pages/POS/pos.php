@@ -116,10 +116,10 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
                                 <div class="category-slide">
                                     <div class="card category-card text-center" data-category="<?= $cat['id'] ?>"
                                         style="cursor:pointer">
-                                        <img style="object-fit: contain"
+                                        <img style="object-fit: contain; height: 115px; margin-top: 5px;"
                                             src="<?= !empty($cat['image_path']) ? htmlspecialchars($cat['image_path']) : '/Backend/assets/images/product/default-category.png'; ?>"
-                                            class="card-img-top">
-                                        <div class="card-body"><?= htmlspecialchars($cat['category']) ?></div>
+                                            class="card-img-top mb-3">
+                                        <div class="card-body" style="padding: 2px;"><?= htmlspecialchars($cat['category']) ?></div>
                                     </div>
                                 </div>
                                 <?php } ?>
@@ -133,7 +133,7 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
                                 $id = (int) $row['id'];
                                 $name = htmlspecialchars($row['product_name']);
                                 $categoryId = (int) $row['category_id'];
-                                $categoryName = htmlspecialchars($row['category_name']);
+                                $categoryName = $row['category_name'];
                                 $price = number_format((float) $row['price'], 2);
                                 $image = !empty($row['image_path']) ? $row['image_path'] : "/Inventory_managment/Backend/assets/images/favicon1.png";
                                 ?>
@@ -149,15 +149,12 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
                                 <h6 class="text-primary">₹<?= $price ?></h6>
                                 <div class="d-grid">
                                     <?php $outOfStock = ((int) $row['quantity'] <= 0); ?>
-
                                     <button
                                         class="btn <?= $outOfStock ? 'btn-secondary' : 'btn-primary' ?> addToCartBtn"
                                         <?= $outOfStock ? 'disabled' : '' ?> data-id="<?= $id ?>"
                                         data-name="<?= $name ?>" data-price="<?= (float) $price ?>"
                                         data-stock="<?= (int) $row['quantity'] ?>">
-
                                         <?= $outOfStock ? 'Out of Stock' : 'Add to Cart' ?>
-
                                     </button>
 
                                 </div>
@@ -193,7 +190,6 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
                                     ?>
                                 </select>
                             </div>
-
                             <div class="table-responsive mb-2">
                                 <table class="table table-bordered table-sm" id="posCartTable">
                                     <thead class="table-light">
@@ -236,7 +232,7 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
                     <form method="POST" id="customerForm" data-parsley-validate>
                         <div class="mb-3">
                             <label>Customer Name <span class="text-danger">*</span></label>
-                            <input type="text" name="customername" id="customerName" class="form-control"
+                            <input type="text" name="customername" id="customerName" class="form-control" maxlength="100"
                                 data-parsley-required data-parsley-error-message="Customer name is required">
                         </div>
                         <div class="mb-3">
@@ -248,13 +244,13 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
                         </div>
                         <div class="mb-3">
                             <label>Email <span class="text-danger">*</span></label>
-                            <input type="email" name="customeremail" id="customerEmail" class="form-control"
+                            <input type="email" name="customeremail" id="customerEmail" class="form-control" maxlength="200"
                                 data-parsley-required data-parsley-error-message="Email is required">
                             <small class="text-danger d-none" id="emailError"></small>
                         </div>
                         <div class="mb-3">
                             <label>Address</label>
-                            <input type="text" name="customeraddress" class="form-control">
+                            <input type="text" name="customeraddress" class="form-control" maxlength="300">
                         </div>
                         <button type="submit" name="addCustomerSubmitButton" class="btn btn-primary">Add
                             Customer</button>
@@ -332,11 +328,6 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
 
     });
 
-
-
-
-
-
     document.getElementById('checkoutBtn').addEventListener('click', function () {
     const customerId = document.getElementById('customerSelect').value;
     const cartItems = JSON.parse(localStorage.getItem('posCart') || '[]');
@@ -350,7 +341,7 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
         return;
     }
 
-    fetch('/Backend/src/Pages/posCheckout.php', {
+    fetch('/Backend/src/controllers/checkout.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ customerId, cartItems })
@@ -358,7 +349,7 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
     .then(res => res.json())
     .then(data => {
         if (data.status === 'success') {
-            localStorage.removeItem('posCart'); // clear cart
+            localStorage.removeItem('posCart');
             Swal.fire({
                 icon: 'success',
                 title: 'Order Placed',
@@ -383,7 +374,6 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
         });
     });
 });
-
 
     </script>
 </body>

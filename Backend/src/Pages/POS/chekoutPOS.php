@@ -70,12 +70,6 @@ try {
     $_SESSION['transaction_id'] = 'ID' . date('YmdHis') . rand(100, 999);
 
     echo json_encode([
-        'status' => 'success',
-        'message' => 'Checkout completed successfully'
-    ]);
-    exit;
-
-    echo json_encode([
         "status" => "success",
         "message" => "Checkout completed successfully"
     ]);

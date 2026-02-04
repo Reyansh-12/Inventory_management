@@ -127,7 +127,7 @@ $result = $con->query($sql);
                                                 echo "    </td>";
                                                 echo "    <td>" . $row['expired_date'] . "</td>";
                                                 echo "    <td>";
-                                                echo "        <a class='confirm-delete' href='/Backend/src/Pages/products/ProductList.php?deleteId=" . $row['id'] . "' data-bs-toggle='tooltip' data-bs-title='Delete'>";
+                                                echo "        <a class='confirm-delete' href='/Backend/src/Pages/products/expiredProduct.php?deleteId=" . $row['id'] . "' data-bs-toggle='tooltip' data-bs-title='Delete'>";
                                                 echo "            <img src='/Backend/src/assets/images/icons/delete.svg' alt='img'>";
                                                 echo "        </a>";
                                                 echo "    </td>";

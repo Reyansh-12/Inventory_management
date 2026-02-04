@@ -54,13 +54,21 @@ $row = mysqli_fetch_assoc($result);
 
 $expiredCount = (int) $row['total_expired'];
 
-$lowStocksql = mysqli_query($con, "
-    SELECT COUNT(*) AS total_low_stock 
-    FROM product_list 
-    WHERE quantity <= minQuantity AND quantity > 0
-");
-$lowStockRow = mysqli_fetch_assoc($lowStocksql);
+// $lowStocksql = mysqli_query($con, "
+//     SELECT COUNT(*) AS total_low_stock 
+//     FROM product_list 
+//     WHERE quantity <= minQuantity AND quantity > 0
+// ");
+// $lowStockRow = mysqli_fetch_assoc($lowStocksql);
+// $lowStockCount = (int) $lowStockRow['total_low_stock'];
+
+$lowStock = "SELECT COUNT(*) AS total_low_stock 
+            FROM product_list 
+            WHERE quantity <= minQuantity OR quantity = 0";
+$lowStockResult = mysqli_query($con, $lowStock);
+$lowStockRow = mysqli_fetch_assoc($lowStockResult);
 $lowStockCount = (int) $lowStockRow['total_low_stock'];
+
 
 $result = mysqli_query($con, "
     SELECT SUM(total_amount) AS grand_total
@@ -70,8 +78,6 @@ $result = mysqli_query($con, "
 $row = mysqli_fetch_assoc($result);
 $grandTotal = $row['grand_total'] ?? 0;
 $total = (float) $grandTotal;
-
-
 
 $inventorySql = "
 SELECT

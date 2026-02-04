@@ -123,7 +123,7 @@ if(isset($_POST['submit'])) {
                 <div class="page-header">
                     <div class="page-btn">
                         <a href="/Backend/src/Pages/supplierlist.php" class="text-secondary fw-bold fs-6"><i
-                                class="bi bi-arrow-left me-1 fw-bold"></i>Back to Product</a>
+                                class="bi bi-arrow-left me-1 fw-bold"></i>Back to Supplier</a>
                     </div>
                     <div class="page-title">
                         <h6>
@@ -147,7 +147,7 @@ if(isset($_POST['submit'])) {
                                         <label for='supplierName'>Supplier Name <span
                                                 class="text-danger">*</span></label>
                                         <input type="text" id="supplierName" name="supplierName"
-                                            value="<?= htmlspecialchars($supplierName) ?>" placeholder="Supplier name"
+                                            value="<?= htmlspecialchars($supplierName) ?>" maxlength="100" placeholder="Supplier name"
                                             data-parsley-required-message="Supplier Name is required"
                                             data-parsley-required>
                                     </div>
@@ -156,7 +156,7 @@ if(isset($_POST['submit'])) {
                                     <div class="form-group">
                                         <label for='supplierMail'>Email <span class="text-danger">*</span></label>
                                         <input type="text" id='supplierMail' name="supplierEmail"
-                                            value="<?= htmlspecialchars($email) ?>" placeholder="Supplier email"
+                                            value="<?= htmlspecialchars($email) ?>" maxlength="200" placeholder="Supplier email"
                                             data-parsley-pattern="^[A-Za-z][A-Za-z0-9]*@[A-Za-z0-9]+\.[A-Za-z]{2,}$"
                                             data-parsley-required-message="Email is required" data-parsley-required
                                             data-parsley-pattern-message="Email must start with a letter and contain only letters & numbers">
@@ -213,14 +213,14 @@ if(isset($_POST['submit'])) {
                                     <div class="form-group">
                                         <label for="address">Address <span class="text-danger">*</span></label>
                                         <input type="text" id="address" name="address"
-                                            value="<?= htmlspecialchars($address) ?>" placeholder="Supplier address"
+                                            value="<?= htmlspecialchars($address) ?>" maxlength="500" placeholder="Supplier address"
                                             data-parsley-required-message="Address is required" data-parsley-required>
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
                                     <div class="form-group">
                                         <label for="description">Description</label>
-                                        <textarea class="form-control" id="description" name="description"
+                                        <textarea class="form-control" id="description" maxlength="500" name="description"
                                             placeholder="Description"><?= htmlspecialchars($description) ?></textarea>
                                     </div>
                                 </div>
