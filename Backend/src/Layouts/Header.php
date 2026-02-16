@@ -14,6 +14,12 @@ $lastOrders = mysqli_query($con, "
 //     LEFT JOIN product_list p ON o.product = p.id
 //     ORDER BY o.created DESC LIMIT 5
 // ");
+$notificationCountQuery = mysqli_query($con, "
+    SELECT COUNT(*) as total 
+    FROM order_list
+");
+
+$notificationCount = mysqli_fetch_assoc($notificationCountQuery)['total'];
 
 ?>
 <!DOCTYPE html>
@@ -75,8 +81,13 @@ $lastOrders = mysqli_query($con, "
             <li class="nav-item dropdown">
                 <a href="javascript:void(0);" class="dropdown-toggle nav-link header-icon" data-bs-toggle="dropdown"
                     id="header-icon">
-                    <img src="/Backend/src/assets/images/icons/notification-bing.svg" alt="img"> <span
-                        class="badge rounded-pill"></span>
+                    <img src="/Backend/src/assets/images/icons/notification-bing.svg" alt="img"> 
+                    <?php if ($notificationCount > 0): ?>
+    <span class="badge rounded-pill bg-danger">
+        <?= $notificationCount ?>
+    </span>
+<?php endif; ?>
+
                 </a>
                 <div class="dropdown-menu notifications">
                     <div class="topnav-dropdown-header">
@@ -97,8 +108,8 @@ $lastOrders = mysqli_query($con, "
                                 echo "            </span>";
                                 echo "            <div class='media-body flex-grow-1'>";
                                 echo "                <p class='noti-details'>";
-                                echo "                    <span class='noti-title'>" . $row['customer_name'] . "</span>";
-                                echo "                    purchased <span class='noti-title'>" . $row['product_name'] . " </span>";
+                                echo "                    <span class='noti-title'>" . $row['customer'] . "</span>";
+                                echo "                    purchased <span class='noti-title'>" . $row['product'] . " </span>";
                                 echo "                    (Qty: " . $row['quantity'] . ")";
                                 echo "                </p>";
                                 echo "                <p class='noti-time'>";

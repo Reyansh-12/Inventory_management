@@ -3,7 +3,7 @@ define("BASE_PATH", dirname(__DIR__, 3));
 include BASE_PATH . "/src/Layouts/Links.php";
 include BASE_PATH . "/src/controllers/dbConnection.php";
 
-// session_start();
+session_start();
 // error_reporting(E_ALL);
 // ini_set('display_errors', 1);
 
@@ -25,36 +25,10 @@ LEFT JOIN category c ON p.category = c.category
 WHERE p.status = 'Active'
 ";
 
+
 $result = $con->query($sql);
 
-// if (isset($_POST['ajax']) && $_POST['ajax'] == 'addCustomer') {
-
-//     // $check = mysqli_query($con, "SELECT phone, email FROM customers WHERE phone='$phone' OR email='$email'");
-//     // if (mysqli_num_rows($check) > 0) {
-//     //     $row = mysqli_fetch_assoc($check);
-//     //     if ($row['phone'] == $phone)
-//     //         $errors['phone'] = "Phone number already exists";
-//     //     if ($row['email'] == $email)
-//     //         $errors['email'] = "Email already exists";
-//     //     echo json_encode(['status' => 'error', 'errors' => $errors]);
-//     //     exit;
-//     // }
-
-//     $customerId = 'CUST' . time();
-//     $insert = mysqli_query($con, "INSERT INTO customers (customer_id, name, phone, email, address)
-//                                   VALUES ('$customerId', '$name', '$phone', '$email', '$address')");
-
-//     if ($insert) {
-//         echo json_encode(['status' => 'success', 'customer_id' => $customerId, 'customer_name' => $name]);
-//     } else {
-//         echo json_encode(['status' => 'error', 'errors' => ['general' => 'Failed to add customer']]);
-//     }
-//     exit;
-// }
-
-
-
-if (['RequestMethod'] && $_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['customername'])) {
     $name = mysqli_real_escape_string($con, $_POST['customername']);
     $phone = mysqli_real_escape_string($con, $_POST['customerphone']);
     $email = mysqli_real_escape_string($con, $_POST['customeremail']);
@@ -72,6 +46,7 @@ if (['RequestMethod'] && $_SERVER['REQUEST_METHOD'] === 'POST') {
                                   VALUES ('$customerId', '$name', '$phone', '$email', '$address')");
 
     if ($insert) {
+        $_SESSION['selected_customer_id'] = mysqli_insert_id($con);
         $_SESSION['customer_success'] = true;
     }
     header("Location: " . $_SERVER['PHP_SELF']);
@@ -152,16 +127,18 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
                             <div class="category-track">
                                 <div class="category-slide">
                                     <div class="card category-card text-center border-primary" data-category="all">
-                                        
+
                                         <div class="card-body text-center">
-                                        <img src="/Backend/src/assets/images/allProducts.png" alt="">
-                                        All products</div>
+                                            <img src="/Backend/src/assets/images/allProducts.png" alt="">
+                                            All products
+                                        </div>
                                     </div>
                                 </div>
 
                                 <?php foreach ($categories as $cat) { ?>
                                     <div class="category-slide">
-                                        <div class="card category-card text-center" data-category="<?= $cat['id'] ?>"
+                                        <div class="card category-card text-center"
+                                            data-category="<?= htmlspecialchars($cat['category']) ?>"
                                             style="cursor:pointer">
                                             <img style="object-fit: contain; height: 115px; margin-top: 5px;"
                                                 src="<?= !empty($cat['image_path']) ? htmlspecialchars($cat['image_path']) : '/Backend/assets/images/product/default-category.png'; ?>"
@@ -187,7 +164,8 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
                                 $image = !empty($row['image_path']) ? $row['image_path'] : "/Inventory_managment/Backend/assets/images/favicon1.png";
                                 ?>
                                 <div class="col-12 col-md-4 col-lg-4 shadow-md product-wrapper" style="padding: 5px">
-                                    <div class="product-card p-3 shadow-sm rounded h-100" data-category="<?= $categoryId ?>">
+                                    <div class="product-card p-3 shadow-sm rounded h-100"
+                                        data-category="<?= htmlspecialchars($categoryName) ?>">
                                         <div class="text-center">
                                             <img src="<?= $image ?>" class="img-fluid mb-2">
                                         </div>
@@ -228,13 +206,14 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
                         <div class="card-body">
                             <div class="mb-3 d-flex gap-2">
                                 <select class="form-select" id="customerSelect">
-                                    <option value="" selected>Walk-in Customer</option>
+                                    <option value="" disabled <?= !isset($_SESSION['selected_customer_id']) ? 'selected' : ''; ?>>Walk-in Customer</option>
                                     <?php
                                     $selectedCustomerId = $_SESSION['selected_customer_id'] ?? null;
                                     $customers = mysqli_query($con, "SELECT id, name FROM customers ORDER BY id DESC");
                                     while ($c = mysqli_fetch_assoc($customers)) {
-                                        $selected = ($c['id'] == $selectedCustomerId) ? 'selected' : '';
-                                        echo "<option value='{$c['id']}' $selected>{$c['name']}</option>";
+                                        // Variable name ek hi rakhein: $isSelected
+                                        $isSelected = ($c['id'] == $selectedCustomerId) ? 'selected' : '';
+                                        echo "<option value='{$c['id']}' $isSelected>{$c['name']}</option>";
                                     }
                                     ?>
                                 </select>
@@ -341,11 +320,10 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
     </div>
 
     <div class="toast-container position-fixed top-0 end-0 p-3">
-        <div id="customerSuccessToast" class="toast align-items-center text-bg-success border-0">
+        <div id="customerSuccessToast" class="toast align-items-center text-bg-success border-0" role="alert"
+            aria-live="assertive" aria-atomic="true">
             <div class="d-flex">
-                <div class="toast-body">
-                    Customer added successfully!
-                </div>
+                <div class="toast-body">Customer added successfully!</div>
                 <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
             </div>
         </div>
@@ -355,107 +333,100 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="/Backend/src/assets/js/pos.js"></script>
     <script>
-        <?php unset($_SESSION['selected_customer_id']); ?>
         document.addEventListener("DOMContentLoaded", function () {
 
-            <?php if (isset($_SESSION['customer_error'])) { ?>
-                new bootstrap.Toast(
-                    document.getElementById('customerExistsToast'), {
-                    delay: 4000
+            // Success Toast
+            <?php if (isset($_SESSION['customer_success'])): ?>
+                var sEl = document.getElementById('customerSuccessToast');
+                if (sEl) {
+                    new bootstrap.Toast(sEl, { delay: 3000 }).show();
                 }
-                ).show();
-                <?php unset($_SESSION['customer_error']);
-            } ?>
+                <?php unset($_SESSION['customer_success']); // Toaster dikhne ke baad clear karein ?>
+            <?php endif; ?>
 
-            <?php if (isset($_SESSION['customer_success'])) { ?>
-                new bootstrap.Toast(
-                    document.getElementById('customerSuccessToast'), {
-                    delay: 3000
+            // Error Toast
+            <?php if (isset($_SESSION['customer_error'])): ?>
+                var eEl = document.getElementById('customerExistsToast');
+                if (eEl) {
+                    new bootstrap.Toast(eEl, { delay: 4000 }).show();
                 }
-                ).show();
-                <?php unset($_SESSION['customer_success']);
-            } ?>
+                <?php unset($_SESSION['customer_error']); ?>
+            <?php endif; ?>
 
+            // Selection clear (Optionally checkout ke baad karne ke liye)
+            // Hum yahan unset nahi karenge taaki dropdown mein dikhta rahe
         });
+        document.getElementById('checkoutBtn').addEventListener('click', () => {
+    const customerSelect = document.getElementById('customerSelect');
+    const customerId = customerSelect ? customerSelect.value : '';
 
-        //     document.getElementById('checkoutBtn').addEventListener('click', () => {
-        //     const customerId = document.getElementById('customerSelect').value;
+    if (cart.length === 0) {
+        Swal.fire('Empty Cart', 'Please add products first!', 'warning');
+        return;
+    }
 
-        //     if (cart.length === 0) {
-        //         new bootstrap.Toast(document.getElementById('cartEmptyToast'), { delay: 3000 }).show();
-        //         return;
-        //     }
+    if (!customerId) {
+        Swal.fire('Select Customer', 'Please select a customer!', 'warning');
+        return;
+    }
 
-        //     if (!customerId) {
-        //         new bootstrap.Toast(document.getElementById('customerToast'), { delay: 3000 }).show();
-        //         return;
-        //     }
-
-        //     .then(res => res.json())
-        //     .then(data => {
-        //         if (data.status === 'success') {
-        //             Swal.fire({
-        //                 icon: 'success',
-        //                 title: data.message,
-        //                 timer: 1500,
-        //                 showConfirmButton: false
-        //             });
-        //             cart = [];
-        //             updateCartUI();
-        //             setTimeout(() => location.reload(), 1200);
-        //         } else {
-        //             Swal.fire({
-        //                 icon: 'error',
-        //                 title: 'Checkout failed',
-        //                 text: data.message
-        //             });
-        //         }
-        //     })
-        //     .catch(err => {
-        //         Swal.fire({
-        //             icon: 'error',
-        //             title: 'Checkout failed',
-        //             text: err.message || 'Something went wrong'
-        //         });
-        //     });
-        // });
-        
-    </script>
-    <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const categoryCards = document.querySelectorAll(".category-card");
-    const productCards = document.querySelectorAll(".product-card");
-    const noProduct = document.getElementById("noProductFound");
-
-    categoryCards.forEach(card => {
-        card.addEventListener("click", function () {
-            const selectedCategory = this.dataset.category;
-            let found = false;
-
-            productCards.forEach(product => {
-                const wrapper = product.closest(".product-wrapper");
-                const productCategory = product.dataset.category;
-
-                // Use == to allow string/int comparison
-                if (selectedCategory === "all" || productCategory == selectedCategory) {
-                    wrapper.style.display = "";
-                    found = true;
-                } else {
-                    wrapper.style.display = "none";
-                }
+    fetch("/Backend/src/controllers/checkout.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cart: cart, customer_id: customerId })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'success') {
+            Swal.fire('Success', data.message, 'success').then(() => {
+                cart = [];
+                localStorage.removeItem('pos_cart');
+                location.reload();
             });
-
-            // Show "No products found" if nothing matches
-            noProduct.style.display = found ? "none" : "block";
-
-            // Highlight selected category
-            categoryCards.forEach(c => c.classList.remove("border-primary"));
-            this.classList.add("border-primary");
-        });
+        } else {
+            Swal.fire('Error', data.message, 'error');
+        }
+    })
+    .catch(err => {
+        Swal.fire('Server Error', err.message, 'error');
     });
 });
 
-</script>
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const categoryCards = document.querySelectorAll(".category-card");
+            const productWrappers = document.querySelectorAll(".product-wrapper");
+            const noProduct = document.getElementById("noProductFound");
+
+            categoryCards.forEach(card => {
+                card.addEventListener("click", function () {
+                    let selectedCategory = this.getAttribute("data-category").trim().toLowerCase();
+
+                    let found = false;
+
+                    productWrappers.forEach(wrapper => {
+                        const productCard = wrapper.querySelector(".product-card");
+                        let productCategory = productCard.getAttribute("data-category") ? productCard.getAttribute("data-category").trim().toLowerCase() : "";
+
+                        if (selectedCategory === "all" || productCategory === selectedCategory) {
+                            wrapper.style.setProperty('display', 'block', 'important');
+                            found = true;
+                        } else {
+                            wrapper.style.setProperty('display', 'none', 'important');
+                        }
+                    });
+
+                    noProduct.style.display = found ? "none" : "block";
+
+                    categoryCards.forEach(c => c.classList.remove("border-primary", "shadow-sm"));
+                    this.classList.add("border-primary", "shadow-sm");
+                });
+            });
+        });
+
+    </script>
 
 </body>
+
 </html>
