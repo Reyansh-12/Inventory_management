@@ -162,7 +162,7 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
                                 $categoryName = $row['category_name'];
                                 $price = number_format((float) $row['price'], 2);
                                 $image = !empty($row['image_path']) ? $row['image_path'] : "/Inventory_managment/Backend/assets/images/favicon1.png";
-                                ?>
+                        ?>
                                 <div class="col-12 col-md-4 col-lg-4 shadow-md product-wrapper" style="padding: 5px">
                                     <div class="product-card p-3 shadow-sm rounded h-100"
                                         data-category="<?= htmlspecialchars($categoryName) ?>">
@@ -187,7 +187,7 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
                                         </div>
                                     </div>
                                 </div>
-                            <?php }
+                        <?php }
                         } ?>
                     </div>
 
@@ -330,14 +330,17 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script src="/Backend/src/assets/js/pos.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
 
             <?php if (isset($_SESSION['customer_success'])): ?>
                 var sEl = document.getElementById('customerSuccessToast');
                 if (sEl) {
-                    new bootstrap.Toast(sEl, { delay: 3000 }).show();
+                    new bootstrap.Toast(sEl, {
+                        delay: 3000
+                    }).show();
                 }
                 <?php unset($_SESSION['customer_success']); ?>
             <?php endif; ?>
@@ -345,53 +348,57 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
             <?php if (isset($_SESSION['customer_error'])): ?>
                 var eEl = document.getElementById('customerExistsToast');
                 if (eEl) {
-                    new bootstrap.Toast(eEl, { delay: 4000 }).show();
+                    new bootstrap.Toast(eEl, {
+                        delay: 4000
+                    }).show();
                 }
                 <?php unset($_SESSION['customer_error']); ?>
             <?php endif; ?>
         });
-        document.getElementById('checkoutBtn').addEventListener('click', () => {
+        let checkoutBtn = document.getElementById("checkoutBtn");
+        checkoutBtn.replaceWith(checkoutBtn.cloneNode(true));
+        checkoutBtn = document.getElementById("checkoutBtn");
 
-    const customerId = document.getElementById('customerSelect').value;
+        checkoutBtn.addEventListener("click", () => {
+            const customerId = document.getElementById("customerSelect").value;
 
-    if (cart.length === 0) {
-        Swal.fire('Empty Cart', 'Please add products first!', 'warning');
-        return;
-    }
+            if (cart.length === 0) {
+                Swal.fire("Empty Cart", "Please add products first!", "warning");
+                return;
+            }
 
-    if (!customerId) {
-        Swal.fire('Select Customer', 'Please select a customer!', 'warning');
-        return;
-    }
+            if (!customerId) {
+                Swal.fire("Select Customer", "Please select a customer!", "warning");
+                return;
+            }
 
-    fetch("store_checkout.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            cart: cart,
-            customer_id: customerId
-        })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.status === 'success') {
-            window.location.href = "order.php";
-        }
-    });
-
-});
-
-
-
+            fetch("store_checkout.php", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        cart: cart,
+                        customer_id: customerId
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        window.location.href = "order.php";
+                    }
+                })
+                .catch(err => console.log(err));
+        });
     </script>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             const categoryCards = document.querySelectorAll(".category-card");
             const productWrappers = document.querySelectorAll(".product-wrapper");
             const noProduct = document.getElementById("noProductFound");
 
             categoryCards.forEach(card => {
-                card.addEventListener("click", function () {
+                card.addEventListener("click", function() {
                     let selectedCategory = this.getAttribute("data-category").trim().toLowerCase();
 
                     let found = false;
@@ -415,9 +422,7 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
                 });
             });
         });
-
     </script>
-
 </body>
 
 </html>

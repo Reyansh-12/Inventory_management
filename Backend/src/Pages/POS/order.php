@@ -5,12 +5,6 @@ include BASE_PATH . "/src/controllers/dbConnection.php";
 
 session_start();
 
-$customerData = $_SESSION['order_customer_data'] ?? [
-    'name' => 'Walk-in Customer',
-    'phone' => 'N/A',
-    'email' => 'N/A'
-];
-
 $cartItems = $_SESSION['order_cart'] ?? [];
 $grandTotal = 0;
 foreach ($cartItems as $item) {
@@ -25,6 +19,21 @@ if (isset($_SESSION['selected_customer_id'])) {
 }
 $invoiceDate = date("d - M - y");
 
+$customerData = [
+    'name' => 'Walk-in Customer',
+    'phone' => 'N/A',
+    'email' => 'N/A'
+];
+
+if (!empty($_SESSION['selected_customer_id'])) {
+    $c_id = (int) $_SESSION['selected_customer_id'];
+
+    $c_query = mysqli_query($con, "SELECT name, phone, email FROM customers WHERE id = $c_id LIMIT 1");
+
+    if ($row = mysqli_fetch_assoc($c_query)) {
+        $customerData = $row;
+    }
+}
 
 
 ?>
@@ -165,15 +174,15 @@ $invoiceDate = date("d - M - y");
                             </div>
                             <div>
                                 <span>Customer Name :</span>
-                                <span id="orderCustName"><?php echo $customerData['name']; ?></span>
+                                <span><?php echo $customerData['name']; ?></span>
                             </div>
                             <div>
                                 <span>Mobile Number :</span>
-                                <span id="orderCustPhone"><?php echo $customerData['phone']; ?></span>
+                                <span><?php echo $customerData['phone']; ?></span>
                             </div>
                             <div>
                                 <span>Customer Email :</span>
-                                <span id="orderCustEmail"><?php echo $customerData['email']; ?></span>
+                                <span><?php echo $customerData['email']; ?></span>
                             </div>
                         </div>
                         <div class="col-lg-6 text-end pe-5 d-block">
@@ -194,14 +203,15 @@ $invoiceDate = date("d - M - y");
                             </div>
                         </div>
                     </div>
-                    <table class="table datanew">
+                    <table class="table datanew" id="orderItemsTable">
                         <thead>
-
+                            <tr>
                             <th>Id</th>
                             <th>Product Name</th>
                             <th>Price</th>
                             <th>Quantity</th>
                             <th>Total Price</th>
+                            </tr>
                         </thead>
                         <tbody>
                             <?php if (empty($cartItems)): ?>
@@ -214,8 +224,9 @@ $invoiceDate = date("d - M - y");
                                         <td><?= $index + 1 ?></td>
                                         <td><?= htmlspecialchars($item['name']) ?></td>
                                         <td class="text-center">₹<?= number_format($item['price'], 2) ?></td>
-                                        <td class="text-center"><?= $item['quantity'] ?></td>
-                                        <td class="text-center">₹<?= number_format($item['price'] * $item['quantity'], 2) ?>
+                                        <td class="text-center"><?= $item['quantity'] ?? 1 ?></td>
+                                        <?php $qty = $item['quantity'] ?? 1; ?>
+                                        <td class="text-center">₹<?= number_format($item['price'] * $qty, 2) ?></td>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -300,10 +311,10 @@ $invoiceDate = date("d - M - y");
             $('.datanew').DataTable({
                 order: [[0, 'desc']],
 
-                columnDefs: [
-                    { targets: 0, visible: false, searchable: false },
-                    { targets: '_all', orderable: true }
-                ],
+                // columnDefs: [
+                //     { targets: 0, visible: false, searchable: false },
+                //     { targets: '_all', orderable: true }
+                // ],
 
                 autoWidth: false,
                 responsive: false,
@@ -333,33 +344,7 @@ $invoiceDate = date("d - M - y");
         }
     </script>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // LocalStorage se cart data lena
-            const cartData = JSON.parse(localStorage.getItem('pos_cart')) || [];
-            const tbody = document.getElementById('orderItemsBody');
-            let grandTotal = 0;
-
-            if (cartData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center">No items in order</td></tr>';
-            } else {
-                cartData.forEach((item, index) => {
-                    const total = item.price * item.quantity;
-                    grandTotal += total;
-
-                    tbody.innerHTML += `
-                <tr>
-                    <td>${index + 1}</td>
-                    <td>${item.name}</td>
-                    <td class="text-center">₹${item.price}</td>
-                    <td class="text-center">${item.quantity}</td>
-                    <td class="text-center">₹${total.toFixed(2)}</td>
-                </tr>
-            `;
-                });
-            }
-
-            document.getElementById('orderGrandTotal').innerText = grandTotal.toFixed(2);
-        });
+        
     </script>
 </body>
 

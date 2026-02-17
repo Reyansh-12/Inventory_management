@@ -1,19 +1,38 @@
 <?php
 session_start();
+
 $data = json_decode(file_get_contents('php://input'), true);
 
-if ($data) {
-    $cart = $data['cart'] ?? [];
-    $customer_id = $data['customer_id'] ?? null;
-
-    // Save cart and customer in session or process order in DB
-    $_SESSION['order_cart'] = $cart;
-    $_SESSION['order_customer_id'] = $customer_id;
-
-    // Respond success
-    echo json_encode(['status' => 'success']);
+if (!$data) {
+    echo json_encode(['status' => 'error', 'message' => 'Invalid data']);
     exit;
 }
 
-echo json_encode(['status' => 'error', 'message' => 'Invalid data']);
+$cart = $data['cart'] ?? [];
+$customer_id = $data['customer_id'] ?? null;
+
+if (empty($customer_id)) {
+    echo json_encode(['status' => 'error', 'message' => 'Customer not selected']);
+    exit;
+}
+
+$cleanCart = [];
+
+foreach ($cart as $item) {
+    $cleanCart[] = [
+        "id" => $item['id'] ?? null,
+        "name" => $item['name'] ?? '',
+        "price" => (float)($item['price'] ?? 0),
+        "quantity" => (int)($item['quantity'] ?? $item['qty'] ?? 1),
+    ];
+}
+
+$_SESSION['order_cart'] = $cleanCart;
+
+$_SESSION['selected_customer_id'] = (int)$customer_id;
+
+$_SESSION['order_customer_id'] = (int)$customer_id;
+
+echo json_encode(['status' => 'success']);
+exit;
 ?>

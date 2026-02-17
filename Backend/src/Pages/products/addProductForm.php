@@ -40,29 +40,43 @@ if (isset($_POST['submit'])) {
         );
     }
 
-    if (!empty($_FILES['gallery_images']['name'][0])) {
+    if (isset($_FILES['gallery_images']) && !empty($_FILES['gallery_images']['name'][0])) {
 
-        $uploadDir = BASE_PATH . "/src/uploads/products/gallery/";
+    $uploadDir = BASE_PATH . "/src/Pages/products/gallery_images/";
 
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
-        }
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0755, true);
+    }
+
+    $maxImages = 5;
+    $remaining = $maxImages - count($galleryImages);
+
+    if ($remaining > 0) {
+
+        $uploaded = 0;
 
         foreach ($_FILES['gallery_images']['tmp_name'] as $key => $tmpName) {
+
+            if ($uploaded >= $remaining) break;
+
             if ($_FILES['gallery_images']['error'][$key] !== 0) continue;
 
             $ext = strtolower(pathinfo($_FILES['gallery_images']['name'][$key], PATHINFO_EXTENSION));
             $allowed = ['jpg', 'jpeg', 'png', 'webp'];
+
             if (!in_array($ext, $allowed)) continue;
 
-            $fileName = uniqid('gallery_', true) . '.' . $ext;
+            $fileName = uniqid("gallery_", true) . "." . $ext;
             $targetPath = $uploadDir . $fileName;
 
             if (move_uploaded_file($tmpName, $targetPath)) {
-                $galleryImages[] = '/Backend/src/uploads/products/gallery/' . $fileName;
+                $galleryImages[] = "/Backend/src/Pages/products/gallery_images/" . $fileName;
+                $uploaded++;
             }
         }
     }
+}
+
     $galleryJson = json_encode($galleryImages);
     $productname = $_POST['productname'] ?? '';
     // $category = $_POST['categoryselector'] ?? '';
@@ -76,16 +90,16 @@ if (isset($_POST['submit'])) {
     $expiredDate = $_POST['expiredDate'] ?? '';
 
     $categoryId = $_POST['categoryselector'] ?? '';
-$category = '';
+    $category = '';
 
-if ($categoryId) {
-    $stmtCat = mysqli_prepare($con, "SELECT category FROM category WHERE id = ?");
-    mysqli_stmt_bind_param($stmtCat, "i", $categoryId);
-    mysqli_stmt_execute($stmtCat);
-    mysqli_stmt_bind_result($stmtCat, $category);
-    mysqli_stmt_fetch($stmtCat);
-    mysqli_stmt_close($stmtCat);
-}
+    if ($categoryId) {
+        $stmtCat = mysqli_prepare($con, "SELECT category FROM category WHERE id = ?");
+        mysqli_stmt_bind_param($stmtCat, "i", $categoryId);
+        mysqli_stmt_execute($stmtCat);
+        mysqli_stmt_bind_result($stmtCat, $category);
+        mysqli_stmt_fetch($stmtCat);
+        mysqli_stmt_close($stmtCat);
+    }
 
 
     $imagePath = $_POST['existing_image'] ?? '';
@@ -213,10 +227,10 @@ $catResult = mysqli_query($con, "SELECT id, category FROM category WHERE status=
                                             <option disabled <?= empty($editData['category']) ? 'selected' : '' ?>>
                                                 Choose Category</option>
                                             <?php while ($row = mysqli_fetch_assoc($catResult)) { ?>
-                                            <option value="<?= $row['id'] ?>"
-                                                <?= ($isEdit && $editData['category'] == $row['id']) ? 'selected' : '' ?>>
-                                                <?= htmlspecialchars($row['category']) ?>
-                                            </option>
+                                                <option value="<?= $row['id'] ?>"
+                                                    <?= ($isEdit && $editData['category'] == $row['id']) ? 'selected' : '' ?>>
+                                                    <?= htmlspecialchars($row['category']) ?>
+                                                </option>
                                             <?php } ?>
                                         </select>
                                     </div>
@@ -344,8 +358,8 @@ $catResult = mysqli_query($con, "SELECT id, category FROM category WHERE status=
                                                     data-parsley-errors-container="#imageError">
                                                 <div class="image-uploads text-center">
                                                     <img id="imagePreview" src="<?= !empty($editData['image_path'])
-                                                                    ? htmlspecialchars($editData['image_path'])
-                                                                    : '/Backend/assets/images/icons/upload.svg' ?>"
+                                                                                    ? htmlspecialchars($editData['image_path'])
+                                                                                    : '/Backend/assets/images/icons/upload.svg' ?>"
                                                         alt="Preview"
                                                         style="max-width: 100%; max-height: 48px; object-fit: contain;">
 
@@ -415,90 +429,90 @@ $catResult = mysqli_query($con, "SELECT id, category FROM category WHERE status=
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/Backend/src/assets/js/products/addProductForm.js"></script>
     <script>
-    $(document).ready(function() {
-        const isEditMode = <?= $isEdit ? 'true' : 'false' ?>;
-        const existingDate = $('#datepicker').val();
+        $(document).ready(function() {
+            const isEditMode = <?= $isEdit ? 'true' : 'false' ?>;
+            const existingDate = $('#datepicker').val();
 
-        $("#datepicker").datepicker({
-            dateFormat: "yy-mm-dd",
-            changeMonth: true,
-            changeYear: true,
-            showAnim: "fadeIn",
-            minDate: isEditMode && existingDate ? null : 0,
-            beforeShow: function(input, inst) {
-                setTimeout(() => {
-                    $('.ui-datepicker').css('z-index', 9999);
-                }, 0);
-            },
-            beforeShowDay: function(date) {
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                if (date.getTime() === today.getTime()) {
-                    return [true, "ui-state-highlight", "Today"];
+            $("#datepicker").datepicker({
+                dateFormat: "yy-mm-dd",
+                changeMonth: true,
+                changeYear: true,
+                showAnim: "fadeIn",
+                minDate: isEditMode && existingDate ? null : 0,
+                beforeShow: function(input, inst) {
+                    setTimeout(() => {
+                        $('.ui-datepicker').css('z-index', 9999);
+                    }, 0);
+                },
+                beforeShowDay: function(date) {
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    if (date.getTime() === today.getTime()) {
+                        return [true, "ui-state-highlight", "Today"];
+                    }
+                    return [true, ""];
+                },
+                onSelect: function(dateText, inst) {
+                    $(this).parsley().validate();
                 }
-                return [true, ""];
-            },
-            onSelect: function(dateText, inst) {
-                $(this).parsley().validate();
+            });
+
+            if (isEditMode && existingDate) {
+                $('#datepicker').parsley().validate();
             }
         });
-
-        if (isEditMode && existingDate) {
-            $('#datepicker').parsley().validate();
-        }
-    });
-    const isEditMode = <?= $isEdit ? 'true' : 'false' ?>;
-    document.addEventListener("DOMContentLoaded", function() {
-        if (isEditMode) {
-            filterBrandsByCategory();
-        }
-    });
-    $('#resetButton').on('click', function() {
-        if (<?= $productId ? 'true' : 'false' ?>) {
-            window.location.href = "ProductList.php";
-        }
-    });
-
-    document.getElementById('resetButton').addEventListener('click', function() {
-        const fileInput = document.getElementById('productImage');
-        const preview = document.getElementById('imagePreview');
-        const title = document.getElementById('imageUploadTitle');
-
-        if (!<?= $isEdit ? 'true' : 'false' ?>) {
-            fileInput.value = '';
-            preview.src = '/Backend/assets/images/icons/upload.svg';
-            title.textContent = 'Drag and drop a file to upload';
-        } else {
-            preview.src =
-                "<?= htmlspecialchars($editData['image_path'] ?? '/Backend/assets/images/icons/upload.svg') ?>";
-            title.textContent = "<?= !empty($editData['image_path'])
-                                    ? htmlspecialchars(basename($editData['image_path']))
-                                    : 'Drag and drop a file to upload' ?>";
-            fileInput.value = '';
-        }
-    });
-    document.addEventListener("DOMContentLoaded", function() {
-        const existingImages = <?= json_encode($existingGalleryImages) ?>;
-
-        existingImages.forEach(img => {
-            addPreview(null, img);
-            existingCount++;
-        });
-
-        updateCounter();
-    });
-    document.addEventListener("DOMContentLoaded", function() {
         const isEditMode = <?= $isEdit ? 'true' : 'false' ?>;
-
-        if (isEditMode) {
-            const savedCategory = "<?= $editData['category'] ?? '' ?>";
-            const savedBrand = "<?= addslashes($editData['brand_name'] ?? '') ?>";
-
-            if (savedCategory) {
-                loadBrands(savedCategory, savedBrand);
+        document.addEventListener("DOMContentLoaded", function() {
+            if (isEditMode) {
+                filterBrandsByCategory();
             }
-        }
-    });
+        });
+        $('#resetButton').on('click', function() {
+            if (<?= $productId ? 'true' : 'false' ?>) {
+                window.location.href = "ProductList.php";
+            }
+        });
+
+        document.getElementById('resetButton').addEventListener('click', function() {
+            const fileInput = document.getElementById('productImage');
+            const preview = document.getElementById('imagePreview');
+            const title = document.getElementById('imageUploadTitle');
+
+            if (!<?= $isEdit ? 'true' : 'false' ?>) {
+                fileInput.value = '';
+                preview.src = '/Backend/assets/images/icons/upload.svg';
+                title.textContent = 'Drag and drop a file to upload';
+            } else {
+                preview.src =
+                    "<?= htmlspecialchars($editData['image_path'] ?? '/Backend/assets/images/icons/upload.svg') ?>";
+                title.textContent = "<?= !empty($editData['image_path'])
+                                            ? htmlspecialchars(basename($editData['image_path']))
+                                            : 'Drag and drop a file to upload' ?>";
+                fileInput.value = '';
+            }
+        });
+        document.addEventListener("DOMContentLoaded", function() {
+            const existingImages = <?= json_encode($existingGalleryImages) ?>;
+
+            existingImages.forEach(img => {
+                addPreview(null, img);
+                existingCount++;
+            });
+
+            updateCounter();
+        });
+        document.addEventListener("DOMContentLoaded", function() {
+            const isEditMode = <?= $isEdit ? 'true' : 'false' ?>;
+
+            if (isEditMode) {
+                const savedCategory = "<?= $editData['category'] ?? '' ?>";
+                const savedBrand = "<?= addslashes($editData['brand_name'] ?? '') ?>";
+
+                if (savedCategory) {
+                    loadBrands(savedCategory, savedBrand);
+                }
+            }
+        });
     </script>
 </body>
 

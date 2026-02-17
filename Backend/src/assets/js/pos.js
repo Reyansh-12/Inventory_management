@@ -1,4 +1,6 @@
-let cart = [];
+
+        let cart = window.savedCartFromSession || [];
+
 
     function updateCartUI() {
         const tbody = document.getElementById('cartBody');
@@ -296,4 +298,6 @@ document.addEventListener("DOMContentLoaded", function () {
     //         .catch(err => console.error(err));
     // });
 
-    
+    document.addEventListener("DOMContentLoaded", function () {
+    renderCart();
+});
