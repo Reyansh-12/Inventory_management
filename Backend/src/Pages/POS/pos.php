@@ -211,7 +211,6 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
                                     $selectedCustomerId = $_SESSION['selected_customer_id'] ?? null;
                                     $customers = mysqli_query($con, "SELECT id, name FROM customers ORDER BY id DESC");
                                     while ($c = mysqli_fetch_assoc($customers)) {
-                                        // Variable name ek hi rakhein: $isSelected
                                         $isSelected = ($c['id'] == $selectedCustomerId) ? 'selected' : '';
                                         echo "<option value='{$c['id']}' $isSelected>{$c['name']}</option>";
                                     }
@@ -239,7 +238,7 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
 
                             <div class="d-grid">
                                 <button class="btn btn-success mb-2" id="checkoutBtn"><i class="bi bi-cart-check"></i>
-                                    Checkout</button>
+                                    Place Order</button>
                                 <button class="btn btn-danger btn-sm w-100" id="clearCartBtn">Clear All</button>
                             </div>
                         </div>
@@ -335,16 +334,14 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
     <script>
         document.addEventListener("DOMContentLoaded", function () {
 
-            // Success Toast
             <?php if (isset($_SESSION['customer_success'])): ?>
                 var sEl = document.getElementById('customerSuccessToast');
                 if (sEl) {
                     new bootstrap.Toast(sEl, { delay: 3000 }).show();
                 }
-                <?php unset($_SESSION['customer_success']); // Toaster dikhne ke baad clear karein ?>
+                <?php unset($_SESSION['customer_success']); ?>
             <?php endif; ?>
 
-            // Error Toast
             <?php if (isset($_SESSION['customer_error'])): ?>
                 var eEl = document.getElementById('customerExistsToast');
                 if (eEl) {
@@ -352,13 +349,10 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
                 }
                 <?php unset($_SESSION['customer_error']); ?>
             <?php endif; ?>
-
-            // Selection clear (Optionally checkout ke baad karne ke liye)
-            // Hum yahan unset nahi karenge taaki dropdown mein dikhta rahe
         });
         document.getElementById('checkoutBtn').addEventListener('click', () => {
-    const customerSelect = document.getElementById('customerSelect');
-    const customerId = customerSelect ? customerSelect.value : '';
+
+    const customerId = document.getElementById('customerSelect').value;
 
     if (cart.length === 0) {
         Swal.fire('Empty Cart', 'Please add products first!', 'warning');
@@ -370,27 +364,24 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
         return;
     }
 
-    fetch("/Backend/src/controllers/checkout.php", {
+    fetch("store_checkout.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cart: cart, customer_id: customerId })
+        body: JSON.stringify({
+            cart: cart,
+            customer_id: customerId
+        })
     })
     .then(res => res.json())
     .then(data => {
         if (data.status === 'success') {
-            Swal.fire('Success', data.message, 'success').then(() => {
-                cart = [];
-                localStorage.removeItem('pos_cart');
-                location.reload();
-            });
-        } else {
-            Swal.fire('Error', data.message, 'error');
+            window.location.href = "order.php";
         }
-    })
-    .catch(err => {
-        Swal.fire('Server Error', err.message, 'error');
     });
+
 });
+
+
 
     </script>
     <script>
