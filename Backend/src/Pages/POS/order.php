@@ -190,10 +190,6 @@ if (!empty($_SESSION['selected_customer_id'])) {
                                 <strong class="fs-4">Invoice Details</strong>
                             </div>
                             <div>
-                                <span>Customer Name :</span>
-                                <span>Reyansh Raut</span>
-                            </div>
-                            <div>
                                 <span>Invoice Date :</span>
                                 <span><?php echo $invoiceDate; ?></span>
                             </div>
@@ -208,9 +204,9 @@ if (!empty($_SESSION['selected_customer_id'])) {
                             <tr>
                             <th>Id</th>
                             <th>Product Name</th>
-                            <th>Price</th>
-                            <th>Quantity</th>
-                            <th>Total Price</th>
+                            <th class="text-center">Price</th>
+                            <th class="text-center">Quantity</th>
+                            <th class="text-center">Total Price</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -222,7 +218,7 @@ if (!empty($_SESSION['selected_customer_id'])) {
                                 <?php foreach ($cartItems as $index => $item): ?>
                                     <tr>
                                         <td><?= $index + 1 ?></td>
-                                        <td><?= htmlspecialchars($item['name']) ?></td>
+                                        <td style="max-width: 200px;" class="text-truncate" data-bs-toggle="tooltip" data-bs-title="<?= htmlspecialchars($item['name']) ?>"><span><?= htmlspecialchars($item['name']) ?></span></td>
                                         <td class="text-center">₹<?= number_format($item['price'], 2) ?></td>
                                         <td class="text-center"><?= $item['quantity'] ?? 1 ?></td>
                                         <?php $qty = $item['quantity'] ?? 1; ?>
