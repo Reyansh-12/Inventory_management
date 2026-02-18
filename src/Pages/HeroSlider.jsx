@@ -5,6 +5,7 @@ import image2 from '../assets/images/4127915_3-removebg-preview.png';
 import image3 from '../assets/images/f099014a-f3f3-4022-a60a-fb049f5fb58a-removebg-preview.png';
 import { FaLessThan } from "react-icons/fa6";
 import { FaGreaterThan } from "react-icons/fa6";
+import video from "../assets/images/Cosmetic_Skincare_Product_1080P.mp4";
 
 const HeroSlider = () => {
 
@@ -61,6 +62,12 @@ const HeroSlider = () => {
   }, []);
 
   return (
+    <>
+    <div>
+      <video autoPlay loop muted className="w-100 h-100 object-cover">
+        <source src={video}/>
+      </video>
+    </div>
     <div className="carousel">
       <div className="list">
         <div className="item active">
@@ -84,6 +91,7 @@ const HeroSlider = () => {
         <button id="next"><FaGreaterThan className="text-center nextSliderIcon"/></button>
       </div>
     </div>
+    </>
   );
 };
 
