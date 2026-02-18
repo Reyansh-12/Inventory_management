@@ -190,6 +190,10 @@ if (!empty($_SESSION['selected_customer_id'])) {
                                 <strong class="fs-4">Invoice Details</strong>
                             </div>
                             <div>
+                                <span>Customer Name :</span>
+                                <span>Reyansh Raut</span>
+                            </div>
+                            <div>
                                 <span>Invoice Date :</span>
                                 <span><?php echo $invoiceDate; ?></span>
                             </div>
