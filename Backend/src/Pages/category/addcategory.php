@@ -145,7 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </div> -->
                             </div>
                             <div class="form-group">
-                                <label for="uploadImage">Profile Picture (optional)</label>
+                                <label for="uploadImage">Category Image (optional)</label>
                                 <div class="image-upload image-upload-new">
                                     <input type="file" id="uploadImage" name="uploadImage" accept="image/*">
                                     <div class="image-uploads" id="uploadBox">

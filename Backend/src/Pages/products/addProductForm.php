@@ -261,7 +261,7 @@ $catResult = mysqli_query($con, "SELECT id, category FROM category WHERE status=
 
                                 <div class="col-lg-4 col-sm-4 col-12">
                                     <div class="form-group">
-                                        <label for="quantity">Max Quantity <span class="text-danger">*</span></label>
+                                        <label for="quantity">Quantity <span class="text-danger">*</span></label>
                                         <input type="number" name="quantity" id="quantity"
                                             onkeydown="return event.key !== '-'"
                                             oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); validateQuantity();"

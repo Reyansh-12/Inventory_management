@@ -206,33 +206,35 @@ if (!empty($_SESSION['selected_customer_id'])) {
                     <table class="table datanew" id="orderItemsTable">
                         <thead>
                             <tr>
-                            <th>Id</th>
-                            <th>Product Name</th>
-                            <th class="text-center">Price</th>
-                            <th class="text-center">Quantity</th>
-                            <th class="text-center">Total Price</th>
+                                <th>Id</th>
+                                <th>Product Name</th>
+                                <th class="text-center">Price</th>
+                                <th class="text-center">Quantity</th>
+                                <th class="text-center">Total Price</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php if (empty($cartItems)): ?>
                                 <tr>
-                                    <td colspan="6" class="text-center">No items in order</td>
+                                    <td colspan="5" class="text-center">No items in order</td>
                                 </tr>
                             <?php else: ?>
-                                <?php foreach ($cartItems as $index => $item): ?>
+                                <?php $i = 1;
+                                foreach ($cartItems as $item): ?>
                                     <tr>
-                                        <td><?= $index + 1 ?></td>
-                                        <td style="max-width: 200px;" class="text-truncate" data-bs-toggle="tooltip" data-bs-title="<?= htmlspecialchars($item['name']) ?>"><span><?= htmlspecialchars($item['name']) ?></span></td>
+                                        <td><?= $i++ ?></td>
+                                        <td style="max-width: 200px;" class="text-truncate"
+                                            title="<?= htmlspecialchars($item['name']) ?>">
+                                            <?= htmlspecialchars($item['name']) ?>
+                                        </td>
                                         <td class="text-center">₹<?= number_format($item['price'], 2) ?></td>
                                         <td class="text-center"><?= $item['quantity'] ?? 1 ?></td>
                                         <?php $qty = $item['quantity'] ?? 1; ?>
                                         <td class="text-center">₹<?= number_format($item['price'] * $qty, 2) ?></td>
-                                        </td>
                                     </tr>
                                 <?php endforeach; ?>
                             <?php endif; ?>
                         </tbody>
-
                     </table>
                     <div class="d-flex justify-content-end me-5">
                         <span class="fs-5"><strong class="text-danger">Grand Total :</strong>
@@ -293,7 +295,8 @@ if (!empty($_SESSION['selected_customer_id'])) {
                         </div>
                     </div>
                     <div class="d-flex justify-content-end mt-4">
-                        <button class="btn btn-success me-4" style="width: 150px;">Order</button>
+                        <button id="processOrder" class="btn btn-success me-4" style="width: 150px;">Order</button>
+
                         <button class="btn btn-danger me-4" style="width: 150px;">Print</button>
                         <button class="btn btn-warning" style="width: 150px;">Download Pdf</button>
                     </div>
@@ -344,7 +347,67 @@ if (!empty($_SESSION['selected_customer_id'])) {
         }
     </script>
     <script>
-        
+        $('#processOrder').on('click', function () {
+            let status = "Cash";
+            if ($('#qrRadio').is(':checked')) status = "Online";
+            if ($('#cardRadio').is(':checked')) status = "Card";
+
+            let totalAmount = "<?= $grandTotal ?>";
+            let customerName = "<?= $customerData['name'] ?>";
+
+            $.ajax({
+                url: 'save_order.php',
+                type: 'POST',
+                data: {
+                    status: status,
+                    total_amount: totalAmount,
+                    customer: customerName
+                },
+                success: function (response) {
+                    let res = JSON.parse(response);
+                    if (res.success) {
+                        alert("Order Placed! Order ID: " + res.order_id);
+                        window.location.reload();
+                    } else {
+                        alert("Error: " + res.message);
+                    }
+                }
+            });
+        });
+    </script>
+    <script>
+        $('#processOrder').on('click', function () {
+            let paymentStatus = "Cash";
+            if ($('#qrRadio').is(':checked')) paymentStatus = "Online";
+            if ($('#cardRadio').is(':checked')) paymentStatus = "Card";
+
+            $.ajax({
+                url: 'save_order.php',
+                type: 'POST',
+                data: { status: paymentStatus }
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            if ($.fn.DataTable.isDataTable('#orderItemsTable')) {
+                $('#orderItemsTable').DataTable().destroy();
+            }
+
+            $('#orderItemsTable').DataTable({
+                "ordering": true,
+                "searching": false,
+                "paging": true,
+                "info": false,
+                "columnDefs": [
+                    { "orderable": false, "targets": [1, 2, 3, 4] } // Sirf ID (0) par sorting rakhein baaki par off
+                ],
+                "language": {
+                    "emptyTable": "No items available in the cart"
+                },
+                "dom": 'rt<"row mt-3"<"col-md-12 text-end"p>>'
+            });
+        });
     </script>
 </body>
 

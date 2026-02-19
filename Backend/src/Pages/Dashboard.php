@@ -518,13 +518,13 @@ $inventory = mysqli_fetch_assoc($inventoryResult);
                                                 $statusClass = '';
 
                                                 switch (strtolower($row['status'])) {
-                                                    case 'pending':
-                                                        $statusClass = 'bg-warning';
-                                                        break;
-                                                    case 'delivered':
+                                                    case 'cash':
                                                         $statusClass = 'bg-success';
                                                         break;
-                                                    case 'canceled':
+                                                    case 'online':
+                                                        $statusClass = 'bg-primary';
+                                                        break;
+                                                    case 'card':
                                                         $statusClass = 'bg-danger';
                                                         break;
                                                     default:
