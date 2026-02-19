@@ -50,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         unset($_SESSION['order_cart']); 
         unset($_SESSION['selected_customer_id']);
         echo json_encode(['success' => true, 'order_id' => $order_id]);
+        
     } else {
         echo json_encode(['success' => false, 'message' => 'Database Error']);
     }

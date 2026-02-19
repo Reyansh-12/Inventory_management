@@ -282,6 +282,17 @@ $inventory = mysqli_fetch_assoc($inventoryResult);
     <div class="page-wrapper">
         <div class="content">
             <div class="row">
+            <div class="col-lg-3 col-sm-6 col-12">
+                    <div class="dash-widget dash3">
+                        <div class="dash-widgetimg">
+                            <span><img src="/Backend/src/assets/images/sale.svg" alt="img" style="width: 100%"></span>
+                        </div>
+                        <div class="dash-widgetcontent">
+                            <h5><?= '₹ ' . $total ?></h5>
+                            <h6>Total Sale Amount</h6>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-lg-3 col-sm-6 col-12">
                     <div class="dash-widget">
                         <div class="dash-widgetimg">
@@ -314,17 +325,6 @@ $inventory = mysqli_fetch_assoc($inventoryResult);
                         <div class="dash-widgetcontent">
                             <h5><?= $lowStockCount ?></h5>
                             <h6>Low stocks</h6>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6 col-12">
-                    <div class="dash-widget dash3">
-                        <div class="dash-widgetimg">
-                            <span><img src="/Backend/src/assets/images/sale.svg" alt="img" style="width: 100%"></span>
-                        </div>
-                        <div class="dash-widgetcontent">
-                            <h5><?= '₹ ' . $total ?></h5>
-                            <h6>Total Sale Amount</h6>
                         </div>
                     </div>
                 </div>

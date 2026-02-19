@@ -221,6 +221,7 @@ if (!empty($_SESSION['selected_customer_id'])) {
                             <?php else: ?>
                                 <?php $i = 1;
                                 foreach ($cartItems as $item): ?>
+                                        <?php $qty = $item['quantity'] ?? 1; ?>
                                     <tr>
                                         <td><?= $i++ ?></td>
                                         <td style="max-width: 200px;" class="text-truncate"
@@ -229,7 +230,6 @@ if (!empty($_SESSION['selected_customer_id'])) {
                                         </td>
                                         <td class="text-center">₹<?= number_format($item['price'], 2) ?></td>
                                         <td class="text-center"><?= $item['quantity'] ?? 1 ?></td>
-                                        <?php $qty = $item['quantity'] ?? 1; ?>
                                         <td class="text-center">₹<?= number_format($item['price'] * $qty, 2) ?></td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -389,25 +389,42 @@ if (!empty($_SESSION['selected_customer_id'])) {
         });
     </script>
     <script>
-        $(document).ready(function () {
-            if ($.fn.DataTable.isDataTable('#orderItemsTable')) {
-                $('#orderItemsTable').DataTable().destroy();
-            }
+        // $(document).ready(function () {
+        //     if ($.fn.DataTable.isDataTable('#orderItemsTable')) {
+        //         $('#orderItemsTable').DataTable().destroy();
+        //     }
 
-            $('#orderItemsTable').DataTable({
-                "ordering": true,
-                "searching": false,
-                "paging": true,
-                "info": false,
-                "columnDefs": [
-                    { "orderable": false, "targets": [1, 2, 3, 4] } // Sirf ID (0) par sorting rakhein baaki par off
-                ],
-                "language": {
-                    "emptyTable": "No items available in the cart"
-                },
-                "dom": 'rt<"row mt-3"<"col-md-12 text-end"p>>'
-            });
-        });
+        //     $('#orderItemsTable').DataTable({
+        //         "ordering": true,
+        //         "searching": false,
+        //         "paging": true,
+        //         "info": false,
+        //         "columnDefs": [
+        //             { "orderable": false, "targets": [1, 2, 3, 4] } 
+        //         ],
+        //         "language": {
+        //             "emptyTable": "No items available in the cart"
+        //         },
+        //         "dom": 'rt<"row mt-3"<"col-md-12 text-end"p>>'
+        //     });
+        // });
+        var cartItems = <?php echo json_encode(array_map(function($item,$i){
+    return [$i+1, $item['name'], number_format($item['price'],2), $item['quantity'], number_format($item['price']*$item['quantity'],2)];
+}, $cartItems, array_keys($cartItems))); ?>;
+
+$('#orderItemsTable').DataTable({
+    data: cartItems,
+    columns: [
+        { title: "ID" },
+        { title: "Product Name" },
+        { title: "Price", className: "text-center" },
+        { title: "Quantity", className: "text-center" },
+        { title: "Total Price", className: "text-center" }
+    ],
+    "ordering": true,
+    "searching": false,
+});
+
     </script>
 </body>
 

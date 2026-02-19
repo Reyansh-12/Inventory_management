@@ -77,7 +77,7 @@ $resut = mysqli_query($con, $order_list);
 
                         echo "    <div class='product'>";
                         echo "        <img src='/Backend/src/uploads/products/featured/product_6979a7b1479cf2.85124957.webp' alt='Product' class='product-img' />";
-                        echo "        <div class='product-info'>";
+                        echo "        <div class='product-info' style='width: 100%;'>";
                         echo "            <div class='product-name'>";
                         echo $row['product'];
                         echo "            </div>";
@@ -86,11 +86,27 @@ $resut = mysqli_query($con, $order_list);
                         echo "                <span>Brand: <a href='#'>".$row['brand']."</a></span>";
                         echo "                <span>Quantity: ".$row['quantity']."</span>";
                         echo "            </div>";
-                        // echo "            <div class='product-meta'>";
-                        // echo "                <span class='meta-item'>";
-                        // echo "                    Payment mode: <a href='#'>Cash</a>";
-                        // echo "                </span>";
-                        // echo "            </div>";
+                        echo "            <div class='product-meta' style='justify-content: space-between'>";
+                        echo "                <span class='meta-item'>";
+                                                $statusClass = '';
+
+                                                // switch (strtolower($row['status'])) {
+                                                //     case 'cash':
+                                                //         $statusClass = 'text-danger';
+                                                //         break;
+                                                //     case 'online':
+                                                //         $statusClass = 'text-primary';
+                                                //         break;
+                                                //     case 'card':
+                                                //         $statusClass = 'text-danger';
+                                                //         break;
+                                                //     default:
+                                                //         $statusClass = 'bg-secondary';
+                                                // }
+                        echo "                    Payment mode: <span class='$statusClass text-danger'>".$row['status']."</span>";
+                        echo "                </span>";
+                        echo "                <div class='meta-item'><a href='#'>View Details</a></div>";
+                        echo "            </div>";
                         echo "        </div>";
                         echo "    </div>";
 
