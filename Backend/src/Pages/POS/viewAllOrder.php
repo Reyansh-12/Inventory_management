@@ -105,7 +105,7 @@ $resut = mysqli_query($con, $order_list);
                                                 // }
                         echo "                    Payment mode: <span class='$statusClass text-danger'>".$row['status']."</span>";
                         echo "                </span>";
-                        echo "                <div class='meta-item'><a href='/Backend/src/Pages/POS/viewAllOrder.php'>View Details</a></div>";
+                        echo "                <div class='meta-item'><a href='#'>View Details</a></div>";
                         echo "            </div>";
                         echo "        </div>";
                         echo "    </div>";
