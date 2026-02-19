@@ -168,7 +168,7 @@ if (!empty($_SESSION['selected_customer_id'])) {
                         <span>Plot no 66, kharabi, nagpur, maharashtra</span>
                     </div>
                     <div class="row mb-5">
-                        <div class="col-lg-6 ps-5">
+                        <div class="col-lg-6 col-sm-12 ps-5">
                             <div class="mb-2">
                                 <strong class="fs-4">Customer Details</strong>
                             </div>
@@ -185,7 +185,7 @@ if (!empty($_SESSION['selected_customer_id'])) {
                                 <span><?php echo $customerData['email']; ?></span>
                             </div>
                         </div>
-                        <div class="col-lg-6 text-end pe-5 d-block">
+                        <div class="col-lg-6 col-sm-12 text-end pe-5 d-block">
                             <div class="mb-2">
                                 <strong class="fs-4">Invoice Details</strong>
                             </div>

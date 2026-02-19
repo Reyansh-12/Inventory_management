@@ -14,6 +14,7 @@ import brandlogo3 from "../../assets/images/brand-logo/3.webp";
 import brandlogo4 from "../../assets/images/brand-logo/4.webp";
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
+// import video from "../../assets/images/brush_fall.mp4";
 
 export const AboutUs = () => {
 
@@ -40,6 +41,9 @@ export const AboutUs = () => {
               <div className="col-md-5 col-lg-5 col-xl-7">
                 <div className="page-header-thumb">
                   <img src={about1} width="570" height="669" alt="Image" />
+                  {/* <video autoPlay loop muted className="w-100 h-100 object-cover">
+                          <source src={video}/>
+                        </video> */}
                 </div>
               </div>
             </div>
