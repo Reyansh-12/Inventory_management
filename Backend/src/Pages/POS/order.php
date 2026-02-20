@@ -128,6 +128,237 @@ if (!empty($_SESSION['selected_customer_id'])) {
         .card {
             margin: 0px 0 0px !important;
         }
+
+        .table tbody tr td {
+            max-width: 100px;
+            overflow: hidden;
+        }
+
+        /* --- Professional Invoice & Checkout Overhaul --- */
+        :root {
+            --primary-blue: #6792ff;
+            --border-color: #e2e8f0;
+            --bg-light: #f8fafc;
+        }
+
+        .card {
+            border: none !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border-radius: 12px !important;
+        }
+
+        /* Invoice Header Styling */
+        .invoice-branding h1 {
+            font-weight: 800;
+            letter-spacing: -1px;
+            color: var(--primary-blue);
+            margin-bottom: 5px;
+        }
+
+        .info-label {
+            color: #718096;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            display: block;
+        }
+
+        .info-value {
+            color: #2d3748;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        /* Table Polish */
+        .table thead th {
+            background-color: #f8f9fa;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+            color: #6c757d;
+            border-bottom: 1px solid #edf2f9;
+        }
+
+        .table td {
+            vertical-align: middle !important;
+            padding: 12px 15px !important;
+        }
+
+        /* Payment Options Styling */
+        .btn-check:checked+.payment-card {
+            border: 2px solid var(--primary-blue) !important;
+            background-color: rgba(103, 146, 255, 0.05);
+            transform: translateY(-5px);
+        }
+
+        .payment-card {
+            border: 1px solid var(--border-color) !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #fff;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .payment-card i {
+            font-size: 2.5rem;
+            transition: transform 0.3s;
+        }
+
+        .payment-card:hover i {
+            transform: scale(1.1);
+        }
+
+        /* Sticky Grand Total Bar */
+        .grand-total-section {
+            background: #1a1d21;
+            color: white;
+            padding: 20px 40px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .total-amount-large {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        /* --- Dynamic Payment Fields Polish --- */
+        .payment-details-box {
+            background: rgba(103, 146, 255, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            border: 1px solid rgba(103, 146, 255, 0.1);
+            display: none;
+            /* Hidden by default */
+        }
+
+        /* Show box only when parent radio is checked */
+        #qrRadio:checked~.payment-card .payment-details-box,
+        #cardRadio:checked~.payment-card .payment-details-box {
+            display: block;
+            animation: fadeInDown 0.3s ease;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .payment-card i {
+            transition: color 0.3s ease;
+        }
+
+        .btn-check:checked+.payment-card i {
+            color: var(--primary-blue) !important;
+        }
+
+        /* --- Table Layout & Overflow Fix --- */
+        .table-responsive {
+            max-width: 800px;
+            /* Table ki total width fix kar di */
+            margin: 0 auto;
+            /* Table ko center mein align kiya */
+            overflow-x: hidden !important;
+            /* Horizontal scroll remove kiya */
+            border: 1px solid #edf2f9;
+            border-radius: 8px;
+        }
+
+        .table {
+            table-layout: fixed;
+            /* Columns ki width fix karne ke liye */
+            width: 100% !important;
+            margin-bottom: 0 !important;
+        }
+
+        /* Specific Column Widths (In pixels) */
+        .col-id {
+            width: 40px;
+        }
+
+        .col-desc {
+            width: 320px;
+        }
+
+        /* Description ko space di */
+        .col-rate {
+            width: 100px;
+        }
+
+        .col-qty {
+            width: 70px;
+        }
+
+        .col-amount {
+            width: 120px;
+        }
+
+        /* Product Name Truncation with Tooltip support */
+        .product-name-cell {
+            display: block;
+            width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            cursor: help;
+        }
+
+        .table td,
+        .table th {
+            padding: 12px 15px !important;
+            vertical-align: middle !important;
+        }
+        /* --- Professional Pagination Styling --- */
+.dataTables_wrapper .dataTables_paginate {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #edf2f9;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding: 6px 14px !important;
+    margin: 0 3px !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    background: #fff !important;
+    color: #64748b !important;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: var(--primary-blue) !important;
+    color: white !important;
+    border-color: var(--primary-blue) !important;
+    box-shadow: 0 4px 10px rgba(103, 146, 255, 0.25);
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #f8fafc !important;
+}
+
+/* Table Footer Symmetry */
+.table-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+}
     </style>
 </head>
 
@@ -146,155 +377,144 @@ if (!empty($_SESSION['selected_customer_id'])) {
             </div>
 
         </div>
-        <div class="page-wrapper" style="padding-top: 60px;">
+        <div class="page-wrapper">
             <div class="content container-fluid">
-                <div class="row mb-3">
-                    <div class="col-lg-12 d-flex justify-content-between align-items-center">
-                        <div>
-                            <h4>Products</h4>
-                            <!-- <h6 class="text-muted">Manage your purchases</h6> -->
-                        </div>
-                        <div>
-                            <a href="pos.php"><button class="btn btn-primary" data-bs-toggle="modal"
-                                    data-bs-target="#addCustomerModal">
-                                    <i class="bi bi-arrow-left"></i> Back
-                                </button></a>
-                        </div>
-                    </div>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="fw-bold">Review Order</h4>
+                    <a href="pos.php" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                        <i class="bi bi-arrow-left"></i> Modify Cart
+                    </a>
                 </div>
-                <div class="card p-3">
-                    <div class="text-center mb-4">
-                        <h1>Brancy</h1>
-                        <span>Plot no 66, kharabi, nagpur, maharashtra</span>
-                    </div>
-                    <div class="row mb-5">
-                        <div class="col-lg-6 col-sm-12 ps-5">
-                            <div class="mb-2">
-                                <strong class="fs-4">Customer Details</strong>
-                            </div>
-                            <div>
-                                <span>Customer Name :</span>
-                                <span><?php echo $customerData['name']; ?></span>
-                            </div>
-                            <div>
-                                <span>Mobile Number :</span>
-                                <span><?php echo $customerData['phone']; ?></span>
-                            </div>
-                            <div>
-                                <span>Customer Email :</span>
-                                <span><?php echo $customerData['email']; ?></span>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-sm-12 text-end pe-5 d-block">
-                            <div class="mb-2">
-                                <strong class="fs-4">Invoice Details</strong>
-                            </div>
-                            <div>
-                                <span>Invoice Date :</span>
-                                <span><?php echo $invoiceDate; ?></span>
-                            </div>
-                            <div>
-                                <span>Transaction ID :</span>
-                                <span>#<?php echo $_SESSION['transaction_id'] ?? 'N/A'; ?></span>
-                            </div>
-                        </div>
-                    </div>
-                    <table class="table datanew" id="orderItemsTable">
-                        <thead>
-                            <tr>
-                                <th>Id</th>
-                                <th>Product Name</th>
-                                <th class="text-center">Price</th>
-                                <th class="text-center">Quantity</th>
-                                <th class="text-center">Total Price</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (empty($cartItems)): ?>
-                                <tr>
-                                    <td colspan="5" class="text-center">No items in order</td>
-                                </tr>
-                            <?php else: ?>
-                                <?php $i = 1;
-                                foreach ($cartItems as $item): ?>
-                                        <?php $qty = $item['quantity'] ?? 1; ?>
-                                    <tr>
-                                        <td><?= $i++ ?></td>
-                                        <td style="max-width: 200px;" class="text-truncate"
-                                            title="<?= htmlspecialchars($item['name']) ?>">
-                                            <?= htmlspecialchars($item['name']) ?>
-                                        </td>
-                                        <td class="text-center">₹<?= number_format($item['price'], 2) ?></td>
-                                        <td class="text-center"><?= $item['quantity'] ?? 1 ?></td>
-                                        <td class="text-center">₹<?= number_format($item['price'] * $qty, 2) ?></td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
-                    <div class="d-flex justify-content-end me-5">
-                        <span class="fs-5"><strong class="text-danger">Grand Total :</strong>
-                            <span>₹<?= number_format($grandTotal, 2) ?></span></span>
+
+                <div class="card p-4">
+                    <div class="invoice-branding text-center mb-5 border-bottom pb-4">
+                        <h1>BRANCY</h1>
+                        <p class="text-muted small mb-0">Plot no 66, Kharabi, Nagpur, Maharashtra</p>
+                        <p class="text-muted small">GSTIN: 27AAAAA0000A1Z5</p>
                     </div>
 
-                    <div class="row mt-4">
-                        <div class="col-md-4 mb-3">
+                    <div class="row mb-5 g-4">
+                        <div class="col-md-6 border-end">
+                            <span class="info-label">Billed To:</span>
+                            <div class="info-value"><?= htmlspecialchars($customerData['name']) ?></div>
+                            <div class="text-muted small"><?= $customerData['phone'] ?> | <?= $customerData['email'] ?>
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <span class="info-label">Invoice Details:</span>
+                            <div class="info-value">Date: <?= $invoiceDate ?></div>
+                            <div class="text-muted small">ID: #<?= $_SESSION['transaction_id'] ?? 'TRX-' . time() ?>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive mb-4">
+    <table class="table" id="orderItemsTable">
+        <thead>
+            <tr>
+                <th class="col-id">#</th>
+                <th class="col-desc">Product Description</th>
+                <th class="col-rate text-center">Rate</th>
+                <th class="col-qty text-center">Qty</th>
+                <th class="col-amount">Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php $i = 1; foreach ($cartItems as $item): ?>
+                <tr>
+                    <td><?= $i++ ?></td>
+                    <td>
+                        <span class="product-name-cell" data-bs-toggle="tooltip" title="<?= htmlspecialchars($item['name']) ?>">
+                            <?= htmlspecialchars($item['name']) ?>
+                        </span>
+                    </td>
+                    <td class="text-center">₹<?= number_format($item['price'], 2) ?></td>
+                    <td class="text-center"><?= $item['quantity'] ?></td>
+                    <td class="text-end fw-bold">₹<?= number_format($item['price'] * $item['quantity'], 2) ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
+
+                    <div class="grand-total-section mb-5">
+                        <span class="fs-5 fw-bold">Amount Payable</span>
+                        <span class="total-amount-large">₹<?= number_format($grandTotal, 2) ?></span>
+                    </div>
+
+                    <h5 class="mb-4 text-primary fs-6 fw-bold">Select Payment Method</h5>
+                    <div class="row mb-4">
+                        <div class="col-md-4">
                             <input type="radio" name="paymentGroup" id="cashRadio" class="btn-check" checked>
-                            <label class="card h-100 p-4 shadow-sm payment-card" for="cashRadio">
-                                <div class="d-flex align-items-center mb-3">
-                                    <i class="bi bi-cash-stack fs-2 text-success me-2"></i>
-                                    <h5 class="mb-0">Collect Cash</h5>
-                                </div>
-                                <p class="text-muted small">No extra fields required. Please collect physical cash from
-                                    the customer.</p>
+                            <label class="card h-100 p-4 payment-card" for="cashRadio">
+                                <i class="bi bi-cash text-success mb-3"></i>
+                                <h6 class="fw-bold">Cash Payment</h6>
+                                <p class="text-muted small mb-0">Direct cash collection</p>
                             </label>
                         </div>
-
                         <div class="col-md-4 mb-3">
                             <input type="radio" name="paymentGroup" id="qrRadio" class="btn-check"
                                 onclick="generateDynamicQR()">
-                            <label class="card h-100 p-4 shadow-sm payment-card" for="qrRadio">
-                                <div class="d-flex align-items-center mb-3">
-                                    <i class="bi bi-qr-code-scan fs-2 text-primary me-2"></i>
-                                    <h5 class="mb-0">QR Code / UPI</h5>
+                            <label class="card h-100 p-4 payment-card" for="qrRadio">
+                                <div class="text-center">
+                                    <i class="bi bi-qr-code-scan text-muted mb-2"></i>
+                                    <h6 class="fw-bold">UPI / QR Code</h6>
                                 </div>
-                                <div class="text-center mb-2">
+
+                                <div class="payment-details-box text-center">
                                     <img id="qrImage"
                                         src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=SelectQR"
-                                        alt="QR Code" class="img-fluid border p-2" style="max-height: 80px;">
+                                        alt="QR Code" class="img-fluid border p-2 mb-3 bg-white"
+                                        style="max-height: 100px;">
+                                    <div class="form-group text-start">
+                                        <label class="small fw-bold">Transaction ID / UTR <span
+                                                class="text-danger">*</span></label>
+                                        <input type="text" name="utr_no" class="form-control form-control-sm"
+                                            placeholder="Enter 12 digit No.">
+                                    </div>
                                 </div>
-                                <!-- <input type="text" class="form-control form-control-sm mb-1 mt-2"
-                                    placeholder="Enter Transaction ID">
-                                <small class="text-muted d-block text-center">Verify payment for <span
-                                        id="displayAmount">₹0</span></small> -->
                             </label>
                         </div>
 
                         <div class="col-md-4 mb-3">
                             <input type="radio" name="paymentGroup" id="cardRadio" class="btn-check">
-                            <label class="card h-100 p-4 shadow-sm payment-card" for="cardRadio">
-                                <div class="d-flex align-items-center mb-3">
-                                    <i class="bi bi-credit-card-2-front fs-2 text-danger me-2"></i>
-                                    <h5 class="mb-0">Card Payment</h5>
+                            <label class="card h-100 p-4 payment-card" for="cardRadio">
+                                <div class="text-center">
+                                    <i class="bi bi-credit-card-2-back text-muted mb-2"></i>
+                                    <h6 class="fw-bold">Card Terminal</h6>
                                 </div>
-                                <div class="payment-fields">
-                                    <input type="text" class="form-control form-control-sm mb-2"
-                                        placeholder="Card Number (Last 4 digits)">
+
+                                <div class="payment-details-box">
+                                    <div class="form-group mb-2">
+                                        <label class="small fw-bold">Card Holder Name</label>
+                                        <input type="text" name="card_name" class="form-control form-control-sm"
+                                            placeholder="As on card">
+                                    </div>
                                     <div class="row g-2">
-                                        <div class="col-6"><input type="text" class="form-control form-control-sm"
-                                                placeholder="Expiry"></div>
-                                        <div class="col-6"><input type="password" class="form-control form-control-sm"
-                                                placeholder="CVV"></div>
+                                        <div class="col-7">
+                                            <div class="form-group">
+                                                <label class="small fw-bold">Last 4 Digits</label>
+                                                <input type="text" name="card_no" class="form-control form-control-sm"
+                                                    placeholder="0000" maxlength="4">
+                                            </div>
+                                        </div>
+                                        <div class="col-5">
+                                            <div class="form-group">
+                                                <label class="small fw-bold">Auth Code</label>
+                                                <input type="text" name="auth_code" class="form-control form-control-sm"
+                                                    placeholder="Appr. ID">
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </label>
                         </div>
                     </div>
-                    <div class="d-flex justify-content-end mt-4">
-                        <button id="processOrder" class="btn btn-success me-4" style="width: 150px;">Order</button>
 
-                        <button class="btn btn-danger me-4" style="width: 150px;">Print</button>
-                        <button class="btn btn-warning" style="width: 150px;">Download Pdf</button>
+                    <div class="d-flex justify-content-end gap-2 border-top pt-4">
+                        <button class="btn btn-outline-danger px-4">Print Thermal</button>
+                        <button class="btn btn-outline-warning px-4">Download PDF</button>
+                        <button id="processOrder" class="btn btn-success px-5 fw-bold shadow-sm">COMPLETE ORDER</button>
                     </div>
                 </div>
             </div>
@@ -404,23 +624,97 @@ if (!empty($_SESSION['selected_customer_id'])) {
         //         "dom": 'rt<"row mt-3"<"col-md-12 text-end"p>>'
         //     });
         // });
-        var cartItems = <?php echo json_encode(array_map(function($item,$i){
-    return [$i+1, $item['name'], number_format($item['price'],2), $item['quantity'], number_format($item['price']*$item['quantity'],2)];
-}, $cartItems, array_keys($cartItems))); ?>;
+        var cartItems = <?php echo json_encode(array_map(function ($item, $i) {
+            return [$i + 1, $item['name'], number_format($item['price'], 2), $item['quantity'], number_format($item['price'] * $item['quantity'], 2)];
+        }, $cartItems, array_keys($cartItems))); ?>;
 
-$('#orderItemsTable').DataTable({
-    data: cartItems,
-    columns: [
-        { title: "ID" },
-        { title: "Product Name" },
-        { title: "Price", className: "text-center" },
-        { title: "Quantity", className: "text-center" },
-        { title: "Total Price", className: "text-center" }
-    ],
-    "ordering": true,
-    "searching": false,
+        $('#orderItemsTable').DataTable({
+            data: cartItems,
+            columns: [
+                { title: "ID" },
+                { title: "Product Name" },
+                { title: "Price", className: "text-center" },
+                { title: "Quantity", className: "text-center" },
+                { title: "Total Price", className: "text-center" }
+            ],
+            "ordering": true,
+            "searching": false,
+        });
+        $('#orderItemsTable').DataTable({
+            data: cartItems,
+            columns: [
+                { title: "#" },
+                { title: "Product Description", className: "fw-bold" },
+                { title: "Rate", className: "text-center" },
+                { title: "Qty", className: "text-center" },
+                { title: "Amount", className: "text-end fw-bold" }
+            ],
+            "paging": false,
+            "searching": false,
+            "info": false,
+            "ordering": false,
+            "dom": 'rt' // Removes all clutter like search/length
+        });
+        function generateDynamicQR() {
+            const amount = "<?= $grandTotal ?>"; // Real total from PHP
+            const upiId = "reyanshraut@ybl"; // Your UPI ID
+            const merchantName = "Brancy Cosmetic Store";
+
+            // Standard UPI String
+            const upiUrl = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(merchantName)}&am=${amount}&cu=INR`;
+
+            // Update QR Image
+            const qrSource = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiUrl)}`;
+            document.getElementById('qrImage').src = qrSource;
+        }
+        $(document).ready(function () {
+            // Single optimized DataTable call
+            $('#orderItemsTable').DataTable({
+                "paging": false,
+                "searching": false,
+                "info": false,
+                "ordering": false,
+                "autoWidth": false, // Manual CSS width use karne ke liye ise false rakhein
+                "dom": 'rt',
+                "drawCallback": function () {
+                    // Re-initialize tooltips every time the table is drawn
+                    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+                    tooltipTriggerList.map(function (tooltipTriggerEl) {
+                        return new bootstrap.Tooltip(tooltipTriggerEl)
+                    });
+                }
+            });
+        });
+        $(document).ready(function () {
+    // Destroy any existing instances to prevent conflicts
+    if ($.fn.DataTable.isDataTable('#orderItemsTable')) {
+        $('#orderItemsTable').DataTable().destroy();
+    }
+
+    $('#orderItemsTable').DataTable({
+        "paging": true,          // Pagination enabled
+        "pageLength": 5,        // Standard length for invoice review
+        "searching": false,      // Clean invoice look
+        "info": true,            // Show "Showing 1 to 5"
+        "ordering": false,       // Keep order as added to cart
+        "autoWidth": false,
+        "language": {
+            "paginate": {
+                "next": '<i class="bi bi-chevron-right"></i>',
+                "previous": '<i class="bi bi-chevron-left"></i>'
+            },
+            "info": "Showing _START_ to _END_ of _TOTAL_ items"
+        },
+        "dom": 'rt<"table-footer"ip>', // Positioning pagination at bottom
+        "drawCallback": function () {
+            // Re-initialize tooltips after pagination click
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            });
+        }
+    });
 });
-
     </script>
 </body>
 

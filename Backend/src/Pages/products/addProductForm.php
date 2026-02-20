@@ -42,40 +42,43 @@ if (isset($_POST['submit'])) {
 
     if (isset($_FILES['gallery_images']) && !empty($_FILES['gallery_images']['name'][0])) {
 
-    $uploadDir = BASE_PATH . "/src/Pages/products/gallery_images/";
+        $uploadDir = BASE_PATH . "/src/Pages/products/gallery_images/";
 
-    if (!is_dir($uploadDir)) {
-        mkdir($uploadDir, 0755, true);
-    }
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
 
-    $maxImages = 5;
-    $remaining = $maxImages - count($galleryImages);
+        $maxImages = 5;
+        $remaining = $maxImages - count($galleryImages);
 
-    if ($remaining > 0) {
+        if ($remaining > 0) {
 
-        $uploaded = 0;
+            $uploaded = 0;
 
-        foreach ($_FILES['gallery_images']['tmp_name'] as $key => $tmpName) {
+            foreach ($_FILES['gallery_images']['tmp_name'] as $key => $tmpName) {
 
-            if ($uploaded >= $remaining) break;
+                if ($uploaded >= $remaining)
+                    break;
 
-            if ($_FILES['gallery_images']['error'][$key] !== 0) continue;
+                if ($_FILES['gallery_images']['error'][$key] !== 0)
+                    continue;
 
-            $ext = strtolower(pathinfo($_FILES['gallery_images']['name'][$key], PATHINFO_EXTENSION));
-            $allowed = ['jpg', 'jpeg', 'png', 'webp'];
+                $ext = strtolower(pathinfo($_FILES['gallery_images']['name'][$key], PATHINFO_EXTENSION));
+                $allowed = ['jpg', 'jpeg', 'png', 'webp'];
 
-            if (!in_array($ext, $allowed)) continue;
+                if (!in_array($ext, $allowed))
+                    continue;
 
-            $fileName = uniqid("gallery_", true) . "." . $ext;
-            $targetPath = $uploadDir . $fileName;
+                $fileName = uniqid("gallery_", true) . "." . $ext;
+                $targetPath = $uploadDir . $fileName;
 
-            if (move_uploaded_file($tmpName, $targetPath)) {
-                $galleryImages[] = "/Backend/src/Pages/products/gallery_images/" . $fileName;
-                $uploaded++;
+                if (move_uploaded_file($tmpName, $targetPath)) {
+                    $galleryImages[] = "/Backend/src/Pages/products/gallery_images/" . $fileName;
+                    $uploaded++;
+                }
             }
         }
     }
-}
 
     $galleryJson = json_encode($galleryImages);
     $productname = $_POST['productname'] ?? '';
@@ -105,7 +108,8 @@ if (isset($_POST['submit'])) {
     $imagePath = $_POST['existing_image'] ?? '';
     if (isset($_FILES['imageBox']) && $_FILES['imageBox']['error'] === 0) {
         $uploadDir = BASE_PATH . "/src/uploads/products/featured/";
-        if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+        if (!is_dir($uploadDir))
+            mkdir($uploadDir, 0755, true);
         $ext = strtolower(pathinfo($_FILES['imageBox']['name'], PATHINFO_EXTENSION));
         $fileName = uniqid('product_', true) . '.' . $ext;
         $targetPath = $uploadDir . $fileName;
@@ -146,6 +150,7 @@ if (isset($_POST['submit'])) {
 $catResult = mysqli_query($con, "SELECT id, category FROM category WHERE status='Active'");
 
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -161,7 +166,180 @@ $catResult = mysqli_query($con, "SELECT id, category FROM category WHERE status=
     <link rel="stylesheet" href="/Backend/src/assets/css/addProductForm.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
     <style>
+        /* --- Add Product Professional Overhaul --- */
+        :root {
+            --primary-blue: #6792ff;
+            --border-color: #e2e8f0;
+            --bg-light: #f8fafc;
+        }
 
+        .card {
+            border: none !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border-radius: 16px !important;
+        }
+
+        /* Form Controls */
+        .form-group label {
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+        }
+
+        .form-control,
+        .form-select,
+        input[type="number"],
+        input[type="text"] {
+            border: 1px solid var(--border-color) !important;
+            border-radius: 8px !important;
+            padding: 10px 14px !important;
+            font-size: 0.9rem !important;
+            transition: all 0.2s ease;
+            background-color: var(--bg-light);
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary-blue) !important;
+            background-color: #fff;
+            box-shadow: 0 0 0 3px rgba(103, 146, 255, 0.1) !important;
+            outline: none;
+        }
+
+        /* Image Upload Zone Polish */
+        .image-upload {
+            border: 2px dashed #cbd5e0;
+            border-radius: 12px;
+            padding: 25px;
+            background: var(--bg-light);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .image-upload:hover {
+            border-color: var(--primary-blue);
+            background: #fff;
+        }
+
+        #imagePreview {
+            max-height: 80px !important;
+            margin-bottom: 10px;
+            border-radius: 6px;
+        }
+
+        /* Gallery Wrapper Styling */
+        .gallery-wrapper {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .upload-box {
+            width: 80px;
+            height: 80px;
+            border: 1px dashed var(--primary-blue);
+            background: rgba(103, 146, 255, 0.05);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--primary-blue);
+        }
+
+        /* Button Styling */
+        .btn-submit {
+            background: var(--primary-blue) !important;
+            border: none;
+            padding: 10px 30px;
+            font-weight: 700;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(103, 146, 255, 0.25);
+        }
+
+        .btn-cancel {
+            background: #f1f5f9 !important;
+            color: #64748b !important;
+            border: none;
+            padding: 10px 25px;
+            font-weight: 600;
+            border-radius: 8px;
+        }
+
+        /* --- Professional Datepicker Overhaul --- */
+        .ui-datepicker {
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 12px !important;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+            padding: 10px !important;
+            font-family: 'Inter', sans-serif !important;
+            width: 280px !important;
+        }
+
+        .ui-datepicker-header {
+            background: transparent !important;
+            border: none !important;
+            color: #2d3748 !important;
+            padding: 10px 0 !important;
+        }
+
+        /* Next/Prev Buttons */
+        .ui-datepicker-prev,
+        .ui-datepicker-next {
+            cursor: pointer !important;
+            top: 12px !important;
+            border-radius: 50% !important;
+            background: #f7fafc !important;
+        }
+
+        .ui-datepicker-prev:hover,
+        .ui-datepicker-next:hover {
+            background: #edf2f9 !important;
+        }
+
+        /* Days Header */
+        .ui-datepicker th {
+            color: #a0aec0 !important;
+            font-size: 0.75rem !important;
+            font-weight: 600 !important;
+            text-transform: uppercase !important;
+            padding: 10px 0 !important;
+        }
+
+        /* Day Cells */
+        .ui-datepicker td span,
+        .ui-datepicker td a {
+            text-align: center !important;
+            padding: 8px !important;
+            border-radius: 8px !important;
+            border: none !important;
+            color: #4a5568 !important;
+            font-size: 0.85rem !important;
+            transition: all 0.2s ease !important;
+        }
+
+        /* Hover & Active States */
+        .ui-datepicker td a:hover {
+            background: rgba(103, 146, 255, 0.1) !important;
+            color: #6792ff !important;
+        }
+
+        .ui-datepicker-current-day a {
+            background: #6792ff !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 10px rgba(103, 146, 255, 0.3) !important;
+        }
+
+        /* Highlight Today */
+        .ui-state-highlight {
+            background: transparent !important;
+            border: 1px solid #6792ff !important;
+            color: #6792ff !important;
+        }
     </style>
 
 </head>
@@ -182,229 +360,138 @@ $catResult = mysqli_query($con, "SELECT id, category FROM category WHERE status=
         <div class="page-wrapper">
             <div class="content">
                 <div class="page-header">
-                    <div class="page-btn">
-                        <a href="/Backend/src/Pages/products/ProductList.php" class="fw-bold fs-6 text-secondary"><i
-                                class="bi bi-arrow-left me-1 fw-bold"></i>Back to Product</a>
-                    </div>
                     <div class="page-title">
-                        <h6>
-                            <nav aria-label="breadcrumb">
-                                <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="ProductList.php">Product List</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Add Product</li>
-                                </ol>
-                            </nav>
-                        </h6>
+                        <h4 class="fw-bold"><?= $isEdit ? 'Update Cosmetic Product' : 'Add New Cosmetic' ?></h4>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="ProductList.php" class="text-primary">Inventory</a>
+                                </li>
+                                <li class="breadcrumb-item active"><?= $isEdit ? 'Edit Mode' : 'New Entry' ?></li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <div class="page-btn">
+                        <a href="ProductList.php" class="btn btn-sm btn-outline-secondary rounded-pill">
+                            <i class="bi bi-arrow-left"></i> Back to List
+                        </a>
                     </div>
                 </div>
+
                 <div class="card">
                     <div class="card-body">
-                        <form id="myForm" method="POST" enctype="multipart/form-data" data-parsley-validate>
-                            <input type="hidden" name="product_id"
-                                value="<?= htmlspecialchars($editData['id'] ?? '') ?>">
+                        <form id="myForm" method="POST" enctype="multipart/form-data">
                             <div class="row">
-                                <div class="col-lg-4 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label for="productName">Product Name <span class="text-danger">*</span></label>
-                                        <input type="text" id="productName" name="productname"
-                                            value="<?php echo htmlspecialchars($editData['product_name'] ?? '') ?>"
-                                            placeholder="Product name" oninput="validateProductName()" maxlength="150"
-                                            data-parsley-required
-                                            data-parsley-required-message="Product name is required">
-                                        <small id="productNameError" class="parsley-required" style="display:none;">
-                                            Please enter a product name between 3 and 100 characters long.
-                                        </small>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label for='categorySelector'>Category <span
-                                                class="text-danger">*</span></label>
-                                        <select class="form-select" onchange="loadBrands(this.value)"
-                                            name="categoryselector" id="categorySelector"
-                                            data-parsley-required-message="Select category" maxlength="200"
-                                            data-parsley-required>
-                                            <option disabled <?= empty($editData['category']) ? 'selected' : '' ?>>
-                                                Choose Category</option>
-                                            <?php while ($row = mysqli_fetch_assoc($catResult)) { ?>
-                                                <option value="<?= $row['id'] ?>"
-                                                    <?= ($isEdit && $editData['category'] == $row['id']) ? 'selected' : '' ?>>
-                                                    <?= htmlspecialchars($row['category']) ?>
-                                                </option>
-                                            <?php } ?>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label for='brand'>Brand <span class="text-danger">*</span></label>
-                                        <select class="form-select" name="brand" id="brandSelect" disabled required>
-                                            <option value="">Choose Brand</option>
-                                        </select>
-
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-sm-4 col-12">
-                                    <div class="form-group">
-                                        <label for="minQuantity">Min Quantity <span class="text-danger">*</span></label>
-                                        <input type="number" class="p-2 rounded col-lg-12 border border-secondary"
-                                            onkeydown="return event.key !== '-'"
-                                            oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
-                                            value="<?php echo htmlspecialchars($editData['minQuantity'] ?? ''); ?>"
-                                            name="minquantity" id="minQuantity" placeholder="Min Quantity"
-                                            oninput="validateQuantity()" data-parsley-required
-                                            data-parsley-error-message="Minimum quantity is required">
-                                        <small id="minQuantityError" class="parsley-required"
-                                            style="display:none;"></small>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-4 col-sm-4 col-12">
-                                    <div class="form-group">
-                                        <label for="quantity">Quantity <span class="text-danger">*</span></label>
-                                        <input type="number" name="quantity" id="quantity"
-                                            onkeydown="return event.key !== '-'"
-                                            oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); validateQuantity();"
-                                            class="p-2 rounded col-lg-12 border border-secondary"
-                                            value="<?php echo htmlspecialchars($editData['quantity'] ?? ''); ?>"
-                                            placeholder="Max Quantity" data-parsley-required
-                                            data-parsley-error-message="Maximum quantity is required">
-                                        <small id="maxError" class="parsley-required" style="display:none;">Max quantity
-                                            must be greater than or equal to Min quantity</small>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-4 col-sm-4 col-12">
-                                    <div class="form-group">
-                                        <label for='datepicker'>Expired Date <span class="text-danger">*</span></label>
-                                        <!-- <input type="text" class="p-2 rounded col-lg-12 border-secondary border-1 border-secondary border" name="expiredDate" id="datepicker" placeholder="Select expired date" value="<?php echo htmlspecialchars($editData['expired_date'] ?? '') ?>" data-parsley-required-message="Expired date is required" data-parsley-required> -->
-                                        <!-- <input type="text" class="form-control" name="expiredDate" id="newdatepicker" placeholder="Select expired date" autocomplete="off" value="<?php echo htmlspecialchars($editData['expired_date'] ?? '') ?>" data-parsley-required data-parsley-required-message="Expired date is required"> -->
-                                        <input type="text" class="form-control" name="expiredDate" id="datepicker"
-                                            placeholder="Select expired date" autocomplete="off"
-                                            value="<?= htmlspecialchars($editData['expired_date'] ?? '') ?>"
-                                            data-parsley-required
-                                            data-parsley-required-message="Expired date is required">
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-sm-4 col-12"></div>
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label for="productDescription">Product Description</label>
-                                        <textarea class="form-control" name="description" maxlength="1000"
-                                            id="description"
-                                            placeholder="Product description"><?php echo htmlspecialchars($editData['description'] ?? '') ?></textarea>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label for="discout">Discount</label>
-                                        <div class="input-group has-validation">
-                                            <input type="text" name="discount" class="form-control" id="discountInput"
-                                                oninput="this.value=this.value.replace(/[^0-9]/g,'')"
-                                                aria-describedby="discountFeedback discount-suffix"
-                                                placeholder="0 to 100" min="0" maxlength="2" step="1"
-                                                value="<?= htmlspecialchars($editData['discount'] ?? '') ?>">
-                                            <span class="input-group-text" id="discount-suffix">%</span>
-                                            <!-- <div id="discountFeedback" class="invalid-feedback"></div> -->
+                                <div class="col-lg-8 border-end pr-lg-4">
+                                    <h5 class="mb-4 text-primary fs-6">Basic Information</h5>
+                                    <div class="row">
+                                        <div class="col-lg-12 col-sm-12 col-12 mb-3">
+                                            <div class="form-group">
+                                                <label>Product Name <span class="text-danger">*</span></label>
+                                                <input type="text" name="productname" class="form-control"
+                                                    value="<?= htmlspecialchars($editData['product_name'] ?? '') ?>"
+                                                    placeholder="e.g. Cerave Hydrating Cleanser">
+                                            </div>
                                         </div>
-                                        <!-- <div id="discountError" class="parsley-required"><?php echo $discountError ?? ""; ?></div> -->
+                                        <div class="col-lg-6 mb-3">
+                                            <div class="form-group">
+                                                <label>Category</label>
+                                                <select class="form-select" name="categoryselector"
+                                                    onchange="loadBrands(this.value)">
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 mb-3">
+                                            <div class="form-group">
+                                                <label>Brand</label>
+                                                <select class="form-select" name="brand" id="brandSelect" disabled>
+                                                    <option value="">Select Brand</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 mb-3">
+                                            <div class="form-group">
+                                                <label>Product Description</label>
+                                                <textarea class="form-control" name="description" rows="4"
+                                                    placeholder="Brief details about the product..."><?= htmlspecialchars($editData['description'] ?? '') ?></textarea>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-4 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label for="price">Price per unit <span class="text-danger">*</span></label>
+
+                                <div class="col-lg-4 pl-lg-4">
+                                    <h5 class="mb-4 text-primary fs-6">Pricing & Stock</h5>
+                                    <div class="form-group mb-3">
+                                        <label>Price per Unit (₹)</label>
                                         <div class="input-group">
-                                            <input type="number" onkeydown="return event.key !== '-'"
-                                                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
-                                                class="form-control p-2" min="0" max="1000000" step="0.01"
-                                                value="<?php echo htmlspecialchars($editData['price'] ?? '') ?>"
-                                                name="price" id="price" placeholder="Price per unit"
-                                                data-parsley-required-message="Price field is required"
-                                                data-parsley-max="1000000"
-                                                data-parsley-max-message="Price cannot exceed 1,000,000"
-                                                data-parsley-required data-parsley-errors-container="#priceError">
-                                            <span class="input-group-text" id="discount-suffix">₹</span>
-                                        </div>
-                                        <div id="priceError" class="parsley-required"><?php echo $priceError ?? ""; ?>
+                                            <span class="input-group-text bg-white border-end-0">₹</span>
+                                            <input type="number" name="price" class="form-control border-start-0"
+                                                value="<?= htmlspecialchars($editData['price'] ?? '') ?>"
+                                                placeholder="0.00">
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-4 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label for="label"> Status</label>
-                                        <select class="form-select" name="status" id="label" data-parsley-id="1601"
-                                            maxlength="200">
-                                            <option value="" disabled
-                                                <?= empty($editData['status']) ? 'selected' : '' ?>>Choose Status
-                                            </option>
-                                            <option selected value="Active"
-                                                <?= ($editData['status'] ?? '') == 'Active' ? 'selected' : '' ?>>Active
-                                            </option>
-                                            <option value="Inactive"
-                                                <?= ($editData['status'] ?? '') == 'Inactive' ? 'selected' : '' ?>>
-                                                Inactive</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-6 col-sm-12">
-                                        <div class="form-group">
-                                            <label for="productImage"> Product Image <span
-                                                    class="text-danger">*</span></label>
-                                            <div class="image-upload mb-0">
-                                                <input type="file" name="imageBox" id="productImage" accept="image/*"
-                                                    <?= $isEdit ? '' : 'data-parsley-required' ?> maxlength="2000"
-                                                    data-parsley-error-message="Image is required"
-                                                    data-parsley-errors-container="#imageError">
-                                                <div class="image-uploads text-center">
-                                                    <img id="imagePreview" src="<?= !empty($editData['image_path'])
-                                                                                    ? htmlspecialchars($editData['image_path'])
-                                                                                    : '/Backend/assets/images/icons/upload.svg' ?>"
-                                                        alt="Preview"
-                                                        style="max-width: 100%; max-height: 48px; object-fit: contain;">
-
-                                                    <h4 id="imageUploadTitle">
-                                                        <?= !empty($editData['image_path'])
-                                                            ? htmlspecialchars(basename($editData['image_path']))
-                                                            : 'Drag and drop a file to upload' ?>
-                                                    </h4>
-                                                </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="form-group mb-3">
+                                                <label>Stock Qty</label>
+                                                <input type="number" name="quantity" class="form-control"
+                                                    value="<?= htmlspecialchars($editData['quantity'] ?? '') ?>">
                                             </div>
-                                            <div id="imageError" class="parsley-required"></div>
                                         </div>
-                                    </div>
-                                    <input type="hidden" name="existing_image"
-                                        value="<?= htmlspecialchars($editData['image_path'] ?? '') ?>">
-                                    <div class="col-lg-6 col-sm-12">
-                                        <div class="form-group">
-                                            <input type="hidden" name="removed_gallery_images"
-                                                id="removedGalleryImages">
-                                            <label>Gallery Images</label>
-
-                                            <input type="file" name="gallery_images[]" id="galleryInput"
-                                                accept="image/*" multiple hidden>
-                                            <small id="galleryError" class="parsley-required"
-                                                style="display:none;"></small>
-
-                                            <div class="gallery-wrapper">
-
-                                                <div class="upload-box" id="uploadBox"
-                                                    onclick="document.getElementById('galleryInput').click()">
-                                                    <span>+</span>
-                                                    <small id="counterText">Select up to 5 images (5 left)</small>
-                                                </div>
-
-                                                <div id="galleryPreview" class="gallery-preview"></div>
+                                        <div class="col-6">
+                                            <div class="form-group mb-3">
+                                                <label>Min Qty</label>
+                                                <input type="number" name="minquantity" class="form-control"
+                                                    value="<?= htmlspecialchars($editData['minQuantity'] ?? '') ?>">
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="form-group mb-3">
+                                        <label>Expiry Date <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-white border-end-0"><i
+                                                    class="bi bi-calendar3"></i></span>
+                                            <input type="text" name="expiredDate" id="datepicker"
+                                                class="form-control border-start-0"
+                                                value="<?= htmlspecialchars($editData['expired_date'] ?? '') ?>"
+                                                placeholder="YYYY-MM-DD" readonly
+                                                style="cursor: pointer; background-color: #f8fafc;">
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-lg-12 d-flex justify-content-end">
-                                    <button class="btn btn-cancel me-2" type="<?= $productId ? 'button' : 'reset' ?>"
-                                        name="reset" id="resetButton"><?= $productId ? 'Back' : 'Reset' ?></button>
-                                    <button class="btn btn-submit" name="submit"
-                                        type="submit"><?= $productId ? 'Update' : 'Submit' ?></button>
+                            </div>
+
+                            <div class="row mt-4 pt-4 border-top">
+                                <div class="col-lg-12 mb-3">
+                                    <h5 class="text-primary fs-6">Product Media</h5>
                                 </div>
+                                <div class="col-lg-6">
+                                    <label class="form-label d-block">Main Featured Image</label>
+                                    <div class="image-upload" onclick="document.getElementById('productImage').click()">
+                                        <input type="file" name="imageBox" id="productImage" hidden>
+                                        <div class="text-center">
+                                            <img id="imagePreview"
+                                                src="<?= !empty($editData['image_path']) ? $editData['image_path'] : '/Backend/assets/images/icons/upload.svg' ?>">
+                                            <p class="text-muted small" id="imageUploadTitle">Click to browse or drag
+                                                and drop</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <label class="form-label d-block">Gallery (Up to 5 images)</label>
+                                    <div class="gallery-wrapper">
+                                        <div class="upload-box"
+                                            onclick="document.getElementById('galleryInput').click()">
+                                            <i class="bi bi-plus-lg fs-4"></i>
+                                            <span style="font-size: 10px;">ADD MORE</span>
+                                        </div>
+                                        <div id="galleryPreview" class="gallery-preview d-flex gap-2"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 pt-4 d-flex justify-content-end gap-2">
+                                <button type="button" class="btn btn-cancel" id="resetButton">Cancel</button>
+                                <button type="submit" name="submit" class="btn btn-submit">Save Product</button>
                             </div>
                         </form>
                     </div>
@@ -429,7 +516,7 @@ $catResult = mysqli_query($con, "SELECT id, category FROM category WHERE status=
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/Backend/src/assets/js/products/addProductForm.js"></script>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             const isEditMode = <?= $isEdit ? 'true' : 'false' ?>;
             const existingDate = $('#datepicker').val();
 
@@ -439,12 +526,12 @@ $catResult = mysqli_query($con, "SELECT id, category FROM category WHERE status=
                 changeYear: true,
                 showAnim: "fadeIn",
                 minDate: isEditMode && existingDate ? null : 0,
-                beforeShow: function(input, inst) {
+                beforeShow: function (input, inst) {
                     setTimeout(() => {
                         $('.ui-datepicker').css('z-index', 9999);
                     }, 0);
                 },
-                beforeShowDay: function(date) {
+                beforeShowDay: function (date) {
                     const today = new Date();
                     today.setHours(0, 0, 0, 0);
                     if (date.getTime() === today.getTime()) {
@@ -452,7 +539,7 @@ $catResult = mysqli_query($con, "SELECT id, category FROM category WHERE status=
                     }
                     return [true, ""];
                 },
-                onSelect: function(dateText, inst) {
+                onSelect: function (dateText, inst) {
                     $(this).parsley().validate();
                 }
             });
@@ -462,18 +549,18 @@ $catResult = mysqli_query($con, "SELECT id, category FROM category WHERE status=
             }
         });
         const isEditMode = <?= $isEdit ? 'true' : 'false' ?>;
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             if (isEditMode) {
                 filterBrandsByCategory();
             }
         });
-        $('#resetButton').on('click', function() {
+        $('#resetButton').on('click', function () {
             if (<?= $productId ? 'true' : 'false' ?>) {
                 window.location.href = "ProductList.php";
             }
         });
 
-        document.getElementById('resetButton').addEventListener('click', function() {
+        document.getElementById('resetButton').addEventListener('click', function () {
             const fileInput = document.getElementById('productImage');
             const preview = document.getElementById('imagePreview');
             const title = document.getElementById('imageUploadTitle');
@@ -486,12 +573,12 @@ $catResult = mysqli_query($con, "SELECT id, category FROM category WHERE status=
                 preview.src =
                     "<?= htmlspecialchars($editData['image_path'] ?? '/Backend/assets/images/icons/upload.svg') ?>";
                 title.textContent = "<?= !empty($editData['image_path'])
-                                            ? htmlspecialchars(basename($editData['image_path']))
-                                            : 'Drag and drop a file to upload' ?>";
+                    ? htmlspecialchars(basename($editData['image_path']))
+                    : 'Drag and drop a file to upload' ?>";
                 fileInput.value = '';
             }
         });
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             const existingImages = <?= json_encode($existingGalleryImages) ?>;
 
             existingImages.forEach(img => {
@@ -501,7 +588,7 @@ $catResult = mysqli_query($con, "SELECT id, category FROM category WHERE status=
 
             updateCounter();
         });
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             const isEditMode = <?= $isEdit ? 'true' : 'false' ?>;
 
             if (isEditMode) {
@@ -513,7 +600,63 @@ $catResult = mysqli_query($con, "SELECT id, category FROM category WHERE status=
                 }
             }
         });
+        $(document).ready(function() {
+    const isEditMode = <?= $isEdit ? 'true' : 'false' ?>;
+    
+    $("#datepicker").datepicker({
+        dateFormat: "yy-mm-dd",
+        changeMonth: true,
+        changeYear: true,
+        showAnim: "fadeIn",
+        minDate: isEditMode ? null : 0, // Fresh entry ke liye purani dates block karein
+        onSelect: function() {
+            $(this).parsley().validate(); // Select hote hi validation check karein
+        }
+    });
+});
+document.addEventListener("DOMContentLoaded", function () {
+    const categorySelect = document.querySelector('select[name="categoryselector"]');
+    const isEdit = <?= $isEdit ? 'true' : 'false' ?>;
+    const savedCategoryName = "<?= $editData['category'] ?? '' ?>";
+
+    // Clear existing and add default
+    categorySelect.innerHTML = '<option value="">Select Category</option>';
+
+    // Categories populate karein
+    if (typeof allCategories !== 'undefined' && allCategories.length > 0) {
+        allCategories.forEach(cat => {
+            let option = document.createElement('option');
+            option.value = cat.id;
+            option.textContent = cat.name;
+            
+            // Edit mode check
+            if (isEdit && cat.name === savedCategoryName) {
+                option.selected = true;
+            }
+            categorySelect.appendChild(option);
+        });
+    }
+
+    // Trigger brand loading if in Edit mode
+    if (isEdit && savedCategoryName && categorySelect.value) {
+        loadBrands(categorySelect.value, "<?= addslashes($editData['brand_name'] ?? '') ?>");
+    }
+});
+if ($categoryId) {
+    $stmtCat = mysqli_prepare($con, "SELECT category FROM category WHERE id = ?");
+    ...
+}
     </script>
+    <script>
+    const allCategories = [
+        <?php 
+        mysqli_data_seek($catResult, 0); 
+        while($cat = mysqli_fetch_assoc($catResult)) {
+            echo "{id: '{$cat['id']}', name: '" . addslashes($cat['category']) . "'},";
+        }
+        ?>
+    ];
+</script>
 </body>
 
 </html>

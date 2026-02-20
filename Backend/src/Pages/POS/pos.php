@@ -83,6 +83,123 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
             cursor: pointer;
             user-select: none;
         }
+
+        /* --- POS Premium Overhaul --- */
+        .category-track {
+            display: flex;
+            gap: 15px;
+            padding: 10px 5px;
+            scroll-behavior: smooth;
+        }
+
+        .category-card {
+            min-width: 100px;
+            border: 1px solid #edf2f9;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            background: #fff;
+        }
+
+        .category-card img {
+            height: 60px !important;
+            width: auto;
+            margin: 10px auto;
+        }
+
+        .category-card.active {
+            border-color: #6792ff !important;
+            background: rgba(103, 146, 255, 0.05);
+            box-shadow: 0 4px 12px rgba(103, 146, 255, 0.1);
+        }
+
+        /* Product Card Polish */
+        .product-card {
+            border: 1px solid #edf2f9;
+            transition: transform 0.2s, box-shadow 0.2s;
+            background: #fff;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05) !important;
+        }
+
+        .product-card img {
+            height: 120px;
+            object-fit: contain;
+        }
+
+        /* Cart Section Polish */
+        .card.position-sticky {
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .table-sm th {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #94a3b8;
+        }
+
+        #cartTotal {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        .btn-added-custom {
+            background: #6792ff;
+            color: white;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        /* --- Professional Customer Selector --- */
+        .customer-selection-group {
+            background: #f8fafc;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            height: 45px;
+            /* Fixed Height */
+        }
+
+        .customer-selection-group:focus-within {
+            border-color: #6792ff;
+            box-shadow: 0 0 0 3px rgba(103, 146, 255, 0.1);
+            background: #fff;
+        }
+
+        .customer-icon-box {
+            background: transparent;
+            padding: 0 15px;
+            color: #94a3b8;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        #customerSelect {
+            border: none !important;
+            background: transparent !important;
+            height: 100% !important;
+            padding: 0 12px !important;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #334155;
+            box-shadow: none !important;
+            cursor: pointer;
+            flex-grow: 1;
+        }
+
+        #customerSelect:focus {
+            outline: none !important;
+        }
     </style>
 </head>
 
@@ -113,133 +230,119 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
             </div>
 
             <div class="row">
-                <div class="col-lg-8" style="max-height: 80vh; overflow-y: auto; padding-right:15px;">
-                    <div id="categorySlider" class="slider-container mb-3 position-relative"
-                        style="background:rgba(40, 0, 84, 0.18)">
-                        <!-- <button id="prevBtn" class="carousel-control-prev slider-btn" type="button">
-                            <span class="carousel-control-prev-icon"></span>
-                        </button>
-                        <button id="nextBtn" class="carousel-control-next slider-btn" type="button">
-                            <span class="carousel-control-next-icon"></span>
-                        </button> -->
+                <div class="col-lg-8" style="max-height: 85vh; overflow-y: auto;">
+                    <div class="category-wrapper mb-4 p-3 rounded-4" style="background: #f8fafc;">
+                        <h6 class="fw-bold mb-3">Filter by Category</h6>
+                        <div class="category-track overflow-auto">
+                            <div class="category-slide" style="height: 165px !important;">
+                                <div class="card category-card text-center active" data-category="all"
+                                    style="height: 150px !important;">
+                                    <div class="card-body p-2">
+                                        <img src="/Backend/src/assets/images/allProducts.png" class="img-fluid">
+                                        <div class="small fw-bold">All</div>
+                                    </div>
+                                </div>
+                            </div>
 
-                        <div class="overflow-hidden">
-                            <div class="category-track">
-                                <div class="category-slide">
-                                    <div class="card category-card text-center border-primary" data-category="all">
-
-                                        <div class="card-body text-center">
-                                            <img src="/Backend/src/assets/images/allProducts.png" alt="">
-                                            All products
+                            <?php foreach ($categories as $cat) { ?>
+                                <div class="category-slide" style="height: 165px !important;">
+                                    <div class="card category-card text-center" style="height: 150px !important;"
+                                        data-category="<?= htmlspecialchars($cat['category']) ?>">
+                                        <div class="card-body p-2">
+                                            <img src="<?= !empty($cat['image_path']) ? htmlspecialchars($cat['image_path']) : '/Backend/assets/images/product/default-category.png'; ?>"
+                                                class="img-fluid">
+                                            <div class="small fw-bold"><?= htmlspecialchars($cat['category']) ?></div>
                                         </div>
                                     </div>
                                 </div>
-
-                                <?php foreach ($categories as $cat) { ?>
-                                    <div class="category-slide">
-                                        <div class="card category-card text-center"
-                                            data-category="<?= htmlspecialchars($cat['category']) ?>"
-                                            style="cursor:pointer">
-                                            <img style="object-fit: contain; height: 115px; margin-top: 5px;"
-                                                src="<?= !empty($cat['image_path']) ? htmlspecialchars($cat['image_path']) : '/Backend/assets/images/product/default-category.png'; ?>"
-                                                class="card-img-top mb-3">
-                                            <div class="card-body" style="padding: 2px;">
-                                                <?= htmlspecialchars($cat['category']) ?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php } ?>
-                            </div>
+                            <?php } ?>
                         </div>
                     </div>
 
-                    <div class="row row-cols-1 row-cols-md-3">
-                        <?php if ($result && $result->num_rows > 0) {
-                            while ($row = $result->fetch_assoc()) {
-                                $id = (int) $row['id'];
-                                $name = htmlspecialchars($row['product_name']);
-                                $categoryId = (int) $row['category_id'];
-                                $categoryName = $row['category_name'];
-                                $price = number_format((float) $row['price'], 2);
-                                $image = !empty($row['image_path']) ? $row['image_path'] : "/Inventory_managment/Backend/assets/images/favicon1.png";
-                        ?>
-                                <div class="col-12 col-md-4 col-lg-4 shadow-md product-wrapper" style="padding: 5px">
-                                    <div class="product-card p-3 shadow-sm rounded h-100"
-                                        data-category="<?= htmlspecialchars($categoryName) ?>">
-                                        <div class="text-center">
-                                            <img src="<?= $image ?>" class="img-fluid mb-2">
-                                        </div>
-                                        <h6 class="text-muted small"><?= $categoryName ?></h6>
-                                        <h5 class="text-truncate" data-bs-toggle='tooltip' data-bs-title="<?php echo $name ?>">
-                                            <?= $name ?>
-                                        </h5>
-                                        <h6 class="text-primary">₹<?= $price ?></h6>
-                                        <div class="d-grid">
-                                            <?php $outOfStock = ((int) $row['quantity'] <= 0); ?>
+                    <div class="row g-3">
+                        <?php while ($row = $result->fetch_assoc()) {
+                            $outOfStock = ((int) $row['quantity'] <= 0);
+                            ?>
+                            <div class="col-md-4 product-wrapper">
+                                <div class="card product-card h-100 rounded-4 border-0 shadow-sm"
+                                    data-category="<?= htmlspecialchars($row['category_name']) ?>">
+                                    <div class="p-3 text-center">
+                                        <img src="<?= $row['image_path'] ?>" class="rounded-3">
+                                    </div>
+                                    <div class="card-body pt-0">
+                                        <span class="badge bg-light text-primary mb-1"><?= $row['category_name'] ?></span>
+                                        <h6 class="text-truncate fw-bold mb-1"
+                                            title="<?= htmlspecialchars($row['product_name']) ?>">
+                                            <?= htmlspecialchars($row['product_name']) ?>
+                                        </h6>
+                                        <div class="d-flex justify-content-between align-items-center mt-3">
+                                            <span class="fw-bold fs-5">₹<?= number_format($row['price'], 2) ?></span>
                                             <button
-                                                class="btn <?= $outOfStock ? 'btn-secondary' : 'btn-primary' ?> addToCartBtn"
-                                                <?= $outOfStock ? 'disabled' : '' ?> data-id="<?= $id ?>"
-                                                data-name="<?= $name ?>" data-price="<?= (float) $price ?>"
-                                                data-stock="<?= (int) $row['quantity'] ?>">
-                                                <?= $outOfStock ? 'Out of Stock' : 'Add to Cart' ?>
+                                                class="btn btn-sm <?= $outOfStock ? 'btn-light disabled' : 'btn-primary' ?> addToCartBtn"
+                                                data-id="<?= $row['id'] ?>" data-name="<?= $row['product_name'] ?>"
+                                                data-price="<?= $row['price'] ?>" data-stock="<?= $row['quantity'] ?>">
+                                                <i class="bi <?= $outOfStock ? 'bi-x-circle' : 'bi-plus-lg' ?>"></i>
                                             </button>
-
                                         </div>
                                     </div>
                                 </div>
-                        <?php }
-                        } ?>
-                    </div>
-
-                    <div id="noProductFound" class="text-center w-100 mt-4" style="display:none;">
-                        <img src="/Backend/src/assets/images/product_not_found2.png" class="img-fluid"
-                            style="max-width:400px;">
+                            </div>
+                        <?php } ?>
                     </div>
                 </div>
 
                 <div class="col-lg-4">
-                    <div class="card position-sticky" style="top:20px;">
-                        <div class="card-header">
-                            <h5>Order List</h5>
-                            <small class="text-muted">Transaction ID: #<?= $_SESSION['transaction_id']; ?></small>
+                    <div class="card border-0 shadow-lg position-sticky" style="top:20px; border-radius: 20px;">
+                        <div class="card-header bg-white border-0 pt-4 px-4">
+                            <h5 class="fw-bold mb-0">Current Order</h5>
+                            <div class="badge bg-primary-light text-primary mt-2">ID:
+                                #<?= $_SESSION['transaction_id']; ?></div>
                         </div>
-                        <div class="card-body">
-                            <div class="mb-3 d-flex gap-2">
+                        <div class="card-body px-4">
+                            <label class="small text-muted mb-2">Select Customer</label>
+                            <div class="customer-selection-group mb-4">
+                                <div class="customer-icon-box">
+                                    <i class="bi bi-person-circle fs-5"></i>
+                                </div>
                                 <select class="form-select" id="customerSelect">
-                                    <option value="" disabled <?= !isset($_SESSION['selected_customer_id']) ? 'selected' : ''; ?>>Walk-in Customer</option>
+                                    <option value="0" <?= !isset($_SESSION['selected_customer_id']) ? 'selected' : ''; ?>>
+                                        Walk-in Customer
+                                    </option>
+
                                     <?php
-                                    $selectedCustomerId = $_SESSION['selected_customer_id'] ?? null;
+                                    // Database se customers fetch karein
                                     $customers = mysqli_query($con, "SELECT id, name FROM customers ORDER BY id DESC");
                                     while ($c = mysqli_fetch_assoc($customers)) {
-                                        $isSelected = ($c['id'] == $selectedCustomerId) ? 'selected' : '';
-                                        echo "<option value='{$c['id']}' $isSelected>{$c['name']}</option>";
+                                        $selected = (isset($_SESSION['selected_customer_id']) && $_SESSION['selected_customer_id'] == $c['id']) ? 'selected' : '';
+                                        echo "<option value='{$c['id']}' $selected>{$c['name']}</option>";
                                     }
                                     ?>
                                 </select>
                             </div>
-                            <div class="table-responsive mb-2">
-                                <table class="table table-bordered table-sm" id="posCartTable">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th style="width:40%;">Product</th>
-                                            <th style="width:20%;">Qty</th>
-                                            <th style="width:20%;">Price</th>
-                                            <th style="width:20%;">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="cartBody"></tbody>
+
+                            <div id="cart-items-container" style="max-height: 350px; overflow-y: auto;">
+                                <table class="table table-borderless align-middle" id="posCartTable">
+                                    <tbody id="cartBody">
+                                    </tbody>
                                 </table>
                             </div>
 
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <div>Total Items: <span id="totalItems">0</span></div>
-                                <div id="cartTotals">Total: ₹<span id="cartTotal">0.00</span></div>
-                            </div>
+                            <div class="border-top pt-3 mt-3">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted">Subtotal</span>
+                                    <span class="fw-bold">₹<span id="cartTotal">0.00</span></span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-4">
+                                    <span class="text-muted">Items Count</span>
+                                    <span class="badge bg-info-light text-info" id="totalItems">0</span>
+                                </div>
 
-                            <div class="d-grid">
-                                <button class="btn btn-success mb-2" id="checkoutBtn"><i class="bi bi-cart-check"></i>
-                                    Place Order</button>
-                                <button class="btn btn-danger btn-sm w-100" id="clearCartBtn">Clear All</button>
+                                <button class="btn btn-success w-100 py-3 fw-bold rounded-3 shadow-sm mb-2"
+                                    id="checkoutBtn">
+                                    PROCEED TO PAYMENT <i class="bi bi-arrow-right ms-2"></i>
+                                </button>
+                                <button class="btn btn-link btn-sm text-danger w-100 text-decoration-none"
+                                    id="clearCartBtn">Discard Order</button>
                             </div>
                         </div>
                     </div>
@@ -333,7 +436,7 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
 
     <script src="/Backend/src/assets/js/pos.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
 
             <?php if (isset($_SESSION['customer_success'])): ?>
                 var sEl = document.getElementById('customerSuccessToast');
@@ -373,15 +476,15 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
             }
 
             fetch("store_checkout.php", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        cart: cart,
-                        customer_id: customerId
-                    })
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    cart: cart,
+                    customer_id: customerId
                 })
+            })
                 .then(res => res.json())
                 .then(data => {
                     if (data.status === "success") {
@@ -392,13 +495,13 @@ while ($row = mysqli_fetch_assoc($catQuery)) {
         });
     </script>
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             const categoryCards = document.querySelectorAll(".category-card");
             const productWrappers = document.querySelectorAll(".product-wrapper");
             const noProduct = document.getElementById("noProductFound");
 
             categoryCards.forEach(card => {
-                card.addEventListener("click", function() {
+                card.addEventListener("click", function () {
                     let selectedCategory = this.getAttribute("data-category").trim().toLowerCase();
 
                     let found = false;

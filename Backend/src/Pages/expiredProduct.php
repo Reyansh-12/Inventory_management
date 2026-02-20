@@ -63,6 +63,122 @@ if (isset($_GET['deleteId'])) {
     .dataTables_info {
         display: none;
     }
+    /* --- Expired Products Professional Overhaul --- */
+:root {
+    --primary-blue: #6792ff;
+    --danger-soft: rgba(255, 107, 107, 0.15);
+    --danger-text: #dc3545;
+    --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.card {
+    border: none !important;
+    box-shadow: var(--card-shadow);
+    border-radius: 12px !important;
+}
+
+/* Image & Product Name Alignment */
+.productimgname {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.productimgname img {
+    min-width: 45px;
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid #edf2f9;
+}
+
+.productimgname a {
+    font-weight: 600;
+    color: #2d3748;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.productimgname a:hover {
+    color: var(--primary-blue);
+}
+
+/* Table Header & Rows */
+.table thead th {
+    background-color: #f8f9fa;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+    color: #6c757d;
+    padding: 15px !important;
+    border-bottom: 1px solid #edf2f9;
+}
+
+.table tbody td {
+    padding: 15px !important;
+    vertical-align: middle;
+}
+
+/* Expired Date Badge Look */
+.expired-date {
+    color: var(--danger-text);
+    background: var(--danger-soft);
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+/* DataTable Pagination Polish */
+.dataTables_paginate .page-link {
+    border: none !important;
+    border-radius: 6px !important;
+    margin: 0 2px;
+    font-weight: 600;
+}
+/* --- Professional Pagination Overhaul --- */
+.dataTables_wrapper .dataTables_paginate {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #edf2f9;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding: 6px 14px !important;
+    margin: 0 3px !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    background: #fff !important;
+    color: #64748b !important;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: var(--primary-blue) !important;
+    color: white !important;
+    border-color: var(--primary-blue) !important;
+    box-shadow: 0 4px 10px rgba(103, 146, 255, 0.25);
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #f8fafc !important;
+}
+
+/* Symmetry for Info & Pagination Row */
+.table-footer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+}
     </style>
 </head>
 
@@ -115,28 +231,29 @@ if (isset($_GET['deleteId'])) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php
-                                    if (!$result) {
-                                        echo "Error: " . $con->error;
-                                    } else {
-                                        if ($result->num_rows > 0) {
-                                            while ($row = $result->fetch_assoc()) {
-                                                echo "<tr>";
-                                                echo "    <td class='productimgname' style='width: 400px'>";
-                                                echo "        <img src='" . $row['image_path'] . "' alt='product' class=''>";
-                                                echo "        <a href='javascript:void(0);' class='text-truncate' data-bs-toggle='tooltip' data-bs-title='" . $row['product_name'] . "'>" . $row['product_name'] . "</a>";
-                                                echo "    </td>";
-                                                echo "    <td>" . $row['expired_date'] . "</td>";
-                                                echo "    <td>";
-                                                echo "        <a class='confirm-delete' href='/Backend/src/Pages/expiredProduct.php?deleteId=" . $row['id'] . "' data-bs-toggle='tooltip' data-bs-title='Delete'>";
-                                                echo "            <img src='/Backend/src/assets/images/icons/delete.svg' alt='img'>";
-                                                echo "        </a>";
-                                                echo "    </td>";
-                                                echo "</tr>";
-                                            }
-                                        }
-                                    }
-                                    ?>
+                                <?php
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        echo "<tr>";
+        // Product Column with Image & Tooltip
+        echo "    <td class='productimgname'>";
+        echo "        <img src='" . $row['image_path'] . "' alt='product'>";
+        echo "        <a href='javascript:void(0);' class='text-truncate' style='max-width: 350px;' data-bs-toggle='tooltip' title='" . htmlspecialchars($row['product_name']) . "'>" . htmlspecialchars($row['product_name']) . "</a>";
+        echo "    </td>";
+
+        // Expired Date with Red Alert Style
+        echo "    <td><span class='expired-date'>" . date('M d, Y', strtotime($row['expired_date'])) . "</span></td>";
+
+        // Action Column
+        echo "    <td>";
+        echo "        <a class='confirm-delete btn btn-sm btn-outline-danger border-0' href='/Backend/src/Pages/expiredProduct.php?deleteId=" . $row['id'] . "' data-bs-toggle='tooltip' title='Remove Expired Product'>";
+        echo "            <img src='/Backend/src/assets/images/icons/delete.svg' alt='delete' width='18'>";
+        echo "        </a>";
+        echo "    </td>";
+        echo "</tr>";
+    }
+}
+?>
                                 </tbody>
                             </table>
                         </div>
@@ -189,6 +306,56 @@ if (isset($_GET['deleteId'])) {
             window.history.replaceState({}, document.title, window.location.pathname);
         }
     });
+    $(document).ready(function() {
+    // Prevent re-initialization error
+    if ($.fn.DataTable.isDataTable('.datanew')) {
+        $('.datanew').DataTable().destroy();
+    }
+
+    $('.datanew').DataTable({
+        "order": [[1, "asc"]], // Sort by date
+        "searching": true,
+        "pageLength": 10,
+        "autoWidth": false,
+        "dom": 'rt<"row mt-3"<"col-md-6"l><"col-md-6 text-end"p>>',
+        "drawCallback": function() {
+            // Re-initialize tooltips after every table redraw
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            });
+        }
+    });
+});
+$(document).ready(function() {
+    // Prevent re-initialization error
+    if ($.fn.DataTable.isDataTable('.datanew')) {
+        $('.datanew').DataTable().destroy();
+    }
+
+    $('.datanew').DataTable({
+        "order": [[1, "asc"]], // Sort by Expiry Date (Oldest first)
+        "searching": true,
+        "pageLength": 10,
+        "autoWidth": false,
+        "language": {
+            "paginate": {
+                "next": '<i class="bi bi-chevron-right"></i>',
+                "previous": '<i class="bi bi-chevron-left"></i>'
+            },
+            "info": "Showing _START_ to _END_ of _TOTAL_ expired products"
+        },
+        // Layout: Table (rt), then Footer Row with Info (i) and Pagination (p)
+        "dom": 'rt<"table-footer-row"ip>', 
+        "drawCallback": function() {
+            // Re-initialize tooltips after every table redraw (search/pagination)
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            });
+        }
+    });
+});
     </script>
 </body>
 </html>

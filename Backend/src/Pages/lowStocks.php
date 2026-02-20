@@ -65,6 +65,125 @@ if (isset($_GET['lowStockId'])) {
         .dataTables_info {
             display: none;
         }
+        /* --- Low Stock Alerts Professional Overhaul --- */
+:root {
+    --primary-blue: #6792ff;
+    --warning-soft: rgba(255, 169, 77, 0.15);
+    --warning-text: #f08c00;
+    --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.card {
+    border: none !important;
+    box-shadow: var(--card-shadow);
+    border-radius: 12px !important;
+}
+
+/* Product Info Alignment */
+.productimgname {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.productimgname img {
+    min-width: 45px;
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid #edf2f9;
+}
+
+.productimgname a {
+    font-weight: 600;
+    color: #2d3748;
+    text-decoration: none;
+    transition: color 0.2s;
+    cursor: pointer;
+}
+
+.productimgname a:hover {
+    color: var(--primary-blue);
+}
+
+/* Table Header & Rows */
+.table thead th {
+    background-color: #f8f9fa;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+    color: #6c757d;
+    padding: 15px !important;
+}
+
+.table tbody td {
+    padding: 15px !important;
+    vertical-align: middle;
+}
+
+/* Stock Urgency Badge */
+.stock-badge {
+    color: var(--warning-text);
+    background: var(--warning-soft);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    display: inline-block;
+}
+
+/* Action Icon Styling */
+.action-icons img {
+    width: 18px;
+    transition: transform 0.2s;
+}
+
+.action-icons a:hover img {
+    transform: scale(1.1);
+}
+/* --- Professional Pagination Styling --- */
+.dataTables_wrapper .dataTables_paginate {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #edf2f9;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding: 6px 14px !important;
+    margin: 0 3px !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    background: #fff !important;
+    color: #64748b !important;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: var(--primary-blue) !important;
+    color: white !important;
+    border-color: var(--primary-blue) !important;
+    box-shadow: 0 4px 10px rgba(103, 146, 255, 0.25);
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #f8fafc !important;
+}
+
+/* Pagination Row Alignment */
+.table-footer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+}
+
     </style>
 </head>
 
@@ -121,26 +240,37 @@ if (isset($_GET['lowStockId'])) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php
-                                    if ($result->num_rows > 0) {
-                                        while ($row = $result->fetch_assoc()) {
-                                            echo "<tr>";
-                                            echo "<td class='productimgname' style='width: 300px'>";
-                                            echo "<img src='{$row['image_path']}' alt='product'>";
-                                            echo "<a class='text-truncate' data-bs-toggle='tooltip' data-bs-title='".$row['product_name']."'>{$row['product_name']}</a></td>";
-                                            echo "<td>{$row['category']}</td>";
-                                            echo "<td>{$row['brand_name']}</td>";
-                                            echo "<td>{$row['quantity']}</td>";
-                                            echo "<td>{$row['minQuantity']}</td>";
-                                            echo "<td>{$row['price']}</td>";
-                                            echo "<td>
-                                            <a class='me-3' href='/Backend/src/Pages/products/addProductForm.php?productId=" . $row['id'] . "' data-bs-toggle='tooltip' data-bs-title='Edit'>
-                                                          <img src='/Backend/src/assets/images/icons/edit.svg' alt='img'>
-                                                      </a></td>";
-                                            echo "</tr>";
-                                        }
-                                    }
-                                    ?>
+                                <?php
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        echo "<tr>";
+        // Product Column
+        echo "    <td class='productimgname'>";
+        echo "        <img src='{$row['image_path']}' alt='product'>";
+        echo "        <a class='text-truncate' style='max-width: 200px;' data-bs-toggle='tooltip' title='".htmlspecialchars($row['product_name'])."'>".htmlspecialchars($row['product_name'])."</a>";
+        echo "    </td>";
+
+        // Category & Brand with Tooltips
+        echo "    <td><div class='text-truncate' style='max-width: 120px;' data-bs-toggle='tooltip' title='".htmlspecialchars($row['category'])."'>".htmlspecialchars($row['category'])."</div></td>";
+        echo "    <td><div class='text-truncate' style='max-width: 120px;' data-bs-toggle='tooltip' title='".htmlspecialchars($row['brand_name'])."'>".htmlspecialchars($row['brand_name'])."</div></td>";
+
+        // Stock Levels
+        echo "    <td><span class='stock-badge'>{$row['quantity']} left</span></td>";
+        echo "    <td class='text-muted' style='font-size: 0.85rem;'>Min: {$row['minQuantity']}</td>";
+
+        // Price
+        echo "    <td class='fw-bold'>₹ ".number_format($row['price'], 2)."</td>";
+
+        // Actions
+        echo "    <td class='action-icons'>";
+        echo "        <a class='me-2' href='/Backend/src/Pages/products/addProductForm.php?productId=" . $row['id'] . "' data-bs-toggle='tooltip' title='Restock / Edit'>";
+        echo "            <img src='/Backend/src/assets/images/icons/edit.svg' alt='edit'>";
+        echo "        </a>";
+        echo "    </td>";
+        echo "</tr>";
+    }
+}
+?>
                                 </tbody>
                                 
                             </table>
@@ -195,6 +325,54 @@ if (isset($_GET['lowStockId'])) {
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
         });
+        $(document).ready(function() {
+    if ($.fn.DataTable.isDataTable('.datanew')) {
+        $('.datanew').DataTable().destroy();
+    }
+
+    $('.datanew').DataTable({
+        "order": [[3, "asc"]], // Sort by quantity (lowest first)
+        "searching": true,
+        "pageLength": 10,
+        "autoWidth": false,
+        "dom": 'rt<"row mt-3"<"col-md-6"l><"col-md-6 text-end"p>>',
+        "drawCallback": function() {
+            // Re-initialize tooltips after table draws
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            });
+        }
+    });
+});
+$(document).ready(function() {
+    if ($.fn.DataTable.isDataTable('.datanew')) {
+        $('.datanew').DataTable().destroy();
+    }
+
+    $('.datanew').DataTable({
+        "order": [[3, "asc"]], // Sort by quantity
+        "searching": true,
+        "pageLength": 10,
+        "autoWidth": false,
+        "language": {
+            "paginate": {
+                "next": '<i class="bi bi-chevron-right"></i>',
+                "previous": '<i class="bi bi-chevron-left"></i>'
+            },
+            "info": "Showing _START_ to _END_ of _TOTAL_ alerts"
+        },
+        // Layout: Table (rt), then Footer Row with Info (i) and Pagination (p)
+        "dom": 'rt<"table-footer-row"ip>', 
+        "drawCallback": function() {
+            // IMPORTANT: Re-initialize tooltips every time the table is paged
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            });
+        }
+    });
+});
     </script>
 </body>
 

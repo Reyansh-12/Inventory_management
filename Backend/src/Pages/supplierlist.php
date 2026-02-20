@@ -25,7 +25,8 @@ if (isset($_GET['supplierId'])) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
     <meta name="description" content="POS - Bootstrap Admin Template">
-    <meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern,  html5, responsive">
+    <meta name="keywords"
+        content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern,  html5, responsive">
     <meta name="author" content="Dreamguys - Bootstrap Admin Template">
     <meta name="robots" content="noindex, nofollow">
     <title>Supplier List</title>
@@ -42,40 +43,144 @@ if (isset($_GET['supplierId'])) {
             z-index: 999;
             animation: shrink 4s linear forwards;
         }
-        .swal2-icon-content{
+
+        .swal2-icon-content {
             margin-left: 537%;
             margin-top: 48%;
         }
+
         .dataTables_paginate .pagination {
-    justify-content: end;
+            justify-content: end;
+        }
+
+        .dataTables_paginate .page-item .page-link {
+            border-radius: 6px;
+            margin: 0 3px;
+            border: 1px solid #dee2e6;
+            color: #333;
+        }
+
+        .dataTables_paginate .page-item.active .page-link {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+            color: #fff;
+        }
+
+        .dataTables_paginate .page-item.disabled .page-link {
+            opacity: 0.5;
+        }
+
+        table.dataTable thead .sorting:before,
+        table.dataTable thead .sorting:after,
+        table.dataTable thead .sorting_asc:before,
+        table.dataTable thead .sorting_asc:after,
+        table.dataTable thead .sorting_desc:before,
+        table.dataTable thead .sorting_desc:after {
+            display: none !important;
+        }
+
+        /* --- Supplier List Professional Polish --- */
+        .card {
+            border: none !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border-radius: 12px !important;
+        }
+
+        /* Supplier Name & Email Styling */
+        .supplier-name {
+            font-weight: 700;
+            color: #2d3748;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+
+        .supplier-name:hover {
+            color: #6792ff;
+        }
+
+        .text-email {
+            color: #718096;
+            font-size: 0.85rem;
+            cursor: help;
+        }
+
+        /* Table Header & Rows */
+        .table thead th {
+            background-color: #f8f9fa;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+            color: #6c757d;
+            padding: 15px !important;
+            border-bottom: 1px solid #edf2f9;
+        }
+
+        .table tbody td {
+            padding: 15px !important;
+            vertical-align: middle;
+            color: #4a5568;
+        }
+
+        /* Action Icon Styling */
+        .action-icons img {
+            width: 18px;
+            transition: transform 0.2s;
+        }
+
+        .action-icons a:hover img {
+            transform: scale(1.15);
+        }
+
+        /* Tooltip & Truncate Fix */
+        .text-truncate {
+            display: inline-block;
+            vertical-align: middle;
+        }
+        /* --- Professional Pagination Styling --- */
+.dataTables_wrapper .dataTables_paginate {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #edf2f9;
 }
 
-.dataTables_paginate .page-item .page-link {
-    border-radius: 6px;
-    margin: 0 3px;
-    border: 1px solid #dee2e6;
-    color: #333;
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding: 6px 14px !important;
+    margin: 0 3px !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    background: #fff !important;
+    color: #64748b !important;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
 }
 
-.dataTables_paginate .page-item.active .page-link {
-    background-color: #0d6efd;
-    border-color: #0d6efd;
-    color: #fff;
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: #6792ff !important; /* Brancy Blue Theme */
+    color: white !important;
+    border-color: #6792ff !important;
+    box-shadow: 0 4px 10px rgba(103, 146, 255, 0.25);
 }
 
-.dataTables_paginate .page-item.disabled .page-link {
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
     opacity: 0.5;
+    cursor: not-allowed;
+    background: #f8fafc !important;
 }
-table.dataTable thead .sorting:before,
-table.dataTable thead .sorting:after,
-table.dataTable thead .sorting_asc:before,
-table.dataTable thead .sorting_asc:after,
-table.dataTable thead .sorting_desc:before,
-table.dataTable thead .sorting_desc:after {
-    display: none !important;
+
+/* Pagination Row Alignment */
+.table-footer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
 }
     </style>
 </head>
+
 <body>
     <div id="global-loader">
         <div class="whirly-loader"> </div>
@@ -98,7 +203,8 @@ table.dataTable thead .sorting_desc:after {
                         <h6>Manage your Supplier</h6>
                     </div>
                     <div class="page-btn">
-                        <a href="/Backend/src/Pages/supplier/supplierForm.php" class="btn btn-added"><img src="/Backend/src/assets/images/icons/plus.svg" alt="img">Add Supplier</a>
+                        <a href="/Backend/src/Pages/supplier/supplierForm.php" class="btn btn-added"><img
+                                src="/Backend/src/assets/images/icons/plus.svg" alt="img">Add Supplier</a>
                     </div>
                 </div>
                 <div class="card">
@@ -112,7 +218,8 @@ table.dataTable thead .sorting_desc:after {
                                     </a>
                                 </div> -->
                                 <div class="search-input">
-                                    <a class="btn btn-searchset"><img src="/Backend/src/assets/images/icons/search-white.svg" alt="img"></a>
+                                    <a class="btn btn-searchset"><img
+                                            src="/Backend/src/assets/images/icons/search-white.svg" alt="img"></a>
                                 </div>
                             </div>
                         </div>
@@ -131,32 +238,41 @@ table.dataTable thead .sorting_desc:after {
                                 </thead>
                                 <tbody>
                                     <?php
-                                    if (!$result) {
-                                        echo "Error: " . $con->error;
-                                    } else {
-                                        if ($result->num_rows > 0) {
-                                            while ($row = $result->fetch_assoc()) {
-                                                echo "<tr>";
-                                                echo "<td style='display:none;'>" . $row['id'] . "</td>";
-                                                echo "    <td class='productimgname' style='width: 200px'>";
-                                                echo "        <aclass='text-truncate w-100' data-bs-toggle='tooltip' data-bs-title='" . $row['supplier_name'] . "'>" . $row['supplier_name'] . "</a>";
-                                                echo "    </td>";
-                                                echo "    <td><a>" . $row['email'] . "</a></td>";
-                                                echo "    <td>" . $row['phone_number'] . "</td>";
-                                                echo "    <td>" . $row['city'] . "</td>";
-                                                echo "    <td>" . $row['country'] . "</td>";
-                                                echo "    <td>";
-                                                echo "        <a class='me-3 confirm-text' href='/Backend/src/Pages/supplier/supplierForm.php?supplierId=" . $row['id'] . "' data-bs-toggle='tooltip' data-bs-title='Edit'>";
-                                                echo "            <img src='/Backend/src/assets/images/icons/edit.svg' alt='img'>";
-                                                echo "        </a>";
-                                                echo "        <a class='me-3 confirm-delete' href='/Backend/src/Pages/supplierlist.php?supplierId=" . $row['id'] . "' data-bs-toggle='tooltip' data-bs-title='Delete'>";
-                                                echo "            <img src='/Backend/src/assets/images/icons/delete.svg' alt='img'>";
-                                                echo "        </a>";
-                                                echo "    </td>";
-                                                echo "</tr>";
-                                            }
+                                    if ($result->num_rows > 0) {
+                                        while ($row = $result->fetch_assoc()) {
+                                            echo "<tr>";
+                                            echo "<td style='display:none;'>" . $row['id'] . "</td>";
+
+                                            // Supplier Name with Tooltip
+                                            echo "<td>";
+                                            echo "    <a href='javascript:void(0);' class='supplier-name text-truncate' style='max-width: 180px;' data-bs-toggle='tooltip' title='" . htmlspecialchars($row['supplier_name']) . "'>" . htmlspecialchars($row['supplier_name']) . "</a>";
+                                            echo "</td>";
+
+                                            // Email with Tooltip
+                                            echo "<td>";
+                                            echo "    <span class='text-email text-truncate' style='max-width: 200px;' data-bs-toggle='tooltip' title='" . htmlspecialchars($row['email']) . "'>" . htmlspecialchars($row['email']) . "</span>";
+                                            echo "</td>";
+
+                                            // Phone Number
+                                            echo "<td><span class='fw-bold'>" . htmlspecialchars($row['phone_number']) . "</span></td>";
+
+                                            // City & Country with Tooltips
+                                            echo "<td><div class='text-truncate' style='max-width: 100px;' data-bs-toggle='tooltip' title='" . htmlspecialchars($row['city']) . "'>" . htmlspecialchars($row['city']) . "</div></td>";
+                                            echo "<td><div class='text-truncate' style='max-width: 100px;' data-bs-toggle='tooltip' title='" . htmlspecialchars($row['country']) . "'>" . htmlspecialchars($row['country']) . "</div></td>";
+
+                                            // Actions
+                                            echo "<td class='action-icons'>";
+                                            echo "    <a class='me-3' href='/Backend/src/Pages/supplier/supplierForm.php?supplierId=" . $row['id'] . "' data-bs-toggle='tooltip' title='Edit Supplier'>";
+                                            echo "        <img src='/Backend/src/assets/images/icons/edit.svg' alt='edit'>";
+                                            echo "    </a>";
+                                            echo "    <a class='confirm-delete' href='/Backend/src/Pages/supplierlist.php?supplierId=" . $row['id'] . "' data-bs-toggle='tooltip' title='Delete Supplier'>";
+                                            echo "        <img src='/Backend/src/assets/images/icons/delete.svg' alt='delete'>";
+                                            echo "    </a>";
+                                            echo "</td>";
+                                            echo "</tr>";
                                         }
-                                    } ?>
+                                    }
+                                    ?>
                                 </tbody>
                             </table>
                         </div>
@@ -165,27 +281,24 @@ table.dataTable thead .sorting_desc:after {
             </div>
         </div>
     </div>
-    
+
     <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
-    <div id="actionToast" class="toast border-0" role="alert">
-        <div class="d-flex">
-            <div class="toast-body text-white" id="toastMessage"></div>
-            <button type="button"
-                class="btn-close btn-close-white me-2 m-auto"
-                data-bs-dismiss="toast"></button>
-        </div>
-        <div class="toast-timer"
-             style="height:4px;background:rgba(255,255,255,0.6);
+        <div id="actionToast" class="toast border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body text-white" id="toastMessage"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-timer" style="height:4px;background:rgba(255,255,255,0.6);
              animation: shrink 3s linear forwards;"></div>
+        </div>
     </div>
-</div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.querySelectorAll('.confirm-delete').forEach(btn => {
-            btn.addEventListener('click', function(e) {
+            btn.addEventListener('click', function (e) {
                 e.preventDefault();
 
                 const deleteUrl = this.getAttribute('href');
@@ -206,65 +319,121 @@ table.dataTable thead .sorting_desc:after {
             });
         });
 
-document.addEventListener("DOMContentLoaded", function () {
-    const params = new URLSearchParams(window.location.search);
-    const toastEl = document.getElementById("actionToast");
-    const toastMsg = document.getElementById("toastMessage");
+        document.addEventListener("DOMContentLoaded", function () {
+            const params = new URLSearchParams(window.location.search);
+            const toastEl = document.getElementById("actionToast");
+            const toastMsg = document.getElementById("toastMessage");
 
-    toastEl.classList.remove("bg-success", "bg-danger");
+            toastEl.classList.remove("bg-success", "bg-danger");
 
-    if (params.get("added") === "1") {
-        toastMsg.innerText = "Supplier added successfully!";
-        toastEl.classList.add("bg-success");
-    }
-    else if (params.get("updated") === "1") {
-        toastMsg.innerText = "Supplier updated successfully!";
-        toastEl.classList.add("bg-success");
-    }
-    else if (params.get("deleted") === "1") {
-        toastMsg.innerText = "Supplier deleted successfully!";
-        toastEl.classList.add("bg-danger");
-    }
-    else {
-        return;
-    }
+            if (params.get("added") === "1") {
+                toastMsg.innerText = "Supplier added successfully!";
+                toastEl.classList.add("bg-success");
+            }
+            else if (params.get("updated") === "1") {
+                toastMsg.innerText = "Supplier updated successfully!";
+                toastEl.classList.add("bg-success");
+            }
+            else if (params.get("deleted") === "1") {
+                toastMsg.innerText = "Supplier deleted successfully!";
+                toastEl.classList.add("bg-danger");
+            }
+            else {
+                return;
+            }
 
-    const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
-    toast.show();
+            const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+            toast.show();
 
-    setTimeout(() => {
-        window.history.replaceState({}, document.title, window.location.pathname);
-    }, 3500);
-});
-</script>
-<script>
-$(document).ready(function () {
+            setTimeout(() => {
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }, 3500);
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
 
+            if ($.fn.DataTable.isDataTable('.datanew')) {
+                $('.datanew').DataTable().destroy();
+            }
+
+            $('.datanew').DataTable({
+                order: [[0, 'desc']],
+
+                columnDefs: [
+                    { targets: 0, visible: false, searchable: false },
+                    { targets: '_all', orderable: true }
+                ],
+
+                autoWidth: false,
+                responsive: false,
+
+                searching: false,
+                lengthChange: true,
+                pageLength: 10,
+
+                pagingType: "simple_numbers",
+
+                dom: 'rt<"row mt-3"<"col-md-6"l><"col-md-6 text-end"p>>'
+            });
+        });
+        $(document).ready(function () {
+            // Prevent re-initialization error
+            if ($.fn.DataTable.isDataTable('.datanew')) {
+                $('.datanew').DataTable().destroy();
+            }
+
+            $('.datanew').DataTable({
+                "order": [[0, 'desc']],
+                "columnDefs": [
+                    { targets: 0, visible: false, searchable: false },
+                    { targets: '_all', orderable: true }
+                ],
+                "autoWidth": false,
+                "pageLength": 10,
+                "dom": 'rt<"row mt-3"<"col-md-6"l><"col-md-6 text-end"p>>',
+                "drawCallback": function () {
+                    // Re-initialize tooltips after every table redraw
+                    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+                    tooltipTriggerList.map(function (tooltipTriggerEl) {
+                        return new bootstrap.Tooltip(tooltipTriggerEl)
+                    });
+                }
+            });
+        });
+        $(document).ready(function () {
+    // Prevent re-initialization error
     if ($.fn.DataTable.isDataTable('.datanew')) {
         $('.datanew').DataTable().destroy();
     }
 
     $('.datanew').DataTable({
-        order: [[0, 'desc']],
-
-        columnDefs: [
+        "order": [[0, 'desc']],
+        "columnDefs": [
             { targets: 0, visible: false, searchable: false },
-            { targets: '_all', orderable: true } 
+            { targets: '_all', orderable: true }
         ],
-
-        autoWidth: false,
-        responsive: false,
-
-        searching: false,       
-        lengthChange: true,    
-        pageLength: 10,
-
-        pagingType: "simple_numbers",
-
-        dom: 'rt<"row mt-3"<"col-md-6"l><"col-md-6 text-end"p>>'
+        "autoWidth": false,
+        "pageLength": 10,
+        "language": {
+            "paginate": {
+                "next": '<i class="bi bi-chevron-right"></i>', // Bootstrap Icons use karein
+                "previous": '<i class="bi bi-chevron-left"></i>'
+            }
+        },
+        // Layout: Table (rt), then Footer Row with Info (i) and Pagination (p)
+        "dom": 'rt<"table-footer-row"ip>', 
+        "drawCallback": function() {
+            // IMPORTANT: Re-initialize tooltips every time the table pages change
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            });
+        }
     });
 });
-</script>
+    </script>
 
 </body>
+
 </html>

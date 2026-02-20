@@ -7,13 +7,6 @@ $lastOrders = mysqli_query($con, "
     ORDER BY o.created DESC LIMIT 5
 ");
 
-// $lastOrders = mysqli_query($con, "
-//     SELECT o.*, c.name as customer_name, p.product_name 
-//     FROM order_list o
-//     LEFT JOIN customers c ON o.customer = c.id
-//     LEFT JOIN product_list p ON o.product = p.id
-//     ORDER BY o.created DESC LIMIT 5
-// ");
 $notificationCountQuery = mysqli_query($con, "
     SELECT COUNT(*) as total 
     FROM order_list

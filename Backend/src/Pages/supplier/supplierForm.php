@@ -101,6 +101,84 @@ if(isset($_POST['submit'])) {
         -webkit-appearance: none;
         margin: 0;
     }
+    /* --- Add Supplier Professional Overhaul --- */
+:root {
+    --primary-blue: #6792ff;
+    --border-color: #e2e8f0;
+    --bg-light: #f8fafc;
+}
+
+.card {
+    border: none !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border-radius: 16px !important;
+}
+
+/* Form Groups & Labels */
+.form-group label {
+    font-weight: 600;
+    color: #4a5568;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* Refined Inputs & Selects */
+.form-control, .form-select, .input-group-text, input[type="text"] {
+    border: 1px solid var(--border-color) !important;
+    border-radius: 8px !important;
+    padding: 10px 14px !important;
+    font-size: 0.9rem !important;
+    background-color: var(--bg-light);
+    transition: all 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-blue) !important;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(103, 146, 255, 0.1) !important;
+    outline: none;
+}
+
+/* Custom Input Group for Phone */
+.input-group-text {
+    background-color: #edf2f7 !important;
+    color: #4a5568;
+    font-weight: 600;
+    border-right: none !important;
+}
+
+#contact {
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+}
+
+/* Action Buttons */
+.btn-submit {
+    background: var(--primary-blue) !important;
+    border: none;
+    padding: 10px 30px;
+    font-weight: 700;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(103, 146, 255, 0.25);
+    color: white !important;
+}
+
+.btn-cancel {
+    background: #f1f5f9 !important;
+    color: #64748b !important;
+    border: none;
+    padding: 10px 25px;
+    font-weight: 600;
+    border-radius: 8px;
+}
+
+/* Error Styling */
+.parsley-required, .parsley-pattern {
+    font-size: 0.75rem;
+    margin-top: 4px;
+    font-weight: 500;
+}
     </style>
 </head>
 
@@ -119,124 +197,114 @@ if(isset($_POST['submit'])) {
             </div>
         </div>
         <div class="page-wrapper">
-            <div class="content">
-                <div class="page-header">
-                    <div class="page-btn">
-                        <a href="/Backend/src/Pages/supplierlist.php" class="text-secondary fw-bold fs-6"><i
-                                class="bi bi-arrow-left me-1 fw-bold"></i>Back to Supplier</a>
-                    </div>
-                    <div class="page-title">
-                        <h6>
-                            <nav aria-label="breadcrumb">
-                                <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="/Backend/src/Pages/supplierlist.php">Supplier
-                                            List</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Add Supplier</li>
-                                </ol>
-                            </nav>
-                        </h6>
-                    </div>
-                </div>
+    <div class="content">
+        <div class="page-header">
+            <div class="page-title">
+                <h4 class="fw-bold"><?= $supplierId ? 'Edit Supplier Profile' : 'Register New Supplier' ?></h4>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb" style="font-size: 0.85rem;">
+                        <li class="breadcrumb-item"><a href="supplierlist.php" class="text-primary">Suppliers</a></li>
+                        <li class="breadcrumb-item active"><?= $supplierId ? 'Update' : 'New Entry' ?></li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="page-btn">
+                <a href="/Backend/src/Pages/supplierlist.php" class="btn btn-sm btn-outline-secondary rounded-pill">
+                    <i class="bi bi-arrow-left"></i> Back to List
+                </a>
+            </div>
+        </div>
 
-                <div class="card">
-                    <div class="card-body">
-                        <form id="myForm" method="POST" data-parsley-validate>
+        <div class="card">
+            <div class="card-body">
+                <form id="myForm" method="POST" data-parsley-validate>
+                    <div class="row g-4">
+                        <div class="col-lg-12">
+                            <h5 class="mb-3 text-primary fs-6 border-bottom pb-2">Business Information</h5>
                             <div class="row">
-                                <div class="col-lg-3 col-sm-6 col-12">
+                                <div class="col-lg-4 col-sm-6 mb-3">
                                     <div class="form-group">
-                                        <label for='supplierName'>Supplier Name <span
-                                                class="text-danger">*</span></label>
-                                        <input type="text" id="supplierName" name="supplierName"
-                                            value="<?= htmlspecialchars($supplierName) ?>" maxlength="100" placeholder="Supplier name"
-                                            data-parsley-required-message="Supplier Name is required"
-                                            data-parsley-required>
+                                        <label>Supplier Name <span class="text-danger">*</span></label>
+                                        <input type="text" id="supplierName" name="supplierName" 
+                                               class="form-control" value="<?= htmlspecialchars($supplierName) ?>" 
+                                               placeholder="e.g. Brancy Skincare Hub" required>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 col-sm-6 col-12">
+                                <div class="col-lg-4 col-sm-6 mb-3">
                                     <div class="form-group">
-                                        <label for='supplierMail'>Email <span class="text-danger">*</span></label>
-                                        <input type="text" id='supplierMail' name="supplierEmail"
-                                            value="<?= htmlspecialchars($email) ?>" maxlength="200" placeholder="Supplier email"
-                                            data-parsley-pattern="^[A-Za-z][A-Za-z0-9]*@[A-Za-z0-9]+\.[A-Za-z]{2,}$"
-                                            data-parsley-required-message="Email is required" data-parsley-required
-                                            data-parsley-pattern-message="Email must start with a letter and contain only letters & numbers">
-                                        <div class="parsley-pattern text-danger">
-                                            <?= $emailError ?? '' ?>
-                                        </div>
+                                        <label>Email Address <span class="text-danger">*</span></label>
+                                        <input type="text" id="supplierMail" name="supplierEmail" 
+                                               class="form-control" value="<?= htmlspecialchars($email) ?>" 
+                                               placeholder="contact@supplier.com" required>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 col-sm-6 col-12">
+                                <div class="col-lg-4 col-sm-6 mb-3">
                                     <div class="form-group">
-                                        <label for="contact" class="">Phone number <span
-                                                class="text-danger">*</span></label>
+                                        <label>Phone Number <span class="text-danger">*</span></label>
                                         <div class="input-group">
-                                            <span class="input-group-text" id="addon-wrapping">+91</span>
-                                            <input type="text" id="contact" name="phoneNumber" pattern="^[6-9][0-9]{9}$"
-                                                data-parsley-pattern="^[6-9][0-9]{9}$"
-                                                value="<?= htmlspecialchars($contact) ?>" placeholder="Phone number"
-                                                maxlength="10" data-parsley-minlength="10" data-parsley-required="true"
-                                                data-parsley-required-message="Phone number is required"
-                                                data-parsley-errors-container="#contactError" />
-                                        </div>
-                                        <div id="contactError" class="parsley-pattern text-danger">
-                                            <?= $contactError ?? "" ?>
+                                            <span class="input-group-text">+91</span>
+                                            <input type="text" id="contact" name="phoneNumber" 
+                                                   class="form-control" value="<?= htmlspecialchars($contact) ?>" 
+                                                   placeholder="9876543210" maxlength="10" required>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 col-sm-6 col-12">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12">
+                            <h5 class="mb-3 text-primary fs-6 border-bottom pb-2">Location Details</h5>
+                            <div class="row">
+                                <div class="col-lg-4 col-sm-6 mb-3">
                                     <div class="form-group">
-                                        <label for="countrySelector">Choose Country <span
-                                                class="text-danger">*</span></label>
-                                        <select class="form-select" name="countrySelector" id="countrySelector"
-                                            data-parsley-required-message="Country is required" data-parsley-required>
-                                            <option disabled <?= !$country ? 'selected' : '' ?>>Choose Country</option>
-                                            <option value="india" <?= $country=='india' ? 'selected' : '' ?>>India
-                                            </option>
+                                        <label>Country</label>
+                                        <select class="form-select" name="countrySelector" id="countrySelector" required>
+                                            <option value="india" <?= $country=='india' ? 'selected' : '' ?>>India</option>
                                             <option value="usa" <?= $country=='usa' ? 'selected' : '' ?>>USA</option>
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 col-sm-6 col-12">
+                                <div class="col-lg-4 col-sm-6 mb-3">
                                     <div class="form-group">
-                                        <label for="citySelector">City <span class="text-danger">*</span></label>
-                                        <select class="form-select" name="citySelector" id="citySelector"
-                                            data-parsley-required-message="City is required" data-parsley-required>
-                                            <option disabled <?= !$city ? 'selected' : '' ?>>Choose City</option>
-                                            <option value="Nagpur" <?= $city=='Nagpur' ? 'selected' : '' ?>>Nagpur
-                                            </option>
-                                            <option value="Bhandara" <?= $city=='Bhandara' ? 'selected' : '' ?>>Bhandara
-                                            </option>
+                                        <label>City</label>
+                                        <select class="form-select" name="citySelector" id="citySelector" required>
+                                            <option value="Nagpur" <?= $city=='Nagpur' ? 'selected' : '' ?>>Nagpur</option>
+                                            <option value="Bhandara" <?= $city=='Bhandara' ? 'selected' : '' ?>>Bhandara</option>
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-lg-9 col-12">
+                                <div class="col-lg-4 col-sm-12 mb-3">
                                     <div class="form-group">
-                                        <label for="address">Address <span class="text-danger">*</span></label>
-                                        <input type="text" id="address" name="address"
-                                            value="<?= htmlspecialchars($address) ?>" maxlength="500" placeholder="Supplier address"
-                                            data-parsley-required-message="Address is required" data-parsley-required>
+                                        <label>Office Address</label>
+                                        <input type="text" name="address" class="form-control" 
+                                               value="<?= htmlspecialchars($address) ?>" placeholder="Street name, Building no." required>
                                     </div>
-                                </div>
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label for="description">Description</label>
-                                        <textarea class="form-control" id="description" maxlength="500" name="description"
-                                            placeholder="Description"><?= htmlspecialchars($description) ?></textarea>
-                                    </div>
-                                </div>
-                                <div class="col-lg-12 d-flex justify-content-end">
-                                    <button class="btn btn-cancel me-2" type="<?= $supplierId ? 'button' : 'reset' ?>"
-                                        id="resetButton"><?= $supplierId ? 'Back' : 'Reset' ?></button>
-                                    <button class="btn btn-submit" name="submit"
-                                        type="submit"><?= $supplierId ? 'Update' : 'Submit' ?></button>
                                 </div>
                             </div>
-                        </form>
+                        </div>
 
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label>Business Description / Notes</label>
+                                <textarea class="form-control" name="description" rows="3" 
+                                          placeholder="Enter any additional notes about this supplier..."><?= htmlspecialchars($description) ?></textarea>
+                            </div>
+                        </div>
                     </div>
-                </div>
+
+                    <div class="mt-5 pt-4 border-top d-flex justify-content-end gap-2">
+                        <button class="btn btn-cancel" type="button" id="resetButton">
+                            <?= $supplierId ? 'Cancel' : 'Reset' ?>
+                        </button>
+                        <button class="btn btn-submit" name="submit" type="submit">
+                            <?= $supplierId ? 'Save Changes' : 'Register Supplier' ?>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
+    </div>
+</div>
     </div>
     <script>
     let parsleyForm = $('#myForm').parsley();

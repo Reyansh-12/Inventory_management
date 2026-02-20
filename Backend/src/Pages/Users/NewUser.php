@@ -114,6 +114,111 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .parsley-minlength {
         color: orangered;
     }
+    /* --- Add User Professional Overhaul --- */
+:root {
+    --primary-blue: #6792ff;
+    --border-color: #e2e8f0;
+    --bg-light: #f8fafc;
+}
+
+.card {
+    border: none !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border-radius: 16px !important;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #4a5568;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* Refined Inputs */
+.form-control, .form-select, .pass-input, .input-group-text {
+    border: 1px solid var(--border-color) !important;
+    border-radius: 8px !important;
+    padding: 10px 14px !important;
+    font-size: 0.9rem !important;
+    background-color: var(--bg-light);
+    transition: all 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus, .pass-input:focus {
+    border-color: var(--primary-blue) !important;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(103, 146, 255, 0.1) !important;
+    outline: none;
+}
+
+/* Password Group Positioning */
+.pass-group {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 38px;
+    cursor: pointer;
+    z-index: 5;
+    color: #a0aec0;
+}
+
+/* Profile Picture Upload Zone */
+.image-upload-new {
+    border: 2px dashed #cbd5e0;
+    border-radius: 50%; /* Circle for user profiles */
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 20px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-light);
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.3s;
+}
+
+.image-upload-new:hover {
+    border-color: var(--primary-blue);
+    background: #fff;
+}
+
+#previewImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Button Styling */
+.btn-submit {
+    background: var(--primary-blue) !important;
+    border: none;
+    color: white !important;
+    padding: 10px 30px;
+    font-weight: 700;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(103, 146, 255, 0.25);
+}
+
+.btn-cancel {
+    background: #f1f5f9 !important;
+    color: #64748b !important;
+    border: none;
+    padding: 10px 25px;
+    font-weight: 600;
+    border-radius: 8px;
+}
+
+.parsley-required, .parsley-pattern {
+    font-size: 0.75rem;
+    color: #e53e3e !important;
+    margin-top: 4px;
+}
     </style>
 </head>
 
@@ -131,151 +236,114 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
         <div class="page-wrapper">
-            <div class="content">
-                <div class="page-header">
-                    <div class="page-btn">
-                        <a href="/Backend/src/Pages/Users/UsersList.php" class="fw-bold text-secondary fs-6"><i
-                                class="bi bi-arrow-left me-1 fw-bold"></i>Back to user list</a>
-                    </div>
-                    <div class="page-title">
-                        <h6>
-                            <nav aria-label="breadcrumb">
-                                <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="UsersList.php">User List</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Add User</li>
-                                </ol>
-                            </nav>
-                        </h6>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body">
-                        <form action="#" id="myForm" method="POST" enctype="multipart/form-data" data-parsley-validate>
-                            <input type="hidden" name="user_id" value="<?php echo $editData['id'] ?? ''; ?>">
-                            <div class="row">
-                                <div class="col-lg-4 col-12">
-                                    <div class="form-group">
-                                        <label for='userName'>User Name <span class="text-danger">*</span></label>
-                                        <input type="text" id="userName" name="userName"
-                                            value="<?php echo htmlspecialchars($editData['user_name'] ?? '') ?>"
-                                            placeholder="User name" maxlength="100" data-parsley-pattern="^[a-zA-Z\s]+$"
-                                            data-parsley-pattern-message="User name must contain only letters and spaces"
-                                            data-parsley-required-message="User name is required" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="userEmail">Email <span class="text-danger">*</span></label>
-                                        <input type="text" id="userEmail" name="userEmail"
-                                            value="<?php echo htmlspecialchars($editData['user_email'] ?? ''); ?>"
-                                            placeholder="User email" data-parsley-type="email" maxlength="200"
-                                            data-parsley-pattern="^[A-Za-z][A-Za-z0-9]*@[A-Za-z0-9]+\.[A-Za-z]{2,}$"
-                                            data-parsley-required-message="Email is required" data-parsley-required
-                                            data-parsley-pattern-message="Email must start with a letter and contain only letters & numbers"
-                                            data-parsley-trigger="focusout" data-parsley-remote-field="email"
-                                            data-parsley-remote-message="This email address is already registered.">
-                                        <span class="parsley-required"
-                                            id="emailError"><?php echo $emailError ?? ""; ?></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="pass-group">
-                                            <label for="password">Password
-                                                <?php if (!$isEdit) echo '<span class="text-danger">*</span>'; ?></label>
-                                            <input type="password" class="pass-input" id="password" name="password"
-                                                placeholder=".........." maxlength="16"
-                                                <?php echo !$isEdit ? 'required' : 'disabled'; ?>>
-                                            <span class="fas toggle-password fa-eye-slash position-absolute"
-                                                style="top: 50px; color:rgba(138, 135, 135, 0.93); font-size: 13px"></span>
-                                            <span class="parsley-required ms-1" id="passwordError"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-12">
-                                    <div class="form-group">
-                                        <label for="contact">Phone number <span class="text-danger">*</span></label>
-                                        <div class="input-group">
-                                            <span class="input-group-text">+91</span>
-                                            <input type="text" class="form-control" pattern="^[6-9][0-9]{9}$"
-                                                data-parsley-pattern="^[6-9][0-9]{9}$" id="contact" name="phoneNumber"
-                                                value="<?php echo htmlspecialchars($editData['user_contact'] ?? ''); ?>"
-                                                placeholder="Phone number" maxlength="10" data-parsley-minlength="10"
-                                                data-parsley-required="true"
-                                                data-parsley-required-message="Phone number is required"
-                                                data-parsley-errors-container="#contactError" />
-                                        </div>
-                                        <div id="contactError" class="parsley-required">
-                                            <?php echo $contactError ?? ""; ?></div>
-                                    </div>
-                                    <div class="form-group d-none">
-                                        <label for='userRole'>Role</label>
-                                        <select class="form-select" id="userRole" name="userRole">
-                                            <option disabled selected>Select role</option>
-                                            <option
-                                                <?php if (($editData['user_role'] ?? '') == 'Admin') echo 'selected'; ?>>
-                                                Admin</option>
-                                            <option
-                                                <?php if (($editData['user_role'] ?? '') == 'User') echo 'selected'; ?>>
-                                                User</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for='userStatus'>Status</label>
-                                        <select class="form-select" id="userStatus" name="status"
-                                            data-parsley-required="true"
-                                            data-parsley-required-message="Status is required">
-                                            <option disabled selected>Status</option>
-                                            <option selected
-                                                <?php if (($editData['status'] ?? '') == 'Active') echo 'selected'; ?>>
-                                                Active</option>
-                                            <option
-                                                <?php if (($editData['status'] ?? '') == 'Inactive') echo 'selected'; ?>>
-                                                Inactive</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for='confirmPassword'>Confirm Password
-                                            <?php if (!$isEdit) echo '<span class="text-danger">*</span>'; ?></label>
-                                        <div class="pass-group">
-                                            <input type="password" class="pass-input" id="confirmPassword"
-                                                name="confirmPassword" placeholder=".........." maxlength="16"
-                                                <?php echo !$isEdit ? 'required data-parsley-required-message="Confirm password"' : 'disabled'; ?>>
-                                            <span class="fas toggle-password fa-eye-slash position-absolute"
-                                                style="top: 20px; color:rgba(138, 135, 135, 0.93); font-size: 13px"></span>
-                                            <span class="parsley-required ms-1"
-                                                id="confirmPasswordError"><?php echo $confirmPasswordError ?></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-12">
-                                    <div class="form-group">
-                                        <label>Profile Picture (optional)</label>
-
-                                        <div class="image-upload image-upload-new text-center">
-                                            <input type="file" id="uploadImage" name="uploadImage" accept="image/*">
-
-                                            <div class="image-uploads" id="imagePreviewBox">
-                                                <img id="previewImg"
-                                                    src="<?= !empty($editData['image_path']) ? $editData['image_path'] : '/Backend/src/assets/images/icons/upload.svg' ?>"
-                                                    style="max-width:100px; display:block; margin:auto">
-
-                                                <h6 id="imageName" class="mt-2 text-muted">
-                                                    <?= !empty($editData['image_path']) ? basename($editData['image_path']) : 'Choose image' ?>
-                                                </h6>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="col-lg-12 d-flex justify-content-end">
-                                    <button class="btn btn-cancel me-2" type="<?= $userId ? 'button' : 'reset' ?>"
-                                        name="reset" id="resetButton"><?= $userId ? 'Back' : 'Reset' ?></button>
-                                    <button class="btn btn-submit" name="submit"
-                                        type="submit"><?= $userId ? 'Update' : 'Submit' ?></button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+    <div class="content">
+        <div class="page-header">
+            <div class="page-title">
+                <h4 class="fw-bold"><?= $isEdit ? 'Update User Account' : 'Register New User' ?></h4>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb" style="font-size: 0.85rem;">
+                        <li class="breadcrumb-item"><a href="UsersList.php" class="text-primary">Users</a></li>
+                        <li class="breadcrumb-item active"><?= $isEdit ? 'Edit Mode' : 'New User' ?></li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="page-btn">
+                <a href="/Backend/src/Pages/Users/UsersList.php" class="btn btn-sm btn-outline-secondary rounded-pill">
+                    <i class="bi bi-arrow-left"></i> Back to List
+                </a>
             </div>
         </div>
+
+        <div class="card">
+            <div class="card-body">
+                <form id="myForm" method="POST" enctype="multipart/form-data" data-parsley-validate>
+                    <div class="row g-4">
+                        <div class="col-lg-12 text-center mb-2">
+                            <div class="image-upload-new shadow-sm" onclick="document.getElementById('uploadImage').click()">
+                                <input type="file" id="uploadImage" name="uploadImage" accept="image/*" hidden>
+                                <img id="previewImg" src="<?= !empty($editData['image_path']) ? $editData['image_path'] : '/Backend/src/assets/images/icons/upload.svg' ?>">
+                            </div>
+                            <h6 id="imageName" class="text-muted small">Profile Picture (JPG/PNG/WEBP)</h6>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <h5 class="mb-3 text-primary fs-6 border-bottom pb-2">Account Information</h5>
+                            <div class="form-group mb-3">
+                                <label>Full Name <span class="text-danger">*</span></label>
+                                <input type="text" id="userName" name="userName" class="form-control" 
+                                       value="<?= htmlspecialchars($editData['user_name'] ?? '') ?>" placeholder="John Doe" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label>Email Address <span class="text-danger">*</span></label>
+                                <input type="text" id="userEmail" name="userEmail" class="form-control" 
+                                       value="<?= htmlspecialchars($editData['user_email'] ?? '') ?>" placeholder="john@example.com" required>
+                                <small id="emailError" class="text-danger"></small>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label>Phone Number <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text">+91</span>
+                                    <input type="text" id="contact" name="phoneNumber" class="form-control" 
+                                           value="<?= htmlspecialchars($editData['user_contact'] ?? '') ?>" placeholder="9876543210" required>
+                                </div>
+                                <small id="contactError" class="text-danger"></small>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <h5 class="mb-3 text-primary fs-6 border-bottom pb-2">Access & Security</h5>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group mb-3">
+                                        <label>Role</label>
+                                        <select class="form-select" name="userRole">
+                                            <option value="Admin" <?= ($editData['user_role'] ?? '') == 'Admin' ? 'selected' : '' ?>>Admin</option>
+                                            <option value="User" <?= ($editData['user_role'] ?? '') == 'User' ? 'selected' : '' ?>>User</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group mb-3">
+                                        <label>Status</label>
+                                        <select class="form-select" name="status">
+                                            <option value="Active" <?= ($editData['status'] ?? '') == 'Active' ? 'selected' : '' ?>>Active</option>
+                                            <option value="Inactive" <?= ($editData['status'] ?? '') == 'Inactive' ? 'selected' : '' ?>>Inactive</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group mb-3 pass-group">
+                                <label>Password <?= !$isEdit ? '<span class="text-danger">*</span>' : '(Leave blank to keep current)' ?></label>
+                                <input type="password" id="password" name="password" class="form-control pass-input" 
+                                       placeholder="••••••••" <?= !$isEdit ? 'required' : '' ?>>
+                                <span class="fas toggle-password fa-eye-slash"></span>
+                                <small id="passwordError" class="text-danger d-block mt-1"></small>
+                            </div>
+
+                            <div class="form-group mb-3 pass-group">
+                                <label>Confirm Password</label>
+                                <input type="password" id="confirmPassword" name="confirmPassword" class="form-control pass-input" 
+                                       placeholder="••••••••" <?= !$isEdit ? 'required' : '' ?>>
+                                <span class="fas toggle-password fa-eye-slash"></span>
+                                <small id="confirmPasswordError" class="text-danger d-block mt-1"></small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 pt-3 border-top d-flex justify-content-end gap-2">
+                        <button class="btn btn-cancel" type="button" id="resetButton">
+                            <?= $userId ? 'Cancel' : 'Reset' ?>
+                        </button>
+                        <button class="btn btn-submit" name="submit" type="submit">
+                            <?= $userId ? 'Update User' : 'Register User' ?>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
     </div>
     <div class="toast position-fixed top-0 end-0 m-3 text-white" style="z-index: 999" id="actionToast" role="alert">
         <div class="d-flex">
