@@ -37,112 +37,183 @@ echo "success";
         .seen-card {
             opacity: 0.85;
         }
+
         /* Professional Order History Overhaul */
-:root {
-    --primary-blue: #6792ff;
-    --border-color: #edf2f9;
-    --text-muted: #718096;
-}
+        :root {
+            --primary-blue: #6792ff;
+            --border-color: #edf2f9;
+            --text-muted: #718096;
+        }
 
-.order-card {
-    background: #fff;
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 20px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
-}
+        .order-card {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+        }
 
-.order-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
-}
+        .order-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+        }
 
-.order-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 15px;
-    margin-bottom: 15px;
-}
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
 
-.order-id {
-    font-weight: 700;
-    color: #2d3748;
-    font-size: 1.1rem;
-}
+        .order-id {
+            font-weight: 700;
+            color: #2d3748;
+            font-size: 1.1rem;
+        }
 
-.order-total {
-    font-weight: 800;
-    color: var(--primary-blue);
-    font-size: 1.2rem;
-}
+        .order-total {
+            font-weight: 800;
+            color: var(--primary-blue);
+            font-size: 1.2rem;
+        }
 
-/* Metadata Styling */
-.order-meta {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    margin-bottom: 15px;
-}
+        /* Metadata Styling */
+        .order-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
 
-.meta-item a {
-    color: #4a5568;
-    text-decoration: none;
-    font-weight: 600;
-}
+        .meta-item a {
+            color: #4a5568;
+            text-decoration: none;
+            font-weight: 600;
+        }
 
-/* Product Section */
-.product {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-}
+        /* Product Section */
+        .product {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
 
-.product-img {
-    width: 70px;
-    height: 70px;
-    border-radius: 10px;
-    object-fit: cover;
-    background: #f7fafc;
-}
+        .product-img {
+            width: 70px;
+            height: 70px;
+            border-radius: 10px;
+            object-fit: cover;
+            background: #f7fafc;
+        }
 
-.product-name {
-    font-weight: 700;
-    color: #2d3748;
-    font-size: 1rem;
-    margin-bottom: 5px;
-}
+        .product-name {
+            font-weight: 700;
+            color: #2d3748;
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
 
-.product-meta {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-}
+        .product-meta {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
 
-.product-meta span {
-    margin-right: 15px;
-}
+        .product-meta span {
+            margin-right: 15px;
+        }
 
-/* Status Badges */
-.badge.paid {
-    background: rgba(32, 201, 151, 0.1);
-    color: #198754;
-    padding: 5px 12px;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-}
+        /* Status Badges */
+        .badge.paid {
+            background: rgba(32, 201, 151, 0.1);
+            color: #198754;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
 
-.payment-label {
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: 700;
-}
-.payment-cash { background: #fff5f5; color: #e53e3e; }
-.payment-online { background: #ebf8ff; color: #3182ce; }
+        .payment-label {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .payment-cash {
+            background: #fff5f5;
+            color: #e53e3e;
+        }
+
+        .payment-online {
+            background: #ebf8ff;
+            color: #3182ce;
+        }
+
+        /* --- Professional Filter Bar Styling --- */
+        .filter-wrapper {
+            background: #fff;
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        }
+
+        .custom-filter-box {
+            position: relative;
+            width: 180px;
+        }
+
+        .filter-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            display: block;
+            letter-spacing: 0.5px;
+        }
+
+        .form-select-custom {
+            appearance: none;
+            background: var(--bg-light);
+            border: 1px solid var(--border-color) !important;
+            border-radius: 8px !important;
+            padding: 10px 35px 10px 15px !important;
+            font-size: 0.9rem !important;
+            font-weight: 600;
+            color: #4a5568;
+            width: 100%;
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236792ff' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .form-select-custom:focus {
+            border-color: var(--primary-blue) !important;
+            box-shadow: 0 0 0 3px rgba(103, 146, 255, 0.1) !important;
+            outline: none;
+        }
+
+        .filter-icon {
+            position: absolute;
+            left: 12px;
+            top: 38px;
+            color: var(--primary-blue);
+            z-index: 5;
+            font-size: 0.9rem;
+        }
+
+        /* Padding adjust for icons */
+        .form-select-icon-padding {
+            padding-left: 35px !important;
+        }
     </style>
 </head>
 
@@ -173,66 +244,86 @@ echo "success";
             $unseenData = mysqli_fetch_assoc($unseenQuery);
             $unseenCount = $unseenData['total'];
             ?>
-            <div class="mb-3 d-flex align-items-center gap-3 flex-wrap">
-                <div style="width: 150px;">
-                    <select class="form-select" id="paymentFilter">
-                        <option value="all" selected>All Payment</option>
-                        <option value="cash">Cash payment</option>
-                        <option value="online">Online payment</option>
-                        <option value="card">Card payment</option>
+            <div class="filter-wrapper mb-4 d-flex align-items-center gap-4 flex-wrap">
+
+                <div class="custom-filter-box">
+                    <label class="filter-label">Payment Mode</label>
+                    <i class="bi bi-wallet2 filter-icon"></i>
+                    <select class="form-select-custom form-select-icon-padding" id="paymentFilter">
+                        <option value="all" selected>All Transactions</option>
+                        <option value="cash">Cash Payment</option>
+                        <option value="online">Online Payment</option>
+                        <option value="card">Card Payment</option>
                     </select>
                 </div>
 
-                <div style="width: 150px;">
-                    <select class="form-select" id="priceSort">
-                        <option value="default" selected>Sort by Price</option>
-                        <option value="high">High to Low</option>
-                        <option value="low">Low to High</option>
+                <div class="custom-filter-box">
+                    <label class="filter-label">Sort by Amount</label>
+                    <i class="bi bi-sort-numeric-down filter-icon"></i>
+                    <select class="form-select-custom form-select-icon-padding" id="priceSort">
+                        <option value="default" selected>Newest First</option>
+                        <option value="high">Highest Price</option>
+                        <option value="low">Lowest Price</option>
                     </select>
                 </div>
 
+                <div class="ms-auto d-none d-lg-block">
+                    <div class="text-end">
+                        <span class="text-muted small fw-bold">TOTAL ORDERS</span>
+                        <h5 class="mb-0 fw-bold text-dark"><?= mysqli_num_rows($resut) ?></h5>
+                    </div>
+                </div>
             </div>
             <div class="activity">
                 <div class="activity-box">
                     <ul class="activity-list">
-                    <?php
-while ($row = mysqli_fetch_assoc($resut)) {
-    $paymentMode = strtolower($row['status']);
-    $paymentClass = ($paymentMode == 'online') ? 'payment-online' : 'payment-cash';
-    ?>
-    <div class='order-card' data-payment='<?= $paymentMode ?>' data-price='<?= $row['total_amount'] ?>'>
-        <div class='order-header'>
-            <div class='order-left'>
-                <span class='order-id'>Order #<?= $row['order_id'] ?></span>
-                <span class='badge paid ms-2'>Paid</span>
-            </div>
-            <div class='order-total'>₹ <?= number_format($row['total_amount'], 2) ?></div>
-        </div>
+                        <?php
+                        while ($row = mysqli_fetch_assoc($resut)) {
+                            $paymentMode = strtolower($row['status']);
+                            $paymentClass = ($paymentMode == 'online') ? 'payment-online' : 'payment-cash';
+                            ?>
+                            <div class='order-card' data-payment='<?= $paymentMode ?>'
+                                data-price='<?= $row['total_amount'] ?>'>
+                                <div class='order-header'>
+                                    <div class='order-left'>
+                                        <span class='order-id'>Order #<?= $row['order_id'] ?></span>
+                                        <span class='badge paid ms-2'>Paid</span>
+                                    </div>
+                                    <div class='order-total'>₹ <?= number_format($row['total_amount'], 2) ?></div>
+                                </div>
 
-        <div class='order-meta'>
-            <span class='meta-item'>Customer: <a href='#'><?= htmlspecialchars($row['customer']) ?></a></span>
-            <span class='mx-2'>|</span>
-            <span class='meta-item'>Time: <?= date('M d, Y h:i A', strtotime($row['created'])) ?></span>
-        </div>
+                                <div class='order-meta'>
+                                    <span class='meta-item'>Customer: <a
+                                            href='#'><?= htmlspecialchars($row['customer']) ?></a></span>
+                                    <span class='mx-2'>|</span>
+                                    <span class='meta-item'>Time:
+                                        <?= date('M d, Y h:i A', strtotime($row['created'])) ?></span>
+                                </div>
 
-        <div class='product'>
-            <img src='/Backend/src/uploads/products/featured/product_6979a7b1479cf2.85124957.webp' class='product-img' />
-            <div class='product-info w-100'>
-                <div class='product-name'><?= htmlspecialchars($row['product']) ?></div>
-                <div class='product-meta d-flex justify-content-between align-items-center'>
-                    <div>
-                        <span>Brand: <strong><?= $row['brand'] ?></strong></span>
-                        <span>Qty: <strong><?= $row['quantity'] ?></strong></span>
-                    </div>
-                    <div class="d-flex align-items-center gap-3">
-                        <span class="payment-label <?= $paymentClass ?>"><?= strtoupper($row['status']) ?></span>
-                        <a href='/Backend/src/Pages/POS/viewAllOrder.php' class="btn btn-sm btn-outline-primary" style="font-size: 11px; border-radius: 6px;">View Details</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-<?php } ?>
+                                <div class='product'>
+                                    <img src='/Backend/src/uploads/products/featured/product_6979a7b1479cf2.85124957.webp'
+                                        class='product-img' />
+                                    <div class='product-info w-100'>
+                                        <div class='product-name'><?= htmlspecialchars($row['product']) ?></div>
+                                        <div class='product-meta d-flex justify-content-between align-items-center'>
+                                            <div>
+                                                <span>Brand: <strong><?= $row['brand'] ?></strong></span>
+                                                <span>Qty: <strong><?= $row['quantity'] ?></strong></span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-3">
+                                                <span
+                                                    class="payment-label <?= $paymentClass ?>"><?= strtoupper($row['status']) ?></span>
+                                                <a href='/Backend/src/Pages/notification/viewAllOrder.php?order_id=<?= $row['order_id'] ?>'
+                                                    class="btn btn-sm btn-outline-primary"
+                                                    style="font-size: 11px; border-radius: 6px;">
+                                                    View Details
+                                                    </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php } ?>
 
                     </ul>
                 </div>

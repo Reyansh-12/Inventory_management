@@ -235,7 +235,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                             <div class="form-group">
                                 <label>Category Thumbnail</label>
-                                <div class="image-upload-new" onclick="document.getElementById('uploadImage').click()">
+                                <div class="image-upload-new" style="display: flex; justify-content: center; align-items: center;" onclick="document.getElementById('uploadImage').click()">
                                     <input type="file" id="uploadImage" name="uploadImage" accept="image/*" hidden>
                                     <div id="uploadBox">
                                         <img src="<?= !empty($editData['image_path']) ? htmlspecialchars($editData['image_path']) : '/Backend/src/assets/images/icons/upload.svg' ?>" 

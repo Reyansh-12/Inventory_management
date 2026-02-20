@@ -409,6 +409,103 @@ $inventory = mysqli_fetch_assoc($inventoryResult);
             height: 45px;
             flex-shrink: 0;
         }
+        /* --- Sales Overview Professional UI --- */
+.chart-container-card {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 16px;
+    border: 1px solid #edf2f9;
+}
+
+.sales-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.sales-header h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+}
+
+/* Modern Filter Buttons */
+.sales-filter-group {
+    background: #f1f5f9;
+    padding: 4px;
+    border-radius: 10px;
+    display: inline-flex;
+}
+
+.sales-filter-group .btn {
+    border: none !important;
+    padding: 6px 16px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: 8px;
+    color: #64748b;
+    transition: all 0.3s ease;
+    background: transparent;
+}
+
+.sales-filter-group .btn.active {
+    background: #ffffff !important;
+    color: #6792ff !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.sales-filter-group .btn:hover:not(.active) {
+    color: #1e293b;
+}
+/* --- Inventory Status Chart Polish --- */
+.inventory-card {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 16px;
+    border: 1px solid #edf2f9;
+    position: relative;
+}
+
+.inventory-header {
+    margin-bottom: 20px;
+}
+
+.inventory-header h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+}
+
+#inventoryPieChart {
+    max-height: 250px !important; /* Chart size control */
+}
+
+.custom-legend {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    margin-right: 8px;
+}
     </style>
 </head>
 

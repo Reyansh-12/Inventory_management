@@ -35,7 +35,29 @@ if (!empty($_SESSION['selected_customer_id'])) {
     }
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $order_id = 'ORD-' . strtoupper(uniqid());
+    $customer = mysqli_real_escape_string($con, $_POST['customer']);
+    $status = mysqli_real_escape_string($con, $_POST['status']); // Payment Mode
+    $total = (float)$_POST['total_amount'];
+    
+    // Optional fields (UTR, Card details)
+    $utr = $_POST['utr'] ?? '';
+    $card_name = $_POST['card_name'] ?? '';
 
+    // Cart Items Loop (Example: storing multiple items as a string or in a sub-table)
+    // Yahan hum man kar chal rahe hain ki aap single entry kar rahe hain summary ke liye
+    $sql = "INSERT INTO order_list (order_id, customer, status, total_amount, created, seen) 
+            VALUES ('$order_id', '$customer', '$status', '$total', NOW(), 0)";
+
+    if (mysqli_query($con, $sql)) {
+        // Order success hone par session clear karein
+        unset($_SESSION['order_cart']);
+        echo json_encode(['success' => true, 'order_id' => $order_id]);
+    } else {
+        echo json_encode(['success' => false, 'message' => mysqli_error($con)]);
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -564,46 +586,65 @@ if (!empty($_SESSION['selected_customer_id'])) {
     </script>
     <script>
         $('#processOrder').on('click', function () {
-            let status = "Cash";
-            if ($('#qrRadio').is(':checked')) status = "Online";
-            if ($('#cardRadio').is(':checked')) status = "Card";
+    let $btn = $(this);
+    let status = "Cash";
+    let paymentDetails = {};
 
-            let totalAmount = "<?= $grandTotal ?>";
-            let customerName = "<?= $customerData['name'] ?>";
+    // Payment Type detect karein
+    if ($('#qrRadio').is(':checked')) {
+        status = "Online";
+        paymentDetails.utr = $('input[name="utr_no"]').val();
+        if(!paymentDetails.utr) {
+            Swal.fire("Required", "Please enter Transaction ID / UTR", "warning");
+            return;
+        }
+    } else if ($('#cardRadio').is(':checked')) {
+        status = "Card";
+        paymentDetails.card_name = $('input[name="card_name"]').val();
+    }
 
-            $.ajax({
-                url: 'save_order.php',
-                type: 'POST',
-                data: {
-                    status: status,
-                    total_amount: totalAmount,
-                    customer: customerName
-                },
-                success: function (response) {
-                    let res = JSON.parse(response);
-                    if (res.success) {
-                        alert("Order Placed! Order ID: " + res.order_id);
-                        window.location.reload();
-                    } else {
-                        alert("Error: " + res.message);
-                    }
+    // Button ko disable karein taaki double click na ho
+    $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Processing...');
+
+    $.ajax({
+        url: 'save_order.php',
+        type: 'POST',
+        data: {
+            status: status,
+            total_amount: "<?= $grandTotal ?>",
+            customer: "<?= $customerData['name'] ?>",
+            utr: paymentDetails.utr || '',
+            card_name: paymentDetails.card_name || ''
+        },
+        success: function (response) {
+            try {
+                let res = JSON.parse(response);
+                if (res.success) {
+                    Swal.fire({
+                        title: "Success!",
+                        text: "Order #" + res.order_id + " placed successfully",
+                        icon: "success",
+                        confirmButtonText: "View History"
+                    }).then(() => {
+                        window.location.href = "history.php"; // Redirect to history
+                    });
+                } else {
+                    Swal.fire("Error", res.message, "error");
+                    $btn.prop('disabled', false).text('COMPLETE ORDER');
                 }
-            });
-        });
+            } catch (e) {
+                console.error("Invalid JSON:", response);
+                Swal.fire("Server Error", "Data saved but response was invalid.", "error");
+            }
+        },
+        error: function () {
+            Swal.fire("Error", "Could not connect to server", "error");
+            $btn.prop('disabled', false).text('COMPLETE ORDER');
+        }
+    });
+});
     </script>
-    <script>
-        $('#processOrder').on('click', function () {
-            let paymentStatus = "Cash";
-            if ($('#qrRadio').is(':checked')) paymentStatus = "Online";
-            if ($('#cardRadio').is(':checked')) paymentStatus = "Card";
-
-            $.ajax({
-                url: 'save_order.php',
-                type: 'POST',
-                data: { status: paymentStatus }
-            });
-        });
-    </script>
+   
     <script>
         // $(document).ready(function () {
         //     if ($.fn.DataTable.isDataTable('#orderItemsTable')) {
