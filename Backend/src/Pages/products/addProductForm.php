@@ -402,14 +402,14 @@ $catResult = mysqli_query($con, "SELECT id, category, brands FROM category WHERE
                                                 <label>Product Name <span class="text-danger">*</span></label>
                                                 <input type="text" name="productname" class="form-control"
                                                     value="<?= htmlspecialchars($editData['product_name'] ?? '') ?>"
-                                                    placeholder="e.g. Cerave Hydrating Cleanser">
+                                                    placeholder="e.g. Cerave Hydrating Cleanser" required>
                                             </div>
                                         </div>
                                         <div class="col-lg-6 mb-3">
                                             <div class="form-group">
                                                 <label>Category</label>
                                                 <select class="form-select" name="categoryselector" id="categorySelect"
-                                                    onchange="loadBrands(this.value)">
+                                                    onchange="loadBrands(this.value)" required>
                                                     <option value="">Select Category</option>
                                                 </select>
                                             </div>
@@ -417,7 +417,7 @@ $catResult = mysqli_query($con, "SELECT id, category, brands FROM category WHERE
                                         <div class="col-lg-6 mb-3">
                                             <div class="form-group">
                                                 <label>Brand</label>
-                                                <select class="form-select" name="brand" id="brandSelect" disabled>
+                                                <select class="form-select" name="brand" id="brandSelect" disabled required>
                                                     <option value="">Select Brand</option>
                                                 </select>
                                             </div>
@@ -440,7 +440,7 @@ $catResult = mysqli_query($con, "SELECT id, category, brands FROM category WHERE
                                             <span class="input-group-text bg-white border-end-0">₹</span>
                                             <input type="number" name="price" class="form-control border-start-0"
                                                 value="<?= htmlspecialchars($editData['price'] ?? '') ?>"
-                                                placeholder="0.00">
+                                                placeholder="0.00" required>
                                         </div>
                                     </div>
                                     <div class="form-group mb-3">
@@ -448,7 +448,7 @@ $catResult = mysqli_query($con, "SELECT id, category, brands FROM category WHERE
                                         <div class="input-group">
                                             <input type="number" name="discount" class="form-control border-end-0"
                                                 value="<?= htmlspecialchars($editData['discount'] ?? '0') ?>"
-                                                placeholder="0">
+                                                placeholder="0" required>
                                             <span class="input-group-text bg-white border-start-0">%</span>
                                         </div>
                                     </div>
@@ -457,20 +457,20 @@ $catResult = mysqli_query($con, "SELECT id, category, brands FROM category WHERE
                                             <div class="form-group mb-3">
                                                 <label>Stock Qty</label>
                                                 <input type="number" name="quantity" class="form-control"
-                                                    value="<?= htmlspecialchars($editData['quantity'] ?? '') ?>">
+                                                    value="<?= htmlspecialchars($editData['quantity'] ?? '') ?>" required>
                                             </div>
                                         </div>
                                         <div class="col-6">
                                             <div class="form-group mb-3">
                                                 <label>Min Qty</label>
                                                 <input type="number" name="minquantity" class="form-control"
-                                                    value="<?= htmlspecialchars($editData['minQuantity'] ?? '') ?>">
+                                                    value="<?= htmlspecialchars($editData['minQuantity'] ?? '') ?>" required>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="form-group mb-3">
                                         <label>Status</label>
-                                        <select class="form-select" name="status">
+                                        <select class="form-select" name="status" required>
                                             <option value="Active" <?= (isset($editData['status']) && $editData['status'] == 'Active') ? 'selected' : '' ?>>Active</option>
                                             <option value="Inactive" <?= (isset($editData['status']) && $editData['status'] == 'Inactive') ? 'selected' : '' ?>>Inactive</option>
                                         </select>
@@ -484,7 +484,7 @@ $catResult = mysqli_query($con, "SELECT id, category, brands FROM category WHERE
                                                 class="form-control border-start-0"
                                                 value="<?= htmlspecialchars($editData['expired_date'] ?? '') ?>"
                                                 placeholder="YYYY-MM-DD" readonly
-                                                style="cursor: pointer; background-color: #f8fafc;">
+                                                style="cursor: pointer; background-color: #f8fafc;" required>
                                         </div>
                                     </div>
                                 </div>
