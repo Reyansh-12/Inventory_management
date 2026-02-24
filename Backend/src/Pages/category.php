@@ -459,7 +459,10 @@ if (isset($_GET['categoryId'])) {
         ],
         "autoWidth": false,
         "pageLength": 10,
-        "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]], // "Show entries" option
+        "lengthChange": false,
+        "pageLength": false,
+        "searching": false,
+        "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
         "language": {
             "paginate": {
                 "next": '<i class="bi bi-chevron-right"></i>',

@@ -1,58 +1,77 @@
 <?php
 session_start();
-define("BASE_PATH", dirname(__DIR__, 3));
-include BASE_PATH . "/src/controllers/dbConnection.php";
+require_once __DIR__ . "/../../controllers/dbConnection.php";
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $cartItems = $_SESSION['order_cart'] ?? [];
-    $status = $_POST['status'];
-    $customer_id = $_SESSION['selected_customer_id'] ?? 0;
-    
-    $customerName = "Walk-in Customer";
-    if ($customer_id > 0) {
-        $c_res = mysqli_query($con, "SELECT name FROM customers WHERE id = $customer_id");
-        if($c_row = mysqli_fetch_assoc($c_res)) $customerName = $c_row['name'];
-    }
+header('Content-Type: application/json');
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-    $order_id = rand(1000, 9999);
+// DEBUG: Session check
+if (!isset($_SESSION['order_cart'])) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'SESSION order_cart not found'
+    ]);
+    exit;
+}
 
-    if (empty($cartItems)) {
-        echo json_encode(['success' => false, 'message' => 'Cart is empty']);
-        exit;
-    }
+$cartItems = $_SESSION['order_cart'];
 
-    $error = false;
+if (empty($cartItems)) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Cart is empty'
+    ]);
+    exit;
+}
+
+$order_id = 'ORD-' . strtoupper(uniqid());
+$customer = mysqli_real_escape_string($con, $_POST['customer'] ?? 'Walk-in');
+$status   = mysqli_real_escape_string($con, $_POST['status'] ?? 'Cash');
+
+mysqli_begin_transaction($con);
+
+try {
+
     foreach ($cartItems as $item) {
-        $p_id = $item['id']; 
-        $qty = $item['quantity'];
-        $price = $item['price'];
-        $total = $price * $qty;
 
-        $p_query = mysqli_query($con, "SELECT category, brand_name, product_name, image_path FROM product_list WHERE id = '$p_id'");
-        $p_data = mysqli_fetch_assoc($p_query);
+        // DEBUG safety
+        if (!isset($item['name'], $item['price'], $item['quantity'])) {
+            throw new Exception('Cart item structure invalid');
+        }
 
-        $p_name = $p_data['product_name'];
-        $cat = $p_data['category'];
-        $brand = $p_data['brand_name'];
-        $img = $p_data['image_path'];
+        $product  = mysqli_real_escape_string($con, $item['name']);
+        $category = mysqli_real_escape_string($con, $item['category'] ?? 'General');
+        $brand    = mysqli_real_escape_string($con, $item['brand'] ?? 'N/A');
+        $qty      = (int)$item['quantity'];
+        $price    = (float)$item['price'];
+        $total    = $qty * $price;
+        $image    = mysqli_real_escape_string($con, $item['image_path'] ?? '');
 
-        $insert = "INSERT INTO `order_list`(`order_id`, `customer`, `product`, `category`, `brand`, `quantity`, `status`, `total_amount`, `price`, `image_path`, `created`) 
-                   VALUES ('$order_id', '$customerName', '$p_name', '$cat', '$brand', '$qty', '$status', '$total', '$price', '$img', NOW())";
-        
-        if (mysqli_query($con, $insert)) {
-            mysqli_query($con, "UPDATE product_list SET quantity = quantity - $qty WHERE id = '$p_id'");
-        } else {
-            $error = true;
+        $sql = "INSERT INTO order_list
+        (order_id, customer, product, category, brand, quantity, status, total_amount, price, seen, image_path, created)
+        VALUES
+        ('$order_id','$customer','$product','$category','$brand',$qty,'$status',$total,$price,0,'$image',NOW())";
+
+        if (!mysqli_query($con, $sql)) {
+            throw new Exception(mysqli_error($con));
         }
     }
 
-    if (!$error) {
-        unset($_SESSION['order_cart']); 
-        unset($_SESSION['selected_customer_id']);
-        echo json_encode(['success' => true, 'order_id' => $order_id]);
-        
-    } else {
-        echo json_encode(['success' => false, 'message' => 'Database Error']);
-    }
+    mysqli_commit($con);
+    unset($_SESSION['order_cart']);
+
+    echo json_encode([
+        'success' => true,
+        'order_id' => $order_id
+    ]);
+
+} catch (Exception $e) {
+
+    mysqli_rollback($con);
+
+    echo json_encode([
+        'success' => false,
+        'message' => $e->getMessage()
+    ]);
 }
-?>

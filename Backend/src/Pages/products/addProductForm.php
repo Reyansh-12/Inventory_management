@@ -106,14 +106,18 @@ if (isset($_POST['submit'])) {
 
 
     $imagePath = $_POST['existing_image'] ?? '';
+    // Ye part aapke PHP code mein already hai, bas path verify karein
     if (isset($_FILES['imageBox']) && $_FILES['imageBox']['error'] === 0) {
-        $uploadDir = BASE_PATH . "/src/uploads/products/featured/";
+        $uploadDir = BASE_PATH . "/src/uploads/products/featured/"; // Server path
         if (!is_dir($uploadDir))
             mkdir($uploadDir, 0755, true);
+
         $ext = strtolower(pathinfo($_FILES['imageBox']['name'], PATHINFO_EXTENSION));
         $fileName = uniqid('product_', true) . '.' . $ext;
         $targetPath = $uploadDir . $fileName;
+
         if (move_uploaded_file($_FILES['imageBox']['tmp_name'], $targetPath)) {
+            // DB mein save hone wala path
             $imagePath = '/Backend/src/uploads/products/featured/' . $fileName;
         }
     }
@@ -147,7 +151,7 @@ if (isset($_POST['submit'])) {
     header("Location: ProductList.php?" . ($isEdit ? "updated=1" : "added=1"));
     exit();
 }
-$catResult = mysqli_query($con, "SELECT id, category FROM category WHERE status='Active'");
+$catResult = mysqli_query($con, "SELECT id, category, brands FROM category WHERE status='Active'");
 
 ?>
 
@@ -340,6 +344,15 @@ $catResult = mysqli_query($con, "SELECT id, category FROM category WHERE status=
             border: 1px solid #6792ff !important;
             color: #6792ff !important;
         }
+
+        #imagePreview {
+            max-width: 100%;
+            max-height: 150px;
+            /* Aap height apne hisaab se set kar sakte hain */
+            object-fit: contain;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
     </style>
 
 </head>
@@ -395,8 +408,9 @@ $catResult = mysqli_query($con, "SELECT id, category FROM category WHERE status=
                                         <div class="col-lg-6 mb-3">
                                             <div class="form-group">
                                                 <label>Category</label>
-                                                <select class="form-select" name="categoryselector"
+                                                <select class="form-select" name="categoryselector" id="categorySelect"
                                                     onchange="loadBrands(this.value)">
+                                                    <option value="">Select Category</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -429,6 +443,15 @@ $catResult = mysqli_query($con, "SELECT id, category FROM category WHERE status=
                                                 placeholder="0.00">
                                         </div>
                                     </div>
+                                    <div class="form-group mb-3">
+                                        <label>Discount (%)</label>
+                                        <div class="input-group">
+                                            <input type="number" name="discount" class="form-control border-end-0"
+                                                value="<?= htmlspecialchars($editData['discount'] ?? '0') ?>"
+                                                placeholder="0">
+                                            <span class="input-group-text bg-white border-start-0">%</span>
+                                        </div>
+                                    </div>
                                     <div class="row">
                                         <div class="col-6">
                                             <div class="form-group mb-3">
@@ -444,6 +467,13 @@ $catResult = mysqli_query($con, "SELECT id, category FROM category WHERE status=
                                                     value="<?= htmlspecialchars($editData['minQuantity'] ?? '') ?>">
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label>Status</label>
+                                        <select class="form-select" name="status">
+                                            <option value="Active" <?= (isset($editData['status']) && $editData['status'] == 'Active') ? 'selected' : '' ?>>Active</option>
+                                            <option value="Inactive" <?= (isset($editData['status']) && $editData['status'] == 'Inactive') ? 'selected' : '' ?>>Inactive</option>
+                                        </select>
                                     </div>
                                     <div class="form-group mb-3">
                                         <label>Expiry Date <span class="text-danger">*</span></label>
@@ -600,63 +630,91 @@ $catResult = mysqli_query($con, "SELECT id, category FROM category WHERE status=
                 }
             }
         });
-        $(document).ready(function() {
-    const isEditMode = <?= $isEdit ? 'true' : 'false' ?>;
-    
-    $("#datepicker").datepicker({
-        dateFormat: "yy-mm-dd",
-        changeMonth: true,
-        changeYear: true,
-        showAnim: "fadeIn",
-        minDate: isEditMode ? null : 0, // Fresh entry ke liye purani dates block karein
-        onSelect: function() {
-            $(this).parsley().validate(); // Select hote hi validation check karein
-        }
-    });
-});
-document.addEventListener("DOMContentLoaded", function () {
-    const categorySelect = document.querySelector('select[name="categoryselector"]');
-    const isEdit = <?= $isEdit ? 'true' : 'false' ?>;
-    const savedCategoryName = "<?= $editData['category'] ?? '' ?>";
+        $(document).ready(function () {
+            const isEditMode = <?= $isEdit ? 'true' : 'false' ?>;
 
-    // Clear existing and add default
-    categorySelect.innerHTML = '<option value="">Select Category</option>';
-
-    // Categories populate karein
-    if (typeof allCategories !== 'undefined' && allCategories.length > 0) {
-        allCategories.forEach(cat => {
-            let option = document.createElement('option');
-            option.value = cat.id;
-            option.textContent = cat.name;
-            
-            // Edit mode check
-            if (isEdit && cat.name === savedCategoryName) {
-                option.selected = true;
-            }
-            categorySelect.appendChild(option);
+            $("#datepicker").datepicker({
+                dateFormat: "yy-mm-dd",
+                changeMonth: true,
+                changeYear: true,
+                showAnim: "fadeIn",
+                minDate: isEditMode ? null : 0, // Fresh entry ke liye purani dates block karein
+                onSelect: function () {
+                    $(this).parsley().validate(); // Select hote hi validation check karein
+                }
+            });
         });
-    }
-
-    // Trigger brand loading if in Edit mode
-    if (isEdit && savedCategoryName && categorySelect.value) {
-        loadBrands(categorySelect.value, "<?= addslashes($editData['brand_name'] ?? '') ?>");
-    }
-});
-if ($categoryId) {
-    $stmtCat = mysqli_prepare($con, "SELECT category FROM category WHERE id = ?");
-    ...
-}
+        //     
     </script>
     <script>
-    const allCategories = [
-        <?php 
-        mysqli_data_seek($catResult, 0); 
-        while($cat = mysqli_fetch_assoc($catResult)) {
-            echo "{id: '{$cat['id']}', name: '" . addslashes($cat['category']) . "'},";
+        const allCategories = [
+            <?php
+            mysqli_data_seek($catResult, 0);
+            while ($cat = mysqli_fetch_assoc($catResult)) {
+                echo "{
+            id: '{$cat['id']}', 
+            name: '" . addslashes($cat['category']) . "', 
+            brands: '" . addslashes($cat['brands'] ?? '') . "'
+        },";
+            }
+            ?>
+        ];
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const categorySelect = document.getElementById('categorySelect');
+            const isEdit = <?= $isEdit ? 'true' : 'false' ?>;
+            const savedCategoryName = "<?= $editData['category'] ?? '' ?>";
+
+            categorySelect.innerHTML = '<option value="">Select Category</option>';
+            allCategories.forEach(cat => {
+                let option = document.createElement('option');
+                option.value = cat.id;
+                option.textContent = cat.name;
+
+                if (isEdit && cat.name === savedCategoryName) {
+                    option.selected = true;
+                }
+                categorySelect.appendChild(option);
+            });
+
+            if (categorySelect.value) {
+                loadBrands(categorySelect.value, "<?= addslashes($editData['brand_name'] ?? '') ?>");
+            }
+        });
+
+        function loadBrands(categoryId, selectedBrand = "") {
+            const brandSelect = document.getElementById('brandSelect');
+            brandSelect.innerHTML = '<option value="">Select Brand</option>';
+
+            if (!categoryId) {
+                brandSelect.disabled = true;
+                return;
+            }
+
+            const selectedCat = allCategories.find(c => c.id == categoryId);
+
+            if (selectedCat && selectedCat.brands) {
+                brandSelect.disabled = false;
+                const brandList = selectedCat.brands.split(',').map(b => b.trim());
+
+                brandList.forEach(brand => {
+                    if (brand) {
+                        let option = document.createElement('option');
+                        option.value = brand;
+                        option.textContent = brand;
+                        if (selectedBrand && brand === selectedBrand) {
+                            option.selected = true;
+                        }
+                        brandSelect.appendChild(option);
+                    }
+                });
+            } else {
+                brandSelect.disabled = true;
+                brandSelect.innerHTML = '<option value="">No Brands</option>';
+            }
         }
-        ?>
-    ];
-</script>
+        
+    </script>
 </body>
 
 </html>

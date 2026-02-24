@@ -22,13 +22,20 @@ if (isset($_GET['categoryId'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $categoryName = trim($_POST['categoryname']);
-    $brandName    = trim($_POST['brandname']);
+    
+    $brandArray = $_POST['brandname'] ?? [];
+    if (is_array($brandArray)) {
+        $brandName = implode(', ', $brandArray);
+    } else {
+        $brandName = trim($brandArray);
+    }
+    $brandName = mysqli_real_escape_string($con, $brandName);
+
     $status       = $_POST['status'] ?? 'Active';
     $createdOn    = date('Y-m-d H:i:s');
     $imagePath    = null;
 
     if (!empty($_FILES['uploadImage']['name'])) {
-
         $uploadDir = BASE_PATH . "/src/Pages/category/categoryImages/";
         if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
 
@@ -40,10 +47,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    if (isset($_GET['categoryId'])) {
-        $id = intval($_GET['categoryId']);
-
-        $sql = "UPDATE category SET category = '$categoryName', brands = '$brandName', status = '$status', image_path = " . ($imagePath ? "'$imagePath'" : "image_path") . " WHERE id = $id";
+    if ($categoryId) {
+        $imgSql = $imagePath ? ", image_path = '$imagePath'" : "";
+        $sql = "UPDATE category SET category = '$categoryName', brands = '$brandName', status = '$status' $imgSql WHERE id = $categoryId";
         mysqli_query($con, $sql);
         header("Location: /Backend/src/Pages/category.php?updated=1");
         exit;
@@ -55,7 +61,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -70,6 +75,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="robots" content="noindex, nofollow">
     <title>Dreams Pos admin template</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+    /* Select2 ko modern look dene ke liye styling */
+    .select2-container--default .select2-selection--multiple {
+        border: 1px solid var(--border-color) !important;
+        border-radius: 8px !important;
+        padding: 5px !important;
+        background-color: var(--bg-light);
+    }
+    .select2-container--default.select2-container--focus .select2-selection--multiple {
+        border-color: var(--primary-blue) !important;
+    }
+    .select2-selection__choice {
+        background-color: var(--primary-blue) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 4px !important;
+        padding: 2px 8px !important;
+    }
+    .select2-selection__choice__remove {
+        color: white !important;
+        margin-right: 5px !important;
+    }
+</style>
     <style>
         .parsley-required,
         .parsley-type,
@@ -215,12 +244,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </div>
                             
                             <div class="form-group mb-4">
-                                <label for="brandName">Associated Brands <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="brandName" name="brandname" 
-                                       value="<?= htmlspecialchars($editData['brands'] ?? '') ?>" 
-                                       placeholder="e.g. L'Oreal, Lakme (Separate by comma)" required>
-                                <small class="text-muted" style="font-size: 0.7rem;">Help: Brands separated by commas will display as a list in the table.</small>
-                            </div>
+    <label for="brandName">Associated Brands <span class="text-danger">*</span></label>
+    <select class="form-control select2-tags" id="brandName" name="brandname[]" multiple="multiple" required>
+        <?php 
+        if (!empty($editData['brands'])) {
+            // Database se comma separated brands ko array mein badalna
+            $brands = explode(',', $editData['brands']);
+            foreach ($brands as $brand) {
+                $brand = trim($brand);
+                echo "<option value='$brand' selected>$brand</option>";
+            }
+        }
+        ?>
+    </select>
+    <small class="text-muted" style="font-size: 0.7rem;">Likhiye aur Enter dabaiye (e.g. L'Oreal, Lakme)</small>
+</div>
                         </div>
 
                         <div class="col-lg-5">
@@ -289,7 +327,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             };
             reader.readAsDataURL(file);
         });
+        
     </script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('.select2-tags').select2({
+            tags: true, // Naye tags allow karne ke liye
+            tokenSeparators: [',', ' '], // Comma ya Space dabane par tag ban jaye
+            placeholder: "Select or type brands"
+        });
+    });
+
+    // Aapka purana Image preview script yahan rahega...
+</script>
 
 </body>
 

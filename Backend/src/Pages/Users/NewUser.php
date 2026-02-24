@@ -259,7 +259,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <form id="myForm" method="POST" enctype="multipart/form-data" data-parsley-validate>
                     <div class="row g-4">
                         <div class="col-lg-12 text-center mb-2">
-                            <div class="image-upload-new shadow-sm" onclick="document.getElementById('uploadImage').click()">
+                            <div class="image-upload-new shadow-sm" onclick="document.getElementById('uploadImage').click()" style="width: 200px; height: 200px">
                                 <input type="file" id="uploadImage" name="uploadImage" accept="image/*" hidden>
                                 <img id="previewImg" src="<?= !empty($editData['image_path']) ? $editData['image_path'] : '/Backend/src/assets/images/icons/upload.svg' ?>">
                             </div>

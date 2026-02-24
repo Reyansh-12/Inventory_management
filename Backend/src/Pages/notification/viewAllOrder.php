@@ -3,7 +3,6 @@ define("BASE_PATH", dirname(__DIR__, 3));
 include BASE_PATH . "/src/Layouts/Links.php";
 include BASE_PATH . "/src/controllers/dbConnection.php";
 
-// Get Order ID from URL
 $order_id = $_GET['order_id'] ?? null;
 
 if (!$order_id) {
@@ -11,7 +10,6 @@ if (!$order_id) {
     exit;
 }
 
-// Fetch Specific Order Details
 $query = "SELECT * FROM `order_list` WHERE `order_id` = '$order_id' LIMIT 1";
 $result = mysqli_query($con, $query);
 $order = mysqli_fetch_assoc($result);
@@ -172,8 +170,8 @@ if (!$order) {
                     </div>
                     
                     <div class="product-row">
-                        <img src="/Backend/src/uploads/products/featured/default.webp" class="product-img-large" />
-                        <div class="flex-grow-1">
+                        <img src="<?= htmlspecialchars($order['image_path']) ?>" class="product-img-large" />
+                        <div class="flex-grow-1" style="width: 80%">
                             <h6 class="mb-1 fw-bold"><?= htmlspecialchars($order['product']) ?></h6>
                             <div class="text-muted small">
                                 Category: <?= $order['category'] ?> | Brand: <?= $order['brand'] ?>

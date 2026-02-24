@@ -39,8 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $order_id = 'ORD-' . strtoupper(uniqid());
     $customer = mysqli_real_escape_string($con, $_POST['customer']);
     $status = mysqli_real_escape_string($con, $_POST['status']); // Payment Mode
-    $total = (float)$_POST['total_amount'];
-    
+    $total = (float) $_POST['total_amount'];
+
     // Optional fields (UTR, Card details)
     $utr = $_POST['utr'] ?? '';
     $card_name = $_POST['card_name'] ?? '';
@@ -341,46 +341,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             padding: 12px 15px !important;
             vertical-align: middle !important;
         }
+
         /* --- Professional Pagination Styling --- */
-.dataTables_wrapper .dataTables_paginate {
-    margin-top: 20px;
-    padding-top: 15px;
-    border-top: 1px solid #edf2f9;
-}
+        .dataTables_wrapper .dataTables_paginate {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #edf2f9;
+        }
 
-.dataTables_wrapper .dataTables_paginate .paginate_button {
-    padding: 6px 14px !important;
-    margin: 0 3px !important;
-    border: 1px solid #e2e8f0 !important;
-    border-radius: 8px !important;
-    background: #fff !important;
-    color: #64748b !important;
-    font-weight: 600;
-    font-size: 0.85rem;
-    transition: all 0.2s ease;
-}
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 6px 14px !important;
+            margin: 0 3px !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 8px !important;
+            background: #fff !important;
+            color: #64748b !important;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
 
-.dataTables_wrapper .dataTables_paginate .paginate_button.current,
-.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-    background: var(--primary-blue) !important;
-    color: white !important;
-    border-color: var(--primary-blue) !important;
-    box-shadow: 0 4px 10px rgba(103, 146, 255, 0.25);
-}
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background: var(--primary-blue) !important;
+            color: white !important;
+            border-color: var(--primary-blue) !important;
+            box-shadow: 0 4px 10px rgba(103, 146, 255, 0.25);
+        }
 
-.dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    background: #f8fafc !important;
-}
+        .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: #f8fafc !important;
+        }
 
-/* Table Footer Symmetry */
-.table-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 0;
-}
+        /* Table Footer Symmetry */
+        .table-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
     </style>
 </head>
 
@@ -431,33 +432,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
 
                     <div class="table-responsive mb-4">
-    <table class="table" id="orderItemsTable">
-        <thead>
-            <tr>
-                <th class="col-id">#</th>
-                <th class="col-desc">Product Description</th>
-                <th class="col-rate text-center">Rate</th>
-                <th class="col-qty text-center">Qty</th>
-                <th class="col-amount">Amount</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php $i = 1; foreach ($cartItems as $item): ?>
-                <tr>
-                    <td><?= $i++ ?></td>
-                    <td>
-                        <span class="product-name-cell" data-bs-toggle="tooltip" title="<?= htmlspecialchars($item['name']) ?>">
-                            <?= htmlspecialchars($item['name']) ?>
-                        </span>
-                    </td>
-                    <td class="text-center">₹<?= number_format($item['price'], 2) ?></td>
-                    <td class="text-center"><?= $item['quantity'] ?></td>
-                    <td class="text-end fw-bold">₹<?= number_format($item['price'] * $item['quantity'], 2) ?></td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-</div>
+                        <table class="table" id="orderItemsTable">
+                            <thead>
+                                <tr>
+                                    <th class="col-id">#</th>
+                                    <th class="col-desc">Product Description</th>
+                                    <th class="col-rate text-center">Rate</th>
+                                    <th class="col-qty text-center">Qty</th>
+                                    <th class="col-amount">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php $i = 1;
+                                foreach ($cartItems as $item): ?>
+                                    <tr>
+                                        <td><?= $i++ ?></td>
+                                        <td>
+                                            <span class="product-name-cell" data-bs-toggle="tooltip"
+                                                title="<?= htmlspecialchars($item['name']) ?>">
+                                                <?= htmlspecialchars($item['name']) ?>
+                                            </span>
+                                        </td>
+                                        <td class="text-center">₹<?= number_format($item['price'], 2) ?></td>
+                                        <td class="text-center"><?= $item['quantity'] ?></td>
+                                        <td class="text-end fw-bold">
+                                            ₹<?= number_format($item['price'] * $item['quantity'], 2) ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
 
                     <div class="grand-total-section mb-5">
                         <span class="fs-5 fw-bold">Amount Payable</span>
@@ -585,66 +589,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     </script>
     <script>
-        $('#processOrder').on('click', function () {
-    let $btn = $(this);
-    let status = "Cash";
-    let paymentDetails = {};
+   $('#processOrder').on('click', function () {
 
-    // Payment Type detect karein
-    if ($('#qrRadio').is(':checked')) {
-        status = "Online";
-        paymentDetails.utr = $('input[name="utr_no"]').val();
-        if(!paymentDetails.utr) {
-            Swal.fire("Required", "Please enter Transaction ID / UTR", "warning");
-            return;
+let $btn = $(this);
+let status = "Cash";
+
+if ($('#qrRadio').is(':checked')) status = "Online";
+if ($('#cardRadio').is(':checked')) status = "Card";
+
+$btn.prop('disabled', true)
+    .html('<span class="spinner-border spinner-border-sm"></span> Processing...');
+
+$.ajax({
+    url: 'save_order.php',
+    type: 'POST',
+    dataType: 'json',
+    data: {
+        status: status,
+        customer: "<?= $customerData['name'] ?>"
+    },
+    success: function (res) {
+
+        console.log(res); // 🔥 VERY IMPORTANT
+
+        if (res.success) {
+            Swal.fire("Success", "Order " + res.order_id + " saved", "success")
+            .then(() => window.location.href = "history.php");
+        } else {
+            Swal.fire("Error", res.message, "error");
+            resetBtn();
         }
-    } else if ($('#cardRadio').is(':checked')) {
-        status = "Card";
-        paymentDetails.card_name = $('input[name="card_name"]').val();
+    },
+    error: function (xhr) {
+        console.error(xhr.responseText);
+        Swal.fire("Error", "Server error", "error");
+        resetBtn();
     }
+});
 
-    // Button ko disable karein taaki double click na ho
-    $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Processing...');
-
-    $.ajax({
-        url: 'save_order.php',
-        type: 'POST',
-        data: {
-            status: status,
-            total_amount: "<?= $grandTotal ?>",
-            customer: "<?= $customerData['name'] ?>",
-            utr: paymentDetails.utr || '',
-            card_name: paymentDetails.card_name || ''
-        },
-        success: function (response) {
-            try {
-                let res = JSON.parse(response);
-                if (res.success) {
-                    Swal.fire({
-                        title: "Success!",
-                        text: "Order #" + res.order_id + " placed successfully",
-                        icon: "success",
-                        confirmButtonText: "View History"
-                    }).then(() => {
-                        window.location.href = "history.php"; // Redirect to history
-                    });
-                } else {
-                    Swal.fire("Error", res.message, "error");
-                    $btn.prop('disabled', false).text('COMPLETE ORDER');
-                }
-            } catch (e) {
-                console.error("Invalid JSON:", response);
-                Swal.fire("Server Error", "Data saved but response was invalid.", "error");
-            }
-        },
-        error: function () {
-            Swal.fire("Error", "Could not connect to server", "error");
-            $btn.prop('disabled', false).text('COMPLETE ORDER');
-        }
-    });
+function resetBtn() {
+    $btn.prop('disabled', false).text('COMPLETE ORDER');
+}
 });
     </script>
-   
+
     <script>
         // $(document).ready(function () {
         //     if ($.fn.DataTable.isDataTable('#orderItemsTable')) {
@@ -727,35 +715,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             });
         });
         $(document).ready(function () {
-    // Destroy any existing instances to prevent conflicts
-    if ($.fn.DataTable.isDataTable('#orderItemsTable')) {
-        $('#orderItemsTable').DataTable().destroy();
-    }
+            // Destroy any existing instances to prevent conflicts
+            if ($.fn.DataTable.isDataTable('#orderItemsTable')) {
+                $('#orderItemsTable').DataTable().destroy();
+            }
 
-    $('#orderItemsTable').DataTable({
-        "paging": true,          // Pagination enabled
-        "pageLength": 5,        // Standard length for invoice review
-        "searching": false,      // Clean invoice look
-        "info": true,            // Show "Showing 1 to 5"
-        "ordering": false,       // Keep order as added to cart
-        "autoWidth": false,
-        "language": {
-            "paginate": {
-                "next": '<i class="bi bi-chevron-right"></i>',
-                "previous": '<i class="bi bi-chevron-left"></i>'
-            },
-            "info": "Showing _START_ to _END_ of _TOTAL_ items"
-        },
-        "dom": 'rt<"table-footer"ip>', // Positioning pagination at bottom
-        "drawCallback": function () {
-            // Re-initialize tooltips after pagination click
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-            tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl)
+            $('#orderItemsTable').DataTable({
+                "paging": true,          // Pagination enabled
+                "pageLength": 5,        // Standard length for invoice review
+                "searching": false,      // Clean invoice look
+                "info": true,            // Show "Showing 1 to 5"
+                "ordering": false,       // Keep order as added to cart
+                "autoWidth": false,
+                "language": {
+                    "paginate": {
+                        "next": '<i class="bi bi-chevron-right"></i>',
+                        "previous": '<i class="bi bi-chevron-left"></i>'
+                    },
+                    "info": "Showing _START_ to _END_ of _TOTAL_ items"
+                },
+                "dom": 'rt<"table-footer"ip>', // Positioning pagination at bottom
+                "drawCallback": function () {
+                    // Re-initialize tooltips after pagination click
+                    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+                    tooltipTriggerList.map(function (tooltipTriggerEl) {
+                        return new bootstrap.Tooltip(tooltipTriggerEl)
+                    });
+                }
             });
-        }
-    });
-});
+        });
     </script>
 </body>
 
