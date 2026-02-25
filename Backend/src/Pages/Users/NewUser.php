@@ -271,12 +271,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <div class="form-group mb-3">
                                 <label>Full Name <span class="text-danger">*</span></label>
                                 <input type="text" id="userName" name="userName" class="form-control" 
-                                       value="<?= htmlspecialchars($editData['user_name'] ?? '') ?>" placeholder="John Doe" required>
+                                       value="<?= htmlspecialchars($editData['user_name'] ?? '') ?>" placeholder="John Doe" data-parsley-required="true" data-parsley-trigger="change" data-parsley-error-message="Full name is required.">
                             </div>
                             <div class="form-group mb-3">
                                 <label>Email Address <span class="text-danger">*</span></label>
                                 <input type="text" id="userEmail" name="userEmail" class="form-control" 
-                                       value="<?= htmlspecialchars($editData['user_email'] ?? '') ?>" placeholder="john@example.com" required>
+                                       value="<?= htmlspecialchars($editData['user_email'] ?? '') ?>" placeholder="john@example.com" data-parsley-required="true" data-parsley-type="email" data-parsley-trigger="change" data-parsley-error-message="Enter a valid email address.">
                                 <small id="emailError" class="text-danger"></small>
                             </div>
                             <div class="form-group mb-3">
@@ -284,7 +284,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div class="input-group">
                                     <span class="input-group-text">+91</span>
                                     <input type="text" id="contact" name="phoneNumber" class="form-control" 
-                                           value="<?= htmlspecialchars($editData['user_contact'] ?? '') ?>" placeholder="9876543210" required>
+                                           value="<?= htmlspecialchars($editData['user_contact'] ?? '') ?>" placeholder="9876543210" data-parsley-required="true" data-parsley-type="digits" data-parsley-trigger="change" data-parsley-error-message="Enter a valid 10-digit phone number">
                                 </div>
                                 <small id="contactError" class="text-danger"></small>
                             </div>
@@ -316,15 +316,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <div class="form-group mb-3 pass-group">
                                 <label>Password <?= !$isEdit ? '<span class="text-danger">*</span>' : '(Leave blank to keep current)' ?></label>
                                 <input type="password" id="password" name="password" class="form-control pass-input" 
-                                       placeholder="••••••••" <?= !$isEdit ? 'required' : '' ?>>
+                                       placeholder="••••••••" <?= !$isEdit ? 'required' : '' ?> data-parsley-required="true" data-parsley-trigger="change" data-parsley-error-message="Password is required.">
                                 <span class="fas toggle-password fa-eye-slash"></span>
                                 <small id="passwordError" class="text-danger d-block mt-1"></small>
                             </div>
 
                             <div class="form-group mb-3 pass-group">
-                                <label>Confirm Password</label>
+                                <label>Confirm Password <span class="text-danger">*</span></label>
                                 <input type="password" id="confirmPassword" name="confirmPassword" class="form-control pass-input" 
-                                       placeholder="••••••••" <?= !$isEdit ? 'required' : '' ?>>
+                                       placeholder="••••••••" <?= !$isEdit ? 'required' : '' ?> data-parsley-required="true" data-parsley-trigger="change" data-parsley-error-message="Please confirm the password.">
                                 <span class="fas toggle-password fa-eye-slash"></span>
                                 <small id="confirmPasswordError" class="text-danger d-block mt-1"></small>
                             </div>
@@ -511,7 +511,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     });
     </script>
+<script>
+$('#myForm').parsley({
+    errorsContainer: function (parsleyField) {
+        let el = parsleyField.$element;
 
+        if (el.closest('.input-group').length) {
+            return el.closest('.form-group').find('.text-danger');
+        }
+    },
+    errorsWrapper: '<div></div>',
+    errorTemplate: '<div></div>'
+});
+</script>
 </body>
 
 </html>

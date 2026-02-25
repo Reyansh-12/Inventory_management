@@ -6191,7 +6191,7 @@ span.select2-container.select2-container--default.select2-container--open {
 .image-upload {
     border: 1px solid rgba(145, 158, 171, .32);
     position: relative;
-    margin-bottom: 35px;
+    margin-bottom: 10px;
     border-radius: 5px
 }
 
