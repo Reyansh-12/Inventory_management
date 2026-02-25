@@ -69,7 +69,7 @@ const Navbar = () => {
 
             <div className="col-7 col-lg-3 col-xl-4">
               <div className="header-action justify-content-end">
-                <button className="btn btn-dark border border-dark me-3">Login</button>
+                <button className="btn btn-dark border border-dark me-3" style={{width: '100px', height:'40px'}}>Login</button>
                 {/* <Dropdown>
                   <Dropdown.Toggle className="bg-transparent me-2 text-black border-0 no-caret" id="dropdown-basic">
                     <span className="icon">
