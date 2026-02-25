@@ -69,7 +69,8 @@ const Navbar = () => {
 
             <div className="col-7 col-lg-3 col-xl-4">
               <div className="header-action justify-content-end">
-                <Dropdown>
+                <button className="btn btn-white border border-dark me-3">Login</button>
+                {/* <Dropdown>
                   <Dropdown.Toggle className="bg-transparent me-2 text-black border-0 no-caret" id="dropdown-basic">
                     <span className="icon">
                       <HiOutlineShoppingCart className="fs-4" />
@@ -80,9 +81,9 @@ const Navbar = () => {
                   <Dropdown.Menu>
                     <Dropdown.Item href="#/action-1"></Dropdown.Item>
                   </Dropdown.Menu>
-                </Dropdown>
+                </Dropdown> */}
 
-                <Dropdown>
+                {/* <Dropdown>
                   <Dropdown.Toggle className="bg-transparent me-2 text-black border-0 no-caret" id="dropdown-basic">
                     <span className="icon">
                       <FaRegHeart className="fs-5" />
@@ -93,9 +94,9 @@ const Navbar = () => {
                   <Dropdown.Menu>
                     <Dropdown.Item href="#/action-1"></Dropdown.Item>
                   </Dropdown.Menu>
-                </Dropdown>
+                </Dropdown> */}
 
-                <Dropdown>
+                {/* <Dropdown>
                   <Dropdown.Toggle className="bg-transparent text-black border-0 no-caret" id="dropdown-basic">
                     <FaRegUser className="fs-5" />
                   </Dropdown.Toggle>
@@ -111,15 +112,9 @@ const Navbar = () => {
                       Logout
                     </Dropdown.Item>
                   </Dropdown.Menu>
-                </Dropdown>
+                </Dropdown> */}
 
-                <button
-                  className="header-menu-btn"
-                  type="button"
-                  data-bs-toggle="offcanvas"
-                  data-bs-target="#AsideOffcanvasMenu"
-                  aria-controls="AsideOffcanvasMenu"
-                >
+                <button className="header-menu-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#AsideOffcanvasMenu" aria-controls="AsideOffcanvasMenu">
                   <span></span>
                   <span></span>
                   <span></span>
