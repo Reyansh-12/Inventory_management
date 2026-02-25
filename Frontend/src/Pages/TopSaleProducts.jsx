@@ -36,7 +36,7 @@ const firstSix = products.slice(0, 6);
         </div>
       </div>
       <main className="main-content">
-        <section className="section-space pb-5">
+        <section className="section-space pb-5 bg-light">
           <div className="container">
             <div className="row mb-n4 mb-sm-n10 g-3 g-sm-6">
               {firstSix.map((product) => (

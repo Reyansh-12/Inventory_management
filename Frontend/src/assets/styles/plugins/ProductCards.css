@@ -1,22 +1,23 @@
 .product-card {
     width: 320px;
     height: 430px;
-    background: linear-gradient(180deg, #acd9ee, #6B8E6E);
+    /* background: linear-gradient(180deg, #acd9ee, #6B8E6E); */
     border-radius: 32px;
     padding: 24px;
     display: flex;
+
     flex-direction: column;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
-  }
-  
-  .product-img {
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.25);
+}
+
+.product-img {
     width: 180px;
     margin: 40px auto 20px;
     transform: rotate(-12deg);
-    filter: drop-shadow(0 20px 20px rgba(0,0,0,0.25));
-  }
-  
-  .btn-like {
+    filter: drop-shadow(0 20px 20px rgba(0, 0, 0, 0.25));
+}
+
+.btn-like {
     width: 10px;
     height: 42px;
     border-radius: 15%;
@@ -24,42 +25,46 @@
     background: rgb(247, 239, 239);
     color: #000;
     font-size: 18px;
-  }
-  .card-title h4{
-    max-width: 300px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+}
 
-  }
-  .card-title p{
+.card-title h4 {
+    max-width: 300px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+}
+
+.card-title p {
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
-  -webkit-line-clamp: 3;   
-  -webkit-box-orient: vertical;
-  }
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
 
-  .product_quantity{
+.product_quantity {
     top: 10px;
     right: 0px;
     z-index: 999;
     font-size: 14px;
     padding: 8px 13px 7px 13px;
     border-radius: 20px 20px 0 20px;
-  }
-  .low-stock{
+}
+
+.low-stock {
     background: #f80455;
-  }
-  
-  .medium-stock{
+}
+
+.medium-stock {
     background: #fb8c00;
-  }
-  
-  .high-stock{
+}
+
+.high-stock {
     background: #43a047;
-  }
-  .out-stock{
+}
+
+.out-stock {
     content: 'Out of stock';
     background: #f80404;
     top: 10px;
@@ -68,32 +73,35 @@
     font-size: 14px;
     padding: 8px 13px 7px 13px;
     border-radius: 20px 20px 0 20px;
-  }
-  .product_card.out-of-stock{
+}
+
+.product_card.out-of-stock {
     opacity: 0.6;
-    pointer-events: none; 
-  }
- .product-card:hover{
+    pointer-events: none;
+}
+
+.product-card:hover {
     margin-top: -10px;
     transition: 0.5s;
- }
- .card:hover .wishlistButton{
-  display: block !important;
- }
+}
 
-.carousel{
+.card:hover .wishlistButton {
+    display: block !important;
+}
+
+.carousel {
     width: 100%;
     height: 100vh;
     position: relative;
     overflow: hidden;
 }
 
-.list{
+.list {
     width: 100%;
     height: 100%;
 }
 
-.item{
+.item {
     width: 100%;
     height: 100%;
     background-color: var(--background);
@@ -103,7 +111,8 @@
     overflow: hidden;
     display: none;
 }
-.item img.fruit{
+
+.item img.fruit {
     width: 460px;
     position: absolute;
     top: 50%;
@@ -113,7 +122,8 @@
     z-index: 5;
     pointer-events: none;
 }
-.item .content{
+
+.item .content {
     position: absolute;
     top: 50%;
     left: 60%;
@@ -126,10 +136,12 @@
     text-transform: uppercase;
     white-space: nowrap;
 }
-.item.active{
+
+.item.active {
     display: block;
 }
-.item.hidden{
+
+.item.hidden {
     display: block;
     pointer-events: none;
     background-color: transparent;
@@ -138,7 +150,7 @@
 
 
 #prev,
-#next{
+#next {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -155,74 +167,85 @@
     z-index: 15;
     border-color: red;
 }
-.prevSliderIcon, .nextSliderIcon{
+
+.prevSliderIcon,
+.nextSliderIcon {
     margin-left: -10px;
     margin-top: -7px;
 }
 
-#prev{
+#prev {
     left: 20px;
 }
-#next{
+
+#next {
     right: 20px;
 }
 
 
-@keyframes toActive{
-    from{
+@keyframes toActive {
+    from {
         top: 100%;
         opacity: 0;
     }
 }
-@keyframes toOut{
-    from{
+
+@keyframes toOut {
+    from {
         top: 50%;
         opacity: 1;
     }
 }
-.item.active img.fruit{
+
+.item.active img.fruit {
     animation: imgUp 0.8s ease forwards;
 }
-.item.hidden img.fruit{
+
+.item.hidden img.fruit {
     animation: toOut 0.8s ease-in-out 1;
     top: -100%;
     opacity: 0;
 }
-.item.active .content{
+
+.item.active .content {
     animation: toActive 0.8s ease-in-out 1;
-    left: 50%;                 
+    left: 50%;
     opacity: 1;
 }
-.item.hidden{
+
+.item.hidden {
     display: none;
 }
 
 
-.carousel.right .item.active img.fruit{
+.carousel.right .item.active img.fruit {
     animation: imgUpPrev 0.8s ease forwards;
 }
-.carousel.right .item.hidden img.fruit{
+
+.carousel.right .item.hidden img.fruit {
     animation: toOut 0.8s ease-in-out 1;
     top: 100%;
     opacity: 0;
 }
-.carousel.right .item.active .content{
+
+.carousel.right .item.active .content {
     animation: toActivePrev 0.8s ease-in-out 1;
 }
 
 
-@keyframes toActivePrev{
-    from{
+@keyframes toActivePrev {
+    from {
         top: 20%;
         opacity: 0;
     }
-    to{
+
+    to {
         top: 50%;
         opacity: 1;
     }
 }
 
-:root{
+:root {
     --width-mockup: calc(371px / 1.5);
     --height-mockup: calc(673px / 1.5);
 }
@@ -235,19 +258,19 @@
     transform: translate(-50%, -50%);
     height: var(--height-mockup);
     width: var(--width-mockup);
-    background: 
-        url(drink-soda.png)  0 0 no-repeat, 
+    background:
+        url(drink-soda.png) 0 0 no-repeat,
         url(listSoda.jpg) var(--left) 0;
     background-size: auto 100%;
     background-blend-mode: multiply;
-    -webkit-mask-image: 
-    url(drink-soda.png);
+    -webkit-mask-image:
+        url(drink-soda.png);
     -webkit-mask-repeat: no-repeat;
     -webkit-mask-size: auto 100%;
     transition: background 0.5s;
 }
 
-.leaves{
+.leaves {
     position: absolute;
     width: 170px;
     height: 170px;
@@ -256,59 +279,68 @@
     top: calc((50% - (var(--height-mockup) / 1.7)));
     left: calc((50% + (var(--width-mockup) / 5)));
 }
-.shadow{
+
+.shadow {
     width: var(--width-mockup);
     height: 100px;
     background-color: #0008;
     border-radius: 50%;
     position: absolute;
-    top:  calc((50% + (var(--height-mockup) / 2)));
+    top: calc((50% + (var(--height-mockup) / 2)));
     left: 50%;
     transform: translateX(-50%);
     filter: blur(20px);
 }
+
 @media screen and (max-width: 768px) {
-    .item .content{
+    .item .content {
         transform: translate(-50%, -50%) scale(.5);
     }
-    .item img.fruit{
+
+    .item img.fruit {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
-} 
+}
 
- 
-@keyframes imgUp{
-    from{
+
+@keyframes imgUp {
+    from {
         top: 80%;
         opacity: 0;
     }
-    to{
-        top: 50%;
-        opacity: 1;
-    }
-}
-@keyframes imgUpPrev{
-    from{
-        top: 20%;
-        opacity: 0;
-    }
-    to{
+
+    to {
         top: 50%;
         opacity: 1;
     }
 }
 
-.slick-prev, .slick-next{
+@keyframes imgUpPrev {
+    from {
+        top: 20%;
+        opacity: 0;
+    }
+
+    to {
+        top: 50%;
+        opacity: 1;
+    }
+}
+
+.slick-prev,
+.slick-next {
     width: 40px !important;
     height: 39px !important;
     background: black !important;
     border-radius: 50px !important;
 }
-.slick-prev{
+
+.slick-prev {
     margin-left: -15px !important;
 }
-.slick-next{
+
+.slick-next {
     margin-right: -15px !important;
 }
