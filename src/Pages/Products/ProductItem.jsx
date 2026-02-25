@@ -7,7 +7,7 @@ import shop4 from "../../assets/images/shop/category/4-removebg-preview.png";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import '../../assets/styles/plugins/ProductCards.css';
- 
+
 const ProductItem = ({ product }) => {
   const navigate = useNavigate();
 
@@ -35,65 +35,64 @@ const ProductItem = ({ product }) => {
       .catch((error) => {
         toast.error("Error updating quantity.");
       });
-     
+
   };
 
   return (
     <>
       <div className="">
-    <div class="container card border-0 d-flex overflow-hidden justify-content-center align-items-center mt-3">
-  <div class="product-card position-relative text-white">
-   
-    <Link to={`/product/${product.id}`}>
-          <img src={product?.image || shop4} style={{width: '100%', height: '200px', objectFit: 'contain'}} onError={(e) => (e.target.src = shop4)} className="mt-5"/>
-        </Link>
-    <div class="card-body mt-auto card-title">
-      <h4 className="fw-semibold mb-3" data-bs-toggle='tooltip' title={product?.name}>{product?.name}</h4>
+        <div class="container card bg-transparent border-0 d-flex overflow-hidden justify-content-center align-items-center mt-3">
+          <div class="product-card border border-dark position-relative text-white">
 
-      <div class="d-flex justify-content-between align-items-center mt-4">
-          <h4 class="fw-bold mb-0" style={{fontSize: '20px'}}>₹{Math.round(discountedPrice)}{discountPercent > 0 && (<> &nbsp;<del>₹{Math.round(product?.price)}</del></>)}</h4>
-          {discountPercent > 0 && (<p style={{ fontSize: '18px', color: '#0043ff' }}>{discountPercent}% off</p>
-  )}
-      </div>
-          {/* <ToastContainer /> */}
-        
-      {/* <div className="row align-items-center mt-4">
+            <Link to={`/product/${product.id}`}>
+              <img src={product?.image || shop4} style={{ width: '100%', height: '200px', objectFit: 'contain' }} onError={(e) => (e.target.src = shop4)} className="mt-5" />
+            </Link>
+            <div class="card-body mt-auto card-title">
+              <h4 className="fw-semibold mb-3 text-black" data-bs-toggle='tooltip' title={product?.name}>{product?.name}</h4>
+
+              <div class="d-flex justify-content-between align-items-center mt-4">
+                <h4 class="fw-bold mb-0" style={{ fontSize: '20px', color: 'red' }}>₹{Math.round(discountedPrice)}{discountPercent > 0 && (<> &nbsp;<del>₹{Math.round(product?.price)}</del></>)}</h4>
+                {discountPercent > 0 && (<p style={{ fontSize: '18px', color: '#0043ff' }}>{discountPercent}% off</p>
+                )}
+              </div>
+              {/* <ToastContainer /> */}
+
+              {/* <div className="row align-items-center mt-4">
         <button className="btn btn-light rounded-3" onClick={() => addToCart(product?.id)}>
           <span className="text-nowrap" style={{letterSpacing: '3px'}}>Add to basket</span> <span className="fs-5"><IoBagAddOutline /></span>
           <ToastContainer />
         </button>
       </div> */}
-      <div className="row wishlistButton align-items-center mt-4 position-absolute" style={{top: '-14px', left: '26px', display: 'none'}}>
-          <button className="btn btn-light" style={{background: '#ffffff42', borderRadius: '17px'}} onClick={() => toast.success("Added to wishlist!")}>
-          <span className="fs-5" style={{background: 'none'}}><FaRegHeart /></span>
-        </button>
+              <div className="row wishlistButton align-items-center mt-4 position-absolute" style={{ top: '-14px', left: '26px', display: 'none' }}>
+                <button className="btn btn-light" style={{ background: '#ffffff42', borderRadius: '17px' }} onClick={() => toast.success("Added to wishlist!")}>
+                  <span className="fs-5" style={{ background: 'none' }}><FaRegHeart /></span>
+                </button>
+              </div>
+
+              <ToastContainer />
+              {product.quantity === 0 ? (
+                <span className="position-absolute product_quantity out-stock">
+                  Out of stock
+                </span>
+              ) : product.quantity <= 50 ? (
+                <span
+                  className={`position-absolute product_quantity ${product.quantity <= 4
+                      ? "low-stock"
+                      : product.quantity <= 10
+                        ? "medium-stock"
+                        : "high-stock"
+                    }`}
+                >
+                  {product.quantity} items left
+                </span>
+              ) : null}
+
+              {/* <p className="mt-2">127 Reviews</p> */}
+            </div>
+
+          </div>
+        </div>
       </div>
-      
-          <ToastContainer />
-      {product.quantity === 0 ? (
-  <span className="position-absolute product_quantity out-stock">
-    Out of stock
-  </span>
-) : product.quantity <= 50 ? (
-  <span
-    className={`position-absolute product_quantity ${
-      product.quantity <= 4
-        ? "low-stock"
-        : product.quantity <= 10
-        ? "medium-stock"
-        : "high-stock"
-    }`}
-  >
-    {product.quantity} items left
-  </span>
-) : null}
-
-      {/* <p className="mt-2">127 Reviews</p> */}
-    </div>
-
-  </div>
-</div>
-</div>
     </>
   );
 };

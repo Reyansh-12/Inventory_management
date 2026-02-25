@@ -68,7 +68,7 @@ const HeroSlider = () => {
         <source src={video}/>
       </video>
     </div>
-    <div className="carousel">
+    {/* <div className="carousel">
       <div className="list">
         <div className="item active">
             <img src={image} className="fruit" alt="" />
@@ -90,7 +90,7 @@ const HeroSlider = () => {
         <button id="prev"><FaLessThan className="text-center prevSliderIcon"/></button>
         <button id="next"><FaGreaterThan className="text-center nextSliderIcon"/></button>
       </div>
-    </div>
+    </div> */}
     </>
   );
 };

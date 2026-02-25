@@ -1,0 +1,88 @@
+/* Luxury Card Wrapper */
+.luxury-card {
+    background: linear-gradient(180deg, #1a0f14, #0b0609);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 105, 180, 0.25);
+    box-shadow: 0 0 40px rgba(255, 105, 180, 0.15);
+    backdrop-filter: blur(12px);
+    overflow: hidden;
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+  }
+  
+  .luxury-card:hover {
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 0 60px rgba(255, 105, 180, 0.35);
+  }
+  
+  /* Product Image */
+  .luxury-card img {
+    max-height: 180px;
+    object-fit: contain;
+    margin: auto;
+    display: block;
+    filter: drop-shadow(0 12px 25px rgba(255, 105, 180, 0.45));
+  }
+  
+  /* Product Title */
+  .luxury-card .product-title,
+  .luxury-card h3 {
+    color: #fff;
+    font-weight: 600;
+    text-align: center;
+  }
+  
+  /* Rating Stars */
+  .luxury-card .rating span {
+    color: #fbbf24;
+    font-size: 14px;
+  }
+  
+  /* Price */
+  .luxury-card .price {
+    text-align: center;
+    margin-top: 8px;
+  }
+  
+  .luxury-card .price .current {
+    color: #ff7aa2;
+    font-size: 22px;
+    font-weight: 700;
+  }
+  
+  .luxury-card .price .old {
+    color: #9ca3af;
+    text-decoration: line-through;
+    margin-left: 6px;
+  }
+  
+  /* Add to Cart Button */
+  .luxury-card .cart-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ec4899;
+    color: #fff;
+    border-radius: 999px;
+    padding: 10px 18px;
+    margin: 14px auto 0;
+    font-weight: 500;
+    transition: background 0.3s ease, transform 0.3s ease;
+  }
+  
+  .luxury-card .cart-btn:hover {
+    background: #f472b6;
+    transform: scale(1.05);
+  }
+  
+  /* Discount Badge */
+  .luxury-card .discount-badge {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: #ec4899;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+  }
