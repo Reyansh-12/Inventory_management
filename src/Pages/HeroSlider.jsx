@@ -68,7 +68,7 @@ const HeroSlider = () => {
     <div>
       <img src={banner} alt="" className="" style={{width: '1000px', height: '700px', marginLeft: '100px'}}/>
       <div className="d-flex justify-content-center ">
-      <button className="btn btn-white border border-secondary" style={{marginTop: '-70px'}}>Explore Collection <FaLongArrowAltRight /></button>
+      <a href="/shop"><button className="btn btn-white border border-secondary" style={{marginTop: '-70px'}}>Explore Collection <FaLongArrowAltRight /></button></a>
       </div>
       {/* <video autoPlay loop muted className="w-100 h-100 object-cover">
         <source src={video}/>
