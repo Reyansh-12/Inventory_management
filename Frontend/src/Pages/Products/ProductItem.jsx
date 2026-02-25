@@ -51,7 +51,7 @@ const ProductItem = ({ product }) => {
               <h4 className="fw-semibold mb-3 text-black" data-bs-toggle='tooltip' title={product?.name}>{product?.name}</h4>
 
               <div class="d-flex justify-content-between align-items-center mt-4">
-                <h4 class="fw-bold mb-0" style={{ fontSize: '20px', color: 'red' }}>₹{Math.round(discountedPrice)}{discountPercent > 0 && (<> &nbsp;<del>₹{Math.round(product?.price)}</del></>)}</h4>
+                <h4 class="fw-bold mb-0" style={{ fontSize: '20px', color: 'black' }}>₹{Math.round(discountedPrice)}{discountPercent > 0 && (<> &nbsp;<del className="text-secondary">₹{Math.round(product?.price)}</del></>)}</h4>
                 {discountPercent > 0 && (<p style={{ fontSize: '18px', color: '#0043ff' }}>{discountPercent}% off</p>
                 )}
               </div>
@@ -77,10 +77,10 @@ const ProductItem = ({ product }) => {
               ) : product.quantity <= 50 ? (
                 <span
                   className={`position-absolute product_quantity ${product.quantity <= 4
-                      ? "low-stock"
-                      : product.quantity <= 10
-                        ? "medium-stock"
-                        : "high-stock"
+                    ? "low-stock"
+                    : product.quantity <= 10
+                      ? "medium-stock"
+                      : "high-stock"
                     }`}
                 >
                   {product.quantity} items left

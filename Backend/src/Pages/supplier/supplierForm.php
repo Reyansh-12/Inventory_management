@@ -209,7 +209,7 @@ if (isset($_POST['submit'])) {
                         <h4 class="fw-bold"><?= $supplierId ? 'Edit Supplier Profile' : 'Register New Supplier' ?></h4>
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb" style="font-size: 0.85rem;">
-                                <li class="breadcrumb-item"><a href="supplierlist.php"
+                                <li class="breadcrumb-item"><a href="/Backend/src/Pages/supplierlist.php"
                                         class="text-primary">Suppliers</a></li>
                                 <li class="breadcrumb-item active"><?= $supplierId ? 'Update' : 'New Entry' ?></li>
                             </ol>

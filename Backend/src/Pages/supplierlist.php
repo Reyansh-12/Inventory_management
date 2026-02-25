@@ -243,24 +243,19 @@ if (isset($_GET['supplierId'])) {
                                             echo "<tr>";
                                             echo "<td style='display:none;'>" . $row['id'] . "</td>";
 
-                                            // Supplier Name with Tooltip
                                             echo "<td>";
                                             echo "    <a href='javascript:void(0);' class='supplier-name text-truncate' style='max-width: 180px;' data-bs-toggle='tooltip' title='" . htmlspecialchars($row['supplier_name']) . "'>" . htmlspecialchars($row['supplier_name']) . "</a>";
                                             echo "</td>";
 
-                                            // Email with Tooltip
                                             echo "<td>";
                                             echo "    <span class='text-email text-truncate' style='max-width: 200px;' data-bs-toggle='tooltip' title='" . htmlspecialchars($row['email']) . "'>" . htmlspecialchars($row['email']) . "</span>";
                                             echo "</td>";
 
-                                            // Phone Number
                                             echo "<td><span class='fw-bold'>" . htmlspecialchars($row['phone_number']) . "</span></td>";
 
-                                            // City & Country with Tooltips
                                             echo "<td><div class='text-truncate' style='max-width: 100px;' data-bs-toggle='tooltip' title='" . htmlspecialchars($row['city']) . "'>" . htmlspecialchars($row['city']) . "</div></td>";
                                             echo "<td><div class='text-truncate' style='max-width: 100px;' data-bs-toggle='tooltip' title='" . htmlspecialchars($row['country']) . "'>" . htmlspecialchars($row['country']) . "</div></td>";
 
-                                            // Actions
                                             echo "<td class='action-icons'>";
                                             echo "    <a class='me-3' href='/Backend/src/Pages/supplier/supplierForm.php?supplierId=" . $row['id'] . "' data-bs-toggle='tooltip' title='Edit Supplier'>";
                                             echo "        <img src='/Backend/src/assets/images/icons/edit.svg' alt='edit'>";
@@ -378,7 +373,6 @@ if (isset($_GET['supplierId'])) {
             });
         });
         $(document).ready(function () {
-            // Prevent re-initialization error
             if ($.fn.DataTable.isDataTable('.datanew')) {
                 $('.datanew').DataTable().destroy();
             }
@@ -393,7 +387,6 @@ if (isset($_GET['supplierId'])) {
                 "pageLength": 10,
                 "dom": 'rt<"row mt-3"<"col-md-6"l><"col-md-6 text-end"p>>',
                 "drawCallback": function () {
-                    // Re-initialize tooltips after every table redraw
                     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
                     tooltipTriggerList.map(function (tooltipTriggerEl) {
                         return new bootstrap.Tooltip(tooltipTriggerEl)
@@ -402,7 +395,6 @@ if (isset($_GET['supplierId'])) {
             });
         });
         $(document).ready(function () {
-    // Prevent re-initialization error
     if ($.fn.DataTable.isDataTable('.datanew')) {
         $('.datanew').DataTable().destroy();
     }
@@ -417,14 +409,12 @@ if (isset($_GET['supplierId'])) {
         "pageLength": 10,
         "language": {
             "paginate": {
-                "next": '<i class="bi bi-chevron-right"></i>', // Bootstrap Icons use karein
+                "next": '<i class="bi bi-chevron-right"></i>',
                 "previous": '<i class="bi bi-chevron-left"></i>'
             }
         },
-        // Layout: Table (rt), then Footer Row with Info (i) and Pagination (p)
         "dom": 'rt<"table-footer-row"ip>', 
         "drawCallback": function() {
-            // IMPORTANT: Re-initialize tooltips every time the table pages change
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
             tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl)

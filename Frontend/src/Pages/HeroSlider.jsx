@@ -6,6 +6,8 @@ import image3 from '../assets/images/f099014a-f3f3-4022-a60a-fb049f5fb58a-remove
 import { FaLessThan } from "react-icons/fa6";
 import { FaGreaterThan } from "react-icons/fa6";
 import video from "../assets/images/Cosmetic_Skincare_Product_1080P.mp4";
+import banner from "../assets/images/47.jpg"
+import { FaLongArrowAltRight } from "react-icons/fa";
 
 const HeroSlider = () => {
 
@@ -64,9 +66,13 @@ const HeroSlider = () => {
   return (
     <>
     <div>
-      <video autoPlay loop muted className="w-100 h-100 object-cover">
+      <img src={banner} alt="" className="" style={{width: '1000px', height: '700px', marginLeft: '100px'}}/>
+      <div className="d-flex justify-content-center ">
+      <button className="btn btn-white border border-secondary" style={{marginTop: '-70px'}}>Explore Collection <FaLongArrowAltRight /></button>
+      </div>
+      {/* <video autoPlay loop muted className="w-100 h-100 object-cover">
         <source src={video}/>
-      </video>
+      </video> */}
     </div>
     {/* <div className="carousel">
       <div className="list">
