@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import "../../src/assets/styles/plugins/ProductCards.css";
 import image from '../assets/images/4127915_3-removebg-preview.png';
-import image2 from '../assets/images/47.jpg';
-import image3 from '../assets/images/f099014a-f3f3-4022-a60a-fb049f5fb58a-removebg-preview.png';
+import image2 from '../assets/images/18448-removebg-preview.png';
+import image3 from '../assets/images/9312.jpg';
 import { FaArrowRightLong } from "react-icons/fa6";
 import video from "../assets/images/Cosmetic_Skincare_Product_1080P.mp4";
 import banner from "../assets/images/HeroBanner(1).png";
@@ -82,17 +82,17 @@ const HeroSlider = () => {
 
           <div class="category-grid">
             <div class="category-card">
-              <img src={image} alt="Skincare"></img>
+              <img src={image} alt="Skincare" className="w-100 overflow-hidden"></img>
                 <h3>Skincare</h3>
             </div>
 
-            <div class="category-card">
-            <img src={image2} alt="Skincare"></img>
+            <div className="category-card overflow-hidden">
+            <img src={image2} alt="Skincare" className="w-100" style={{background: 'radial-gradient(circle,rgba(228, 181, 235, 0.8) 15%, rgba(192, 96, 240, 0.8) 100%)'}}></img>
                 <h3>Makeup</h3>
             </div>
 
             <div class="category-card">
-            <img src={image3} alt="Skincare"></img>
+            <img src={image3} alt="Skincare" className="w-100"></img>
                 <h3>Fragrance</h3>
             </div>
 
