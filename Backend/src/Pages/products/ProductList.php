@@ -94,14 +94,12 @@ $result = $con->query($sql);
             display: none !important;
         }
 
-        /* --- Product List Professional Polish --- */
         .card {
             border: none !important;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
             border-radius: 12px !important;
         }
 
-        /* Product Image Styling */
         .productimgname {
             display: flex;
             align-items: center;
@@ -132,7 +130,6 @@ $result = $con->query($sql);
             color: #6792ff;
         }
 
-        /* Table Design */
         .table thead th {
             background-color: #f8f9fa;
             text-transform: uppercase;
@@ -151,7 +148,6 @@ $result = $con->query($sql);
             border-bottom: 1px solid #f1f5f9;
         }
 
-        /* Status Badges */
         .badge {
             padding: 6px 12px;
             font-weight: 600;
@@ -169,7 +165,6 @@ $result = $con->query($sql);
             color: #dc3545;
         }
 
-        /* Action Icons */
         .action-icons a {
             display: inline-flex;
             padding: 8px;
@@ -181,7 +176,6 @@ $result = $con->query($sql);
             background: #f1f5f9;
         }
 
-        /* Pagination Polish */
         .dataTables_paginate .page-link {
             border: none !important;
             padding: 8px 14px;
@@ -192,7 +186,6 @@ $result = $con->query($sql);
 
         .table-responsive {
             overflow-x: hidden !important;
-            /* horizontal scroll hata dega */
         }
 
         .table-responsive {
@@ -209,74 +202,73 @@ $result = $con->query($sql);
             white-space: normal;
             overflow-wrap: break-word;
         }
-        /* Table Cell Polish */
-.table td {
-    vertical-align: middle !important;
-}
 
-/* Ensure tooltips work on truncated divs */
-.text-truncate {
-    display: inline-block;
-    vertical-align: bottom;
-    cursor: help; /* User ko pata chale ki hover karne par info milegi */
-}
-/* --- Professional Pagination Styling --- */
-.dataTables_wrapper .dataTables_paginate {
-    margin-top: 20px;
-    padding-top: 15px;
-    border-top: 1px solid #edf2f9;
-}
+        .table td {
+            vertical-align: middle !important;
+        }
 
-.dataTables_wrapper .dataTables_paginate .paginate_button {
-    padding: 6px 14px !important;
-    margin: 0 3px !important;
-    border: 1px solid #e2e8f0 !important;
-    border-radius: 8px !important;
-    background: #fff !important;
-    color: #64748b !important;
-    font-weight: 600;
-    font-size: 0.85rem;
-    transition: all 0.2s ease;
-}
+        .text-truncate {
+            display: inline-block;
+            vertical-align: bottom;
+            cursor: help;
+        }
 
-.dataTables_wrapper .dataTables_paginate .paginate_button.current,
-.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-    background: #6792ff !important; /* Brancy Blue Theme */
-    color: white !important;
-    border-color: #6792ff !important;
-    box-shadow: 0 4px 10px rgba(103, 146, 255, 0.25);
-}
+        .dataTables_wrapper .dataTables_paginate {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #edf2f9;
+        }
 
-.dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    background: #f8fafc !important;
-}
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 6px 14px !important;
+            margin: 0 3px !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 8px !important;
+            background: #fff !important;
+            color: #64748b !important;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
 
-/* Row alignment for info and pagination */
-.table-footer-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 0;
-}
-div.dataTables_wrapper div.dataTables_length label{
-    display: none;
-}
-/* Ensure the footer row aligns perfectly */
-.table-footer-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 15px;
-    padding: 10px 0;
-}
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background: #6792ff !important;
+            color: white !important;
+            border-color: #6792ff !important;
+            box-shadow: 0 4px 10px rgba(103, 146, 255, 0.25);
+        }
 
-.dataTables_info {
-    font-size: 0.85rem;
-    color: #64748b;
-    font-weight: 500;
-}
+        .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: #f8fafc !important;
+        }
+
+        .table-footer-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        div.dataTables_wrapper div.dataTables_length label {
+            display: none;
+        }
+
+        .table-footer-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding: 10px 0;
+        }
+
+        .dataTables_info {
+            font-size: 0.85rem;
+            color: #64748b;
+            font-weight: 500;
+        }
     </style>
 </head>
 
@@ -338,50 +330,47 @@ div.dataTables_wrapper div.dataTables_length label{
                                     </tr>
                                 </thead>
                                 <tbody>
-                                <?php
-while ($row = $result->fetch_assoc()) {
-    echo "<tr>";
-    echo "<td style='display:none;'>" . $row['id'] . "</td>";
-    
-    // Product Name with Tooltip
-    echo "    <td class='productimgname'>";
-    echo "        <a href='javascript:void(0)' class='product-img'>";
-    echo "            <img src='" . $row['image_path'] . "' alt='product'>";
-    echo "        </a>";
-    echo "        <a href='javascript:void(0);' class='text-truncate' style='max-width: 180px;' data-bs-toggle='tooltip' title='" . htmlspecialchars($row['product_name']) . "'>" . htmlspecialchars($row['product_name']) . "</a>";
-    echo "    </td>";
+                                    <?php
+                                    while ($row = $result->fetch_assoc()) {
+                                        echo "<tr>";
+                                        echo "<td style='display:none;'>" . $row['id'] . "</td>";
 
-    // Category with Max-Width & Tooltip
-    echo "    <td>";
-    echo "        <div class='text-truncate' style='max-width: 120px;' data-bs-toggle='tooltip' title='" . htmlspecialchars($row['category']) . "'>";
-    echo              htmlspecialchars($row['category']);
-    echo "        </div>";
-    echo "    </td>";
+                                        echo "    <td class='productimgname'>";
+                                        echo "        <a href='javascript:void(0)' class='product-img'>";
+                                        echo "            <img src='". $row['image_path'] . "' alt='product'>";
+                                        echo "        </a>";
+                                        echo "        <a href='javascript:void(0);' class='text-truncate' style='max-width: 180px;' data-bs-toggle='tooltip' title='" . htmlspecialchars($row['product_name']) . "'>" . htmlspecialchars($row['product_name']) . "</a>";
+                                        echo "    </td>";
 
-    // Brand with Max-Width & Tooltip
-    echo "    <td>";
-    echo "        <div class='text-truncate' style='max-width: 120px;' data-bs-toggle='tooltip' title='" . htmlspecialchars($row['brand_name']) . "'>";
-    echo              htmlspecialchars($row['brand_name']);
-    echo "        </div>";
-    echo "    </td>";
+                                        echo "    <td>";
+                                        echo "        <div class='text-truncate' style='max-width: 120px;' data-bs-toggle='tooltip' title='" . htmlspecialchars($row['category']) . "'>";
+                                        echo htmlspecialchars($row['category']);
+                                        echo "        </div>";
+                                        echo "    </td>";
 
-    echo "    <td class='fw-bold'>₹ " . number_format($row['price'], 2) . "</td>";
-    echo "    <td><span class='text-muted'>" . $row['quantity'] . " Units</span></td>";
-    
-    $statusClass = strtolower($row['status']) === 'active' ? 'bg-success' : 'bg-danger';
-    echo "<td><span class='badge $statusClass'>" . strtoupper($row['status']) . "</span></td>";
-    
-    echo "    <td class='action-icons'>";
-    echo "        <a class='me-2' href='/Backend/src/Pages/products/addProductForm.php?productId=" . $row['id'] . "' data-bs-toggle='tooltip' title='Edit'>";
-    echo "            <img src='/Backend/src/assets/images/icons/edit.svg' alt='edit' width='18'>";
-    echo "        </a>";
-    echo "        <a class='confirm-delete' href='/Backend/src/Pages/products/ProductList.php?deleteId=" . $row['id'] . "' data-bs-toggle='tooltip' title='Delete'>";
-    echo "            <img src='/Backend/src/assets/images/icons/delete.svg' alt='delete' width='18'>";
-    echo "        </a>";
-    echo "    </td>";
-    echo "</tr>";
-}
-?>
+                                        echo "    <td>";
+                                        echo "        <div class='text-truncate' style='max-width: 120px;' data-bs-toggle='tooltip' title='" . htmlspecialchars($row['brand_name']) . "'>";
+                                        echo htmlspecialchars($row['brand_name']);
+                                        echo "        </div>";
+                                        echo "    </td>";
+
+                                        echo "    <td class='fw-bold'>₹ " . number_format($row['price'], 2) . "</td>";
+                                        echo "    <td><span class='text-muted'>" . $row['quantity'] . " Units</span></td>";
+
+                                        $statusClass = strtolower($row['status']) === 'active' ? 'bg-success' : 'bg-danger';
+                                        echo "<td><span class='badge $statusClass'>" . strtoupper($row['status']) . "</span></td>";
+
+                                        echo "    <td class='action-icons'>";
+                                        echo "        <a class='me-2' href='/Backend/src/Pages/products/addProductForm.php?productId=" . $row['id'] . "' data-bs-toggle='tooltip' title='Edit'>";
+                                        echo "            <img src='/Backend/src/assets/images/icons/edit.svg' alt='edit' width='18'>";
+                                        echo "        </a>";
+                                        echo "        <a class='confirm-delete' href='/Backend/src/Pages/products/ProductList.php?deleteId=" . $row['id'] . "' data-bs-toggle='tooltip' title='Delete'>";
+                                        echo "            <img src='/Backend/src/assets/images/icons/delete.svg' alt='delete' width='18'>";
+                                        echo "        </a>";
+                                        echo "    </td>";
+                                        echo "</tr>";
+                                    }
+                                    ?>
                                 </tbody>
                             </table>
                         </div>
@@ -463,39 +452,39 @@ while ($row = $result->fetch_assoc()) {
     </script>
     <script>
         $(document).ready(function () {
-    // Prevent re-initialization error
-    if ($.fn.DataTable.isDataTable('.datanew')) {
-        $('.datanew').DataTable().destroy();
-    }
+            // Prevent re-initialization error
+            if ($.fn.DataTable.isDataTable('.datanew')) {
+                $('.datanew').DataTable().destroy();
+            }
 
-    $('.datanew').DataTable({
-        "order": [[0, 'desc']],
-        "columnDefs": [
-            { targets: 0, visible: false, searchable: false },
-            { targets: '_all', orderable: true }
-        ],
-        "autoWidth": false,
-        "pageLength": 10,
-        "searching": false,      // Top Right Search Hata diya
-        "lengthChange": false,   // Top Left Entries Dropdown Hata diya
-        "language": {
-            "paginate": {
-                "next": '<i class="bi bi-chevron-right"></i>',
-                "previous": '<i class="bi bi-chevron-left"></i>'
-            },
-            "info": "Showing _START_ to _END_ of _TOTAL_ products"
-        },
-        // 'rt' = Table only, 'i' = Info, 'p' = Pagination
-        "dom": 'rt<"table-footer-row"ip>', 
-        "drawCallback": function() {
-            // Re-initialize tooltips after every table redraw
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-            tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl)
+            $('.datanew').DataTable({
+                "order": [[0, 'desc']],
+                "columnDefs": [
+                    { targets: 0, visible: false, searchable: false },
+                    { targets: '_all', orderable: true }
+                ],
+                "autoWidth": false,
+                "pageLength": 10,
+                "searching": false,      // Top Right Search Hata diya
+                "lengthChange": false,   // Top Left Entries Dropdown Hata diya
+                "language": {
+                    "paginate": {
+                        "next": '<i class="bi bi-chevron-right"></i>',
+                        "previous": '<i class="bi bi-chevron-left"></i>'
+                    },
+                    "info": "Showing _START_ to _END_ of _TOTAL_ products"
+                },
+                // 'rt' = Table only, 'i' = Info, 'p' = Pagination
+                "dom": 'rt<"table-footer-row"ip>',
+                "drawCallback": function () {
+                    // Re-initialize tooltips after every table redraw
+                    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+                    tooltipTriggerList.map(function (tooltipTriggerEl) {
+                        return new bootstrap.Tooltip(tooltipTriggerEl)
+                    });
+                }
             });
-        }
-    });
-});
+        });
     </script>
 </body>
 

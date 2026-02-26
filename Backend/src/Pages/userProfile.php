@@ -47,8 +47,8 @@ if (!empty($_FILES['profile_image']['name'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
 
     $username = trim($_POST['username']);
-    $email    = trim($_POST['email']);
-    $phone    = trim($_POST['phone']);
+    $email = trim($_POST['email']);
+    $phone = trim($_POST['phone']);
     $password = $_POST['password'];
 
     if (!empty($_FILES['profile_image']['name'])) {
@@ -88,7 +88,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
     <meta name="description" content="POS - Bootstrap Admin Template">
-    <meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern,  html5, responsive">
+    <meta name="keywords"
+        content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern,  html5, responsive">
     <meta name="author" content="Dreamguys - Bootstrap Admin Template">
     <meta name="robots" content="noindex, nofollow">
     <title>User Profile</title>
@@ -96,108 +97,109 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
         .parsley-custom-error-message {
             color: #f94a4a;
         }
+
         /* --- User Profile Professional Polish --- */
-:root {
-    --primary-blue: #6792ff;
-    --border-color: #e2e8f0;
-    --text-dark: #2d3748;
-}
+        :root {
+            --primary-blue: #6792ff;
+            --border-color: #e2e8f0;
+            --text-dark: #2d3748;
+        }
 
-.card {
-    border: none !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-    border-radius: 16px !important;
-}
+        .card {
+            border: none !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border-radius: 16px !important;
+        }
 
-/* Profile Header Section */
-.profile-content {
-    display: flex;
-    align-items: center;
-    gap: 25px;
-    padding-bottom: 30px;
-    border-bottom: 1px solid var(--border-color);
-    margin-bottom: 30px;
-}
+        /* Profile Header Section */
+        .profile-content {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 30px;
+        }
 
-.profile-contentimg {
-    position: relative;
-    width: 120px;
-    height: 120px;
-}
+        .profile-contentimg {
+            position: relative;
+            width: 120px;
+            height: 120px;
+        }
 
-.profile-contentimg img#blah {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 4px solid #fff;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
+        .profile-contentimg img#blah {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
 
-.profileupload {
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-}
+        .profileupload {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+        }
 
-.profileupload a {
-    background: var(--primary-blue);
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
+        .profileupload a {
+            background: var(--primary-blue);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
 
-.profile-contentname h2 {
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: var(--text-dark);
-    margin-bottom: 4px;
-}
+        .profile-contentname h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
 
-.profile-contentname h4 {
-    font-size: 0.9rem;
-    color: #718096;
-    font-weight: 400;
-}
+        .profile-contentname h4 {
+            font-size: 0.9rem;
+            color: #718096;
+            font-weight: 400;
+        }
 
-/* Form Styling */
-.form-group label {
-    font-weight: 600;
-    color: #4a5568;
-    font-size: 0.85rem;
-    margin-bottom: 8px;
-    display: block;
-}
+        /* Form Styling */
+        .form-group label {
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            display: block;
+        }
 
-.form-group input {
-    border: 1px solid var(--border-color) !important;
-    border-radius: 8px !important;
-    padding: 12px 15px !important;
-    background-color: #f8fafc !important;
-    font-size: 0.9rem !important;
-    transition: all 0.2s ease;
-}
+        .form-group input {
+            border: 1px solid var(--border-color) !important;
+            border-radius: 8px !important;
+            padding: 12px 15px !important;
+            background-color: #f8fafc !important;
+            font-size: 0.9rem !important;
+            transition: all 0.2s ease;
+        }
 
-.form-group input:focus {
-    border-color: var(--primary-blue) !important;
-    background-color: #fff !important;
-    box-shadow: 0 0 0 3px rgba(103, 146, 255, 0.1) !important;
-}
+        .form-group input:focus {
+            border-color: var(--primary-blue) !important;
+            background-color: #fff !important;
+            box-shadow: 0 0 0 3px rgba(103, 146, 255, 0.1) !important;
+        }
 
-/* Button Styling */
-.btn-submit {
-    background: var(--primary-blue) !important;
-    color: #fff !important;
-    font-weight: 700;
-    padding: 12px 30px;
-    border-radius: 8px;
-    border: none;
-    box-shadow: 0 4px 12px rgba(103, 146, 255, 0.25);
-}
+        /* Button Styling */
+        .btn-submit {
+            background: var(--primary-blue) !important;
+            color: #fff !important;
+            font-weight: 700;
+            padding: 12px 30px;
+            border-radius: 8px;
+            border: none;
+            box-shadow: 0 4px 12px rgba(103, 146, 255, 0.25);
+        }
     </style>
 </head>
 
@@ -215,92 +217,102 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
             </div>
         </div>
         <div class="page-wrapper">
-    <div class="content">
-        <div class="page-header">
-            <div class="page-title">
-                <h4 class="fw-bold">My Account</h4>
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb" style="font-size: 0.85rem;">
-                        <li class="breadcrumb-item"><a href="Dashboard.php" class="text-primary">Dashboard</a></li>
-                        <li class="breadcrumb-item active">Profile Settings</li>
-                    </ol>
-                </nav>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-body p-4">
-                <form method="POST" enctype="multipart/form-data" data-parsley-validate>
-                    <div class="profile-content">
-                        <div class="profile-contentimg">
-                            <img src="<?= htmlspecialchars($profileImg) ?>" alt="Profile" id="blah">
-                            <div class="profileupload">
-                                <input type="file" name="profile_image" id="imgInp" accept="image/*" hidden>
-                                <a href="javascript:void(0);" onclick="document.getElementById('imgInp').click()">
-                                    <img src="/Backend/src/assets/images/icons/edit-set.svg" alt="edit" style="width: 16px;">
-                                </a>
-                            </div>
-                        </div>
-                        <div class="profile-contentname">
-                            <h2><?= htmlspecialchars($user['user_name']) ?></h2>
-                            <h4>Administrator • <?= htmlspecialchars($user['user_email']) ?></h4>
-                        </div>
+            <div class="content">
+                <div class="page-header">
+                    <div class="page-title">
+                        <h4 class="fw-bold">My Account</h4>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb" style="font-size: 0.85rem;">
+                                <li class="breadcrumb-item"><a href="Dashboard.php" class="text-primary">Dashboard</a>
+                                </li>
+                                <li class="breadcrumb-item active">Profile Settings</li>
+                            </ol>
+                        </nav>
                     </div>
+                </div>
 
-                    <h5 class="mb-4 text-primary fs-6 fw-bold">Personal Information</h5>
-                    <div class="row g-4">
-                        <div class="col-lg-6 col-sm-12">
-                            <div class="form-group">
-                                <label>Full Name</label>
-                                <input type="text" id="userName" name="username" class="form-control" 
-                                       value="<?= htmlspecialchars($user['user_name']); ?>" required>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-6 col-sm-12">
-                            <div class="form-group">
-                                <label>Email Address</label>
-                                <input type="email" name="email" id="userEmail" class="form-control" 
-                                       value="<?= htmlspecialchars($user['user_email']); ?>" required>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-6 col-sm-12">
-                            <div class="form-group">
-                                <label>Mobile Number</label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-white border-end-0">+91</span>
-                                    <input type="text" name="phone" id="contact" class="form-control border-start-0" 
-                                           value="<?= htmlspecialchars($user['user_contact']); ?>" required>
+                <div class="card">
+                    <div class="card-body p-4">
+                        <form method="POST" enctype="multipart/form-data" data-parsley-validate>
+                            <div class="profile-content">
+                                <div class="profile-contentimg">
+                                    <img src="<?= htmlspecialchars($profileImg) ?>" alt="Profile" id="blah">
+                                    <div class="profileupload">
+                                        <input type="file" name="profile_image" id="imgInp" accept="image/*" hidden>
+                                        <a href="javascript:void(0);"
+                                            onclick="document.getElementById('imgInp').click()">
+                                            <img src="/Backend/src/assets/images/icons/edit-set.svg" alt="edit"
+                                                style="width: 16px;">
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="profile-contentname">
+                                    <h2><?= htmlspecialchars($user['user_name']) ?></h2>
+                                    <h4>Administrator • <?= htmlspecialchars($user['user_email']) ?></h4>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="col-lg-6 col-sm-12">
-                            <div class="form-group">
-                                <label>Account Role</label>
-                                <input type="text" class="form-control text-muted" 
-                                       value="<?= htmlspecialchars($user['user_role']); ?>" readonly>
+                            <h5 class="mb-4 text-primary fs-6 fw-bold">Personal Information</h5>
+                            <div class="row g-4">
+                                <div class="col-lg-6 col-sm-12">
+                                    <div class="form-group">
+                                        <label>Full Name</label>
+                                        <input type="text" id="userName" name="username" class="form-control"
+                                            value="<?= htmlspecialchars($user['user_name']); ?>" required>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 col-sm-12">
+                                    <div class="form-group">
+                                        <label>Email Address</label>
+                                        <input type="email" name="email" id="userEmail" class="form-control"
+                                            value="<?= htmlspecialchars($user['user_email']); ?>" required>
+
+                                        <div id="emailError" class="text-danger small mt-1"></div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 col-sm-12">
+                                    <div class="form-group">
+                                        <label>Mobile Number</label>
+
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-white border-end-0">+91</span>
+                                            <input type="text" name="phone" id="contact"
+                                                class="form-control border-start-0"
+                                                value="<?= htmlspecialchars($user['user_contact']); ?>" required>
+                                        </div>
+
+                                        <div id="phoneError" class="text-danger small mt-1"></div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 col-sm-12">
+                                    <div class="form-group">
+                                        <label>Account Role</label>
+                                        <input type="text" class="form-control text-muted"
+                                            value="<?= htmlspecialchars($user['user_role']); ?>" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 d-flex justify-content-end mt-5 pt-3 border-top">
+                                    <button type="submit" name="update_profile" class="btn btn-submit">Save
+                                        Changes</button>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="col-12 d-flex justify-content-end mt-5 pt-3 border-top">
-                            <button type="submit" name="update_profile" class="btn btn-submit">Save Changes</button>
-                        </div>
+                        </form>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
-    </div>
     <script>
-        $('#userName').on('input', function() {
+        $('#userName').on('input', function () {
             let value = $(this).val();
             value = value.replace(/[^a-zA-Z\s]/g, '');
             $(this).val(value);
         });
-        $('#contact').on('input', function() {
+        $('#contact').on('input', function () {
             let value = $(this).val();
             value = value.replace(/[^0-9]/g, '');
             if (value.length === 1 && !/^[6-9]$/.test(value)) {
@@ -312,7 +324,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
 
             $(this).val(value);
         });
-        $('#userEmail').on('input', function() {
+        $('#userEmail').on('input', function () {
             let value = $(this).val();
 
             value = value.replace(/[^a-zA-Z0-9@.]/g, '');
@@ -322,6 +334,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
             }
 
             $(this).val(value);
+        });
+    </script>
+    <script>
+        let emailValid = true;
+        let phoneValid = true;
+
+        // EMAIL CHECK
+        $('#userEmail').on('blur', function () {
+            let email = $(this).val().trim();
+
+            if (!email) return;
+
+            $.post('check_profile_exists.php', {
+                type: 'email',
+                value: email
+            }, function (res) {
+                let data = JSON.parse(res);
+
+                if (data.exists) {
+                    $('#emailError').text('Email already exists');
+                    emailValid = false;
+                } else {
+                    $('#emailError').text('');
+                    emailValid = true;
+                }
+            });
+        });
+
+        // PHONE CHECK
+        $('#contact').on('blur', function () {
+            let phone = $(this).val().trim();
+
+            if (!phone) return;
+
+            $.post('check_profile_exists.php', {
+                type: 'phone',
+                value: phone
+            }, function (res) {
+                let data = JSON.parse(res);
+
+                if (data.exists) {
+                    $('#phoneError').text('Phone number already exists');
+                    phoneValid = false;
+                } else {
+                    $('#phoneError').text('');
+                    phoneValid = true;
+                }
+            });
+        });
+
+        $('form').on('submit', function (e) {
+            if (!emailValid || !phoneValid) {
+                e.preventDefault();
+            }
         });
     </script>
 </body>

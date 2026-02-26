@@ -185,6 +185,10 @@ if (isset($_POST['submit'])) {
             margin-top: 4px;
             font-weight: 500;
         }
+
+        .parsley-custom-error-message {
+            color: #DC3545 !important;
+        }
     </style>
 </head>
 
@@ -242,11 +246,20 @@ if (isset($_POST['submit'])) {
                                         <div class="col-lg-4 col-sm-6 mb-3">
                                             <div class="form-group">
                                                 <label>Email Address <span class="text-danger">*</span></label>
+
                                                 <input type="text" id="supplierMail" name="supplierEmail"
-                                                    class="form-control" value="<?= htmlspecialchars($email) ?>"
+                                                    class="form-control <?= $emailError ? 'is-invalid' : '' ?>"
+                                                    value="<?= htmlspecialchars($email) ?>"
                                                     placeholder="contact@supplier.com" data-parsley-required="true"
                                                     data-parsley-type="email"
-                                                    data-parsley-error-message="Please enter a valid email address.">
+                                                    data-parsley-error-message="Please enter a valid email address."
+                                                    data-parsley-error-container="#emailError">
+
+                                                <?php if (!empty($emailError)): ?>
+                                                    <div class="text-danger small mt-1">
+                                                        <?= $emailError ?>
+                                                    </div>
+                                                <?php endif; ?>
                                             </div>
                                         </div>
                                         <div class="col-lg-4 col-sm-6 mb-3">
@@ -256,15 +269,18 @@ if (isset($_POST['submit'])) {
                                                 <div class="input-group">
                                                     <span class="input-group-text">+91</span>
                                                     <input type="text" id="contact" name="phoneNumber"
-                                                        class="form-control" value="<?= htmlspecialchars($contact) ?>"
+                                                        class="form-control <?= !empty($contactError) ? 'is-invalid' : '' ?>"
+                                                        value="<?= htmlspecialchars($contact) ?>"
                                                         placeholder="9876543210" maxlength="10"
                                                         data-parsley-required="true" data-parsley-type="digits"
                                                         data-parsley-length="[10,10]"
-                                                        data-parsley-error-container="#contactError"
-                                                        data-parsley-error-message="Please enter a valid 10-digit phone number">
+                                                        data-parsley-error-message="Please enter a valid 10-digit phone number."
+                                                        data-parsley-errors-container="#contactError">
                                                 </div>
 
-                                                <div id="contactError" class="text-danger small mt-1"></div>
+                                                <div id="contactError" class="text-danger small mt-1">
+                                                    <?= !empty($contactError) ? $contactError : '' ?>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -372,18 +388,18 @@ if (isset($_POST['submit'])) {
         });
     </script>
     <script>
-$('#myForm').parsley({
-    errorsContainer: function (parsleyField) {
-        let el = parsleyField.$element;
+        $('#myForm').parsley({
+            errorsContainer: function (parsleyField) {
+                let el = parsleyField.$element;
 
-        if (el.closest('.input-group').length) {
-            return el.closest('.form-group').find('.text-danger');
-        }
-    },
-    errorsWrapper: '<div></div>',
-    errorTemplate: '<div></div>'
-});
-</script>
+                if (el.closest('.input-group').length) {
+                    return el.closest('.form-group').find('.text-danger');
+                }
+            },
+            errorsWrapper: '<div></div>',
+            errorTemplate: '<div></div>'
+        });
+    </script>
 </body>
 
 </html>

@@ -79,7 +79,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <style>
-        /* Select2 ko modern look dene ke liye styling */
         .select2-container--default .select2-selection--multiple {
             border: 1px solid var(--border-color) !important;
             border-radius: 8px !important;
@@ -111,14 +110,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: orangered;
         }
 
-        /* --- Add Category Professional Overhaul --- */
         :root {
             --primary-blue: #6792ff;
             --border-color: #e2e8f0;
             --bg-light: #f8fafc;
         }
 
-        /* Card & Form container */
         .card {
             border: none !important;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
@@ -133,7 +130,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             display: block;
         }
 
-        /* Modern Inputs */
         .form-control,
         .form-select {
             border: 1px solid var(--border-color) !important;
@@ -152,7 +148,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             outline: none;
         }
 
-        /* Image Upload Zone */
         .image-upload-new {
             border: 2px dashed #cbd5e0;
             border-radius: 12px;
@@ -175,7 +170,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             object-fit: contain;
         }
 
-        /* Button Styling */
         .btn-submit {
             background: var(--primary-blue) !important;
             border: none;
@@ -195,13 +189,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border-radius: 8px;
         }
 
-        /* Parsley Validation Errors */
         .parsley-errors-list {
             list-style: none;
             padding: 0;
             margin: 4px 0 0 0;
             font-size: 0.75rem;
             color: #e53e3e;
+        }
+
+        .select2-selection__choice {
+            background: linear-gradient(135deg, #6792ff, #4f46e5) !important;
+            color: #fff !important;
+            font-weight: 600;
+            border-radius: 20px !important;
+            padding: 4px 12px !important;
+            margin-top: 6px !important;
+        }
+
+        .select2-selection__choice__remove {
+            color: #fff !important;
+            margin-right: 6px !important;
+            font-weight: bold;
+        }
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__display{
+            padding-left: 12px !important;
+        }
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove{
+            left: 2px !important;
+            top: 4px !important;
+            background: none !important;
         }
     </style>
 </head>
@@ -229,7 +245,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <li class="breadcrumb-item"><a href="/Backend/src/Pages/category.php"
                                         class="text-primary">Inventory</a></li>
                                 <li class="breadcrumb-item active">
-                                    <?= $categoryId ? 'Modify Category' : 'Add Category' ?></li>
+                                    <?= $categoryId ? 'Modify Category' : 'Add Category' ?>
+                                </li>
                             </ol>
                         </nav>
                     </div>
@@ -250,15 +267,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <label for="categoryName">Category Name <span
                                                 class="text-danger">*</span></label>
                                         <input type="text" class="form-control" id="categoryName" name="categoryname"
-                                            value="<?= htmlspecialchars($editData['category'] ?? '') ?>" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')"
-                                            placeholder="e.g. Skincare, Makeup" data-parsley-required="true" data-parsley-trigger="change" data-parsley-error-message="Category name is required.">
+                                            value="<?= htmlspecialchars($editData['category'] ?? '') ?>"
+                                            oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')"
+                                            placeholder="e.g. Skincare, Makeup" data-parsley-required="true"
+                                            data-parsley-trigger="change"
+                                            data-parsley-error-message="Category name is required.">
                                     </div>
 
                                     <div class="form-group mb-4">
                                         <label for="brandName">Associated Brands <span
                                                 class="text-danger">*</span></label>
-                                        <select class="form-control select2-tags" id="brandName" name="brandname[]" oninput="this.value = this.value.replace(/[^a-zA-Z\s.&-]/g, '')"
-                                            multiple="multiple" data-parsley-required="true" data-parsley-trigger="change" data-parsley-error-message="Please select at least one brand." data-parsley-errors-container="#brandError">
+                                        <select class="form-control select2-tags" id="brandName" name="brandname[]"
+                                            multiple="multiple" data-parsley-required="true"
+                                            data-parsley-trigger="change"
+                                            data-parsley-error-message="Please select at least one brand."
+                                            data-parsley-errors-container="#brandError">
                                             <?php
                                             if (!empty($editData['brands'])) {
                                                 // Database se comma separated brands ko array mein badalna
@@ -270,7 +293,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             }
                                             ?>
                                         </select>
-                                        <small class="text-muted" style="font-size: 0.7rem;">Likhiye aur Enter dabaiye
+                                        <small class="text-muted" style="font-size: 0.7rem;">write and press enter
                                             (e.g. L'Oreal, Lakme)</small>
                                         <div id="brandError"></div>
                                     </div>
@@ -287,12 +310,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </div>
 
                                     <div class="form-group">
-                                        <label>Category Thumbnail</label>
+                                        <label>Category Thumbnail <span class="text-danger">*</span></label>
                                         <div class="image-upload-new"
                                             style="display: flex; justify-content: center; align-items: center;"
                                             onclick="document.getElementById('uploadImage').click()">
                                             <input type="file" id="uploadImage" name="uploadImage" accept="image/*"
-                                                hidden>
+                                                hidden data-parsley-required="true"
+                                                data-parsley-error-message="Image field required"
+                                                data-parsley-errors-container="#imageError">
                                             <div id="uploadBox">
                                                 <img src="<?= !empty($editData['image_path']) ? htmlspecialchars($editData['image_path']) : '/Backend/src/assets/images/icons/upload.svg' ?>"
                                                     id="previewImg" alt="img">
@@ -301,6 +326,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                 </h4>
                                             </div>
                                         </div>
+                                        <div id="imageError"></div>
                                     </div>
                                 </div>
                             </div>
@@ -325,29 +351,73 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
     <script>
-        document.getElementById('uploadImage').addEventListener('change', function () {
-            const file = this.files[0];
+const imageInput = document.getElementById('uploadImage');
+const imageError = document.getElementById('imageError');
+const fileNameEl = document.getElementById('fileName');
+const previewImg = document.getElementById('previewImg');
 
-            if (!file) return;
+imageInput.addEventListener('change', function () {
+    const file = this.files[0];
 
-            const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+    // Clear previous error
+    imageError.innerHTML = '';
 
-            if (!allowedTypes.includes(file.type)) {
-                alert('Sirf JPG, PNG, WEBP image allowed hai');
-                this.value = '';
-                return;
-            }
+    if (!file) return;
 
-            document.getElementById('fileName').innerText = file.name;
+    // ✅ Allowed file types
+    const allowedTypes = [
+        'image/jpeg',
+        'image/jpg',
+        'image/png',
+        'image/webp',
+        'image/svg+xml'
+    ];
 
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                document.getElementById('previewImg').src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        });
+    // ✅ Size limits
+    const minSize = 100 * 1024;       // 100 KB
+    const maxSize = 5 * 1024 * 1024;  // 5 MB
 
-    </script>
+    // ❌ Type validation
+    if (!allowedTypes.includes(file.type)) {
+        showImageError('Only JPG, JPEG, PNG, WEBP, SVG files are allowed');
+        resetImage();
+        return;
+    }
+
+    // ❌ Minimum size validation
+    if (file.size < minSize) {
+        showImageError('Image size must be at least 100 KB');
+        resetImage();
+        return;
+    }
+
+    // ❌ Maximum size validation
+    if (file.size > maxSize) {
+        showImageError('Image size must not exceed 5 MB');
+        resetImage();
+        return;
+    }
+
+    // ✅ Valid image
+    fileNameEl.innerText = file.name;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        previewImg.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+});
+
+function showImageError(message) {
+    imageError.innerHTML = `<span class="text-danger" style="font-size:12px;">${message}</span>`;
+}
+
+function resetImage() {
+    imageInput.value = '';
+    fileNameEl.innerText = 'Drag & drop category icon';
+    previewImg.src = '/Backend/src/assets/images/icons/upload.svg';
+}
+</script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
