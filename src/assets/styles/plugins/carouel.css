@@ -1,0 +1,55 @@
+.category-carousel {
+    background: linear-gradient(135deg, #fde4ec, #ffffff);
+    padding: 80px 0;
+  }
+  
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 600;
+    color: #2b2b2b;
+  }
+  
+  .category-card {
+    position: relative;
+    height: 220px;
+    border-radius: 28px;
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(14px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 20px 50px rgba(232, 90, 138, 0.2);
+    transition: all 0.4s ease;
+    text-decoration: none;
+  }
+  
+  .category-card:hover {
+    transform: translateY(-12px) scale(1.05);
+    box-shadow: 0 35px 80px rgba(232, 90, 138, 0.35);
+  }
+  
+  .category-card img {
+    width: 90px;
+    margin-bottom: 16px;
+  }
+  
+  .category-card h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: #e85a8a;
+  }
+  
+  .category-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: #e85a8a;
+    color: #fff;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+  }
