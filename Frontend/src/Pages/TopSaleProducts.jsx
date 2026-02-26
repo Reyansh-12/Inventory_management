@@ -40,7 +40,7 @@ const TopSaleProducts = () => {
           <div className="container">
             <div className="row mb-n4 mb-sm-n10 g-3 g-sm-6">
               {firstSix.map((product) => (
-                <div className="col-6 col-lg-4 mb-4 mb-sm-8" key={product.id}>
+                <div className="col-6 col-lg-3 mb-4 mb-sm-8" key={product.id}>
                   <div className="product-item text-start">
                     <div className="product-thumb">
                       <a className="d-block" href="product-details.html"></a>
