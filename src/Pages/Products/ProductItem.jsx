@@ -7,6 +7,7 @@ import shop4 from "../../assets/images/shop/category/4-removebg-preview.png";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import '../../assets/styles/plugins/ProductCards.css';
+import image from '../../assets/images/secondSection.png';
 
 const ProductItem = ({ product }) => {
   const navigate = useNavigate();
@@ -14,8 +15,6 @@ const ProductItem = ({ product }) => {
   const discountPercent = product?.discount;
   const originalPrice = product?.price;
   const discountedPrice = originalPrice - (originalPrice * discountPercent) / 100;
-
-  console.log("Product received in ProductItem:", product);
 
   const addToCart = (id) => {
     if (!id) {
@@ -41,21 +40,23 @@ const ProductItem = ({ product }) => {
   return (
     <>
       <div className="product-card-wrapper">
-        <div className="product-card position-relative">
+        <div className="product-card p-0 overflow-hidden shadow border border-1 position-relative">
+          <div style={{background: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center'}} className="position-relative">
           {product.quantity === 0 && (
             <span className="sale-badge">SALE OUT</span>
           )}
-          <button className="wishlist-btn" onClick={() => toast.success("Added to wishlist!")}>
+          {/* <button className="wishlist-btn" onClick={() => toast.success("Added to wishlist!")}>
             <FaRegHeart />
-          </button>
+          </button> */}
           <Link to={`/product/${product.id}`}>
             <img
               src={product?.image || shop4}
               onError={(e) => (e.target.src = shop4)}
               alt={product?.name}
-              className="product-img"
+              className="product-img w-100" 
             />
           </Link>
+          </div>
           <div className="product-body">
             <h4 className="product-title" title={product?.name}>
               {product?.name}

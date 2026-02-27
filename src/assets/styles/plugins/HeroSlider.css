@@ -1,6 +1,6 @@
 
 .category-section {
-  padding: 80px 6%;
+  padding: 30px 3%;
   background: linear-gradient(135deg, #fde4ec, #fff);
   text-align: center;
 }
@@ -27,7 +27,7 @@
 }
 
 .category-card:hover {
-  transform: translateY(-12px);
+  transform: translateY(-10px);
   box-shadow: 0 30px 60px rgba(232, 90, 138, 0.3);
 }
 
@@ -42,4 +42,75 @@
   color: #e85a8a;
   font-weight: 600;
   margin-bottom: 15px;
+}
+
+
+
+
+.button {
+  position: relative;
+  overflow: hidden;
+  border-radius: 6.25rem;
+  padding: 0.9rem 1.6rem;
+  font-weight: 600;
+  color: rgba(227,39,95,1);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.button--stroke::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 2px solid rgba(227,39,95,1);
+  border-radius: 6.25rem;
+  pointer-events: none;
+}
+
+.button__label {
+  position: relative;
+  z-index: 2;
+}
+
+.button__flair {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transform: scale(0);
+  transform-origin: 0 0;
+}
+
+.button__flair::before {
+  content: "";
+  position: absolute;
+  width: 170%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(
+    90deg,
+    rgba(227, 39, 95, 1) 50%,
+    rgba(245, 137, 164, 1) 100%
+  );
+  
+}
+.button--stroke:hover .button__label {
+  color: white;
+}
+
+
+
+.tilt-card {
+  position: relative;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.card-glare {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  border-radius: 17px;
 }

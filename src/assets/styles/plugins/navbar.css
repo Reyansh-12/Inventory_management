@@ -1,0 +1,19 @@
+.hover-link {
+    overflow: hidden;
+  }
+  
+  .text-wrap {
+    height: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  
+  .text {
+    line-height: 20px;
+    display: block;
+  }
+  
+  .text-2 {
+    transform: translateY(20px);
+  }

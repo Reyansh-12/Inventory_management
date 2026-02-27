@@ -1,107 +1,326 @@
-import { useEffect } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+
+import "../assets/styles/plugins/HeroSlider.css";
 import "../../src/assets/styles/plugins/ProductCards.css";
-import image from '../assets/images/4127915_3-removebg-preview.png';
-import image2 from '../assets/images/18448-removebg-preview.png';
-import image3 from '../assets/images/9312.jpg';
-import { FaArrowRightLong } from "react-icons/fa6";
-import video from "../assets/images/Cosmetic_Skincare_Product_1080P.mp4";
+
 import banner from "../assets/images/HeroBanner(1).png";
 import textLogo from "../assets/images/textLogo-removebg-preview.png";
 import second from "../assets/images/secondSection.png";
-import '../assets/styles/plugins/HeroSlider.css';
+import image2 from "../assets/images/18448-removebg-preview.png";
+
+import { FaArrowRightLong } from "react-icons/fa6";
+import ProductItem from "@/Pages/Products/ProductItem.jsx";
+import gsap from "gsap";
 
 const HeroSlider = () => {
+  const [products, setProducts] = useState([]);
+  const navigate = useNavigate();
+  const scrollRef = useRef(null);
+  const cardRefs = useRef([]);
 
   useEffect(() => {
-    const list = document.querySelectorAll('.carousel .list .item');
-    const carousel = document.querySelector('.carousel');
-    const next = document.getElementById('next');
-    const prev = document.getElementById('prev');
-    const mockup = document.querySelector('.mockup');
-
-    if (!list.length || !next || !prev) return;
-
-    let count = list.length;
-    let active = 0;
-    let leftMockup = 0;
-    let left_each_item = 100 / (count - 1);
-    let refreshInterval;
-
-    const changeCarousel = () => {
-      const hidden_old = document.querySelector('.item.hidden');
-      if (hidden_old) hidden_old.classList.remove('hidden');
-
-      const active_old = document.querySelector('.item.active');
-      if (active_old) {
-        active_old.classList.remove('active');
-        active_old.classList.add('hidden');
-      }
-
-      list[active].classList.add('active');
-      mockup.style.setProperty('--left', leftMockup + '%');
-
-      clearInterval(refreshInterval);
-      refreshInterval = setInterval(() => next.click(), 3000);
-    };
-
-    next.onclick = () => {
-      active = active >= count - 1 ? 0 : active + 1;
-      leftMockup += left_each_item;
-      carousel.classList.remove('right');
-      changeCarousel();
-    };
-
-    prev.onclick = () => {
-      active = active <= 0 ? count - 1 : active - 1;
-      leftMockup -= left_each_item;
-      carousel.classList.add('right');
-      changeCarousel();
-    };
-
-    refreshInterval = setInterval(() => next.click(), 3000);
-
-    return () => clearInterval(refreshInterval);
-
+    fetch(
+      "http://localhost/Inventory_management/Backend/src/Pages/APIs/productListAPI.php"
+    )
+      .then((res) => res.json())
+      .then(setProducts)
+      .catch((err) => console.error("API Error:", err));
   }, []);
 
+  const normalize = (value) =>
+    value?.toLowerCase().replace(/\s+/g, "");
+
+  const categories = [...new Set(products.map((p) => p.category))];
+
+  const scrollAmount = 240;
+
+  const handleNext = () => {
+    scrollRef.current?.scrollBy({
+      left: scrollAmount,
+      behavior: "smooth",
+    });
+  };
+
+  const handlePrev = () => {
+    scrollRef.current?.scrollBy({
+      left: -scrollAmount,
+      behavior: "smooth",
+    });
+  };
+
+  const handleCategoryClick = (category) => {
+    navigate(`/shop?category=${encodeURIComponent(category)}`);
+  };
+  const buttonRef = useRef(null);
+
+  useEffect(() => {
+    const button = buttonRef.current;
+    const flair = button.querySelector(".button__flair");
+
+    const xSet = gsap.quickSetter(flair, "xPercent");
+    const ySet = gsap.quickSetter(flair, "yPercent");
+
+    const getXY = (e) => {
+      const { left, top, width, height } = button.getBoundingClientRect();
+
+      const x = gsap.utils.clamp(
+        0,
+        100,
+        gsap.utils.mapRange(0, width, 0, 100, e.clientX - left)
+      );
+
+      const y = gsap.utils.clamp(
+        0,
+        100,
+        gsap.utils.mapRange(0, height, 0, 100, e.clientY - top)
+      );
+
+      return { x, y };
+    };
+
+    const onEnter = (e) => {
+      const { x, y } = getXY(e);
+      xSet(x);
+      ySet(y);
+
+      gsap.to(flair, {
+        scale: 1,
+        duration: 0.4,
+        ease: "power2.out",
+      });
+    };
+
+    const onLeave = (e) => {
+      const { x, y } = getXY(e);
+
+      gsap.killTweensOf(flair);
+
+      gsap.to(flair, {
+        xPercent: x > 90 ? x + 20 : x < 10 ? x - 20 : x,
+        yPercent: y > 90 ? y + 20 : y < 10 ? y - 20 : y,
+        scale: 0,
+        duration: 0.3,
+        ease: "power2.out",
+      });
+    };
+
+    const onMove = (e) => {
+      const { x, y } = getXY(e);
+
+      gsap.to(flair, {
+        xPercent: x,
+        yPercent: y,
+        duration: 0.4,
+        ease: "power2",
+      });
+    };
+
+    button.addEventListener("mouseenter", onEnter);
+    button.addEventListener("mouseleave", onLeave);
+    button.addEventListener("mousemove", onMove);
+
+    return () => {
+      button.removeEventListener("mouseenter", onEnter);
+      button.removeEventListener("mouseleave", onLeave);
+      button.removeEventListener("mousemove", onMove);
+    };
+  }, []);
+  useEffect(() => {
+    cardRefs.current.forEach((card) => {
+      if (!card) return;
+
+      const glare = card.querySelector(".card-glare");
+      let bounds;
+      let lastShadow = { x: 0, y: 0, blur: 20 };
+
+      const move = (e) => {
+        const mouseX = e.clientX;
+        const mouseY = e.clientY;
+
+        const leftX = mouseX - bounds.left;
+        const topY = mouseY - bounds.top;
+
+        const center = {
+          x: leftX - bounds.width / 2,
+          y: topY - bounds.height / 2,
+        };
+
+        const distance = Math.sqrt(center.x ** 2 + center.y ** 2);
+
+        const rotX = center.y / 40;
+        const rotY = -center.x / 40;
+
+        const shadowX = -rotY * 5;
+        const shadowY = rotX * 5;
+        const shadowBlur = 20 + distance / 120;
+
+        lastShadow = { x: shadowX, y: shadowY, blur: shadowBlur };
+
+        gsap.to(card, {
+          rotationX: rotX,
+          rotationY: rotY,
+          scale: 1.08,
+          transformPerspective: 800,
+          boxShadow: `${shadowX}px ${shadowY}px ${shadowBlur}px rgba(232,90,138,0.35)`,
+          ease: "power2.out",
+          duration: 0.3,
+        });
+
+        gsap.to(glare, {
+          autoAlpha: 1,
+          backgroundImage: `radial-gradient(circle at ${center.x * 2 + bounds.width / 2
+            }px ${center.y * 2 + bounds.height / 2}px,
+            rgba(255,255,255,0.4),
+            rgba(255,255,255,0)
+          )`,
+        });
+      };
+
+      const enter = () => {
+        bounds = card.getBoundingClientRect();
+        document.addEventListener("mousemove", move);
+      };
+
+      const leave = () => {
+        document.removeEventListener("mousemove", move);
+
+        gsap.to(card, {
+          rotationX: 0,
+          rotationY: 0,
+          scale: 1,
+          boxShadow: `0px 0px ${lastShadow.blur}px rgba(0,0,0,0)`,
+          duration: 0.6,
+          ease: "power2.out",
+        });
+
+        gsap.to(glare, {
+          autoAlpha: 0,
+          duration: 0.6,
+        });
+      };
+
+      card.addEventListener("mouseenter", enter);
+      card.addEventListener("mouseleave", leave);
+
+      return () => {
+        card.removeEventListener("mouseenter", enter);
+        card.removeEventListener("mouseleave", leave);
+        document.removeEventListener("mousemove", move);
+      };
+    });
+  }, [categories]);
   return (
     <>
-      <div className="mb-0">
-        <div className="d-flex flex-column  text-start justify-content-center position-absolute text-black" style={{ marginTop: '170px', zIndex: 1, marginLeft: '80px' }}>
-          <h5 style={{ fontSize: '60px' }}>Discover Your</h5>
-          <img src={textLogo} alt="" />
-          <h6 style={{ fontSize: '30px' }}>Premium Cosmetic Collection</h6>
-          <button className="w-50 ms-5 rounded-5 mt-3" style={{ background: 'linear-gradient(90deg,rgba(227, 39, 95, 1) 50%, rgba(245, 137, 164, 1) 100%)' }}>Shop Now <FaArrowRightLong className="ms-3" /></button>
+      <div className="position-relative">
+        <div
+          className="position-absolute text-black"
+          style={{ marginTop: 170, marginLeft: 80, zIndex: 2 }}
+        >
+          <h5 style={{ fontSize: 60 }}>Discover Your</h5>
+          <img src={textLogo} alt="logo" />
+          <h6 style={{ fontSize: 30 }}>Premium Cosmetic Collection</h6>
+
+          <button
+            ref={buttonRef}
+            className="button button--stroke mt-3"
+          >
+            <span className="button__flair"></span>
+            <span className="button__label">
+              Shop Now <FaArrowRightLong className="ms-2" />
+            </span>
+          </button>
         </div>
-        <img src={banner} alt="" className="" style={{ width: '100%', height: '700px', marginLeft: '0px' }} />
 
+        <img
+          src={banner}
+          alt="hero"
+          style={{ width: "100%", height: 700 }}
+        />
       </div>
-      <div style={{ backgroundImage: `url(${second})`, backgroundSize: 'cover', backgroundPosition: 'center', height: '1000px' }}>
-        <section class="category-section" style={{padding: '20px 3%'}}>
-          <h3 className="mb-4"><strong>Shop by Category</strong></h3>
 
-          <div class="category-grid">
-            <div class="category-card">
-              <img src={image} alt="Skincare" className="w-100 overflow-hidden"></img>
-                <h3>Skincare</h3>
-            </div>
+      <div className=""
+        style={{
+          backgroundImage: `url(${second})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
 
-            <div className="category-card overflow-hidden">
-            <img src={image2} alt="Skincare" className="w-100" style={{background: 'radial-gradient(circle,rgba(228, 181, 235, 0.8) 15%, rgba(192, 96, 240, 0.8) 100%)'}}></img>
-                <h3>Makeup</h3>
-            </div>
+        }}
+      >
+        <section className="category-section">
+          <div className="textcenter mb-5">
+            <h3 className="text-center">
+              <strong>Shop by Category</strong>
+            </h3>
+            {/* <div>
+              <button
+                onClick={handlePrev}
+                className="btn btn-outline-danger me-2"
+              >
+                ‹
+              </button>
+              <button
+                onClick={handleNext}
+                className="btn btn-outline-danger"
+              >
+                ›
+              </button>
+            </div> */}
+          </div>
 
-            <div class="category-card">
-            <img src={image3} alt="Skincare" className="w-100"></img>
-                <h3>Fragrance</h3>
-            </div>
+          <div
+            ref={scrollRef}
+            className="d-flex gap-4 overflow-hidden"
+            style={{
+              overflowX: "auto",
+              scrollBehavior: "smooth",
+              paddingTop: '17px'
+            }}
+          >
+            {categories.map((category, index) => (
+              <div
+                key={category}
+                ref={(el) => (cardRefs.current[index] = el)}
+                className="category-card tilt-card overflow-hidden position-relative"
+                onClick={() => handleCategoryClick(category)}
+                style={{
+                  cursor: "pointer",
+                  minWidth: "200px",
+                  flex: "0 0 auto",
+                }}
+              >
+                <div className="card-glare"></div>
 
-            <div class="category-card">
-                <h3>Hair Care</h3>
-            </div>
+                <div
+                  style={{
+                    background:
+                      "radial-gradient(circle,rgba(228, 181, 235, 0.4) 15%, rgba(192, 96, 240, 0.4) 100%)",
+                  }}
+                >
+                  <img src={image2} alt={category} className="w-100" />
+                </div>
+                <h3 className="text-capitalize">{category}</h3>
+              </div>
+            ))}
           </div>
         </section>
       </div>
+
+      <section className="section-space pb-5">
+        <div className="container">
+          <div className="row g-3 g-sm-6">
+            {products.length > 0 ? (
+              products.slice(0, 6).map((product) => (
+                <div className="col-6 col-lg-4" key={product.id}>
+                  <ProductItem product={product} />
+                </div>
+              ))
+            ) : (
+              <p className="text-center">No products found</p>
+            )}
+          </div>
+        </div>
+      </section>
     </>
   );
 };
