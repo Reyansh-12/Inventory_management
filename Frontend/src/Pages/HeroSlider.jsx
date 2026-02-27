@@ -11,11 +11,13 @@ import image2 from "../assets/images/18448-removebg-preview.png";
 
 import { FaArrowRightLong } from "react-icons/fa6";
 import ProductItem from "@/Pages/Products/ProductItem.jsx";
+import gsap from "gsap";
 
 const HeroSlider = () => {
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
   const scrollRef = useRef(null);
+  const cardRefs = useRef([]);
 
   useEffect(() => {
     fetch(
@@ -50,7 +52,164 @@ const HeroSlider = () => {
   const handleCategoryClick = (category) => {
     navigate(`/shop?category=${encodeURIComponent(category)}`);
   };
+  const buttonRef = useRef(null);
 
+  useEffect(() => {
+    const button = buttonRef.current;
+    const flair = button.querySelector(".button__flair");
+
+    const xSet = gsap.quickSetter(flair, "xPercent");
+    const ySet = gsap.quickSetter(flair, "yPercent");
+
+    const getXY = (e) => {
+      const { left, top, width, height } = button.getBoundingClientRect();
+
+      const x = gsap.utils.clamp(
+        0,
+        100,
+        gsap.utils.mapRange(0, width, 0, 100, e.clientX - left)
+      );
+
+      const y = gsap.utils.clamp(
+        0,
+        100,
+        gsap.utils.mapRange(0, height, 0, 100, e.clientY - top)
+      );
+
+      return { x, y };
+    };
+
+    const onEnter = (e) => {
+      const { x, y } = getXY(e);
+      xSet(x);
+      ySet(y);
+
+      gsap.to(flair, {
+        scale: 1,
+        duration: 0.4,
+        ease: "power2.out",
+      });
+    };
+
+    const onLeave = (e) => {
+      const { x, y } = getXY(e);
+
+      gsap.killTweensOf(flair);
+
+      gsap.to(flair, {
+        xPercent: x > 90 ? x + 20 : x < 10 ? x - 20 : x,
+        yPercent: y > 90 ? y + 20 : y < 10 ? y - 20 : y,
+        scale: 0,
+        duration: 0.3,
+        ease: "power2.out",
+      });
+    };
+
+    const onMove = (e) => {
+      const { x, y } = getXY(e);
+
+      gsap.to(flair, {
+        xPercent: x,
+        yPercent: y,
+        duration: 0.4,
+        ease: "power2",
+      });
+    };
+
+    button.addEventListener("mouseenter", onEnter);
+    button.addEventListener("mouseleave", onLeave);
+    button.addEventListener("mousemove", onMove);
+
+    return () => {
+      button.removeEventListener("mouseenter", onEnter);
+      button.removeEventListener("mouseleave", onLeave);
+      button.removeEventListener("mousemove", onMove);
+    };
+  }, []);
+  useEffect(() => {
+    cardRefs.current.forEach((card) => {
+      if (!card) return;
+
+      const glare = card.querySelector(".card-glare");
+      let bounds;
+      let lastShadow = { x: 0, y: 0, blur: 20 };
+
+      const move = (e) => {
+        const mouseX = e.clientX;
+        const mouseY = e.clientY;
+
+        const leftX = mouseX - bounds.left;
+        const topY = mouseY - bounds.top;
+
+        const center = {
+          x: leftX - bounds.width / 2,
+          y: topY - bounds.height / 2,
+        };
+
+        const distance = Math.sqrt(center.x ** 2 + center.y ** 2);
+
+        const rotX = center.y / 40;
+        const rotY = -center.x / 40;
+
+        const shadowX = -rotY * 5;
+        const shadowY = rotX * 5;
+        const shadowBlur = 20 + distance / 120;
+
+        lastShadow = { x: shadowX, y: shadowY, blur: shadowBlur };
+
+        gsap.to(card, {
+          rotationX: rotX,
+          rotationY: rotY,
+          scale: 1.08,
+          transformPerspective: 800,
+          boxShadow: `${shadowX}px ${shadowY}px ${shadowBlur}px rgba(232,90,138,0.35)`,
+          ease: "power2.out",
+          duration: 0.3,
+        });
+
+        gsap.to(glare, {
+          autoAlpha: 1,
+          backgroundImage: `radial-gradient(circle at ${center.x * 2 + bounds.width / 2
+            }px ${center.y * 2 + bounds.height / 2}px,
+            rgba(255,255,255,0.4),
+            rgba(255,255,255,0)
+          )`,
+        });
+      };
+
+      const enter = () => {
+        bounds = card.getBoundingClientRect();
+        document.addEventListener("mousemove", move);
+      };
+
+      const leave = () => {
+        document.removeEventListener("mousemove", move);
+
+        gsap.to(card, {
+          rotationX: 0,
+          rotationY: 0,
+          scale: 1,
+          boxShadow: `0px 0px ${lastShadow.blur}px rgba(0,0,0,0)`,
+          duration: 0.6,
+          ease: "power2.out",
+        });
+
+        gsap.to(glare, {
+          autoAlpha: 0,
+          duration: 0.6,
+        });
+      };
+
+      card.addEventListener("mouseenter", enter);
+      card.addEventListener("mouseleave", leave);
+
+      return () => {
+        card.removeEventListener("mouseenter", enter);
+        card.removeEventListener("mouseleave", leave);
+        document.removeEventListener("mousemove", move);
+      };
+    });
+  }, [categories]);
   return (
     <>
       <div className="position-relative">
@@ -63,13 +222,13 @@ const HeroSlider = () => {
           <h6 style={{ fontSize: 30 }}>Premium Cosmetic Collection</h6>
 
           <button
-            className="rounded-5 mt-3 text-white border-0 px-4 py-2"
-            style={{
-              background:
-                "linear-gradient(90deg, rgba(227,39,95,1) 50%, rgba(245,137,164,1) 100%)",
-            }}
+            ref={buttonRef}
+            className="button button--stroke mt-3"
           >
-            Shop Now <FaArrowRightLong className="ms-2" />
+            <span className="button__flair"></span>
+            <span className="button__label">
+              Shop Now <FaArrowRightLong className="ms-2" />
+            </span>
           </button>
         </div>
 
@@ -85,7 +244,7 @@ const HeroSlider = () => {
           backgroundImage: `url(${second})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          
+
         }}
       >
         <section className="category-section">
@@ -111,17 +270,18 @@ const HeroSlider = () => {
 
           <div
             ref={scrollRef}
-            className="d-flex gap-4"
+            className="d-flex gap-4 overflow-hidden"
             style={{
               overflowX: "auto",
               scrollBehavior: "smooth",
               paddingTop: '17px'
             }}
           >
-            {categories.map((category) => (
+            {categories.map((category, index) => (
               <div
                 key={category}
-                className="category-card overflow-hidden"
+                ref={(el) => (cardRefs.current[index] = el)}
+                className="category-card tilt-card overflow-hidden position-relative"
                 onClick={() => handleCategoryClick(category)}
                 style={{
                   cursor: "pointer",
@@ -129,16 +289,15 @@ const HeroSlider = () => {
                   flex: "0 0 auto",
                 }}
               >
-                <div style={{
+                <div className="card-glare"></div>
+
+                <div
+                  style={{
                     background:
                       "radial-gradient(circle,rgba(228, 181, 235, 0.4) 15%, rgba(192, 96, 240, 0.4) 100%)",
-                  }}>
-                <img
-                  src={image2}
-                  alt={category}
-                  className="w-100"
-                  style={{marginTop: '0px'}}
-                />
+                  }}
+                >
+                  <img src={image2} alt={category} className="w-100" />
                 </div>
                 <h3 className="text-capitalize">{category}</h3>
               </div>
