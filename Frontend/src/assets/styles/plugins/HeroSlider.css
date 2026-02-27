@@ -1,6 +1,6 @@
 
 .category-section {
-  padding: 80px 6%;
+  padding: 30px 3%;
   background: linear-gradient(135deg, #fde4ec, #fff);
   text-align: center;
 }
@@ -27,7 +27,7 @@
 }
 
 .category-card:hover {
-  transform: translateY(-12px);
+  transform: translateY(-10px);
   box-shadow: 0 30px 60px rgba(232, 90, 138, 0.3);
 }
 

@@ -17,7 +17,6 @@ const HeroSlider = () => {
   const navigate = useNavigate();
   const scrollRef = useRef(null);
 
-  /* ---------------- FETCH PRODUCTS ---------------- */
   useEffect(() => {
     fetch(
       "http://localhost/Inventory_management/Backend/src/Pages/APIs/productListAPI.php"
@@ -27,13 +26,11 @@ const HeroSlider = () => {
       .catch((err) => console.error("API Error:", err));
   }, []);
 
-  /* ---------------- HELPERS ---------------- */
   const normalize = (value) =>
     value?.toLowerCase().replace(/\s+/g, "");
 
   const categories = [...new Set(products.map((p) => p.category))];
 
-  /* ---------------- SCROLL HANDLERS ---------------- */
   const scrollAmount = 240;
 
   const handleNext = () => {
@@ -50,15 +47,12 @@ const HeroSlider = () => {
     });
   };
 
-  /* ---------------- CATEGORY CLICK ---------------- */
   const handleCategoryClick = (category) => {
     navigate(`/shop?category=${encodeURIComponent(category)}`);
   };
 
-  /* ---------------- UI ---------------- */
   return (
     <>
-      {/* HERO SECTION */}
       <div className="position-relative">
         <div
           className="position-absolute text-black"
@@ -86,21 +80,20 @@ const HeroSlider = () => {
         />
       </div>
 
-      {/* CATEGORY SLIDER SECTION */}
-      <div
+      <div className=""
         style={{
           backgroundImage: `url(${second})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          padding: "40px 3%",
+          
         }}
       >
         <section className="category-section">
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <h3>
+          <div className="textcenter mb-5">
+            <h3 className="text-center">
               <strong>Shop by Category</strong>
             </h3>
-            <div>
+            {/* <div>
               <button
                 onClick={handlePrev}
                 className="btn btn-outline-danger me-2"
@@ -113,22 +106,22 @@ const HeroSlider = () => {
               >
                 ›
               </button>
-            </div>
+            </div> */}
           </div>
 
-          {/* SCROLLABLE CATEGORY CARDS */}
           <div
             ref={scrollRef}
             className="d-flex gap-4"
             style={{
               overflowX: "auto",
               scrollBehavior: "smooth",
+              paddingTop: '17px'
             }}
           >
             {categories.map((category) => (
               <div
                 key={category}
-                className="category-card"
+                className="category-card overflow-hidden"
                 onClick={() => handleCategoryClick(category)}
                 style={{
                   cursor: "pointer",
@@ -136,15 +129,17 @@ const HeroSlider = () => {
                   flex: "0 0 auto",
                 }}
               >
+                <div style={{
+                    background:
+                      "radial-gradient(circle,rgba(228, 181, 235, 0.4) 15%, rgba(192, 96, 240, 0.4) 100%)",
+                  }}>
                 <img
                   src={image2}
                   alt={category}
                   className="w-100"
-                  style={{
-                    background:
-                      "radial-gradient(circle, rgba(228,181,235,0.8) 15%, rgba(192,96,240,0.8) 100%)",
-                  }}
+                  style={{marginTop: '0px'}}
                 />
+                </div>
                 <h3 className="text-capitalize">{category}</h3>
               </div>
             ))}
@@ -152,7 +147,6 @@ const HeroSlider = () => {
         </section>
       </div>
 
-      {/* PRODUCTS PREVIEW */}
       <section className="section-space pb-5">
         <div className="container">
           <div className="row g-3 g-sm-6">
