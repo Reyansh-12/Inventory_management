@@ -21,15 +21,14 @@ const HeroSlider = () => {
 
   useEffect(() => {
     fetch(
-      "http://localhost/Inventory_management/Backend/src/Pages/APIs/productListAPI.php"
+      "http://localhost/Inventory_management/Backend/src/Pages/APIs/productListAPI.php",
     )
       .then((res) => res.json())
       .then(setProducts)
       .catch((err) => console.error("API Error:", err));
   }, []);
 
-  const normalize = (value) =>
-    value?.toLowerCase().replace(/\s+/g, "");
+  const normalize = (value) => value?.toLowerCase().replace(/\s+/g, "");
 
   const categories = [...new Set(products.map((p) => p.category))];
 
@@ -67,13 +66,13 @@ const HeroSlider = () => {
       const x = gsap.utils.clamp(
         0,
         100,
-        gsap.utils.mapRange(0, width, 0, 100, e.clientX - left)
+        gsap.utils.mapRange(0, width, 0, 100, e.clientX - left),
       );
 
       const y = gsap.utils.clamp(
         0,
         100,
-        gsap.utils.mapRange(0, height, 0, 100, e.clientY - top)
+        gsap.utils.mapRange(0, height, 0, 100, e.clientY - top),
       );
 
       return { x, y };
@@ -169,8 +168,9 @@ const HeroSlider = () => {
 
         gsap.to(glare, {
           autoAlpha: 1,
-          backgroundImage: `radial-gradient(circle at ${center.x * 2 + bounds.width / 2
-            }px ${center.y * 2 + bounds.height / 2}px,
+          backgroundImage: `radial-gradient(circle at ${
+            center.x * 2 + bounds.width / 2
+          }px ${center.y * 2 + bounds.height / 2}px,
             rgba(255,255,255,0.4),
             rgba(255,255,255,0)
           )`,
@@ -210,6 +210,7 @@ const HeroSlider = () => {
       };
     });
   }, [categories]);
+  const latestProducts = [...products].sort((a, b) => b.id - a.id).slice(0, 20);
   return (
     <>
       <div className="position-relative">
@@ -221,10 +222,7 @@ const HeroSlider = () => {
           <img src={textLogo} alt="logo" />
           <h6 style={{ fontSize: 30 }}>Premium Cosmetic Collection</h6>
 
-          <button
-            ref={buttonRef}
-            className="button button--stroke mt-3"
-          >
+          <button ref={buttonRef} className="button button--stroke mt-3">
             <span className="button__flair"></span>
             <span className="button__label">
               Shop Now <FaArrowRightLong className="ms-2" />
@@ -232,19 +230,15 @@ const HeroSlider = () => {
           </button>
         </div>
 
-        <img
-          src={banner}
-          alt="hero"
-          style={{ width: "100%", height: 700 }}
-        />
+        <img src={banner} alt="hero" style={{ width: "100%", height: 700 }} />
       </div>
 
-      <div className=""
+      <div
+        className=""
         style={{
           backgroundImage: `url(${second})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-
         }}
       >
         <section className="category-section">
@@ -274,7 +268,7 @@ const HeroSlider = () => {
             style={{
               overflowX: "auto",
               scrollBehavior: "smooth",
-              paddingTop: '17px'
+              paddingTop: "17px",
             }}
           >
             {categories.map((category, index) => (
@@ -305,19 +299,65 @@ const HeroSlider = () => {
           </div>
         </section>
       </div>
+      <section className="offer-banner my-5">
+        <div className="container">
+          <div
+            className="row align-items-center rounded-4 overflow-hidden shadow-sm"
+            style={{
+              backgroundImage: `url(${second})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+            }}
+          >
+            <div className="col-lg-6 col-md-6 p-5 offer-left">
+              <span className="badge bg-danger mb-3">LIMITED OFFER</span>
+              <h2 className="fw-bold mt-3">
+                Flat <span className="text-danger">30% OFF</span>
+              </h2>
+              <p className="text-muted mt-3">
+                On all skincare & beauty products. Glow naturally with our
+                premium cosmetic range.
+              </p>
+              <button className="btn btn-danger px-4 py-2 mt-3 rounded-pill">
+                Shop Now
+              </button>
+            </div>
 
+            {/* RIGHT COLUMN */}
+            <div className="col-lg-6 col-md-6 text-center offer-right">
+              <img
+                src="/images/offer-product.png"
+                alt="Offer Product"
+                className="img-fluid offer-img"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
       <section className="section-space pb-5">
         <div className="container">
-          <div className="row g-3 g-sm-6">
-            {products.length > 0 ? (
-              products.slice(0, 6).map((product) => (
-                <div className="col-6 col-lg-4" key={product.id}>
+          {/* SECTION TITLE */}
+          <div className="d-flex justify-content-between align-items-center mb-4">
+            <h3 className="fw-bold">Latest Products</h3>
+            <span className="text-muted small">New Arrivals</span>
+          </div>
+
+          <div className="row g-1 g-sm-2">
+            {latestProducts.length > 0 ? (
+              latestProducts.map((product) => (
+                <div className="col-6 col-lg-3" key={product.id}>
                   <ProductItem product={product} />
                 </div>
               ))
             ) : (
               <p className="text-center">No products found</p>
             )}
+          </div>
+          <div className="d-flex justify-content-center mt-5">
+            <a href="/shop" className="btn btn-outline-primary text-center">
+              View More Products
+            </a>
           </div>
         </div>
       </section>

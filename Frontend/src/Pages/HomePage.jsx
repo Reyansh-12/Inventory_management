@@ -13,8 +13,8 @@ import Footer from '../components/Footer.jsx';
         <Navbar />
         <HeroSlider />
         {/* <ProductCategory /> */}
-        <TopSaleProducts />
-        <BlogPage />
+        {/* <TopSaleProducts /> */}
+        {/* <BlogPage /> */}
         <Footer />
     </main>
   );

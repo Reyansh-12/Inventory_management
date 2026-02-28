@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import Form from 'react-bootstrap/Form';
 import Footer from "../../components/Footer";
-import CategorySlider from "@/components/CategorySlider";
+
 import ProductItem from "@/Pages/Products/ProductItem.jsx";
 import FilterBlock from "@/components/FilterBlock";
-
-import banner7 from "../../assets/images/shop/banner/7.webp";
-import NoProductImage from "../../../src/assets/images/product_not_found2.png";
-import image from '../../assets/images/secondSection.png';
+import image from "../../assets/images/secondSection.png";
 import "../../assets/styles/plugins/ProductCards.css";
 
 const ProductFourColumns = () => {
@@ -24,22 +20,21 @@ const ProductFourColumns = () => {
   const params = new URLSearchParams(location.search);
   const selectedCategory = params.get("category") || "all";
 
-  const normalize = (value) =>
-    value?.toLowerCase().replace(/\s+/g, "");
+  const normalize = (value) => value?.toLowerCase().replace(/\s+/g, "");
 
   const filteredProducts =
     selectedCategory === "all"
       ? products
       : products.filter(
-        (p) => normalize(p.category) === normalize(selectedCategory)
-      );
+          (p) => normalize(p.category) === normalize(selectedCategory),
+        );
 
   const visibleProducts = filteredProducts.slice(0, 9);
   const relatedProducts = products.slice(0, 3);
 
   useEffect(() => {
     fetch(
-      "http://localhost/Inventory_management/Backend/src/Pages/APIs/productListAPI.php"
+      "http://localhost/Inventory_management/Backend/src/Pages/APIs/productListAPI.php",
     )
       .then((res) => res.json())
       .then(setProducts)
@@ -47,51 +42,63 @@ const ProductFourColumns = () => {
   }, []);
 
   return (
-    <main className="main-content pt-4" style={{ marginTop: "100px", background: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
-      <div className="d-flex row ">
+    <main
+      className="main-content pt-4"
+      style={{
+        marginTop: "100px",
+        background: `url(${image})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        height: 'calc(100vh - 100px)',
+         overflow: 'hidden',
+      }}
+    >
+      <div className="d-flex h-100">
         <div className="col-lg-3">
           <div className="filter-sidebar p-4 ms-4">
-
             <div className="d-flex justify-content-between align-items-center mb-3">
               <div>
                 <h6 className="fw-bold mb-0">FILTERS</h6>
                 <small className="text-muted">100+ Products</small>
               </div>
-              <button className="btn btn-link text-decoration-none p-0 text-danger small" style={{ letterSpacing: '1px' }}>
+              <button
+                className="btn btn-link text-decoration-none p-0 text-danger small"
+                style={{ letterSpacing: "1px" }}
+              >
                 Clear All
               </button>
             </div>
 
             <FilterBlock
-  title="Category"
-  items={[
-    "Skincare",
-    "Makeup",
-    "Hair Care",
-    "Body Care",
-    "Fragrance",
-    "Tools",
-    "Men Grooming"
-  ]}
-/>
+              title="Category"
+              items={[
+                "Skincare",
+                "Makeup",
+                "Hair Care",
+                "Body Care",
+                "Fragrance",
+                "Tools",
+                "Men Grooming",
+              ]}
+            />
 
-<FilterBlock
-  title="Skin Type"
-  items={["Dry Skin", "Oily Skin", "Sensitive", "Combination"]}
-/>
+            <FilterBlock
+              title="Skin Type"
+              items={["Dry Skin", "Oily Skin", "Sensitive", "Combination"]}
+            />
 
-<FilterBlock
-  title="Brand"
-  items={[
-    "Mamaearth",
-    "Lakme",
-    "Plum",
-    "WOW",
-    "Maybelline",
-    "Minimalist",
-    "Cetaphil"
-  ]}
-/>
+            <FilterBlock
+              title="Brand"
+              items={[
+                "Mamaearth",
+                "Lakme",
+                "Plum",
+                "WOW",
+                "Maybelline",
+                "Minimalist",
+                "Cetaphil",
+              ]}
+            />
 
             <div className="filter-block">
               <h6>Price</h6>
@@ -104,20 +111,18 @@ const ProductFourColumns = () => {
 
             <div className="filter-block">
               <h6>Rating</h6>
-              {[4, 3].map(r => (
+              {[4, 3].map((r) => (
                 <label className="filter-option" key={r}>
                   <input type="checkbox" /> {r}★ & above
                 </label>
               ))}
             </div>
-
           </div>
         </div>
-        <div className="col-lg-9">
-
-          <div className="shop-topbar d-flex justify-content-between align-items-center mb-4">
-            <span className="product-count" style={{ width: '150px' }}>
-              Total Products <b>{visibleProducts.length}</b>
+        <div className="col-lg-9 product-scroll">
+          <div className="shop-topbar d-flex justify-content-between align-items-center mb-4 ms-4">
+            <span className="product-count" style={{ width: "150px" }}>
+              Total Products <b>{products.length}</b>
             </span>
 
             <input
@@ -126,14 +131,21 @@ const ProductFourColumns = () => {
               placeholder="Search Products"
             />
           </div>
-          <div className="row g-4">
-            {visibleProducts.map(product => (
-              <div className="col-md-6 col-lg-4" key={product.id}>
-                <ProductItem product={product} />
+          <section className="section-space pb-5">
+            <div className="container-fluid px-3 px-lg-4">
+              <div className="row g-4">
+                {products.length > 0 ? (
+                  products.map((product) => (
+                    <div className="col-6 col-md-4 col-lg-3" key={product.id}>
+                      <ProductItem product={product} />
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-center w-100">No products found</p>
+                )}
               </div>
-            ))}
-          </div>
-
+            </div>
+          </section>
         </div>
       </div>
       {/* <section

@@ -40,7 +40,7 @@ const ProductItem = ({ product }) => {
   return (
     <>
       <div className="product-card-wrapper">
-        <div className="product-card p-0 overflow-hidden shadow border border-1 position-relative">
+        <div className="product-card mb-3 p-0 overflow-hidden shadow border border-1 position-relative">
           <div style={{background: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center'}} className="position-relative">
           {product.quantity === 0 && (
             <span className="sale-badge">SALE OUT</span>

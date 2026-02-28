@@ -39,7 +39,7 @@ function time_ago($timestamp)
 
 // Fetch only UNSEEN count for the badge, but show last 5 for the list
 $notiBadgeQuery = mysqli_query($con, "SELECT COUNT(*) as total FROM order_list WHERE seen = 0");
-$notificationCount = mysqli_fetch_assoc($notiBadgeQuery)['total'];
+// $notificationCount = mysqli_fetch_assoc($notiBadgeQuery)['total'];
 
 $lastOrders = mysqli_query($con, "SELECT * FROM order_list ORDER BY id DESC LIMIT 5");
 ?>
