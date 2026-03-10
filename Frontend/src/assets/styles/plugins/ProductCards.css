@@ -10,7 +10,7 @@
     border-radius: 18px;
     padding: 15px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    text-align: center;
+    /* text-align: center; */
     position: relative;
     transition: 0.3s ease;
   }
@@ -45,10 +45,10 @@
     position: absolute;
     top: 15px;
     right: 15px;
-    background: #fff;
+    background: #fc91cc83;
     border: none;
-    width: 36px;
-    height: 36px;
+    /* width: 36px;
+    height: 36px; */
     border-radius: 50%;
     box-shadow: 0 4px 10px rgba(0,0,0,0.15);
     cursor: pointer;

@@ -8,16 +8,21 @@ import banner from "../assets/images/HeroBanner(1).png";
 import textLogo from "../assets/images/textLogo-removebg-preview.png";
 import second from "../assets/images/secondSection.png";
 import image2 from "../assets/images/18448-removebg-preview.png";
-
+import banner1 from "../assets/images/banner1.png";
+import banner2 from "../assets/images/banner3.png";
 import { FaArrowRightLong } from "react-icons/fa6";
 import ProductItem from "@/Pages/Products/ProductItem.jsx";
 import gsap from "gsap";
+import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 
 const HeroSlider = () => {
   const [products, setProducts] = useState([]);
+  const [activeCategory, setActiveCategory] = useState("All");
   const navigate = useNavigate();
   const scrollRef = useRef(null);
   const cardRefs = useRef([]);
+  const categoryRefs = useRef([]);
+  const underlineRef = useRef(null);
 
   useEffect(() => {
     fetch(
@@ -30,7 +35,7 @@ const HeroSlider = () => {
 
   const normalize = (value) => value?.toLowerCase().replace(/\s+/g, "");
 
-  const categories = [...new Set(products.map((p) => p.category))];
+  const categories = [...new Set(products.map((p) => p.category))].slice(0, 6);
 
   const scrollAmount = 240;
 
@@ -48,8 +53,17 @@ const HeroSlider = () => {
     });
   };
 
-  const handleCategoryClick = (category) => {
-    navigate(`/shop?category=${encodeURIComponent(category)}`);
+  const handleCategoryChange = (category, index) => {
+    setActiveCategory(category);
+
+    const el = categoryRefs.current[index];
+
+    gsap.to(underlineRef.current, {
+      x: el.offsetLeft,
+      width: el.offsetWidth,
+      duration: 0.4,
+      ease: "power3.out",
+    });
   };
   const buttonRef = useRef(null);
 
@@ -168,9 +182,8 @@ const HeroSlider = () => {
 
         gsap.to(glare, {
           autoAlpha: 1,
-          backgroundImage: `radial-gradient(circle at ${
-            center.x * 2 + bounds.width / 2
-          }px ${center.y * 2 + bounds.height / 2}px,
+          backgroundImage: `radial-gradient(circle at ${center.x * 2 + bounds.width / 2
+            }px ${center.y * 2 + bounds.height / 2}px,
             rgba(255,255,255,0.4),
             rgba(255,255,255,0)
           )`,
@@ -211,29 +224,75 @@ const HeroSlider = () => {
     });
   }, [categories]);
   const latestProducts = [...products].sort((a, b) => b.id - a.id).slice(0, 20);
-  
+  const filteredProducts =
+    activeCategory === "All"
+      ? latestProducts
+      : latestProducts.filter((p) => p.category === activeCategory);
+
   useEffect(() => {
 
-  const letters = document.querySelectorAll(".hero-letter");
+    const letters = document.querySelectorAll(".hero-letter");
 
-  const animate = () => {
-    gsap.to(letters, {
-      y: -18,
-      duration: 0.4,
-      stagger: 0.05,
-      ease: "power1.out",
-      yoyo: true,
-      repeat: 1
+    const animate = () => {
+      gsap.to(letters, {
+        y: -18,
+        duration: 0.4,
+        stagger: 0.05,
+        ease: "power1.out",
+        yoyo: true,
+        repeat: 1
+      });
+    };
+
+    letters.forEach((letter) => {
+
+      letter.addEventListener("mouseenter", animate);
+
     });
-  };
 
-  letters.forEach((letter) => {
+  }, []);
+  useEffect(() => {
+    if (categoryRefs.current[0]) {
+      const el = categoryRefs.current[0];
 
-    letter.addEventListener("mouseenter", animate);
+      gsap.set(underlineRef.current, {
+        x: el.offsetLeft,
+        width: el.offsetWidth,
+      });
+    }
+  }, [categories]);
+  useEffect(() => {
+    categoryRefs.current.forEach((el) => {
+      if (!el) return;
 
-  });
+      el.addEventListener("mouseenter", () => {
+        gsap.to(el, {
+          scale: 1.1,
+          duration: 0.2,
+        });
+      });
 
-}, []);
+      el.addEventListener("mouseleave", () => {
+        gsap.to(el, {
+          scale: 1,
+          duration: 0.2,
+        });
+      });
+    });
+  }, [categories]);
+  useEffect(() => {
+    gsap.fromTo(
+      ".col-6",
+      { opacity: 0, y: 20 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.5,
+        stagger: 0.05,
+        ease: "power2.out",
+      }
+    );
+  }, [activeCategory]);
   return (
     <>
       <div className="position-relative">
@@ -242,14 +301,15 @@ const HeroSlider = () => {
           style={{ marginTop: 170, marginLeft: 80, zIndex: 2 }}
         >
           <h1 className="hero-title">
-  {"Discover Your".split("").map((char, index) => (
-    <span key={index} className="hero-letter">
-      {char === " " ? "\u00A0" : char}
-    </span>
-  ))}
-</h1>
+            {"Discover Your".split("").map((char, index) => (
+              <span key={index} className="hero-letter">
+                {char === " " ? "\u00A0" : char}
+              </span>
+            ))}
+          </h1>
 
           <img src={textLogo} alt="logo" className="hero-logo" />
+          <span><h3><i><span className="text-danger">Natural</span>Beauty</i></h3></span>
 
           <h3 className="hero-subtitle">Premium Cosmetic Collection</h3>
 
@@ -265,119 +325,53 @@ const HeroSlider = () => {
         <img src={banner} alt="hero" style={{ width: "100%", height: 700 }} />
       </div>
 
-      <div
-        className=""
-        style={{
-          backgroundImage: `url(${second})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
-        <section className="category-section">
-          <div className="textcenter mb-5">
-            <h3 className="text-center">
-              <strong>Shop by Category</strong>
-            </h3>
-            {/* <div>
-              <button
-                onClick={handlePrev}
-                className="btn btn-outline-danger me-2"
-              >
-                ‹
-              </button>
-              <button
-                onClick={handleNext}
-                className="btn btn-outline-danger"
-              >
-                ›
-              </button>
-            </div> */}
-          </div>
-
-          <div
-            ref={scrollRef}
-            className="d-flex gap-4 overflow-hidden"
-            style={{
-              overflowX: "auto",
-              scrollBehavior: "smooth",
-              paddingTop: "17px",
-            }}
-          >
-            {categories.map((category, index) => (
-              <div
-                key={category}
-                ref={(el) => (cardRefs.current[index] = el)}
-                className="category-card tilt-card overflow-hidden position-relative"
-                onClick={() => handleCategoryClick(category)}
-                style={{
-                  cursor: "pointer",
-                  minWidth: "200px",
-                  flex: "0 0 auto",
-                }}
-              >
-                <div className="card-glare"></div>
-
-                <div
-                  style={{
-                    background:
-                      "radial-gradient(circle,rgba(228, 181, 235, 0.4) 15%, rgba(192, 96, 240, 0.4) 100%)",
-                  }}
-                >
-                  <img src={image2} alt={category} className="w-100" />
-                </div>
-                <h3 className="text-capitalize">{category}</h3>
-              </div>
-            ))}
-          </div>
-        </section>
-      </div>
       <section className="offer-banner my-5">
         <div className="container">
           <div
-            className="row align-items-center rounded-4 overflow-hidden shadow-sm"
-            style={{
-              backgroundImage: `url(${second})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-            }}
+            className="row"
           >
-            <div className="col-lg-6 col-md-6 p-5 offer-left">
-              <span className="badge bg-danger mb-3">LIMITED OFFER</span>
-              <h2 className="fw-bold mt-3">
-                Flat <span className="text-danger">30% OFF</span>
-              </h2>
-              <p className="text-muted mt-3">
-                On all skincare & beauty products. Glow naturally with our
-                premium cosmetic range.
-              </p>
-              <button className="btn btn-danger px-4 py-2 mt-3 rounded-pill">
-                Shop Now
-              </button>
+            <div className="col-lg-8 col-md-6 p-0">
+              <img src={banner1} alt="" />
             </div>
 
-            {/* RIGHT COLUMN */}
-            <div className="col-lg-6 col-md-6 text-center offer-right">
+            <div className="col-lg-4 col-md-6 p-0 text-center">
               <img
-                src="/images/offer-product.png"
+                src={banner2}
                 alt="Offer Product"
-                className="img-fluid offer-img"
+                className=" offer-img"
               />
             </div>
           </div>
         </div>
       </section>
-      <section className="section-space pb-5">
+      <section className="section-space">
         <div className="container">
-          {/* SECTION TITLE */}
           <div className="d-flex justify-content-between align-items-center mb-4">
-            <h3 className="fw-bold">Latest Products</h3>
-            <span className="text-muted small">New Arrivals</span>
+            <div className="d-flex align-items-center">
+              <h3 className="fw-bold me-4">Trending Products</h3>
+              <div className="categorySelector position-relative">
+                <ul className="d-flex gap-3 position-relative">
+
+                  {["All", ...categories].map((cat, index) => (
+                    <li
+                      key={index}
+                      ref={(el) => (categoryRefs.current[index] = el)}
+                      className={`ps-3 pe-3 p-1 rounded category-item ${activeCategory === cat ? "active" : ""
+                        }`}
+                      onClick={() => handleCategoryChange(cat, index)}
+                    >
+                      {cat}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+            <a href='/shop' className="text-muted small text-decoration-none">View All <MdOutlineKeyboardArrowRight className="fs-4" /></a>
           </div>
 
           <div className="row g-1 g-sm-2">
             {latestProducts.length > 0 ? (
-              latestProducts.map((product) => (
+              filteredProducts.map((product) => (
                 <div className="col-6 col-lg-3" key={product.id}>
                   <ProductItem product={product} />
                 </div>

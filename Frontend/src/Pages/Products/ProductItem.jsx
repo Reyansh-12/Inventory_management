@@ -45,9 +45,9 @@ const ProductItem = ({ product }) => {
           {product.quantity === 0 && (
             <span className="sale-badge">SALE OUT</span>
           )}
-          {/* <button className="wishlist-btn" onClick={() => toast.success("Added to wishlist!")}>
-            <FaRegHeart />
-          </button> */}
+          <button className="wishlist-btn" style={{width: '10px', height: '37px'}} onClick={() => toast.success("Added to wishlist!")}>
+            <FaRegHeart style={{marginLeft: '-7px', marginTop: '-8px'}}/>
+          </button>
           <Link to={`/product/${product.id}`}>
             <img
               src={product?.image || shop4}
@@ -61,7 +61,7 @@ const ProductItem = ({ product }) => {
             <h4 className="product-title" title={product?.name}>
               {product?.name}
             </h4>
-            <div className="price-row">
+            <div className="price-row" style={{justifyContent: 'left'}}>
               <span className="price">
                 ₹{Math.round(discountedPrice)}
               </span>
@@ -74,6 +74,10 @@ const ProductItem = ({ product }) => {
             </div>
             <div className="rating">
               ★★★★☆ <span>(245)</span>
+            </div>
+            <div className="d-flex row justify-content-between mt-2">
+              <div className="col-lg-6 col-md-6 col-sm-6"></div>
+              <div className="col-lg-6 col-md-6 col-sm-6"><span className="" style={{fontSize: '12px'}}>Free Delivery</span></div>
             </div>
           </div>
           <ToastContainer />
