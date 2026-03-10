@@ -211,6 +211,29 @@ const HeroSlider = () => {
     });
   }, [categories]);
   const latestProducts = [...products].sort((a, b) => b.id - a.id).slice(0, 20);
+  
+  useEffect(() => {
+
+  const letters = document.querySelectorAll(".hero-letter");
+
+  const animate = () => {
+    gsap.to(letters, {
+      y: -18,
+      duration: 0.4,
+      stagger: 0.05,
+      ease: "power1.out",
+      yoyo: true,
+      repeat: 1
+    });
+  };
+
+  letters.forEach((letter) => {
+
+    letter.addEventListener("mouseenter", animate);
+
+  });
+
+}, []);
   return (
     <>
       <div className="position-relative">
@@ -218,12 +241,21 @@ const HeroSlider = () => {
           className="position-absolute text-black"
           style={{ marginTop: 170, marginLeft: 80, zIndex: 2 }}
         >
-          <h5 style={{ fontSize: 60 }}>Discover Your</h5>
-          <img src={textLogo} alt="logo" />
-          <h6 style={{ fontSize: 30 }}>Premium Cosmetic Collection</h6>
+          <h1 className="hero-title">
+  {"Discover Your".split("").map((char, index) => (
+    <span key={index} className="hero-letter">
+      {char === " " ? "\u00A0" : char}
+    </span>
+  ))}
+</h1>
+
+          <img src={textLogo} alt="logo" className="hero-logo" />
+
+          <h3 className="hero-subtitle">Premium Cosmetic Collection</h3>
 
           <button ref={buttonRef} className="button button--stroke mt-3">
             <span className="button__flair"></span>
+
             <span className="button__label">
               Shop Now <FaArrowRightLong className="ms-2" />
             </span>
