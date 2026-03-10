@@ -10,11 +10,11 @@ import Footer from '../components/Footer.jsx';
   return (
  
     <main className="main-content">
-        <Navbar />
+        {/* <Navbar/> */}
         <HeroSlider />
         {/* <ProductCategory /> */}
-        <TopSaleProducts />
-        <BlogPage />
+        {/* <TopSaleProducts /> */}
+        {/* <BlogPage /> */}
         <Footer />
     </main>
   );
