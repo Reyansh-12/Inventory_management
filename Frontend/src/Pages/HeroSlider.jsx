@@ -8,11 +8,12 @@ import banner from "../assets/images/HeroBanner(1).png";
 import textLogo from "../assets/images/textLogo-removebg-preview.png";
 import second from "../assets/images/secondSection.png";
 import image2 from "../assets/images/18448-removebg-preview.png";
-import banner1 from "../assets/images/banner1.png";
+import banner1 from "../assets/images/banner4.png";
 import banner2 from "../assets/images/banner3.png";
 import { FaArrowRightLong } from "react-icons/fa6";
 import ProductItem from "@/Pages/Products/ProductItem.jsx";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 
 const HeroSlider = () => {
@@ -23,6 +24,8 @@ const HeroSlider = () => {
   const cardRefs = useRef([]);
   const categoryRefs = useRef([]);
   const underlineRef = useRef(null);
+  gsap.registerPlugin(ScrollTrigger);
+  const logoRef = useRef(null);
 
   useEffect(() => {
     fetch(
@@ -65,79 +68,74 @@ const HeroSlider = () => {
       ease: "power3.out",
     });
   };
-  const buttonRef = useRef(null);
-
+  
+const buttonRef = useRef(null);
   useEffect(() => {
-    const button = buttonRef.current;
-    const flair = button.querySelector(".button__flair");
-
-    const xSet = gsap.quickSetter(flair, "xPercent");
-    const ySet = gsap.quickSetter(flair, "yPercent");
-
-    const getXY = (e) => {
-      const { left, top, width, height } = button.getBoundingClientRect();
-
-      const x = gsap.utils.clamp(
-        0,
-        100,
-        gsap.utils.mapRange(0, width, 0, 100, e.clientX - left),
-      );
-
-      const y = gsap.utils.clamp(
-        0,
-        100,
-        gsap.utils.mapRange(0, height, 0, 100, e.clientY - top),
-      );
-
-      return { x, y };
-    };
-
-    const onEnter = (e) => {
-      const { x, y } = getXY(e);
-      xSet(x);
-      ySet(y);
-
-      gsap.to(flair, {
-        scale: 1,
-        duration: 0.4,
-        ease: "power2.out",
-      });
-    };
-
-    const onLeave = (e) => {
-      const { x, y } = getXY(e);
-
-      gsap.killTweensOf(flair);
-
-      gsap.to(flair, {
-        xPercent: x > 90 ? x + 20 : x < 10 ? x - 20 : x,
-        yPercent: y > 90 ? y + 20 : y < 10 ? y - 20 : y,
-        scale: 0,
-        duration: 0.3,
-        ease: "power2.out",
-      });
-    };
-
-    const onMove = (e) => {
-      const { x, y } = getXY(e);
-
-      gsap.to(flair, {
-        xPercent: x,
-        yPercent: y,
-        duration: 0.4,
-        ease: "power2",
-      });
-    };
-
-    button.addEventListener("mouseenter", onEnter);
-    button.addEventListener("mouseleave", onLeave);
-    button.addEventListener("mousemove", onMove);
-
-    return () => {
-      button.removeEventListener("mouseenter", onEnter);
-      button.removeEventListener("mouseleave", onLeave);
-      button.removeEventListener("mousemove", onMove);
-    };
+    const buttons = document.querySelectorAll(".button--stroke");
+  
+    buttons.forEach((button) => {
+      const flair = button.querySelector(".button__flair");
+  
+      const xSet = gsap.quickSetter(flair, "xPercent");
+      const ySet = gsap.quickSetter(flair, "yPercent");
+  
+      const getXY = (e) => {
+        const { left, top, width, height } = button.getBoundingClientRect();
+  
+        const x = gsap.utils.clamp(
+          0,
+          100,
+          gsap.utils.mapRange(0, width, 0, 100, e.clientX - left)
+        );
+  
+        const y = gsap.utils.clamp(
+          0,
+          100,
+          gsap.utils.mapRange(0, height, 0, 100, e.clientY - top)
+        );
+  
+        return { x, y };
+      };
+  
+      const onEnter = (e) => {
+        const { x, y } = getXY(e);
+        xSet(x);
+        ySet(y);
+  
+        gsap.to(flair, {
+          scale: 1,
+          duration: 0.4,
+          ease: "power2.out",
+        });
+      };
+  
+      const onLeave = (e) => {
+        const { x, y } = getXY(e);
+  
+        gsap.killTweensOf(flair);
+  
+        gsap.to(flair, {
+          scale: 0,
+          duration: 0.3,
+          ease: "power2.out",
+        });
+      };
+  
+      const onMove = (e) => {
+        const { x, y } = getXY(e);
+  
+        gsap.to(flair, {
+          xPercent: x,
+          yPercent: y,
+          duration: 0.4,
+          ease: "power2",
+        });
+      };
+  
+      button.addEventListener("mouseenter", onEnter);
+      button.addEventListener("mouseleave", onLeave);
+      button.addEventListener("mousemove", onMove);
+    });
   }, []);
   useEffect(() => {
     cardRefs.current.forEach((card) => {
@@ -223,34 +221,13 @@ const HeroSlider = () => {
       };
     });
   }, [categories]);
-  const latestProducts = [...products].sort((a, b) => b.id - a.id).slice(0, 20);
+  const latestProducts = [...products].sort((a, b) => b.id - a.id).slice(0, 4);
   const filteredProducts =
     activeCategory === "All"
       ? latestProducts
       : latestProducts.filter((p) => p.category === activeCategory);
 
-  useEffect(() => {
 
-    const letters = document.querySelectorAll(".hero-letter");
-
-    const animate = () => {
-      gsap.to(letters, {
-        y: -18,
-        duration: 0.4,
-        stagger: 0.05,
-        ease: "power1.out",
-        yoyo: true,
-        repeat: 1
-      });
-    };
-
-    letters.forEach((letter) => {
-
-      letter.addEventListener("mouseenter", animate);
-
-    });
-
-  }, []);
   useEffect(() => {
     if (categoryRefs.current[0]) {
       const el = categoryRefs.current[0];
@@ -295,28 +272,24 @@ const HeroSlider = () => {
   }, [activeCategory]);
   return (
     <>
-      <div className="position-relative">
+      <div className="position-relative heroSection">
         <div
           className="position-absolute text-black"
           style={{ marginTop: 170, marginLeft: 80, zIndex: 2 }}
         >
-          <h1 className="hero-title">
-            {"Discover Your".split("").map((char, index) => (
-              <span key={index} className="hero-letter">
-                {char === " " ? "\u00A0" : char}
-              </span>
-            ))}
+          <h1 className="hero-title" style={{ fontSize: '100px' }}>
+            Cosmelina
           </h1>
 
-          <img src={textLogo} alt="logo" className="hero-logo" />
-          <span><h3><i><span className="text-danger">Natural</span>Beauty</i></h3></span>
+          {/* <img src={textLogo} alt="logo" className="hero-logo" /> */}
+          <span><h3><i className="subtitle"><span className="text-danger">Natural </span>Beauty</i></h3></span>
 
           <h3 className="hero-subtitle">Premium Cosmetic Collection</h3>
 
           <button ref={buttonRef} className="button button--stroke mt-3">
             <span className="button__flair"></span>
 
-            <span className="button__label">
+            <span className="button__label hero-subtitle">
               Shop Now <FaArrowRightLong className="ms-2" />
             </span>
           </button>
@@ -331,7 +304,29 @@ const HeroSlider = () => {
             className="row"
           >
             <div className="col-lg-8 col-md-6 p-0">
-              <img src={banner1} alt="" />
+              <div className="position-relative">
+                <div className="position-absolute">
+                <div className="ms-4 pt-1 pb-1 text-center rounded-5 text-white" style={{background:'radial-gradient(circle,rgba(14, 69, 196, 1) 7%, rgba(3, 25, 168, 1) 100%)'}}>
+                  <div className="d-flex row ps-4" style={{width: '220px'}}>
+                    <div className="col-lg-4 text-nowrap" style={{marginTop: '11px'}}><strong>UP TO</strong></div>
+                    <div className="col-lg-4 fs-1 p-0" style={{width: '31px'}}>50</div>
+                    <div className="col-lg-4">
+                      <div style={{marginTop: '10px', textAlign: 'left', marginLeft: '5px'}}>%</div>
+                      <div>OFF</div>
+                    </div>
+                  </div>
+                </div>
+                  <button className="button button--stroke mt-3 ms-5">
+                    <span className="button__flair"></span>
+
+                    <span className="button__label hero-subtitle">
+                      Shop Now <FaArrowRightLong className="ms-2" />
+                    </span>
+                  </button>
+                </div>
+                <img src={banner1} alt="" />
+              </div>
+
             </div>
 
             <div className="col-lg-4 col-md-6 p-0 text-center">
@@ -348,7 +343,7 @@ const HeroSlider = () => {
         <div className="container">
           <div className="d-flex justify-content-between align-items-center mb-4">
             <div className="d-flex align-items-center">
-              <h3 className="fw-bold me-4">Trending Products</h3>
+              <h3 className="fw-bold me-4 hero-subtitle">Trending Products</h3>
               <div className="categorySelector position-relative">
                 <ul className="d-flex gap-3 position-relative">
 
@@ -380,11 +375,11 @@ const HeroSlider = () => {
               <p className="text-center">No products found</p>
             )}
           </div>
-          <div className="d-flex justify-content-center mt-5">
+          {/* <div className="d-flex justify-content-center mt-5">
             <a href="/shop" className="btn btn-outline-primary text-center">
               View More Products
             </a>
-          </div>
+          </div> */}
         </div>
       </section>
     </>

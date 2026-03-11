@@ -24,7 +24,6 @@ const ProductFourColumns = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [location.search]);
 
-  // Fetch categories dynamically
   useEffect(() => {
     fetch(
       "http://localhost/Inventory_management/Backend/src/Pages/APIs/categoryListAPI.php"
@@ -34,7 +33,6 @@ const ProductFourColumns = () => {
       .catch((err) => console.log("Category API Error:", err));
   }, []);
 
-  // Fetch products dynamically
   useEffect(() => {
     fetch(
       "http://localhost/Inventory_management/Backend/src/Pages/APIs/productListAPI.php"
@@ -43,14 +41,12 @@ const ProductFourColumns = () => {
       .then((data) => {
         setProducts(data);
 
-        // Extract unique brands from products
         const uniqueBrands = [...new Set(data.map((p) => p.brand))];
         setBrands(uniqueBrands);
       })
       .catch((err) => console.log("Product API Error:", err));
   }, []);
 
-  // Filter products based on category, brand, search, price, rating
   const filteredProducts = products.filter((p) => {
     const categoryMatch =
       selectedCategory === "All" || p.category === selectedCategory;
@@ -77,7 +73,6 @@ const ProductFourColumns = () => {
       }}
     >
       <div className="d-flex h-100">
-        {/* Sidebar */}
         <div className="col-lg-3">
           <div className="filter-sidebar p-4 ms-4">
             <div className="d-flex justify-content-between align-items-center mb-3">
@@ -100,27 +95,23 @@ const ProductFourColumns = () => {
               </button>
             </div>
 
-            {/* Category Filter */}
             <FilterBlock
               title="Category"
               items={["All", ...categories.map((c) => c.name)]}
               onChange={setSelectedCategory}
             />
 
-            {/* Skin Type (Static) */}
             <FilterBlock
               title="Skin Type"
               items={["Dry Skin", "Oily Skin", "Sensitive", "Combination"]}
             />
 
-            {/* Brand Filter */}
             <FilterBlock
               title="Brand"
               items={["All", ...brands]}
               onChange={setSelectedBrand}
             />
 
-            {/* Price Filter */}
             <div className="filter-block">
               <h6>Price</h6>
               <input
@@ -137,7 +128,6 @@ const ProductFourColumns = () => {
               </div>
             </div>
 
-            {/* Rating Filter */}
             <div className="filter-block">
               <h6>Rating</h6>
               {[4, 3, 2].map((r) => (
@@ -155,7 +145,6 @@ const ProductFourColumns = () => {
           </div>
         </div>
 
-        {/* Products */}
         <div className="col-lg-9 product-scroll">
           <div className="shop-topbar d-flex justify-content-between align-items-center mb-4 ms-4">
             <span className="product-count" style={{ width: "150px" }}>

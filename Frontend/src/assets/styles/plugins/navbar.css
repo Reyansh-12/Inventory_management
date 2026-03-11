@@ -17,3 +17,64 @@
   .text-2 {
     transform: translateY(20px);
   }
+
+
+  .header-area {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 999;
+    background: transparent;
+    transition: all 0.3s ease;
+  }
+  
+  .navbar-scrolled {
+    background: white;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  }
+
+  .header-area{
+  position:fixed;
+  top:0;
+  width:100%;
+  z-index:999;
+  background:transparent;
+  transition:0.3s;
+}
+
+.navbar-scrolled{
+  background:white;
+  box-shadow:0 5px 15px rgba(0,0,0,0.08);
+}
+
+.navbar-logo-slot{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  pointer-events:none;
+}
+
+
+
+.nav-hover {
+  position: relative;
+  overflow: hidden;
+  padding: 8px 14px;
+}
+
+.nav-flair {
+  position: absolute;
+  width: 120px;
+  height: 20px;
+  background: rgba(255, 0, 100, 0.25);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  pointer-events: none;
+  top: 0;
+  left: 0;
+}
+
+.nav-label {
+  position: relative;
+  z-index: 2;
+}
