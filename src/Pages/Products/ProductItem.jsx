@@ -7,7 +7,6 @@ import shop4 from "../../assets/images/shop/category/4-removebg-preview.png";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import '../../assets/styles/plugins/ProductCards.css';
-import image from '../../assets/images/secondSection.png';
 
 const ProductItem = ({ product }) => {
   const navigate = useNavigate();
@@ -41,7 +40,7 @@ const ProductItem = ({ product }) => {
     <>
       <div className="product-card-wrapper">
         <div className="product-card mb-3 p-0 overflow-hidden shadow border border-1 position-relative">
-          <div style={{background: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center'}} className="position-relative">
+          <div style={{background: 'radial-gradient(circle,rgba(238, 174, 202, 0.2) 0%, rgba(223, 93, 232, 0.2) 100%)' ,backgroundSize: 'cover', backgroundPosition: 'center'}} className="position-relative">
           {product.quantity === 0 && (
             <span className="sale-badge">SALE OUT</span>
           )}

@@ -290,3 +290,78 @@
   font-weight: weight;
   font-style: normal;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.courgette-regular {
+  font-family: "Courgette", cursive;
+  font-weight: 400;
+  font-style: normal;
+}
+.playwrite-dk-uloopet-guides-regular {
+  font-family: "Playwrite DK Uloopet Guides", cursive;
+  font-weight: 400;
+  font-style: normal;
+}
+.fascinate-inline-regular {
+  font-family: "Fascinate Inline", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+.diplomata-regular {
+  font-family: "Diplomata", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+.butcherman-regular {
+  font-family: "Butcherman", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.hanalei-fill-regular {
+  font-family: "Hanalei Fill", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+.leckerli-one-regular {
+  font-family: "Leckerli One", cursive;
+  font-weight: 400;
+  font-style: normal;
+}
+.bruno-ace-sc-regular {
+  font-family: "Bruno Ace SC", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+.goblin-one-regular {
+  font-family: "Goblin One", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+.ole-regular {
+  font-family: "Ole", cursive;
+  font-weight: 400;
+  font-style: normal;
+}
+.playwrite-fr-trad-uniquifier {
+  font-family: "Playwrite FR Trad", cursive;
+  font-optical-sizing: auto;
+  font-weight: weight;
+  font-style: normal;
+}
