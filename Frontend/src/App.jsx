@@ -1,4 +1,5 @@
 import Navbar from './components/Navbar';
+import ReviewPage  from './Pages/Products/ReviewPage';
 import { HomePage } from './Pages/HomePage';
 import { Contact } from './Pages/Contact/Contact';
 import './App.css';
@@ -26,6 +27,7 @@ function App() {
           <Route path='/shop' element={<ProductFourColumns />}></Route>
           <Route path="/ProductDetailsNormal" element={<ProductDetailsNormal />}></Route>
           <Route path="/product/:id" element={<ProductDetailsNormal />} />
+          <Route path="/rating" element={<ReviewPage />} />
         </Routes>
     </>
   )

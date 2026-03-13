@@ -294,9 +294,25 @@ const buttonRef = useRef(null);
             </span>
           </button>
         </div>
-
         <img src={banner} alt="hero" style={{ width: "100%", height: 700 }} />
       </div>
+      <section>
+        <div className="mt-3">
+          <ul className="d-flex gap-4 p-3" >
+            <li className="fs-3 courgette-regular">Lakme</li>
+            <li className="fs-3 playwrite-dk-uloopet-guides-regular">Nykaa</li>
+            <li className="fs-3 fascinate-inline-regular">derma</li>
+            <li className="fs-3 diplomata-regular">Morphe</li>
+            <li className="fs-3 butcherman-regular">Dove</li>
+            <li className="fs-3 hanalei-fill-regular">ILLIYOON</li>
+            <li className="fs-3 bruno-ace-sc-regular">NEXXUS</li>
+            <li className="fs-3 leckerli-one-regular">cetaphil</li>
+            <li className="fs-3 goblin-one-regular">Arenica</li>
+            <li className="fs-3 ole-regular">Brinton</li>
+            <li className="fs-3 playwrite-fr-trad-uniquifier">CLINIQUE</li>
+          </ul>
+        </div>
+      </section>
 
       <section className="offer-banner my-5">
         <div className="container">
@@ -326,7 +342,6 @@ const buttonRef = useRef(null);
                 </div>
                 <img src={banner1} alt="" />
               </div>
-
             </div>
 
             <div className="col-lg-4 col-md-6 p-0 text-center">
