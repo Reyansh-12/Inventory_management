@@ -1,0 +1,142 @@
+.review-page{
+    font-family: Arial, Helvetica, sans-serif;
+    }
+    
+    .page-title{
+    font-size:24px;
+    font-weight:600;
+    }
+    
+    .verified-box{
+    background:#fff5f7;
+    border:1px solid #ffd6df;
+    padding:12px;
+    border-radius:6px;
+    }
+    
+    .rating-number{
+    font-size:42px;
+    font-weight:700;
+    }
+    
+    .review-btn{
+    background:#ea4c71;
+    color:white;
+    }
+    
+    .review-btn:hover{
+    background:#d63c60;
+    color:white;
+    }
+    
+    .filter-buttons{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:10px;
+    }
+    
+    .filter-btn{
+    border:1px solid #ccc;
+    background:white;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:14px;
+    }
+    
+    .sort-btn{
+    border:1px solid #ccc;
+    }
+    
+    .review-card{
+    border:1px solid #eee;
+    padding:20px;
+    border-radius:6px;
+    }
+    
+    .avatar{
+    width:45px;
+    height:45px;
+    background:#ffd6df;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+    color:#ea4c71;
+    }
+    
+    .verified-text{
+    font-size:12px;
+    color:#ea4c71;
+    }
+    
+    .rating-badge{
+    background:#198754;
+    color:white;
+    display:inline-block;
+    padding:3px 8px;
+    border-radius:4px;
+    font-size:12px;
+    }
+    
+    .review-text{
+    color:#555;
+    font-size:14px;
+    }
+    
+    .review-images{
+    display:flex;
+    gap:10px;
+    margin-top:10px;
+    }
+    
+    .review-images img{
+    width:70px;
+    height:80px;
+    object-fit:cover;
+    border-radius:4px;
+    }
+    
+    .product-card{
+    border:1px solid #eee;
+    padding:20px;
+    text-align:center;
+    position:sticky;
+    top:20px;
+    }
+    
+    .product-card img{
+    width:180px;
+    margin-bottom:10px;
+    }
+    
+    .price{
+    margin:10px 0;
+    }
+    
+    .old{
+    text-decoration:line-through;
+    color:#888;
+    margin-right:5px;
+    }
+    
+    .new{
+    font-weight:bold;
+    margin-right:5px;
+    }
+    
+    .off{
+    color:green;
+    font-size:13px;
+    }
+    
+    .add-btn{
+    background:#ea4c71;
+    color:white;
+    width:100%;
+    }
+    
+    .add-btn:hover{
+    background:#d63c60;
+    }
