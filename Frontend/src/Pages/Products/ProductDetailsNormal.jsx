@@ -24,10 +24,24 @@ const ProductDetailsNormal = () => {
       .catch((err) => console.error(err));
   }, [id]);
 
+  const checkLogin = (actionName) => {
+    const user = localStorage.getItem("user");
+    if (!user) {
+      toast.warning(`Please login to ${actionName}`);
+      setTimeout(() => {
+        window.location.href = "http://localhost:3000/Backend/src/Pages/Auth/signin.php";
+      }, 1500);
+      return false;
+    }
+    return true;
+  };
+
   const increment = () => setQty((q) => q + 1);
   const decrement = () => setQty((q) => Math.max(1, q - 1));
 
   const addToCart = () => {
+    if (!checkLogin("add items to cart")) return;
+
     const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
     const existingItemIndex = existingCart.findIndex(item => item.id === product.id);
 
@@ -46,6 +60,16 @@ const ProductDetailsNormal = () => {
     localStorage.setItem("cart", JSON.stringify(existingCart));
     window.dispatchEvent(new Event("cartUpdated"));
     toast.success("Added to cart!");
+  };
+
+  const handleBuyNow = () => {
+    if (!checkLogin("buy this product")) return;
+  };
+
+  const handleReviewClick = () => {
+    if (checkLogin("write a review")) {
+      setShowReviewForm(true);
+    }
   };
 
   if (!product) return <h3 className="text-center mt-5">Loading...</h3>;
@@ -104,7 +128,7 @@ const ProductDetailsNormal = () => {
                 <button className="btn addBtn py-3 text-white fw-bold" style={{background: '#000', borderRadius: '5px', letterSpacing:'initial'}} onClick={addToCart}>
                   Add To Cart
                 </button>
-                <button className="btn buyBtn py-3 fw-bold border-dark" style={{borderRadius: '5px', letterSpacing:'initial'}}>
+                <button className="btn buyBtn py-3 fw-bold border-dark" style={{borderRadius: '5px', letterSpacing:'initial'}} onClick={handleBuyNow}>
                   Buy Now <RiArrowRightDoubleLine />
                 </button>
               </div>
@@ -146,7 +170,7 @@ const ProductDetailsNormal = () => {
                   border: '1.5px dashed rgba(227, 39, 95, 1)',
                   letterSpacing:'initial'
                 }}
-                onClick={() => setShowReviewForm(true)}
+                onClick={handleReviewClick}
               >
                 Write a Review
               </button>

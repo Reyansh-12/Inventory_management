@@ -1,0 +1,103 @@
+.about-page-wrapper {
+    background-color: #fff;
+    overflow-x: hidden;
+}
+
+.title-tag {
+    color: #e85a8a;
+    font-weight: 800;
+    letter-spacing: 3px;
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+/* Hero Image Stack */
+.image-stack {
+    position: relative;
+    padding-left: 50px;
+}
+
+.image-accent-box {
+    position: absolute;
+    top: -30px;
+    left: 20px;
+    width: 200px;
+    height: 300px;
+    border: 15px solid #fceef2;
+    z-index: -1;
+    border-radius: 20px;
+}
+
+/* Stat Box Hover */
+.stat-box {
+    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    background: #fff;
+}
+
+.stat-box:hover {
+    transform: translateY(-10px);
+    border-color: #e85a8a !important;
+    box-shadow: 0 20px 40px rgba(232, 90, 138, 0.1);
+}
+
+.hover-jump {
+    transition: 0.3s;
+}
+
+.stat-box:hover .hover-jump {
+    transform: scale(1.1) rotate(5deg);
+}
+
+/* Brand Filter */
+.brand-bw-filter {
+    filter: grayscale(100%);
+    opacity: 0.6;
+    transition: 0.3s;
+}
+
+.brand-bw-filter:hover {
+    filter: grayscale(0%);
+    opacity: 1;
+}
+
+/* Floating Elements */
+.about-thumb-container {
+    position: relative;
+}
+
+.floating-badge {
+    position: absolute;
+    bottom: -20px;
+    right: 20px;
+    background: #1a1a1a;
+    color: white;
+    padding: 20px 40px;
+    border-radius: 100px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+/* Features Dark Mode */
+.rounded-t-5 {
+    border-radius: 60px 60px 0 0;
+}
+
+.feature-item-modern {
+    padding: 20px;
+    border-radius: 20px;
+    transition: 0.3s;
+}
+
+.feature-item-modern:hover {
+    background: rgba(255,255,255,0.05);
+}
+
+.icon-wrap {
+    background: rgba(255,255,255,0.1);
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}

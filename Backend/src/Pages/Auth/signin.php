@@ -2,10 +2,8 @@
 session_start();
 define("BASE_PATH", dirname(__DIR__, 3));
 include BASE_PATH . "/src/controllers/dbConnection.php";
-session_start();
-$_SESSION['user_id'] = $user['id'];
-if (isset($_POST['submit'])) {
 
+if (isset($_POST['submit'])) {
     $userEmail = trim($_POST['userEmail']);
     $userPassword = $_POST['userPassword'];
 
@@ -15,48 +13,31 @@ if (isset($_POST['submit'])) {
     $result = mysqli_stmt_get_result($stmt);
     $user = mysqli_fetch_assoc($result);
 
-    if (!$user) {
-        $_SESSION['field_error'] = [
-            'type' => 'email',
-            'message' => 'Email not found'
+    if ($user && password_verify($userPassword, $user['user_password'])) {
+        // User data ka JSON banayein
+        $userData = [
+            "id" => $user['id'],
+            "email" => $user['user_email'],
+            "role" => $user['user_role']
         ];
-        $_SESSION['keep_email'] = $userEmail;
-        header("Location: signin.php");
+        
+        // Data ko encode karein taaki URL mein bhej sakein
+        $encodedUser = urlencode(json_encode($userData));
+
+        if ($user['user_role'] === "Admin") {
+            header("Location: /Backend/src/Pages/Dashboard.php");
+        } else {
+            // REACT WALE PORT PAR DATA BHEJEIN
+            header("Location: http://localhost:5173/?auth_user=" . $encodedUser);
+        }
         exit();
-        // header("Location: signin.php");
-        // exit();
-    }
-
-    // if (!password_verify($userPassword, $user['user_password'])) {
-    //     $_SESSION['toast_error'] = "Password is incorrect";
-    //     $_SESSION['keep_email'] = $userEmail;
-    //     header("Location: signin.php");
-    //     exit();
-    // }
-    if (!password_verify($userPassword, $user['user_password'])) {
-        $_SESSION['field_error'] = [
-            'type' => 'password',
-            'message' => 'Password is incorrect'
-        ];
-        $_SESSION['keep_email'] = $userEmail;
-        header("Location: signin.php");
-        exit();
-    }
-
-    $_SESSION['user_id']   = $user['id'];
-    $_SESSION['user_role'] = $user['user_role'];
-    $_SESSION['user_email'] = $user['user_email'];
-
-    if ($user['user_role'] === "Admin") {
-        header("Location: /Backend/src/Pages/Dashboard.php");
     } else {
-        header("Location: http://localhost:5173/");
+        $_SESSION['field_error'] = ['type' => 'password', 'message' => 'Invalid credentials'];
+        header("Location: signin.php");
+        exit();
     }
-    exit();
 }
-
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
