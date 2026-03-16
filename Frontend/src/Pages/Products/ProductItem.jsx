@@ -5,6 +5,7 @@ import shop4 from "../../assets/images/shop/category/4-removebg-preview.png";
 import { Link } from "react-router-dom";
 import { toast } from 'react-toastify';
 import '../../assets/styles/plugins/ProductCards.css';
+import { CiHeart } from "react-icons/ci";
 
 const ProductItem = ({ product }) => {
   const navigate = useNavigate();
@@ -16,7 +17,6 @@ const ProductItem = ({ product }) => {
   const addToWishlist = (e) => {
     e.preventDefault();
     
-    // LOGIN CHECK
     const user = localStorage.getItem("user");
     if (!user) {
       toast.info("Please login to add items to wishlist");
@@ -64,7 +64,7 @@ const ProductItem = ({ product }) => {
             style={{ width: '35px', height: '35px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} 
             onClick={addToWishlist}
           >
-            <FaRegHeart />
+            <FaRegHeart />❤
           </button>
 
           <Link to={`/product/${product.id}`}>
