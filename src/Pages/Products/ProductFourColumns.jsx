@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Footer from "../../components/Footer";
-
 import ProductItem from "@/Pages/Products/ProductItem.jsx";
 import FilterBlock from "@/components/FilterBlock";
 import image from "../../assets/images/secondSection.png";
@@ -25,22 +24,17 @@ const ProductFourColumns = () => {
   }, [location.search]);
 
   useEffect(() => {
-    fetch(
-      "http://localhost/Inventory_management/Backend/src/Pages/APIs/categoryListAPI.php"
-    )
+    fetch("http://localhost/Inventory_management/Backend/src/Pages/APIs/categoryListAPI.php")
       .then((res) => res.json())
       .then(setCategories)
       .catch((err) => console.log("Category API Error:", err));
   }, []);
 
   useEffect(() => {
-    fetch(
-      "http://localhost/Inventory_management/Backend/src/Pages/APIs/productListAPI.php"
-    )
+    fetch("http://localhost/Inventory_management/Backend/src/Pages/APIs/productListAPI.php")
       .then((res) => res.json())
       .then((data) => {
         setProducts(data);
-
         const uniqueBrands = [...new Set(data.map((p) => p.brand))];
         setBrands(uniqueBrands);
       })
@@ -49,13 +43,20 @@ const ProductFourColumns = () => {
 
   const filteredProducts = products.filter((p) => {
     const categoryMatch =
-      selectedCategory === "All" || p.category === selectedCategory;
-    const brandMatch = selectedBrand === "All" || p.brand === selectedBrand;
+      selectedCategory === "All" || 
+      p.category?.toLowerCase() === selectedCategory.toLowerCase();
+
+    const brandMatch = 
+      selectedBrand === "All" || 
+      p.brand === selectedBrand;
+
     const searchMatch = p.name
       ?.toLowerCase()
       .includes(search.toLowerCase());
-    const priceMatch = p.price <= price;
-    const ratingMatch = rating === 0 || p.rating >= rating;
+
+    const priceMatch = Number(p.price) <= price;
+
+    const ratingMatch = rating === 0 || Number(p.rating) >= rating;
 
     return categoryMatch && brandMatch && searchMatch && priceMatch && ratingMatch;
   });
@@ -74,15 +75,14 @@ const ProductFourColumns = () => {
     >
       <div className="d-flex h-100">
         <div className="col-lg-3">
-          <div className="filter-sidebar p-4 ms-4">
+          <div className="filter-sidebar p-4 ms-4 shadow-sm bg-white rounded">
             <div className="d-flex justify-content-between align-items-center mb-3">
               <div>
                 <h6 className="fw-bold mb-0">FILTERS</h6>
-                <small className="text-muted">{filteredProducts.length}+ Products</small>
+                <small className="text-muted">{filteredProducts.length} Products Found</small>
               </div>
               <button
                 className="btn btn-link text-decoration-none p-0 text-danger small"
-                style={{ letterSpacing: "1px" }}
                 onClick={() => {
                   setSelectedCategory("All");
                   setSelectedBrand("All");
@@ -90,6 +90,7 @@ const ProductFourColumns = () => {
                   setPrice(5000);
                   setRating(0);
                 }}
+                style={{letterSpacing: 'initial'}}
               >
                 Clear All
               </button>
@@ -98,40 +99,38 @@ const ProductFourColumns = () => {
             <FilterBlock
               title="Category"
               items={["All", ...categories.map((c) => c.name)]}
+              selectedValue={selectedCategory} 
               onChange={setSelectedCategory}
-            />
-
-            <FilterBlock
-              title="Skin Type"
-              items={["Dry Skin", "Oily Skin", "Sensitive", "Combination"]}
             />
 
             <FilterBlock
               title="Brand"
               items={["All", ...brands]}
+              selectedValue={selectedBrand} 
               onChange={setSelectedBrand}
             />
 
-            <div className="filter-block">
-              <h6>Price</h6>
+            <div className="filter-block mb-4">
+              <h6 className="fw-bold">Price (Max: ₹{price})</h6>
               <input
                 type="range"
                 className="form-range"
                 min="0"
                 max="5000"
+                step="100"
                 value={price}
                 onChange={(e) => setPrice(Number(e.target.value))}
               />
               <div className="d-flex justify-content-between small text-muted">
                 <span>₹0</span>
-                <span>₹{price}</span>
+                <span>₹5000</span>
               </div>
             </div>
 
             <div className="filter-block">
-              <h6>Rating</h6>
+              <h6 className="fw-bold">Rating</h6>
               {[4, 3, 2].map((r) => (
-                <label className="filter-option" key={r}>
+                <label className="d-flex align-items-center gap-2 mb-1 cursor-pointer" key={r}>
                   <input
                     type="radio"
                     name="rating"
@@ -141,26 +140,34 @@ const ProductFourColumns = () => {
                   {r}★ & above
                 </label>
               ))}
+              <label className="d-flex align-items-center gap-2 mb-1 cursor-pointer">
+                <input
+                  type="radio"
+                  name="rating"
+                  checked={rating === 0}
+                  onChange={() => setRating(0)}
+                /> All Ratings
+              </label>
             </div>
           </div>
         </div>
 
-        <div className="col-lg-9 product-scroll">
-          <div className="shop-topbar d-flex justify-content-between align-items-center mb-4 ms-4">
-            <span className="product-count" style={{ width: "150px" }}>
+        <div className="col-lg-9 product-scroll" style={{ overflowY: 'auto' }}>
+          <div className="shop-topbar d-flex justify-content-between align-items-center mb-4 px-4">
+            <span className="product-count">
               Total Products <b>{filteredProducts.length}</b>
             </span>
 
             <input
               type="search"
-              className="form-control search-input w-25"
-              placeholder="Search Products"
+              className="form-control search-input w-25 shadow-sm"
+              placeholder="Search Products..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
 
-          <section className="section-space pb-5 mt-5">
+          <section className="pb-5">
             <div className="container-fluid px-3 px-lg-4">
               <div className="row g-4">
                 {filteredProducts.length > 0 ? (
@@ -170,14 +177,15 @@ const ProductFourColumns = () => {
                     </div>
                   ))
                 ) : (
-                  <p className="text-center w-100">No products found</p>
+                  <div className="text-center w-100 mt-5">
+                     <h4 className="text-muted">No products found matching your filters.</h4>
+                  </div>
                 )}
               </div>
             </div>
           </section>
         </div>
       </div>
-
       <Footer />
     </main>
   );

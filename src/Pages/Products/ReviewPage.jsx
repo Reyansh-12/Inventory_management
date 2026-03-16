@@ -1,121 +1,162 @@
-
-import React from 'react';
-import { CiStar } from "react-icons/ci";
-import { FaChevronDown } from "react-icons/fa";
-import { FaCamera } from "react-icons/fa";
-import image from '../../assets/images/1256-removebg-preview.png';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { FaChevronDown, FaStar, FaArrowLeft, FaTimes, FaCamera } from "react-icons/fa";
+import { toast } from "react-toastify";
+import image from "../../assets/images/1256-removebg-preview.png";
+import "../../assets/styles/plugins/review.css";
 
 const ReviewPage = () => {
-    return (
-        <>
-            <div className="max-w-6xl mx-auto p-5 mt-5 font-sans text-slate-800 bg-white">
+  const navigate = useNavigate();
 
-                <h3 className="text-xl font-bold mb-6">
-                    Love Beauty & Planet Onion, Black Seed & Patchouli Hair Fall Control Sulphate Free Shampoo - All Reviews
-                </h3>
+  // --- STATES ---
+  const [selectedStar, setSelectedStar] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
 
-                <div className="d-flex row">
-                    <div className="col-lg-8">
-                        <div className="bg-pink-50 border border-pink-100 rounded-lg p-4 flex items-center gap-4 mb-8">
-                            <div className="bg-white p-2 rounded-full border border-pink-200">
-                                <span className="text-pink-500 text-xl">📋 Nykaa is committed to showing genuine and verified reviews.</span>
-                            </div>
-                        </div>
+  // Mock Data (In real app, fetch this from API)
+  const allReviews = [
+    { id: 1, name: "Nutan Sangma", date: "19 Apr 2023", rating: 5, title: "Work Amazing", text: "This shampoo is wonderful. Helped me manage my hair.", images: [1, 2], verified: true },
+    { id: 2, name: "Rahul K.", date: "10 May 2023", rating: 4, title: "Good product", text: "Smells great but a bit expensive.", images: [], verified: true },
+    { id: 3, name: "Sana M.", date: "02 June 2023", rating: 3, title: "Average", text: "Didn't see much difference in hair fall.", images: [3], verified: false },
+  ];
 
-                        <div className="d-flex items-start justify-between border-b gap-5 pb-8 mb-6">
-                            <div className="d-flex items-center gap-4 border-end pe-5">
-                                <div className="text-5xl font-bold">4.4<span className="text-2xl text-gray-400 font-normal">/5</span></div>
-                                <div>
-                                    <div className="font-bold text-sm">Overall Rating</div>
-                                    <div className="text-xs text-gray-500">102508 verified ratings</div>
-                                </div>
-                            </div>
+  // --- HANDLERS ---
+  const handleAddToBag = () => {
+    // Cart logic (localStorage)
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    cart.push({ id: "onion-shampoo", name: "Love Beauty & Planet Onion", price: 559, qty: 1, image });
+    localStorage.setItem("cart", JSON.stringify(cart));
+    
+    window.dispatchEvent(new Event("cartUpdated")); // Update Navbar
+    toast.success("Added to bag!");
+  };
 
-                            <div className="text-center pl-8 border-l border-gray-200">
-                                <p className="text-xs text-gray-600 mb-2">Write a review and win 100 reward points !</p>
-                                <button className="border text-pink-500 px-6 py-2 text-white rounded font-semibold hover:bg-pink-50 transition" style={{background: '#EA4C71'}}>
-                                    Write Review
-                                </button>
-                            </div>
-                        </div>
+  const filteredReviews = selectedStar 
+    ? allReviews.filter(r => r.rating === selectedStar) 
+    : allReviews;
 
-                        <div className="mb-8">
-                            <h3 className="font-bold text-sm mb-3">Refine Reviews By</h3>
-                            <div className="flex flex-wrap gap-2 mb-4">
-                                <button className="px-4 py-1.5 rounded text-sm bg-transparent" style={{borderColor: '#EA4C71'}}>Verified Buyers</button>
-                                <button className="px-4 py-1.5 rounded bg-transparent ms-3" style={{borderColor: '#EA4C71'}}>With Images</button>
-                                {/* {[5, 4, 3, 2, 1].map(star => (
-                <button key={CiStar} className="px-4 py-1.5 rounded-full border border-gray-300 text-gray-600 text-sm">{CiStar} Star</button>
-              ))} */}
-                            </div>
-                            <button className="flex items-center gap-2 border border-gray-300 px-4 py-2 rounded text-sm font-semibold">
-                                {/* <span className="rotate-90">|||</span> Most Useful <FaChevronDown size={16} /> */}
-                            </button>
-                        </div>
+  return (
+    <div className="container review-page" style={{ marginTop: '100px', minHeight: '100vh' }}>
+      
+      <div className="mb-3">
+        <button onClick={() => navigate(-1)} className="btn d-flex align-items-center gap-2 p-0 text-muted back-link shadow-none" style={{letterSpacing: 'initial'}}>
+          <FaArrowLeft /> Back to Product
+        </button>
+      </div>
 
-                        {/* Individual Review */}
-                        <div className="border-t pt-6">
-                            <div className="flex gap-4">
-                                <div className="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center text-pink-400 font-bold text-xl">N</div>
-                                <div className="flex-grow">
-                                    <div className="flex justify-between items-start">
-                                        <div>
-                                            <span className="font-bold text-sm block">Nutan Sangma</span>
-                                            <span className="text-pink-500 text-xs flex items-center gap-1">✓ Verified Buyers</span>
-                                        </div>
-                                        <span className="text-gray-400 text-xs">19/04/2023</span>
-                                    </div>
+      <h3 className="page-title mb-4 fw-bold" style={{ fontSize: '22px' }}>
+        Love Beauty & Planet Onion, Black Seed & Patchouli Hair Fall Control Sulphate Free Shampoo - Reviews
+      </h3>
 
-                                    <div className="mt-3 flex items-center gap-2">
-                                        <span className="bg-green-700 text-white text-[10px] px-1.5 py-0.5 rounded flex items-center gap-0.5 font-bold">5</span>
-                                    </div>
+      <div className="row">
+        <div className="col-lg-8">
+          <div className="verified-box mb-4 p-2 px-3 rounded" style={{ background: '#f0f8ff', border: '1px solid #cce5ff', fontSize: '14px' }}>
+            📋 Nykaa is committed to showing genuine and verified reviews.
+          </div>
 
-                                    <p className="font-bold text-sm mt-2">" Work Amazing."</p>
-                                    <p className="text-sm text-gray-600 mt-1 leading-relaxed">
-                                        This shampoo is wonderful. Helped me a lot to manage my hair. Also, strengthen my roots to prevention from hair fall. Now I'm suggesting this shampoo to everyone in my family...<span className="text-gray-900 font-semibold cursor-pointer">Read More</span>
-                                    </p>
-
-                                    <div className="flex gap-2 mt-4">
-                                        {[1, 2, 3, 4].map((i) => (
-                                            <div key={i} className="w-16 h-20 bg-gray-200 rounded overflow-hidden">
-                                                <img src={`https://picsum.photos/seed/${i + 10}/100/150`} alt="review" className="w-full h-full object-cover" />
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Right Section: Product Sticky Card */}
-                    <div className=" col-lg-4">
-                        <div className="border border-gray-100 rounded-lg p-4 shadow-sm sticky top-4">
-                            <div className="relative aspect-[3/4] mb-4 bg-gray-50 rounded">
-                                <img
-                                    src={image}
-                                    alt="product"
-                                    className="w-full h-full object-contain mix-blend-multiply p-4"
-                                />
-                            </div>
-                            <div className="text-center">
-                                <h4 className="text-xs font-medium text-gray-800 mb-2 leading-tight">
-                                    Love Beauty & Planet Onion, Black Seed &
-                                </h4>
-                                <div className="flex items-center justify-center gap-2 mb-4">
-                                    <span className="text-gray-400 line-through text-xs">₹658</span>
-                                    <span className="font-bold text-sm">₹559</span>
-                                    <span className="text-green-600 font-bold text-xs">15% Off</span>
-                                </div>
-                                <button className="w-full bg-[#ec3d63] text-white py-3 rounded font-bold" style={{background: '#EA4C71'}}>
-                                    Add to Bag
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+          <div className="rating-section mb-4 d-flex justify-content-between align-items-center bg-white p-3 rounded shadow-sm">
+            <div className="d-flex align-items-center">
+              <div className="rating-number fw-bold fs-2 text-white bg-success px-3 py-1 rounded">4.4</div>
+              <div className="ms-3">
+                <div className="fw-bold">Overall Rating</div>
+                <div className="text-muted small">102,508 verified ratings</div>
+              </div>
             </div>
-        </>
-    );
+            <button className="btn btn-outline-danger fw-bold shadow-none" style={{letterSpacing: 'initial'}} onClick={() => setShowModal(true)}>
+              Write Review
+            </button>
+          </div>
+
+          <div className="filters mb-4">
+            <h6 className="fw-bold">Refine Reviews By</h6>
+            <div className="filter-buttons d-flex flex-wrap gap-2 mt-2">
+              <button className={`btn btn-sm border ${!selectedStar ? 'btn-dark' : 'btn-light'}`} onClick={() => setSelectedStar(null)}>All</button>
+              {[5, 4, 3, 2, 1].map((star) => (
+                <button 
+                  key={star} 
+                  className={`btn btn-sm border ${selectedStar === star ? 'btn-dark' : 'btn-light'}`}
+                  onClick={() => setSelectedStar(star)}
+                >
+                  {star} <FaStar className="mb-1" size={12}/>
+                </button>
+              ))}
+            </div>
+          </div>
+
+
+          {filteredReviews.length > 0 ? filteredReviews.map((review) => (
+            <div className="review-card p-3 mb-3 bg-white border rounded shadow-sm" key={review.id}>
+              <div className="d-flex">
+                <div className="avatar bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style={{ width: '40px', height: '40px' }}>
+                  {review.name[0]}
+                </div>
+                <div className="ms-3 flex-grow-1">
+                  <div className="d-flex justify-content-between align-items-start">
+                    <div>
+                      <div className="fw-bold">{review.name}</div>
+                      {review.verified && <div className="text-success small fw-bold">✓ Verified Buyer</div>}
+                    </div>
+                    <div className="text-muted small">{review.date}</div>
+                  </div>
+                  <div className="badge bg-success my-2">{review.rating} ★</div>
+                  <h6 className="fw-bold text-dark">{review.title}</h6>
+                  <p className="review-text text-muted mb-2">{review.text}</p>
+                  <div className="review-images d-flex gap-2">
+                    {review.images.map((imgId) => (
+                      <img key={imgId} src={`https://picsum.photos/seed/${imgId+10}/100`} alt="review" className="rounded border" style={{ width: '60px', height: '60px', objectFit: 'cover' }} />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )) : <p className="text-center text-muted py-5">No reviews found for this rating.</p>}
+        </div>
+
+        {/* Sidebar Sticky Card */}
+        <div className="col-lg-4">
+          <div className="product-card p-3 shadow-sm border rounded bg-white sticky-top" style={{ top: '120px' }}>
+            <img src={image} alt="product" className="img-fluid mb-3 mx-auto d-block" style={{ maxHeight: '200px' }} />
+            <h6 className="fw-bold text-dark mb-2" style={{ fontSize: '14px' }}>
+              Love Beauty & Planet Onion, Black Seed & Patchouli
+            </h6>
+            <div className="price my-2 d-flex align-items-center">
+              <span className="old text-muted text-decoration-line-through me-2">₹658</span>
+              <span className="new fw-bold text-danger fs-5">₹559</span>
+              <span className="off ms-2 badge bg-success" style={{ fontSize: '11px' }}>15% Off</span>
+            </div>
+            <button className="btn btn-dark w-100 fw-bold py-2 mt-2" style={{letterSpacing: 'initial'}} onClick={handleAddToBag}>
+              Add to Bag
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {showModal && (
+        <div className="modal-overlay" style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="modal-content bg-white p-4 rounded shadow-lg" style={{ width: '90%', maxWidth: '500px' }}>
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <h5 className="fw-bold m-0">Write a Review</h5>
+              <FaTimes className="cursor-pointer" onClick={() => setShowModal(false)} />
+            </div>
+            <div className="mb-3">
+              <label className="small fw-bold mb-1">Select Rating</label>
+              <div className="d-flex gap-2 text-warning fs-4">
+                {[1,2,3,4,5].map(s => <FaStar key={s} className="cursor-pointer" />)}
+              </div>
+            </div>
+            <input type="text" className="form-control mb-3" placeholder="Review Title" />
+            <textarea className="form-control mb-3" rows="4" placeholder="Share your experience..."></textarea>
+            <div className="mb-3 border rounded p-3 text-center border-dashed cursor-pointer text-muted">
+              <FaCamera className="me-2" /> Add Photos
+            </div>
+            <button className="btn btn-danger w-100 fw-bold" style={{letterSpacing: 'initial'}} onClick={() => { setShowModal(false); toast.success("Review submitted!"); }}>
+              Submit Review
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default ReviewPage;
