@@ -16,6 +16,13 @@ const ProductDetailsNormal = () => {
   const [product, setProduct] = useState(null);
   const [qty, setQty] = useState(1);
   const [showReviewForm, setShowReviewForm] = useState(false); 
+  
+  const [userRating, setUserRating] = useState(0);
+  const [hover, setHover] = useState(0);
+
+  const [reviewTitle, setReviewTitle] = useState("");
+  const [reviewComment, setReviewComment] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     fetch(`http://localhost/Inventory_management/Backend/src/Pages/APIs/productDetailsAPI.php?id=${id}`)
@@ -35,13 +42,10 @@ const ProductDetailsNormal = () => {
     }
     return true;
   };
-
   const increment = () => setQty((q) => q + 1);
   const decrement = () => setQty((q) => Math.max(1, q - 1));
-
   const addToCart = () => {
     if (!checkLogin("add items to cart")) return;
-
     const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
     const existingItemIndex = existingCart.findIndex(item => item.id === product.id);
 
@@ -56,22 +60,84 @@ const ProductDetailsNormal = () => {
         qty: qty
       });
     }
-
     localStorage.setItem("cart", JSON.stringify(existingCart));
     window.dispatchEvent(new Event("cartUpdated"));
     toast.success("Added to cart!");
   };
-
   const handleBuyNow = () => {
     if (!checkLogin("buy this product")) return;
+    const buyNowItem = {
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image || shop2,
+      qty: qty
+    };
+    localStorage.setItem("temp_checkout", JSON.stringify([buyNowItem]));
+    navigate("/checkout");
   };
+  const handleReviewClick = async () => {
+    if (!checkLogin("write a review")) return;
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user || !user.email) {
+      toast.error("User email not found. Please login again.");
+      return;
+    }
+    try {
+      const response = await fetch(
+        `http://localhost/Inventory_management/Backend/src/Pages/APIs/checkPurchaseAPI.php?email=${encodeURIComponent(user.email)}&product=${encodeURIComponent(product.name)}`
+      );
+      const data = await response.json();
 
-  const handleReviewClick = () => {
-    if (checkLogin("write a review")) {
-      setShowReviewForm(true);
+      if (data.hasBought) {
+        setShowReviewForm(true); 
+      } else {
+        toast.error("Review access denied! You can only review products you have purchased.");
+      }
+    } catch (err) {
+      console.error("Verification Error:", err);
+      toast.error("Error verifying purchase status.");
     }
   };
 
+  const submitReview = async () => {
+    if (userRating === 0) return toast.error("Please select a rating!");
+    if (!reviewTitle.trim() || !reviewComment.trim()) return toast.error("Please fill all fields!");
+
+    setIsSubmitting(true);
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    const reviewData = {
+      product_id: id,
+      customer_email: user.email, 
+      rating: userRating,
+      title: reviewTitle,
+      comment: reviewComment
+    };
+
+    try {
+      const res = await fetch("http://localhost/Inventory_management/Backend/src/Pages/APIs/submitReviewAPI.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(reviewData)
+      });
+      const result = await res.json();
+
+      if (result.success) {
+        toast.success("Review submitted for moderation!");
+        setShowReviewForm(false);
+        setReviewTitle("");
+        setReviewComment("");
+        setUserRating(0);
+      } else {
+        toast.error("Failed to submit review.");
+      }
+    } catch (err) {
+      toast.error("Server error!");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   if (!product) return <h3 className="text-center mt-5">Loading...</h3>;
 
   return (
@@ -80,10 +146,10 @@ const ProductDetailsNormal = () => {
       <div className="container pt-4" style={{marginTop: '80px'}}>
         <button 
           onClick={() => navigate(-1)} 
-          className="btn d-flex align-items-center gap-2 text-dark fw-bold border-0 p-0"
+          className="btn d-flex align-items-center gap-2 text-dark fw-bold border-0 p-0 pe-2 ps-2"
           style={{ transition: '0.3s', letterSpacing:'initial' }}
           onMouseOver={(e) => e.target.style.color = 'rgba(227, 39, 95, 1)'}
-          onMouseOut={(e) => e.target.style.color = '#000'}
+          onMouseOut={(e) => e.target.style.color = 'white'}
         >
           <FaChevronLeft /> Back to Products
         </button>
@@ -125,10 +191,10 @@ const ProductDetailsNormal = () => {
               </div>
 
               <div className="d-grid gap-3">
-                <button className="btn addBtn py-3 text-white fw-bold" style={{background: '#000', borderRadius: '5px', letterSpacing:'initial'}} onClick={addToCart}>
+                <button className="btn addBtn py-3 text-white fw-bold" style={{background: '#e85a8a', borderRadius: '5px', letterSpacing:'initial'}} onClick={addToCart}>
                   Add To Cart
                 </button>
-                <button className="btn buyBtn py-3 fw-bold border-dark" style={{borderRadius: '5px', letterSpacing:'initial'}} onClick={handleBuyNow}>
+                <button className="btn buyBtn py-3 fw-bold" style={{borderRadius: '5px', letterSpacing:'initial', borderColor: '#e85a8a', color: '#e85a8a'}} onClick={handleBuyNow}>
                   Buy Now <RiArrowRightDoubleLine />
                 </button>
               </div>
@@ -234,27 +300,46 @@ const ProductDetailsNormal = () => {
             <h4 className="fw-bold mb-3">Write a Review</h4>
             <div className="mb-3">
               <label className="small fw-bold text-muted d-block mb-2">Rating</label>
-              <div className="fs-3 text-warning">
-                <FaRegStar /><FaRegStar /><FaRegStar /><FaRegStar /><FaRegStar />
+              <div className="fs-3">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <FaStar
+                    key={star}
+                    style={{ cursor: 'pointer', marginRight: '5px' }}
+                    color={star <= (hover || userRating) ? "#ffc107" : "#e4e5e9"}
+                    onClick={() => setUserRating(star)}
+                    onMouseEnter={() => setHover(star)}
+                    onMouseLeave={() => setHover(0)}
+                  />
+                ))}
               </div>
             </div>
             <div className="mb-3">
               <label className="small fw-bold text-muted">Review Title</label>
-              <input type="text" className="form-control" placeholder="Example: Great Product!" />
+              <input 
+                type="text" 
+                className="form-control" 
+                placeholder="Example: Great Product!" 
+                value={reviewTitle}
+                onChange={(e) => setReviewTitle(e.target.value)}
+              />
             </div>
             <div className="mb-3">
               <label className="small fw-bold text-muted">Your Experience</label>
-              <textarea className="form-control" rows="4" placeholder="What did you like or dislike?"></textarea>
+              <textarea 
+                className="form-control" 
+                rows="4" 
+                placeholder="What did you like or dislike?"
+                value={reviewComment}
+                onChange={(e) => setReviewComment(e.target.value)}
+              ></textarea>
             </div>
             <button 
               className="btn w-100 text-white fw-bold py-2" 
               style={{ background: 'rgba(227, 39, 95, 1)', letterSpacing:'initial' }}
-              onClick={() => {
-                toast.success("Review submitted for moderation!");
-                setShowReviewForm(false);
-              }}
+              disabled={isSubmitting}
+              onClick={submitReview}
             >
-              Submit Review
+              {isSubmitting ? "Submitting..." : "Submit Review"}
             </button>
           </div>
         </div>

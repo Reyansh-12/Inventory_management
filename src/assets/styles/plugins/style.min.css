@@ -1439,9 +1439,9 @@ hr {
   }
 }
 .btn:hover {
-  background-color: #231942;
-  border-color: #231942;
-  color: #fff;
+  background-color: #e85a8a;
+  border-color: #e85a8a;
+  color: #fff !important;
 }
 .btn.btn-border-primary {
   background-color: transparent;
@@ -2032,7 +2032,7 @@ hr {
 .no-caret::after {
   display: none !important;
 }
-.nav-link.active {
+.nav-link.active{
   color: #FF6F61 !important;
   font-weight: 600;
 }
