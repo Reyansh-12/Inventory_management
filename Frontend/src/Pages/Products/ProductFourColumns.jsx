@@ -11,6 +11,7 @@ const ProductFourColumns = () => {
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
 
+  // States for filtering
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedBrand, setSelectedBrand] = useState("All");
   const [search, setSearch] = useState("");
@@ -19,6 +20,7 @@ const ProductFourColumns = () => {
 
   const location = useLocation();
 
+  // Scroll to top on route change
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [location.search]);
@@ -26,40 +28,46 @@ const ProductFourColumns = () => {
   useEffect(() => {
     fetch("http://localhost/Inventory_management/Backend/src/Pages/APIs/categoryListAPI.php")
       .then((res) => res.json())
-      .then(setCategories)
-      .catch((err) => console.log("Category API Error:", err));
+      .then((data) => setCategories(data || []))
+      .catch((err) => console.error("Category API Error:", err));
   }, []);
 
   useEffect(() => {
     fetch("http://localhost/Inventory_management/Backend/src/Pages/APIs/productListAPI.php")
       .then((res) => res.json())
       .then((data) => {
-        setProducts(data);
-        const uniqueBrands = [...new Set(data.map((p) => p.brand))];
+        setProducts(data || []);
+        const uniqueBrands = [...new Set(data.map((p) => p.brand).filter(Boolean))];
         setBrands(uniqueBrands);
       })
-      .catch((err) => console.log("Product API Error:", err));
+      .catch((err) => console.error("Product API Error:", err));
   }, []);
 
   const filteredProducts = products.filter((p) => {
     const categoryMatch =
       selectedCategory === "All" || 
-      p.category?.toLowerCase() === selectedCategory.toLowerCase();
+      (p.category && String(p.category).toLowerCase() === selectedCategory.toLowerCase());
 
     const brandMatch = 
       selectedBrand === "All" || 
       p.brand === selectedBrand;
 
-    const searchMatch = p.name
-      ?.toLowerCase()
-      .includes(search.toLowerCase());
+    const searchMatch = !search || (p.name && p.name.toLowerCase().includes(search.toLowerCase()));
 
-    const priceMatch = Number(p.price) <= price;
+    const priceMatch = Number(p.price || 0) <= price;
 
-    const ratingMatch = rating === 0 || Number(p.rating) >= rating;
+    const ratingMatch = rating === 0 || Number(p.rating || 0) >= rating;
 
     return categoryMatch && brandMatch && searchMatch && priceMatch && ratingMatch;
   });
+
+  const handleClearFilters = () => {
+    setSelectedCategory("All");
+    setSelectedBrand("All");
+    setSearch("");
+    setPrice(5000);
+    setRating(0);
+  };
 
   return (
     <main
@@ -75,7 +83,7 @@ const ProductFourColumns = () => {
     >
       <div className="d-flex h-100">
         <div className="col-lg-3">
-          <div className="filter-sidebar p-4 ms-4 shadow-sm bg-white rounded">
+          <div className="filter-sidebar p-4 ms-4 shadow-sm bg-white rounded" style={{ maxHeight: '90vh', overflowY: 'auto' }}>
             <div className="d-flex justify-content-between align-items-center mb-3">
               <div>
                 <h6 className="fw-bold mb-0">FILTERS</h6>
@@ -83,14 +91,8 @@ const ProductFourColumns = () => {
               </div>
               <button
                 className="btn btn-link text-decoration-none p-0 text-danger small"
-                onClick={() => {
-                  setSelectedCategory("All");
-                  setSelectedBrand("All");
-                  setSearch("");
-                  setPrice(5000);
-                  setRating(0);
-                }}
-                style={{letterSpacing: 'initial'}}
+                onClick={handleClearFilters}
+                style={{ letterSpacing: 'initial' }}
               >
                 Clear All
               </button>
@@ -103,12 +105,12 @@ const ProductFourColumns = () => {
               onChange={setSelectedCategory}
             />
 
-            <FilterBlock
+            {/* <FilterBlock
               title="Brand"
               items={["All", ...brands]}
               selectedValue={selectedBrand} 
               onChange={setSelectedBrand}
-            />
+            /> */}
 
             <div className="filter-block mb-4">
               <h6 className="fw-bold">Price (Max: ₹{price})</h6>
@@ -116,31 +118,31 @@ const ProductFourColumns = () => {
                 type="range"
                 className="form-range"
                 min="0"
-                max="5000"
+                max="10000" 
                 step="100"
                 value={price}
                 onChange={(e) => setPrice(Number(e.target.value))}
               />
               <div className="d-flex justify-content-between small text-muted">
                 <span>₹0</span>
-                <span>₹5000</span>
+                <span>₹10000</span>
               </div>
             </div>
 
             <div className="filter-block">
               <h6 className="fw-bold">Rating</h6>
               {[4, 3, 2].map((r) => (
-                <label className="d-flex align-items-center gap-2 mb-1 cursor-pointer" key={r}>
+                <label className="d-flex align-items-center gap-2 mb-1 cursor-pointer" key={r} style={{ cursor: 'pointer' }}>
                   <input
                     type="radio"
                     name="rating"
                     checked={rating === r}
                     onChange={() => setRating(r)}
-                  />{" "}
+                  />
                   {r}★ & above
                 </label>
               ))}
-              <label className="d-flex align-items-center gap-2 mb-1 cursor-pointer">
+              <label className="d-flex align-items-center gap-2 mb-1 cursor-pointer" style={{ cursor: 'pointer' }}>
                 <input
                   type="radio"
                   name="rating"
@@ -153,7 +155,7 @@ const ProductFourColumns = () => {
         </div>
 
         <div className="col-lg-9 product-scroll" style={{ overflowY: 'auto' }}>
-          <div className="shop-topbar d-flex justify-content-between align-items-center mb-4 px-4">
+          <div className="shop-topbar d-flex justify-content-between align-items-center mb-5 px-4 w-100">
             <span className="product-count">
               Total Products <b>{filteredProducts.length}</b>
             </span>
@@ -167,7 +169,7 @@ const ProductFourColumns = () => {
             />
           </div>
 
-          <section className="pb-5">
+          <section className="pb-5 pt-5">
             <div className="container-fluid px-3 px-lg-4">
               <div className="row g-4">
                 {filteredProducts.length > 0 ? (

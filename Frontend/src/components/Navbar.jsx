@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { HiOutlineShoppingCart, HiOutlineUserCircle } from "react-icons/hi"; 
-import { FaRegHeart, FaTrashAlt, FaSignOutAlt } from "react-icons/fa"; 
-import { NavLink, useNavigate } from "react-router-dom"; // useNavigate add kiya
+import { FaRegHeart, FaTrashAlt, FaSignOutAlt, FaPlus, FaMinus } from "react-icons/fa"; 
+import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "../assets/styles/plugins/navbar.css";
+import { ImCross } from "react-icons/im";
 
 export const Navbar = () => {
-  const navigate = useNavigate(); // Navigation ke liye hook initialize kiya
+  const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
   const [openCart, setOpenCart] = useState(false);
   const [openWishlist, setOpenWishlist] = useState(false);
@@ -53,22 +54,31 @@ export const Navbar = () => {
     toast.info("Item removed");
   };
 
+  const updateQuantity = (id, action) => {
+    const updatedCart = cart.map(item => {
+      if (item.id === id) {
+        let newQty = item.qty || 1;
+        if (action === "inc") newQty += 1;
+        if (action === "dec") newQty = Math.max(1, newQty - 1);
+        return { ...item, qty: newQty };
+      }
+      return item;
+    });
+    setCart(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+  };
+
   const calculateTotal = () => cart.reduce((total, item) => total + (item.price * (item.qty || 1)), 0);
 
-  // --- REDIRECTION LOGIC START ---
   const handleCheckoutRedirection = () => {
     if (cart.length === 0) {
       toast.warning("Your cart is empty!");
       return;
     }
-    // Checkout ke liye temp data set karein
     localStorage.setItem("temp_checkout", JSON.stringify(cart));
-    // Drawer close karein
     setOpenCart(false);
-    // Redirect karein
     navigate("/checkout");
   };
-  // --- REDIRECTION LOGIC END ---
 
   return (
     <header className={`header-area ${scrolled ? "navbar-scrolled" : ""}`}>
@@ -84,13 +94,11 @@ export const Navbar = () => {
           </div>
 
           <div className="col-7 col-lg-6 d-flex justify-content-end align-items-center">
-            {/* Wishlist Icon */}
             <div className="position-relative cursor-pointer me-4" onClick={() => setOpenWishlist(true)}>
               <FaRegHeart className="fs-4" />
               {wishlist.length > 0 && <span className="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill">{wishlist.length}</span>}
             </div>
 
-            {/* Cart Icon */}
             <div className="position-relative cursor-pointer me-4" onClick={() => setOpenCart(true)}>
               <HiOutlineShoppingCart className="fs-3" />
               {cart.length > 0 && <span className="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill">{cart.length}</span>}
@@ -102,7 +110,6 @@ export const Navbar = () => {
                   <HiOutlineUserCircle className="fs-2 text-dark" />
                   <span className="ms-1 d-none d-md-inline small fw-bold">{user.name || "My Account"}</span>
                 </div>
-                
                 {openUserMenu && (
                   <ul className="dropdown-menu show dropdown-menu-end shadow border-0 mt-2 position-absolute" style={{ right: 0 }}>
                     <li className="px-3 py-2 border-bottom text-muted small">{user.email}</li>
@@ -118,13 +125,12 @@ export const Navbar = () => {
         </div>
       </div>
 
-      {/* Wishlist Drawer */}
       <div className={`cart-drawer ${openWishlist ? "open" : ""}`} style={{
         position: 'fixed', right: openWishlist ? '0' : '-400px', top: '0', width: '350px', 
         height: '100vh', background: '#fff', zIndex: '2000', transition: '0.4s ease', boxShadow: '-5px 0 15px rgba(0,0,0,0.1)'
       }}>
         <div className="p-3 border-bottom d-flex justify-content-between align-items-center bg-light">
-          <h5 className="m-0">Wishlist ({wishlist.length})</h5>
+          <h5 className="m-0 fw-bold">Wishlist ({wishlist.length})</h5>
           <button className="btn-close" onClick={() => setOpenWishlist(false)}></button>
         </div>
         <div className="p-3 overflow-auto" style={{ height: 'calc(100vh - 60px)' }}>
@@ -133,49 +139,58 @@ export const Navbar = () => {
               <div className="d-flex align-items-center mb-3 border-bottom pb-2" key={item.id}>
                 <img src={item.image} width="50" height="50" className="rounded object-fit-cover" alt="" />
                 <div className="ms-3 flex-grow-1">
-                  <h6 className="mb-0 small">{item.name}</h6>
-                  <p className="mb-0 fw-bold">₹{item.price}</p>
+                  <h6 className="mb-0 small fw-bold">{item.name}</h6>
+                  <p className="mb-0 small">₹{item.price}</p>
                 </div>
-                <button className="btn text-danger btn-sm" onClick={() => removeItem(item.id, "wishlist")}><FaTrashAlt /></button>
+                <button className="btn text-danger btn-sm" onClick={() => removeItem(item.id, "wishlist")}><ImCross /></button>
               </div>
             ))
           }
         </div>
       </div>
 
-      {/* Cart Drawer */}
       <div className={`cart-drawer ${openCart ? "open" : ""}`} style={{
         position: 'fixed', right: openCart ? '0' : '-400px', top: '0', width: '350px', 
         height: '100vh', background: '#fff', zIndex: '2000', transition: '0.4s ease', boxShadow: '-5px 0 15px rgba(0,0,0,0.1)'
       }}>
         <div className="p-3 border-bottom d-flex justify-content-between align-items-center bg-light">
-          <h5 className="m-0">Your Cart ({cart.length})</h5>
+          <h5 className="m-0 fw-bold">Cart ({cart.length})</h5>
           <button className="btn-close" onClick={() => setOpenCart(false)}></button>
         </div>
+
         <div className="p-3 overflow-auto" style={{ height: 'calc(100vh - 180px)' }}>
           {cart.length === 0 ? <p className="text-center mt-5">Cart is empty</p> : 
             cart.map(item => (
-              <div className="d-flex align-items-center mb-3 border-bottom pb-2" key={item.id}>
-                <img src={item.image} width="50" height="50" className="rounded" alt="" />
+              <div className="d-flex align-items-center mb-4 border-bottom pb-3" key={item.id}>
+                <img src={item.image} width="60" height="60" className="rounded shadow-sm" alt="" />
                 <div className="ms-3 flex-grow-1">
-                  <h6 className="mb-0 small">{item.name}</h6>
-                  <p className="mb-0 small">₹{item.price} x {item.qty || 1}</p>
+                  <h6 className="mb-1 small fw-bold">{item.name}</h6>
+                  <p className="mb-2 small text-muted fw-bold">₹{item.price}</p>
+                  
+                  <div className="d-flex align-items-center border rounded-pill" style={{ width: 'fit-content', background: '#f9f9f9' }}>
+                    <button className="btn btn-sm px-2 border-0" onClick={() => updateQuantity(item.id, "dec")}><FaMinus style={{fontSize: '10px'}}/></button>
+                    <span className="px-2 small fw-bold">{item.qty || 1}</span>
+                    <button className="btn btn-sm px-2 border-0" onClick={() => updateQuantity(item.id, "inc")}><FaPlus style={{fontSize: '10px'}}/></button>
+                  </div>
                 </div>
-                <button className="btn btn-sm" onClick={() => removeItem(item.id, "cart")}>✕</button>
+                <div className="text-end">
+                    <button className="btn btn-sm text-danger mb-2" onClick={() => removeItem(item.id, "cart")}>✕</button>
+                    <p className="m-0 small fw-bold">₹{item.price * (item.qty || 1)}</p>
+                </div>
               </div>
             ))
           }
         </div>
+
         {cart.length > 0 && (
-          <div className="p-3 border-top position-absolute bottom-0 w-100 bg-white shadow-lg">
-            <div className="d-flex justify-content-between mb-3 fw-bold">
+          <div className="p-3 border-top position-absolute bottom-0 w-100 bg-white">
+            <div className="d-flex justify-content-between mb-3 fw-bold fs-5">
               <span>Total:</span>
               <span className="text-danger">₹{calculateTotal()}</span>
             </div>
-            {/* NavLink ki jagah button with onClick function */}
             <button 
                 onClick={handleCheckoutRedirection} 
-                className="btn btn-danger w-100 py-2 fw-bold"
+                className="btn btn-danger w-100 py-2 fw-bold rounded-pill shadow-sm"
                 style={{letterSpacing: 'initial'}}
             >
                 PROCEED TO CHECKOUT
