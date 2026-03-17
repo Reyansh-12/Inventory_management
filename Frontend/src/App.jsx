@@ -8,8 +8,8 @@ import { AboutUs } from './Pages/AboutUs/AboutUs';
 import Category from './Pages/Categories/Category';
 import ProductFourColumns from './Pages/Products/ProductFourColumns';
 import ProductDetailsNormal from './Pages/Products/ProductDetailsNormal';
+import Checkout from './Pages/Products/Checkout';
 
-// Styles
 import './App.css';
 import './assets/styles/plugins/fancybox.min.css';
 import './assets/styles/plugins/font-awesome.min.css';
@@ -24,21 +24,15 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // 1. URL parameters check karein
     const searchParams = new URLSearchParams(location.search);
     const authUser = searchParams.get('auth_user');
 
     if (authUser) {
       try {
-        // 2. Local Storage mein 'user' key set karein
-        // authUser pehle se hi JSON string hai jo PHP se aayi hai
         localStorage.setItem("user", authUser);
         
-        // 3. URL se query parameter hatayein taaki clean dikhe
-        // Hum redirect kar rahe hain bina query string ke
         navigate("/", { replace: true });
         
-        // 4. Page refresh ki zaroorat pad sakti hai agar Navbar state update nahi ho rahi
         window.location.reload();
       } catch (error) {
         console.error("Auth Error:", error);
@@ -57,6 +51,7 @@ function App() {
         <Route path="/ProductDetailsNormal" element={<ProductDetailsNormal />} />
         <Route path="/product/:id" element={<ProductDetailsNormal />} />
         <Route path="/rating" element={<ReviewPage />} />
+        <Route path="/checkout" element={<Checkout />}></Route>
       </Routes>
     </>
   );

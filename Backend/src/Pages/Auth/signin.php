@@ -1,12 +1,22 @@
 <?php
+ob_start(); // Redirection errors se bachne ke liye
 session_start();
+
+// Paths ko verify karein
 define("BASE_PATH", dirname(__DIR__, 3));
-include BASE_PATH . "/src/controllers/dbConnection.php";
+$dbPath = BASE_PATH . "/src/controllers/dbConnection.php";
+
+if (file_exists($dbPath)) {
+    include $dbPath;
+} else {
+    die("Database connection file not found at: " . $dbPath);
+}
 
 if (isset($_POST['submit'])) {
     $userEmail = trim($_POST['userEmail']);
     $userPassword = $_POST['userPassword'];
 
+    // Prepared Statement
     $stmt = mysqli_prepare($con, "SELECT * FROM new_user WHERE user_email = ?");
     mysqli_stmt_bind_param($stmt, "s", $userEmail);
     mysqli_stmt_execute($stmt);
@@ -14,25 +24,33 @@ if (isset($_POST['submit'])) {
     $user = mysqli_fetch_assoc($result);
 
     if ($user && password_verify($userPassword, $user['user_password'])) {
-        // User data ka JSON banayein
-        $userData = [
-            "id" => $user['id'],
-            "email" => $user['user_email'],
-            "role" => $user['user_role']
-        ];
         
-        // Data ko encode karein taaki URL mein bhej sakein
-        $encodedUser = urlencode(json_encode($userData));
+        // Session mein data set karein (Security ke liye behtar hai)
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['user_role'] = $user['user_role'];
 
-        if ($user['user_role'] === "Admin") {
+        // Role check (Case-insensitive check ke liye strtolower use karein)
+        $role = trim($user['user_role']);
+
+        if (strcasecmp($role, "Admin") == 0) {
+            // Admin Redirect
             header("Location: /Backend/src/Pages/Dashboard.php");
+            exit();
         } else {
-            // REACT WALE PORT PAR DATA BHEJEIN
+            // User Data for React
+            $userData = [
+                "id" => $user['id'],
+                "email" => $user['user_email'],
+                "role" => $user['user_role']
+            ];
+            $encodedUser = urlencode(json_encode($userData));
+            
+            // React Port Redirect
             header("Location: http://localhost:5173/?auth_user=" . $encodedUser);
+            exit();
         }
-        exit();
     } else {
-        $_SESSION['field_error'] = ['type' => 'password', 'message' => 'Invalid credentials'];
+        $_SESSION['field_error'] = ['type' => 'password', 'message' => 'Invalid email or password'];
         header("Location: signin.php");
         exit();
     }
@@ -79,40 +97,32 @@ if (isset($_POST['submit'])) {
                             <h3>Sign In</h3>
                             <h4>Please login to your account</h4>
                         </div>
-                        <form action="#" method="POST" data-parsley-validate>
-                            <div class="form-login">
-                                <label for='email'>Email</label>
-                                <div class="form-addons">
-                                    <input type="text" id='email' name='userEmail' value="<?= $_SESSION['keep_email'] ?? '' ?>" placeholder="Enter your email address" data-parsley-type="email" data-parsley-pattern="^[A-Za-z][A-Za-z0-9]*@[A-Za-z0-9]+\.[A-Za-z]{2,}$" data-parsley-required-message="Email is required" data-parsley-required>
-                                    <img src="/Backend/src/assets/images/icons/mail.svg" alt="img">
-                                </div>
-                                <?php if (isset($_SESSION['field_error']) && $_SESSION['field_error']['type'] === 'email'): ?>
-                                    <small class="text-danger field-error email-error">
-                                        <?= $_SESSION['field_error']['message']; ?>
-                                    </small>
-                                <?php endif; ?>
-                            </div>
-                            <div class="form-login">
-                                <div class="pass-group">
-                                    <label for="password">Password</label>
-                                    <input type="password" id='password' name='userPassword' class="pass-input" placeholder="........." data-parsley-minlength="6" data-parsley-required-message="Password is required" data-parsley-required>
-                                    <span class="fas toggle-password fa-eye-slash position-absolute" style="top: 53px"></span>
-                                </div>
-                                <?php if (isset($_SESSION['field_error']) && $_SESSION['field_error']['type'] === 'password'): ?>
-                                    <small class="text-danger field-error password-error">
-                                        <?= $_SESSION['field_error']['message']; ?>
-                                    </small>
-                                <?php endif; ?>
-                            </div>
-                            <div class="form-login">
-                                <div class="alreadyuser">
-                                    <h4><a href="forgetpassword.html" class="hover-a">Forgot Password?</a></h4>
-                                </div>
-                            </div>
-                            <div class="form-login">
-                                <button class="btn btn-login" name='submit' type="submit">Sign In</button>
-                            </div>
-                        </form>
+                        <form action="signin.php" method="POST" data-parsley-validate>
+    <div class="form-login">
+        <label for='email'>Email</label>
+        <div class="form-addons">
+            <input type="email" id='email' name='userEmail' 
+                   value="<?= htmlspecialchars($_SESSION['keep_email'] ?? '') ?>" 
+                   placeholder="Enter your email address" 
+                   required data-parsley-required-message="Email is required">
+            <img src="/Backend/src/assets/images/icons/mail.svg" alt="img">
+        </div>
+    </div>
+
+    <div class="form-login">
+        <div class="pass-group">
+            <label for="password">Password</label>
+            <input type="password" id='password' name='userPassword' 
+                   class="pass-input" placeholder="........." 
+                   required data-parsley-minlength="6">
+            <span class="fas toggle-password fa-eye-slash position-absolute" style="top: 53px; cursor: pointer;"></span>
+        </div>
+    </div>
+
+    <div class="form-login">
+        <button class="btn btn-login" name="submit" type="submit">Sign In</button>
+    </div>
+</form>
                         <?php unset($_SESSION['field_error']); ?>
                         <div class="signinform text-center">
                             <h4>Don’t have an account? <a href="/Backend/src/Pages/Auth/signup.php" class="hover-a">Sign Up</a></h4>
