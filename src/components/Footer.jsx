@@ -1,107 +1,166 @@
-import { FaTwitter } from "react-icons/fa";
-import { FaFacebookF } from "react-icons/fa";
-import { FaPinterestP } from "react-icons/fa";
+import React, { useEffect, useRef } from "react";
+import { FaTwitter, FaFacebookF, FaPinterestP, FaInstagram, FaEnvelope, FaMapMarkerAlt, FaPhoneAlt } from "react-icons/fa";
 import Logo from "../assets/images/brand-logo/logo.webp";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
+
 const Footer = () => {
+  const brandColor = "rgba(227, 39, 95, 1)";
+  const footerRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from(".footer-column", {
+        y: 50,
+        opacity: 0,
+        stagger: 0.2,
+        duration: 1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: footerRef.current,
+          start: "top 85%", 
+        },
+      });
+
+      gsap.to(".footer-logo", {
+        scale: 1.05,
+        duration: 2,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut"
+      });
+    }, footerRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  const handleMouseEnter = (e) => {
+    gsap.to(e.currentTarget, {
+      y: -5,
+      color: brandColor,
+      duration: 0.3,
+      ease: "power2.out"
+    });
+  };
+
+  const handleMouseLeave = (e, originalColor = "#666") => {
+    gsap.to(e.currentTarget, {
+      y: 0,
+      color: originalColor,
+      duration: 0.3,
+      ease: "power2.in"
+    });
+  };
+
   return (
-    <>
-        {/* <section className="section-space pt-0">
-          <div className="container">
-            <div
-              className="newsletter-content-wrap"
-              data-bg-img="/assets/images/photos/bg1.webp"
-            >
-              <div className="newsletter-content">
-                <div className="section-title mb-0">
-                  <h2 className="title">Join with us</h2>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit ut
-                    aliquam.
-                  </p>
+    <footer 
+      ref={footerRef}
+      className="footer-area mt-5" 
+      style={{ 
+        background: "linear-gradient(to bottom, #ffffff, #f9f9f9)", 
+        borderTop: "1px solid #eee", 
+        paddingTop: "80px",
+        overflow: "hidden"
+      }}
+    >
+      <div className="container">
+        <div className="row g-5 pb-5">
+          
+          <div className="col-md-6 col-lg-4 footer-column">
+            <Link to="/" className="footer-logo mb-4 d-inline-block">
+              <img src={Logo} width="110" alt="Logo" />
+            </Link>
+            <p style={{ color: "#666", fontSize: "15px", lineHeight: "1.8" }}>
+              Experience the fusion of nature and science. Brancy delivers premium skincare that honors your natural glow.
+            </p>
+            <div className="d-flex gap-3 mt-4">
+              {[FaFacebookF, FaInstagram, FaTwitter, FaPinterestP].map((Icon, i) => (
+                <div 
+                  key={i}
+                  onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.2, backgroundColor: brandColor, color: "#fff", duration: 0.3 })}
+                  onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, backgroundColor: "transparent", color: "#444", duration: 0.3 })}
+                  style={{ 
+                    width: "35px", height: "35px", border: "1px solid #ddd", 
+                    borderRadius: "50%", display: "flex", alignItems: "center", 
+                    justifyContent: "center", cursor: "pointer", transition: "border-color 0.3s"
+                  }}
+                >
+                  <Icon size={14} />
                 </div>
-              </div>
-              <div className="newsletter-form">
-                <form>
-                  <input
-                    type="email"
-                    className="form-control"
-                    placeholder="enter your email"
-                  />
-                  <button className="btn-submit" type="submit">
-                    
-                    <FaPaperPlane className="fa fa-paper-plane"/>
-                  </button>
-                </form>
-              </div>
+              ))}
             </div>
           </div>
-        </section> */}
 
-      <footer className="footer-area mt-5" style={{background: 'linear-gradient(180deg,rgb(254, 254, 255),rgb(78, 80, 78))'}}>
-        <div className="footer-main pb-5">
-          <div className="container">
-            <div className="row">
-              <div className="col-md-6 col-lg-3 col-sm-12">
-                <div className="widget-item">
-                  <h4 className="widget-title">Brand Info</h4>
-                  <div className="widget-about">
-                    <a className="widget-logo" href="index.html">
-                      <img src={Logo} width="95" height="68" alt="Logo" />
-                    </a>
-                    <p className="desc text-black">Brancy offers premium cosmetic products made with safe, natural, and skin-friendly ingredients.</p>
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6 col-lg-3 col-sm-12">
-                <div className="widget-item">
-                  <h4 className="widget-title">Quick Links</h4>
-                  <div className="widget-about">
-                    <ul>
-                      <li className="mb-3"><Link to='/' className="text-decoration-none text-black">Home</Link></li>
-                      <li className="mb-3"><Link to='/about' className="text-decoration-none text-black">About</Link></li>
-                      <li className="mb-3"><Link to='/shop' className="text-decoration-none text-black">Shop</Link></li>
-                      <li><Link to='/contact' className="text-decoration-none text-black">Contact</Link></li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
+          <div className="col-6 col-md-3 col-lg-2 footer-column">
+            <h6 className="mb-4 fw-bold" style={{ letterSpacing: "1px" }}>Company</h6>
+            <ul className="list-unstyled">
+              {['Home', 'Shop', 'About', 'Contact'].map((item) => (
+                <li key={item} className="mb-3">
+                  <Link 
+                    to={`/${item.toLowerCase()}`} 
+                    className="text-decoration-none d-inline-block" 
+                    style={{ color: "#666", fontSize: "14px" }}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={(e) => handleMouseLeave(e, "#666")}
+                  >
+                    {item}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-              <div className="col-md-6 col-lg-3 col-sm-12">
-                <div className="widget-item">
-                  <h4 className="widget-title">Customer Support</h4>
-                  <ul>
-                    <li className="mb-3"><Link to='/about' className="text-decoration-none text-black">About us</Link></li>
-                    <li className="mb-3"><Link to='/contact' className="text-decoration-none text-black">Contact</Link></li>
-                    <li className="mb-3"><Link to='/contact' className="text-decoration-none text-black">FAQs</Link></li>
-                    <li><Link to='/contact' className="text-decoration-none text-black">Privacy & Policy</Link></li>
-                  </ul>
-                </div>
-              </div>
+          <div className="col-6 col-md-3 col-lg-2 footer-column">
+            <h6 className="mb-4 fw-bold" style={{ letterSpacing: "1px" }}>Support</h6>
+            <ul className="list-unstyled">
+              {['FAQs', 'Privacy', 'Terms', 'Shipping'].map((item) => (
+                <li key={item} className="mb-3">
+                  <Link 
+                    to="#" 
+                    className="text-decoration-none d-inline-block" 
+                    style={{ color: "#666", fontSize: "14px" }}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={(e) => handleMouseLeave(e, "#666")}
+                  >
+                    {item}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-              <div className="col-md-6 col-lg-3 col-sm-12">
-                <div className="widget-item">
-                  <h4 className="widget-title">Social Info</h4>
-                  <div className="widget-social">
-                    <a href="https://twitter.com/" target="_blank" rel="noopener noreferrer"><FaTwitter className="fa fa-twitter text-black"/></a>
-                    <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer"><FaFacebookF className="fa fa-facebook text-black"/></a>
-                    <a href="https://www.pinterest.com/" target="_blank" rel="noopener noreferrer"><FaPinterestP className="fa fa-pinterest-p text-black"/></a>
-                  </div>
-                </div>
-              </div>
+          <div className="col-md-6 col-lg-4 footer-column">
+            <h6 className="mb-4 fw-bold" style={{ letterSpacing: "1px" }}>Contact</h6>
+            <div className="mb-3 d-flex align-items-center gap-3" style={{ color: "#666", fontSize: "14px" }}>
+              <FaMapMarkerAlt style={{ color: brandColor }} /> 123 Beauty Lane, NY
+            </div>
+            <div className="mb-3 d-flex align-items-center gap-3" style={{ color: "#666", fontSize: "14px" }}>
+              <FaPhoneAlt style={{ color: brandColor }} /> +1 234 567 890
+            </div>
+            <div className="d-flex align-items-center gap-3" style={{ color: "#666", fontSize: "14px" }}>
+              <FaEnvelope style={{ color: brandColor }} /> hello@brancy.com
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div style={{ background: "#f1f1f1", padding: "20px 0" }}>
+        <div className="container">
+          <div className="row">
+            <div className="col-12 text-center">
+              <p className="mb-0" style={{ fontSize: "13px", color: "#888" }}>
+                © 2026 <span className="fw-bold">Brancy</span>. Crafted with ❤️ by <span style={{color: brandColor}}>Reyansh</span>
+              </p>
             </div>
           </div>
         </div>
-
-        <div className="footer-bottom">
-          <div className="container-fluid">
-            <div className="footer-bottom-content">
-              <p className="copyright text-white">© 2025 Brancy. All rights reserved. Designed & Developed by Reyansh.</p>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </>
+      </div>
+    </footer>
   );
-}     
+};
+
 export default Footer;
