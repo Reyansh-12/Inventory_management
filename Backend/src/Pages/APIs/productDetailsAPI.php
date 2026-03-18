@@ -16,7 +16,7 @@ if ($id <= 0) {
 
 $BASE_URL = "http://localhost/Inventory_management";
 
-$sql = "SELECT id, product_name AS name, price, image_path 
+$sql = "SELECT id, product_name AS name, price,	description, image_path 
         FROM product_list 
         WHERE id = $id LIMIT 1";
 

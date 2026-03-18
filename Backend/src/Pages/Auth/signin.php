@@ -1,8 +1,7 @@
 <?php
-ob_start(); // Redirection errors se bachne ke liye
+ob_start(); 
 session_start();
 
-// Paths ko verify karein
 define("BASE_PATH", dirname(__DIR__, 3));
 $dbPath = BASE_PATH . "/src/controllers/dbConnection.php";
 
@@ -16,7 +15,6 @@ if (isset($_POST['submit'])) {
     $userEmail = trim($_POST['userEmail']);
     $userPassword = $_POST['userPassword'];
 
-    // Prepared Statement
     $stmt = mysqli_prepare($con, "SELECT * FROM new_user WHERE user_email = ?");
     mysqli_stmt_bind_param($stmt, "s", $userEmail);
     mysqli_stmt_execute($stmt);
@@ -24,28 +22,24 @@ if (isset($_POST['submit'])) {
     $user = mysqli_fetch_assoc($result);
 
     if ($user && password_verify($userPassword, $user['user_password'])) {
-        
-        // Session mein data set karein (Security ke liye behtar hai)
+
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['user_role'] = $user['user_role'];
 
-        // Role check (Case-insensitive check ke liye strtolower use karein)
         $role = trim($user['user_role']);
 
         if (strcasecmp($role, "Admin") == 0) {
-            // Admin Redirect
             header("Location: /Backend/src/Pages/Dashboard.php");
             exit();
         } else {
-            // User Data for React
             $userData = [
                 "id" => $user['id'],
                 "email" => $user['user_email'],
-                "role" => $user['user_role']
+                "role" => $user['user_role'],
+                "name" => $user['user_name']
             ];
             $encodedUser = urlencode(json_encode($userData));
-            
-            // React Port Redirect
+
             header("Location: http://localhost:5173/?auth_user=" . $encodedUser);
             exit();
         }
@@ -64,14 +58,17 @@ if (isset($_POST['submit'])) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
     <meta name="description" content="POS - Bootstrap Admin Template">
-    <meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, invoice, html5, responsive, Projects">
+    <meta name="keywords"
+        content="admin, estimates, bootstrap, business, corporate, creative, invoice, html5, responsive, Projects">
     <meta name="author" content="Dreamguys - Bootstrap Admin Template">
     <meta name="robots" content="noindex, nofollow">
     <title>Login</title>
     <link rel="shortcut icon" type="image/x-icon" href="/Backend/src/assets/images/favicon.jpg">
     <link rel="stylesheet" href="/Backend/src/assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="/Backend/src/assets/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         .parsley-required,
         .parsley-minlength,
@@ -98,34 +95,35 @@ if (isset($_POST['submit'])) {
                             <h4>Please login to your account</h4>
                         </div>
                         <form action="signin.php" method="POST" data-parsley-validate>
-    <div class="form-login">
-        <label for='email'>Email</label>
-        <div class="form-addons">
-            <input type="email" id='email' name='userEmail' 
-                   value="<?= htmlspecialchars($_SESSION['keep_email'] ?? '') ?>" 
-                   placeholder="Enter your email address" 
-                   required data-parsley-required-message="Email is required">
-            <img src="/Backend/src/assets/images/icons/mail.svg" alt="img">
-        </div>
-    </div>
+                            <div class="form-login">
+                                <label for='email'>Email</label>
+                                <div class="form-addons">
+                                    <input type="email" id='email' name='userEmail'
+                                        value="<?= htmlspecialchars($_SESSION['keep_email'] ?? '') ?>"
+                                        placeholder="Enter your email address" required
+                                        data-parsley-required-message="Email is required">
+                                    <img src="/Backend/src/assets/images/icons/mail.svg" alt="img">
+                                </div>
+                            </div>
 
-    <div class="form-login">
-        <div class="pass-group">
-            <label for="password">Password</label>
-            <input type="password" id='password' name='userPassword' 
-                   class="pass-input" placeholder="........." 
-                   required data-parsley-minlength="6">
-            <span class="fas toggle-password fa-eye-slash position-absolute" style="top: 53px; cursor: pointer;"></span>
-        </div>
-    </div>
+                            <div class="form-login">
+                                <div class="pass-group">
+                                    <label for="password">Password</label>
+                                    <input type="password" id='password' name='userPassword' class="pass-input"
+                                        placeholder="........." required data-parsley-minlength="6">
+                                    <span class="fas toggle-password fa-eye-slash position-absolute"
+                                        style="top: 53px; cursor: pointer;"></span>
+                                </div>
+                            </div>
 
-    <div class="form-login">
-        <button class="btn btn-login" name="submit" type="submit">Sign In</button>
-    </div>
-</form>
+                            <div class="form-login">
+                                <button class="btn btn-login" name="submit" type="submit">Sign In</button>
+                            </div>
+                        </form>
                         <?php unset($_SESSION['field_error']); ?>
                         <div class="signinform text-center">
-                            <h4>Don’t have an account? <a href="/Backend/src/Pages/Auth/signup.php" class="hover-a">Sign Up</a></h4>
+                            <h4>Don’t have an account? <a href="/Backend/src/Pages/Auth/signup.php" class="hover-a">Sign
+                                    Up</a></h4>
                         </div>
                         <div class="form-setlogin">
                             <h4>Or sign up with</h4>
@@ -134,13 +132,15 @@ if (isset($_POST['submit'])) {
                             <ul>
                                 <li>
                                     <a href="javascript:void(0);">
-                                        <img src="/Backend/src/assets/images/icons/google.png" class="me-2" alt="google">
+                                        <img src="/Backend/src/assets/images/icons/google.png" class="me-2"
+                                            alt="google">
                                         Sign Up using Google
                                     </a>
                                 </li>
                                 <li>
                                     <a href="javascript:void(0);">
-                                        <img src="/Backend/src/assets/images/icons/facebook.png" class="me-2" alt="google">
+                                        <img src="/Backend/src/assets/images/icons/facebook.png" class="me-2"
+                                            alt="google">
                                         Sign Up using Facebook
                                     </a>
                                 </li>
@@ -165,7 +165,7 @@ if (isset($_POST['submit'])) {
                 </div>
             </div>
         </div>
-    <?php unset($_SESSION['toast_error']);
+        <?php unset($_SESSION['toast_error']);
     endif; ?>
 
     <script src="/Backend/src/assets/js/jquery-3.6.0.min.js"></script>
@@ -175,7 +175,7 @@ if (isset($_POST['submit'])) {
     <script src="/Backend/src/assets/js/script.js"></script>
     <script>
         if ($('.toggle-password').length > 0) {
-            $(document).on('click', '.toggle-password', function() {
+            $(document).on('click', '.toggle-password', function () {
                 const input = $('.pass-input');
 
                 if (input.attr('type') === 'password') {
@@ -191,7 +191,7 @@ if (isset($_POST['submit'])) {
                 }
             });
         }
-        $('#email').on('input', function() {
+        $('#email').on('input', function () {
             let value = $(this).val();
 
             value = value.replace(/[^a-zA-Z0-9@.]/g, '');
@@ -204,23 +204,23 @@ if (isset($_POST['submit'])) {
         });
     </script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const toastElList = document.querySelectorAll('.toast');
-            toastElList.forEach(function(toastEl) {
+            toastElList.forEach(function (toastEl) {
                 const toast = new bootstrap.Toast(toastEl);
                 toast.show();
             });
         });
     </script>
-<script>
-    $('#email').on('input', function () {
-        $('.email-error').fadeOut();
-    });
+    <script>
+        $('#email').on('input', function () {
+            $('.email-error').fadeOut();
+        });
 
-    $('#password').on('input', function () {
-        $('.password-error').fadeOut();
-    });
-</script>
+        $('#password').on('input', function () {
+            $('.password-error').fadeOut();
+        });
+    </script>
 
 </body>
 
