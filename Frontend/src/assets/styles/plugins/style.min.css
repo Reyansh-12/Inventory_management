@@ -7,9 +7,9 @@ body,
 #root{
   width: 100%;
   max-width: none;
-  margin: 0;
-  padding: 0;
-  text-align: start;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: start !important;
 }
 body {
   font-family: Inter, sans-serif;
@@ -631,7 +631,7 @@ hr {
 .aside-search-box-wrapper .btn-close {
   position: absolute;
   background-image: none;
-  background-color: #ff6565;
+  /* background-color: #ff6565; */
   color: #fff;
   opacity: 1;
   font-size: 18px;
@@ -1169,7 +1169,7 @@ hr {
   }
 }
 .newsletter-form .btn-submit {
-  background-color: #ce4820;
+  /* background-color: #ce4820; */
   border-radius: 10px;
   position: absolute;
   top: 0;
@@ -1414,11 +1414,11 @@ hr {
   color: #ff6565;
 }
 .btn {
-  background-color: #ff6565;
-  border: 2px solid #ff6565;
+  /* background-color: #ff6565; */
+  /* border: 2px solid #ff6565; */
   box-shadow: none;
   border-radius: 50px;
-  color: #fff;
+  color: #000;
   display: inline-block;
   font-size: 14px;
   height: 50px;

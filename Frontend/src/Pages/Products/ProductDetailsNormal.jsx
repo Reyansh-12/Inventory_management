@@ -133,7 +133,7 @@ const ProductDetailsNormal = () => {
   return (
     <main style={{ background: "#F9F8F6", position: 'relative' }}>
       <div className="container pt-4" style={{marginTop: '80px'}}>
-        <button onClick={() => navigate(-1)} className="btn d-flex align-items-center gap-2 text-dark fw-bold border-0 p-0">
+        <button onClick={() => navigate(-1)} className="btn d-flex align-items-center gap-2 text-dark fw-bold border-0 p-0" style={{letterSpacing: 'initial'}}>
           <FaChevronLeft /> Back to Products
         </button>
       </div>
@@ -162,7 +162,7 @@ const ProductDetailsNormal = () => {
                 <button className="btn btn-outline-dark rounded-circle" onClick={increment} style={{width:'40px', height:'40px'}}>+</button>
               </div>
               <div className="d-grid gap-3">
-                <button className="btn py-3 text-white fw-bold" style={{background: '#e85a8a', borderRadius: '5px'}} onClick={addToCart}>Add To Cart</button>
+                <button className="btn py-3 text-white fw-bold" style={{background: '#e85a8a', borderRadius: '5px', letterSpacing:'initial'}} onClick={addToCart}>Add To Cart</button>
               </div>
             </div>
           </div>
@@ -185,7 +185,7 @@ const ProductDetailsNormal = () => {
                     <p className="text-muted mb-0">Based on {reviews.length} reviews</p>
                 </div>
               </div>
-              <button className="btn w-100 fw-bold py-2 mb-3" style={{ border: '1.5px dashed #e85a8a', color: '#e85a8a' }} onClick={handleReviewClick}>
+              <button className="btn w-100 fw-bold py-2 mb-3" style={{ border: '1.5px dashed #e85a8a', color: '#e85a8a', letterSpacing:'initial' }} onClick={handleReviewClick}>
                 Write a Review
               </button>
             </div>
@@ -223,7 +223,7 @@ const ProductDetailsNormal = () => {
 
                   {reviews.length > 2 && (
                     <NavLink to={`/rating/${id}`}>
-                      <button className="btn text-white fw-bold shadow-sm" style={{background:'rgba(227, 39, 95, 1)', borderRadius: '30px', padding: '10px 25px'}}>
+                      <button className="btn text-white fw-bold shadow-sm" style={{background:'rgba(227, 39, 95, 1)', borderRadius: '30px', padding: '10px 25px', letterSpacing:'initial'}}>
                         View All Reviews ({reviews.length}) <TfiArrowCircleRight className='ms-1 fs-5'/>
                       </button>
                     </NavLink>
@@ -248,7 +248,7 @@ const ProductDetailsNormal = () => {
             </div>
             <input type="text" className="form-control mb-3" placeholder="Review Title" value={reviewTitle} onChange={(e)=>setReviewTitle(e.target.value)} />
             <textarea className="form-control mb-3" rows="4" placeholder="Your experience..." value={reviewComment} onChange={(e)=>setReviewComment(e.target.value)}></textarea>
-            <button className="btn w-100 text-white fw-bold py-2" style={{ background: '#e85a8a' }} onClick={submitReview} disabled={isSubmitting}>
+            <button className="btn w-100 text-white fw-bold py-2" style={{ background: '#e85a8a', letterSpacing:'initial' }} onClick={submitReview} disabled={isSubmitting}>
               {isSubmitting ? "Submitting..." : "Submit Review"}
             </button>
           </div>

@@ -2,25 +2,30 @@ import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Footer from "../../components/Footer";
 import ProductItem from "@/Pages/Products/ProductItem.jsx";
-import FilterBlock from "@/components/FilterBlock";
 import image from "../../assets/images/secondSection.png";
 import "../../assets/styles/plugins/ProductCards.css";
 
 const ProductFourColumns = () => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [brands, setBrands] = useState([]);
-
-  // States for filtering
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [selectedBrand, setSelectedBrand] = useState("All");
   const [search, setSearch] = useState("");
-  const [price, setPrice] = useState(5000);
+  const [price, setPrice] = useState(10000);
   const [rating, setRating] = useState(0);
 
   const location = useLocation();
 
-  // Scroll to top on route change
+  // --- FIX FOR SCROLL: Sirf isi page par scroll lock hoga ---
+  useEffect(() => {
+    // Page enter hote hi body scroll band
+    document.body.style.overflow = "hidden";
+    
+    return () => {
+      // Page se jate hi body scroll wapas chalu (Enable for other pages)
+      document.body.style.overflow = "auto";
+    };
+  }, []);
+
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [location.search]);
@@ -29,166 +34,119 @@ const ProductFourColumns = () => {
     fetch("http://localhost/Inventory_management/Backend/src/Pages/APIs/categoryListAPI.php")
       .then((res) => res.json())
       .then((data) => setCategories(data || []))
-      .catch((err) => console.error("Category API Error:", err));
-  }, []);
+      .catch((err) => console.error("Category Error:", err));
 
-  useEffect(() => {
     fetch("http://localhost/Inventory_management/Backend/src/Pages/APIs/productListAPI.php")
       .then((res) => res.json())
-      .then((data) => {
-        setProducts(data || []);
-        const uniqueBrands = [...new Set(data.map((p) => p.brand).filter(Boolean))];
-        setBrands(uniqueBrands);
-      })
-      .catch((err) => console.error("Product API Error:", err));
+      .then((data) => setProducts(data || []))
+      .catch((err) => console.error("Product Error:", err));
   }, []);
 
   const filteredProducts = products.filter((p) => {
-    const categoryMatch =
-      selectedCategory === "All" || 
+    const categoryMatch = selectedCategory === "All" || 
+      (p.category_name && p.category_name.toLowerCase() === selectedCategory.toLowerCase()) ||
       (p.category && String(p.category).toLowerCase() === selectedCategory.toLowerCase());
-
-    const brandMatch = 
-      selectedBrand === "All" || 
-      p.brand === selectedBrand;
-
     const searchMatch = !search || (p.name && p.name.toLowerCase().includes(search.toLowerCase()));
-
     const priceMatch = Number(p.price || 0) <= price;
-
     const ratingMatch = rating === 0 || Number(p.rating || 0) >= rating;
-
-    return categoryMatch && brandMatch && searchMatch && priceMatch && ratingMatch;
+    return categoryMatch && searchMatch && priceMatch && ratingMatch;
   });
 
   const handleClearFilters = () => {
     setSelectedCategory("All");
-    setSelectedBrand("All");
     setSearch("");
-    setPrice(5000);
+    setPrice(10000);
     setRating(0);
   };
 
   return (
     <main
-      className="main-content pt-4"
+      className="main-content"
       style={{
-        marginTop: "100px",
+        marginTop: "80px", 
         background: `url(${image})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-        height: "calc(100vh - 100px)",
-        overflow: "hidden",
+        height: "calc(100vh - 80px)", 
+        width: "100%",
+        overflow: "hidden", 
+        display: "flex",
+        flexDirection: "column"
       }}
     >
-      <div className="d-flex h-100">
-        <div className="col-lg-3">
-          <div className="filter-sidebar p-4 ms-4 shadow-sm bg-white rounded" style={{ maxHeight: '90vh', overflowY: 'auto' }}>
-            <div className="d-flex justify-content-between align-items-center mb-3">
+      <div className="container-fluid h-100 px-0">
+        <div className="row g-0 h-100 mx-0">
+          
+          {/* SIDEBAR FILTER */}
+          <div className="col-lg-3 d-none d-lg-block h-100 bg-white shadow-sm border-end">
+            <div className="filter-sidebar p-4 h-100 custom-scrollbar" style={{ overflowY: 'auto' }}>
+              <div className="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                <h6 className="fw-bold m-0" style={{letterSpacing:'1px'}}>REFINE BY</h6>
+                <button className="btn btn-link text-danger p-0 fw-bold text-decoration-none small" 
+                        onClick={handleClearFilters} style={{fontSize: '12px'}}>RESET</button>
+              </div>
+
+              <div className="mb-4 text-start">
+                <p className="text-muted fw-bold small mb-3">CATEGORIES</p>
+                <div className="list-group list-group-flush">
+                  <button className={`list-group-item list-group-item-action border-0 px-0 py-1 small text-start ${selectedCategory === "All" ? "text-danger fw-bold" : ""}`}
+                          onClick={() => setSelectedCategory("All")}>All Products</button>
+                  {categories.map((cat, i) => (
+                    <button key={i} className={`list-group-item list-group-item-action border-0 px-0 py-1 small text-start ${selectedCategory === cat.name ? "text-danger fw-bold" : ""}`}
+                            onClick={() => setSelectedCategory(cat.name)}>{cat.name}</button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <p className="text-muted fw-bold small mb-2">MAX PRICE: ₹{price}</p>
+                <input type="range" className="form-range custom-range-input" min="0" max="10000" step="100" value={price} onChange={(e) => setPrice(Number(e.target.value))} />
+              </div>
+
+              <div className="mb-4">
+                <p className="text-muted fw-bold small mb-2">RATINGS</p>
+                {[4, 3, 2].map(r => (
+                  <div className="form-check mb-2" key={r}>
+                    <input className="form-check-input shadow-none" type="radio" name="rating" id={`r${r}`} checked={rating === r} onChange={() => setRating(r)} />
+                    <label className="form-check-label small cursor-pointer" htmlFor={`r${r}`}>{r}★ & Above</label>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="col-lg-9 d-flex flex-column h-100 px-4">
+            
+            <div className="shop-topbar d-flex justify-content-between align-items-center p-3 mt-3 mb-3 bg-white rounded-4 shadow-sm border-start border-5 border-danger">
               <div>
-                <h6 className="fw-bold mb-0">FILTERS</h6>
-                <small className="text-muted">{filteredProducts.length} Products Found</small>
+                <span className="text-muted small text-uppercase fw-bold" style={{fontSize: '10px'}}>Browsing</span>
+                <h6 className="m-0 fw-bold">Showing <span className="text-danger">{filteredProducts.length}</span> Results</h6>
               </div>
-              <button
-                className="btn btn-link text-decoration-none p-0 text-danger small"
-                onClick={handleClearFilters}
-                style={{ letterSpacing: 'initial' }}
-              >
-                Clear All
-              </button>
-            </div>
-
-            <FilterBlock
-              title="Category"
-              items={["All", ...categories.map((c) => c.name)]}
-              selectedValue={selectedCategory} 
-              onChange={setSelectedCategory}
-            />
-
-            {/* <FilterBlock
-              title="Brand"
-              items={["All", ...brands]}
-              selectedValue={selectedBrand} 
-              onChange={setSelectedBrand}
-            /> */}
-
-            <div className="filter-block mb-4">
-              <h6 className="fw-bold">Price (Max: ₹{price})</h6>
-              <input
-                type="range"
-                className="form-range"
-                min="0"
-                max="10000" 
-                step="100"
-                value={price}
-                onChange={(e) => setPrice(Number(e.target.value))}
-              />
-              <div className="d-flex justify-content-between small text-muted">
-                <span>₹0</span>
-                <span>₹10000</span>
+              <div className="search-box" style={{width: '280px'}}>
+                <input type="search" className="form-control border-0 bg-light rounded-pill ps-4 shadow-none" 
+                       placeholder="Search products..." value={search} onChange={(e) => setSearch(e.target.value)} />
               </div>
             </div>
 
-            <div className="filter-block">
-              <h6 className="fw-bold">Rating</h6>
-              {[4, 3, 2].map((r) => (
-                <label className="d-flex align-items-center gap-2 mb-1 cursor-pointer" key={r} style={{ cursor: 'pointer' }}>
-                  <input
-                    type="radio"
-                    name="rating"
-                    checked={rating === r}
-                    onChange={() => setRating(r)}
-                  />
-                  {r}★ & above
-                </label>
-              ))}
-              <label className="d-flex align-items-center gap-2 mb-1 cursor-pointer" style={{ cursor: 'pointer' }}>
-                <input
-                  type="radio"
-                  name="rating"
-                  checked={rating === 0}
-                  onChange={() => setRating(0)}
-                /> All Ratings
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <div className="col-lg-9 product-scroll" style={{ overflowY: 'auto' }}>
-          <div className="shop-topbar d-flex justify-content-between align-items-center mb-5 px-4 w-100">
-            <span className="product-count">
-              Total Products <b>{filteredProducts.length}</b>
-            </span>
-
-            <input
-              type="search"
-              className="form-control search-input w-25 shadow-sm"
-              placeholder="Search Products..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
-
-          <section className="pb-5 pt-5">
-            <div className="container-fluid px-3 px-lg-4">
-              <div className="row g-4">
+            <div className="product-container flex-grow-1 custom-scrollbar px-1" 
+                 style={{ overflowY: 'auto', paddingBottom: '100px' }}>
+              <div className="row g-3 mx-0">
                 {filteredProducts.length > 0 ? (
                   filteredProducts.map((product) => (
-                    <div className="col-6 col-md-4 col-lg-3" key={product.id}>
+                    <div className="col-6 col-md-4 col-xl-3 mb-2" key={product.id}>
                       <ProductItem product={product} />
                     </div>
                   ))
                 ) : (
-                  <div className="text-center w-100 mt-5">
-                     <h4 className="text-muted">No products found matching your filters.</h4>
+                  <div className="col-12 text-center py-5 bg-white rounded-4 shadow-sm mt-3">
+                     <h5 className="text-muted m-0">No items match your filters.</h5>
                   </div>
                 )}
               </div>
             </div>
-          </section>
+          </div>
         </div>
       </div>
-      <Footer />
     </main>
   );
 };
