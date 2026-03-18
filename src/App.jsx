@@ -30,9 +30,7 @@ function App() {
     if (authUser) {
       try {
         localStorage.setItem("user", authUser);
-        
         navigate("/", { replace: true });
-        
         window.location.reload();
       } catch (error) {
         console.error("Auth Error:", error);
@@ -48,10 +46,13 @@ function App() {
         <Route path='/about' element={<AboutUs />} />
         <Route path='/contact' element={<Contact />} />
         <Route path='/shop' element={<ProductFourColumns />} />
+        
         <Route path="/ProductDetailsNormal" element={<ProductDetailsNormal />} />
         <Route path="/product/:id" element={<ProductDetailsNormal />} />
-        <Route path="/rating" element={<ReviewPage />} />
-        <Route path="/checkout" element={<Checkout />}></Route>
+        
+        <Route path="/rating/:id" element={<ReviewPage />} />
+        
+        <Route path="/checkout" element={<Checkout />} />
       </Routes>
     </>
   );
