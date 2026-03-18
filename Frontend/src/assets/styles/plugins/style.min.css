@@ -1418,7 +1418,7 @@ hr {
   /* border: 2px solid #ff6565; */
   box-shadow: none;
   border-radius: 50px;
-  color: #000;
+  color: blue !important;
   display: inline-block;
   font-size: 14px;
   height: 50px;
@@ -1439,9 +1439,9 @@ hr {
   }
 }
 .btn:hover {
-  background-color: #e85a8a;
-  border-color: #e85a8a;
-  color: #fff !important;
+  /* background-color: #e85a8a;
+  border-color: #e85a8a; */
+  color: #e85a8a !important;
 }
 .btn.btn-border-primary {
   background-color: transparent;
