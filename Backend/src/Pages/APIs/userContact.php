@@ -1,5 +1,4 @@
 <?php 
-// Faltu ke spaces ya warnings ko JSON se bahar rakhne ke liye buffer start
 ob_start(); 
 
 error_reporting(E_ALL);
@@ -14,19 +13,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-// Database Connection
 include __DIR__ . "/../../controllers/dbConnection.php";
 
-// Raw input read karein
 $json = file_get_contents('php://input');
 $data = json_decode($json, true);
 
-// Buffer saaf karein taaki sirf niche wala JSON output ho
 if (ob_get_length()) ob_clean(); 
 
 if ($data && isset($data['name'], $data['email'])) {
     
-    // Check connection
     if (!$con) {
         echo json_encode(["status" => "error", "message" => "DB Connection Failed"]);
         exit;
@@ -37,7 +32,6 @@ if ($data && isset($data['name'], $data['email'])) {
     $email     = mysqli_real_escape_string($con, $data['email']);
     $message   = mysqli_real_escape_string($con, $data['message']);
 
-    // Query matching your table structure
     $sql = "INSERT INTO `user_contact` (`firstName`, `lastName`, `Email`, `message`, `created_at`) 
             VALUES ('$firstName', '$lastName', '$email', '$message', NOW())";
 
@@ -50,6 +44,5 @@ if ($data && isset($data['name'], $data['email'])) {
     echo json_encode(["status" => "error", "message" => "Invalid data received"]);
 }
 
-// Ensure no other output after JSON
 exit;
 ?>

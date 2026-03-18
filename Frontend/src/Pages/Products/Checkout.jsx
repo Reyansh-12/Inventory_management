@@ -8,6 +8,21 @@ const Checkout = () => {
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [savedAddress, setSavedAddress] = useState(null);
+const [useSaved, setUseSaved] = useState(false); 
+useEffect(() => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  
+  if (user && user.id) {
+      fetch(`http://localhost/Inventory_management/Backend/src/Pages/APIs/getLastAddress.php?customer_id=${user.id}`)
+          .then(res => res.json())
+          .then(res => {
+              if(res.success) {
+                  setSavedAddress(res.data);
+              }
+          });
+  }
+}, []);
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -150,13 +165,14 @@ const Checkout = () => {
                   <input type="number" name="phone" className="form-control" onChange={handleInputChange} required />
                 </div>
               </div>
+              
               <h5 className="fw-bold mt-4 mb-3"><FaCreditCard className="me-2"/> Payment Method</h5>
               <div className="form-check mb-4">
                 <input className="form-check-input" type="radio" defaultChecked />
                 <label className="form-check-label">Cash on Delivery (COD)</label>
               </div>
               <button type="submit" disabled={loading} className="btn btn-dark w-100 py-3 fw-bold" style={{letterSpacing: 'initial'}}>
-                {loading ? "PLACING ORDER..." : `PLACE ORDER - ₹${total}`}
+                {loading ? "PLACING ORDER..." : `PLACE ORDER `}
               </button>
             </form>
           </div>
