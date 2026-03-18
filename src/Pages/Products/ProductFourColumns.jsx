@@ -77,7 +77,6 @@ const ProductFourColumns = () => {
       <div className="container-fluid h-100 px-0">
         <div className="row g-0 h-100 mx-0">
           
-          {/* SIDEBAR FILTER */}
           <div className="col-lg-3 d-none d-lg-block h-100 bg-white shadow-sm border-end">
             <div className="filter-sidebar p-4 h-100 custom-scrollbar" style={{ overflowY: 'auto' }}>
               <div className="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">

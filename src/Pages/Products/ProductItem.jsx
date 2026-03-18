@@ -9,25 +9,20 @@ import '../../assets/styles/plugins/ProductCards.css';
 const ProductItem = ({ product }) => {
   const navigate = useNavigate();
 
-  // Price Calculation Logic
   const discountPercent = Number(product?.discount || 0);
   const originalPrice = Number(product?.price || 0);
   const discountedPrice = originalPrice - (originalPrice * discountPercent) / 100;
 
-  // Dynamic Stars Logic
   const renderStars = (rating) => {
     const stars = [];
-    const numericRating = Number(rating) || 0; // Backend se aayi rating (e.g., 4.5)
+    const numericRating = Number(rating) || 0; 
     
     for (let i = 1; i <= 5; i++) {
       if (i <= Math.floor(numericRating)) {
-        // Full Star
         stars.push(<FaStar key={i} className="text-warning" />);
       } else if (i === Math.ceil(numericRating) && numericRating % 1 !== 0) {
-        // Half Star
         stars.push(<FaStarHalfAlt key={i} className="text-warning" />);
       } else {
-        // Empty Star
         stars.push(<FaRegStar key={i} className="text-muted opacity-50" />);
       }
     }
@@ -64,7 +59,6 @@ const ProductItem = ({ product }) => {
     <div className="product-card-wrapper">
       <div className="product-card mb-3 p-0 overflow-hidden shadow-sm border border-light position-relative bg-white rounded-4 transition-hover">
         
-        {/* IMAGE SECTION */}
         <div 
           style={{
             background: 'radial-gradient(circle, rgba(238, 174, 202, 0.1) 0%, rgba(223, 93, 232, 0.05) 100%)',
@@ -75,7 +69,6 @@ const ProductItem = ({ product }) => {
           }} 
           className="position-relative overflow-hidden"
         >
-          {/* Out of Stock Badge */}
           {Number(product?.quantity) <= 0 && (
             <span className="position-absolute top-0 start-0 m-2 badge bg-dark text-white shadow-sm" style={{zIndex: 2, fontSize: '10px'}}>
               OUT OF STOCK
@@ -101,7 +94,6 @@ const ProductItem = ({ product }) => {
           </Link>
         </div>
 
-        {/* CONTENT SECTION */}
         <div className="product-body p-3">
           <h6 className="product-title mb-1 text-truncate" title={product?.name}>
             {product?.name}
