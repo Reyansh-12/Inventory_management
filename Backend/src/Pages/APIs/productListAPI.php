@@ -10,7 +10,6 @@ include __DIR__ . "/../../controllers/dbConnection.php";
 
 $BASE_URL = "http://localhost/Inventory_management";
 
-// SQL Update: reviews table se count aur avg rating fetch karne ke liye subqueries add ki hain
 $sql = "SELECT 
             p.id, 
             p.product_name AS name, 
