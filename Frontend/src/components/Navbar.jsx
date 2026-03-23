@@ -83,13 +83,13 @@ export const Navbar = () => {
   return (
     <header className={`header-area ${scrolled ? "navbar-scrolled" : ""}`}>
       <div className="container">
-        <div className="row align-items-center">
+        <div className="row align-items-center pt-3 pb-3">
           <div className="col-lg-6 d-none d-lg-block">
             <ul className="main-nav d-flex list-unstyled m-0">
-              <li className="me-4"><NavLink to="/" className="nav-link">Home</NavLink></li>
-              <li className="me-4"><NavLink to="/shop" className="nav-link">Shop</NavLink></li>
-              <li className="me-4"><NavLink to="/about" className="nav-link">About</NavLink></li>
-              <li><NavLink to="/contact" className="nav-link">Contact</NavLink></li>
+              <li className="me-4"><NavLink to="/" className="nav-link text-black fw-bold">Home</NavLink></li>
+              <li className="me-4"><NavLink to="/shop" className="nav-link text-black fw-bold">Shop</NavLink></li>
+              <li className="me-4"><NavLink to="/about" className="nav-link text-black fw-bold">About</NavLink></li>
+              <li><NavLink to="/contact" className="nav-link text-black fw-bold">Contact</NavLink></li>
             </ul>
           </div>
 
@@ -190,8 +190,8 @@ export const Navbar = () => {
             </div>
             <button 
                 onClick={handleCheckoutRedirection} 
-                className="btn btn-danger w-100 py-2 fw-bold rounded-pill shadow-sm"
-                style={{letterSpacing: 'initial'}}
+                className="btn w-100 py-2 fw-bold rounded-pill shadow-sm text-white"
+                style={{letterSpacing: 'initial', background: 'rgb(232, 90, 138)'}}
             >
                 PROCEED TO CHECKOUT
             </button>

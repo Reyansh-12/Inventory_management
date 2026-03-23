@@ -129,7 +129,7 @@ const ReviewPage = () => {
                 <div className="ms-3">
                   <div className="text-warning fs-5">
                     {[...Array(5)].map((_, i) => (
-                      i < Math.floor(avgRating) ? <FaStar key={i} /> : <FaRegStar key={i} />
+                      i < Math.floor(avgRating) ? <FaStar key={i} style={{color:'rgb(232, 90, 138)'}}/> : <FaRegStar key={i} style={{color:'rgb(232, 90, 138)'}}/>
                     ))}
                   </div>
                   <p className="text-muted small mb-0">{reviews.length} Global Ratings</p>
@@ -155,7 +155,7 @@ const ReviewPage = () => {
                           <h6 className="mb-0 fw-bold">{review.customer_name} <span className="ms-2 badge bg-success" style={{ fontSize: '9px' }}>Verified Buyer</span></h6>
                           <div className="text-warning small">
                             {[...Array(5)].map((_, i) => (
-                              i < parseInt(review.rating) ? <FaStar key={i} /> : <FaRegStar key={i} />
+                              i < parseInt(review.rating) ? <FaStar key={i} style={{color:'rgb(232, 90, 138)'}}/> : <FaRegStar key={i} style={{color:'rgb(232, 90, 138)'}}/>
                             ))}
                           </div>
                         </div>

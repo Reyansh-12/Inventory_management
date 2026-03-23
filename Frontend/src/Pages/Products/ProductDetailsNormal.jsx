@@ -93,7 +93,7 @@ const ProductDetailsNormal = () => {
     const reviewData = {
       product_id: id,
       customer_email: user.email, 
-      customer_name: user.name, // CRITICAL: This was missing and caused DB Error 500
+      customer_name: user.name,
       rating: userRating,
       title: reviewTitle,
       comment: reviewComment
@@ -111,10 +111,8 @@ const ProductDetailsNormal = () => {
       if (result.success) {
         toast.success("Review submitted!");
         setShowReviewForm(false);
-        // Instant UI update
         const newReview = { ...reviewData, created_at: "Just now" };
         setReviews([newReview, ...reviews]);
-        // Reset form
         setUserRating(0);
         setReviewTitle("");
         setReviewComment("");
@@ -141,28 +139,28 @@ const ProductDetailsNormal = () => {
       <section style={{ padding: "40px 0 80px 0" }}>
         <div className="container">
           <div className="row align-items-center">
-            <div className="col-lg-7 text-center">
-                <img src={product.image || shop2} className="img-fluid rounded shadow-sm" style={{maxHeight:'500px'}} alt={product.name} />
+            <div className="col-lg-6 text-center border border-0 border-end">
+                <img src={product.image || shop2} className="img-fluid rounded-5 shadow ps-5 pe-5" style={{maxHeight:'400px'}} alt={product.name} />
             </div>
-            <div className="col-lg-5 ps-lg-5">
-              <h1 className="fw-bold" style={{fontSize: '2.5rem'}}>{product.name}</h1>
-              <div className="d-flex align-items-center mb-3">
+            <div className="col-lg-6 ps-lg-5">
+              <h1 className="fw-bold text-start ms-5" style={{fontSize: '2.5rem'}}>{product.name}</h1>
+              <div className="d-flex align-items-center mb-3 ms-5">
                 <div className="text-warning">
                   {[...Array(5)].map((_, i) => (
-                    i < Math.floor(avgRating) ? <FaStar key={i}/> : <FaRegStar key={i}/>
+                    i < Math.floor(avgRating) ? <FaStar key={i} style={{color:'rgb(232, 90, 138)'}}/> : <FaRegStar key={i} style={{color:'rgb(232, 90, 138)'}}/>
                   ))}
                 </div>
                 <span className="ms-2 text-muted">({reviews.length} Reviews)</span>
               </div>
-              <p className="text-muted">{product.description || "Premium formula for your skin health."}</p>
-              <h2 style={{color: 'rgba(227, 39, 95, 1)', fontWeight: '700'}}>₹{product.price}</h2>
-              <div className="quantityBox d-flex align-items-center mb-4 mt-4">
-                <button className="btn btn-outline-dark rounded-circle" onClick={decrement} style={{width:'40px', height:'40px'}}>-</button>
-                <span className="mx-4 fw-bold fs-5">{qty}</span>
-                <button className="btn btn-outline-dark rounded-circle" onClick={increment} style={{width:'40px', height:'40px'}}>+</button>
+              <p className="text-muted text-start ms-5">{product.description || "Premium formula for your skin health."}</p>
+              <h2 className="text-start ms-5" style={{color: 'rgba(227, 39, 95, 1)', fontWeight: '700', fontFamily:'none'}}>₹{product.price}</h2>
+              <div className="quantityBox d-flex align-items-center mb-4 mt-4 ms-5">
+                <button className="btn fs-2 border-0" onClick={decrement} style={{width:'40px', height:'50px'}}><strong>-</strong></button>
+                <span className="mx-2 fw-bold fs-5">{qty}</span>
+                <button className="btn fs-4 border-0" onClick={increment} style={{width:'40px', height:'50px'}}><strong>+</strong></button>
               </div>
-              <div className="d-grid gap-3">
-                <button className="btn py-3 text-white fw-bold" style={{background: '#e85a8a', borderRadius: '5px', letterSpacing:'initial'}} onClick={addToCart}>Add To Cart</button>
+              <div className="d-grid gap-3 ms-5">
+                <button className="btn  text-white fw-bold rounded-5" style={{background: '#e85a8a', letterSpacing:'initial'}} onClick={addToCart}>Add To Cart</button>
               </div>
             </div>
           </div>
@@ -179,13 +177,13 @@ const ProductDetailsNormal = () => {
                 <div>
                     <div className="text-warning fs-5">
                         {[...Array(5)].map((_, i) => (
-                            i < Math.floor(avgRating) ? <FaStar key={i}/> : <FaRegStar key={i}/>
+                            i < Math.floor(avgRating) ? <FaStar style={{color:'rgb(232, 90, 138)'}} key={i}/> : <FaRegStar key={i} style={{color:'rgb(232, 90, 138)'}}/>
                         ))}
                     </div>
                     <p className="text-muted mb-0">Based on {reviews.length} reviews</p>
                 </div>
               </div>
-              <button className="btn w-100 fw-bold py-2 mb-3" style={{ border: '1.5px dashed #e85a8a', color: '#e85a8a', letterSpacing:'initial' }} onClick={handleReviewClick}>
+              <button className="btn w-100 fw-bold mb-3 text-dark border-dark rounded-5" style={{ border: '1.5px dashed black', letterSpacing:'initial' }} onClick={handleReviewClick}>
                 Write a Review
               </button>
             </div>
@@ -207,7 +205,7 @@ const ProductDetailsNormal = () => {
                             <h6 className="mb-0 fw-bold">{rev.customer_name}</h6>
                             <div className="text-warning small">
                               {[...Array(5)].map((_, i) => (
-                                i < rev.rating ? <FaStar key={i}/> : <FaRegStar key={i}/>
+                                i < rev.rating ? <FaStar key={i} style={{color:'rgb(232, 90, 138)'}}/> : <FaRegStar key={i} style={{color:'rgb(232, 90, 138)'}}/>
                               ))}
                             </div>
                           </div>
@@ -216,14 +214,14 @@ const ProductDetailsNormal = () => {
                             {rev.created_at === "Just now" ? "Just now" : new Date(rev.created_at).toLocaleDateString()}
                         </span>
                       </div>
-                      <h6 className="mt-3 fw-bold">{rev.title}</h6>
-                      <p className="text-muted small">{rev.comment}</p>
+                      <h6 className="mt-3 fw-bold text-start">{rev.title}</h6>
+                      <p className="text-muted small text-start">{rev.comment}</p>
                     </div>
                   ))}
 
                   {reviews.length > 2 && (
                     <NavLink to={`/rating/${id}`}>
-                      <button className="btn text-white fw-bold shadow-sm" style={{background:'rgba(227, 39, 95, 1)', borderRadius: '30px', padding: '10px 25px', letterSpacing:'initial'}}>
+                      <button className="btn viewAll text-white fw-bold shadow-sm" style={{background:'rgba(227, 39, 95, 1)', borderRadius: '30px', padding: '0px 25px', letterSpacing:'initial'}}>
                         View All Reviews ({reviews.length}) <TfiArrowCircleRight className='ms-1 fs-5'/>
                       </button>
                     </NavLink>
