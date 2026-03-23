@@ -53,7 +53,6 @@ const ProductPage = () => {
           <button onClick={() => setOpenCart(false)}>✕</button>
         </div>
 
-        {/* Cart Items */}
         <div className="drawer-body">
 
           {cart.map(item => (
@@ -93,7 +92,6 @@ const ProductPage = () => {
 
         </div>
 
-        {/* Footer */}
         <div className="drawer-footer">
 
           <div className="subtotal">
@@ -109,7 +107,6 @@ const ProductPage = () => {
 
       </div>
 
-      {/* Overlay */}
       {openCart && (
         <div
           className="drawer-overlay"

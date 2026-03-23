@@ -46,7 +46,7 @@ export const AboutUs = () => {
     <div ref={aboutRef} className="about-page-wrapper">
       <Navbar />
       
-      <main className="main-content">
+      <main className="main-content" style={{marginTop: '70px'}}>
         <section className="about-hero section-space">
           <div className="container">
             <div className="row align-items-center">

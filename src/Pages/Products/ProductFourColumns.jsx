@@ -82,7 +82,7 @@ const ProductFourColumns = () => {
               <div className="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
                 <h6 className="fw-bold m-0" style={{letterSpacing:'1px'}}>REFINE BY</h6>
                 <button className="btn btn-link text-danger p-0 fw-bold text-decoration-none small" 
-                        onClick={handleClearFilters} style={{fontSize: '12px'}}>RESET</button>
+                        onClick={handleClearFilters} style={{fontSize: '12px', letterSpacing:'initial'}}>RESET</button>
               </div>
 
               <div className="mb-4 text-start">
@@ -122,7 +122,7 @@ const ProductFourColumns = () => {
                 <h6 className="m-0 fw-bold">Showing <span className="text-danger">{filteredProducts.length}</span> Results</h6>
               </div>
               <div className="search-box" style={{width: '280px'}}>
-                <input type="search" className="form-control border-0 bg-light rounded-pill ps-4 shadow-none" 
+                <input type="search" className="form-control bg-light rounded-pill ps-4 shadow-none border-secondary" 
                        placeholder="Search products..." value={search} onChange={(e) => setSearch(e.target.value)} />
               </div>
             </div>

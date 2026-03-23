@@ -116,6 +116,11 @@ const Checkout = () => {
       setLoading(false);
     }
   };
+  const handleInput = (e) => {
+    if(e.target.value.length > e.target.maxLength) {
+      e.target.value = e.target.value.slice(0, e.target.maxLength);
+    }
+  }
 
   return (
     <div className="container" style={{ marginTop: "100px", marginBottom: "50px" }}>
@@ -162,7 +167,7 @@ const Checkout = () => {
                 </div>
                 <div className="col-md-4 mb-3">
                   <label className="small fw-bold">Phone</label>
-                  <input type="number" name="phone" className="form-control" onChange={handleInputChange} required />
+                  <input type="number" name="phone" className="form-control" maxLength={10} onInput={handleInput} onChange={handleInputChange} required />
                 </div>
               </div>
               <div className="card">

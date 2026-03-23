@@ -42,16 +42,21 @@
     .quantityBox{
     display:flex;
     align-items:center;
-    gap:15px;
-    border:1px solid #ddd;
-    padding:5px 15px;
-    width:120px;
+    gap:0px;
+    border:1px solid #E85A8A;
+    padding:5px 0px;
+    width:107px;
+    border-radius: 13px;
     }
     
-    .quantityBox button{
+    /* .quantityBox button{
     border:none;
     background:none;
     font-size:18px;
+    } */
+    .quantityBox button{
+        outline-color: red;
+        outline-style: hidden !important;
     }
     
     .addBtn{
@@ -140,3 +145,8 @@
     background:rgba(0,0,0,0.4);
     z-index:999;
     }
+
+.viewAll:hover{
+    color: white !important;
+    background: green !important;
+}

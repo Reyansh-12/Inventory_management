@@ -6,12 +6,10 @@ import { FaArrowRightLong } from "react-icons/fa6";
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 import ProductItem from "@/Pages/Products/ProductItem.jsx";
 
-// Assets (Same as before)
 import banner from "../assets/images/HeroBanner(1).png";
 import banner1 from "../assets/images/banner4.png";
 import banner2 from "../assets/images/banner3.png";
 
-// Styles
 import "../assets/styles/plugins/HeroSlider.css";
 import "../../src/assets/styles/plugins/ProductCards.css";
 
@@ -27,7 +25,6 @@ const HeroSlider = () => {
 
   gsap.registerPlugin(ScrollTrigger);
 
-  // Data Fetching (Keep unchanged)
   useEffect(() => {
     fetch("http://localhost/Inventory_management/Backend/src/Pages/APIs/productListAPI.php")
       .then((res) => res.json())
@@ -35,10 +32,8 @@ const HeroSlider = () => {
       .catch((err) => console.error("API Error:", err));
   }, []);
 
-  // Advanced Animations
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // 1. Hero Entrance Timeline
       const tl = gsap.timeline();
       tl.from(".reveal-text", {
         y: 100,
@@ -54,7 +49,6 @@ const HeroSlider = () => {
         ease: "expo.out"
       }, "-=0.6");
 
-      // 2. Background Image Subtle Scale on Scroll
       gsap.to(".hero-bg", {
         scale: 1.2,
         scrollTrigger: {
@@ -65,7 +59,6 @@ const HeroSlider = () => {
         }
       });
 
-      // 3. Brand Ticker Infinite Loop
       gsap.to(".ticker-track", {
         xPercent: -50,
         repeat: -1,
@@ -77,7 +70,6 @@ const HeroSlider = () => {
     return () => ctx.revert();
   }, []);
 
-  // 4. Products Stagger (Triggered on activeCategory change)
   useEffect(() => {
     gsap.fromTo(".product-anim-wrap", 
       { opacity: 0, y: 30 }, 
@@ -106,14 +98,13 @@ const HeroSlider = () => {
 
   return (
     <div ref={heroRef} className="main-wrapper-advance">
-      {/* --- HERO SECTION --- */}
       <div className="position-relative heroSection overflow-hidden">
         <div className="container position-absolute hero-content-overlay" style={{ zIndex: 10 }}>
           <div className="overflow-hidden">
-            <h1 className="hero-title reveal-text">Cosmelina</h1>
+            <h1 className="hero-title reveal-text text-start">Cosmelina</h1>
           </div>
           <div className="overflow-hidden">
-            <p className="subtitle reveal-text">
+            <p className="subtitle reveal-text text-start">
               <span className="text-pink">Natural</span> Beauty & Beyond
             </p>
           </div>
@@ -127,7 +118,6 @@ const HeroSlider = () => {
         <div className="hero-vignette"></div>
       </div>
 
-      {/* --- BRAND TICKER (INFINITE) --- */}
       <div className="brand-ticker-section py-5">
         <div className="ticker-track d-flex gap-5">
           {[...Array(2)].map((_, i) => (
@@ -140,7 +130,6 @@ const HeroSlider = () => {
         </div>
       </div>
 
-      {/* --- ADVANCED OFFERS --- */}
       <section className="container my-5">
         <div className="row g-4">
           <div className="col-lg-8">
@@ -162,7 +151,6 @@ const HeroSlider = () => {
         </div>
       </section>
 
-      {/* --- TRENDING PRODUCTS --- */}
       <section className="container py-5">
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-5">
           <div className="section-title-area">
