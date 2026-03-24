@@ -183,7 +183,7 @@ const Checkout = () => {
                 <input className="form-check-input" type="radio" defaultChecked />
                 <label className="form-check-label">Cash on Delivery (COD)</label>
               </div>
-              <button type="submit" disabled={loading} className="btn btn-dark w-100 py-3 fw-bold" style={{ letterSpacing: 'initial' }}>
+              <button type="submit" disabled={loading} className="btn btn-dark w-100 fw-bold" style={{ letterSpacing: 'initial' }}>
                 {loading ? "PLACING ORDER..." : `PLACE ORDER `}
               </button>
             </form>
