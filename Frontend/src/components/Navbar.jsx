@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import "../assets/styles/plugins/navbar.css";
 import { ImCross } from "react-icons/im";
 import { FaHeart } from "react-icons/fa";
+import logo from "../assets/images/logo-removebg-preview.png";
 
 export const Navbar = () => {
   const navigate = useNavigate();
@@ -150,7 +151,10 @@ export const Navbar = () => {
     <header className={`header-area ${scrolled ? "navbar-scrolled" : ""}`}>
       <div className="container">
         <div className="row align-items-center pt-3 pb-3">
-          <div className="col-lg-6 d-none d-lg-block">
+          <div className="col-lg-3">
+          <img src={logo} alt="" style={{width: '200px'}}/>
+          </div>
+          <div className="col-lg-4 d-none d-lg-block">
             <ul className="main-nav d-flex list-unstyled m-0">
               <li className="me-4"><NavLink to="/" className="nav-link text-black fw-bold">Home</NavLink></li>
               <li className="me-4"><NavLink to="/shop" className="nav-link text-black fw-bold">Shop</NavLink></li>
@@ -159,7 +163,7 @@ export const Navbar = () => {
             </ul>
           </div>
 
-          <div className="col-7 col-lg-6 d-flex justify-content-end align-items-center">
+          <div className="col-7 col-lg-5 d-flex justify-content-end align-items-center">
             <div className="position-relative cursor-pointer me-4" onClick={() => setOpenWishlist(true)}>
               <FaRegHeart className="fs-4" />
               {wishlist.length > 0 && <span className="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill">{wishlist.length}</span>}
