@@ -4,6 +4,7 @@ import Footer from "../../components/Footer";
 import ProductItem from "@/Pages/Products/ProductItem.jsx";
 import image from "../../assets/images/secondSection.png";
 import "../../assets/styles/plugins/ProductCards.css";
+import { TfiArrowCircleDown } from "react-icons/tfi";
 
 const ProductFourColumns = () => {
   const [products, setProducts] = useState([]);
@@ -15,13 +16,10 @@ const ProductFourColumns = () => {
 
   const location = useLocation();
 
-  // --- FIX FOR SCROLL: Sirf isi page par scroll lock hoga ---
   useEffect(() => {
-    // Page enter hote hi body scroll band
     document.body.style.overflow = "hidden";
     
     return () => {
-      // Page se jate hi body scroll wapas chalu (Enable for other pages)
       document.body.style.overflow = "auto";
     };
   }, []);
@@ -63,7 +61,7 @@ const ProductFourColumns = () => {
     <main
       className="main-content"
       style={{
-        marginTop: "80px", 
+        marginTop: "120px", 
         background: `url(${image})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
@@ -81,29 +79,29 @@ const ProductFourColumns = () => {
             <div className="filter-sidebar p-4 h-100 custom-scrollbar" style={{ overflowY: 'auto' }}>
               <div className="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
                 <h6 className="fw-bold m-0" style={{letterSpacing:'1px'}}>REFINE BY</h6>
-                <button className="btn btn-link text-danger p-0 fw-bold text-decoration-none small" 
+                <button className="btn btn-link text-danger border-0 p-0 fw-bold text-decoration-none small" 
                         onClick={handleClearFilters} style={{fontSize: '12px', letterSpacing:'initial'}}>RESET</button>
               </div>
 
               <div className="mb-4 text-start">
-                <p className="text-muted fw-bold small mb-3">CATEGORIES</p>
+                <p className="text-muted fw-bold small mb-3 d-flex justify-content-between"><span>CATEGORIES</span><span><TfiArrowCircleDown  className="fw-bolder fs-6"/></span></p>
                 <div className="list-group list-group-flush">
                   <button className={`list-group-item list-group-item-action border-0 px-0 py-1 small text-start ${selectedCategory === "All" ? "text-danger fw-bold" : ""}`}
                           onClick={() => setSelectedCategory("All")}>All Products</button>
                   {categories.map((cat, i) => (
                     <button key={i} className={`list-group-item list-group-item-action border-0 px-0 py-1 small text-start ${selectedCategory === cat.name ? "text-danger fw-bold" : ""}`}
-                            onClick={() => setSelectedCategory(cat.name)}>{cat.name}</button>
+                            onClick={() => setSelectedCategory(cat.name)}>{cat.name}{cat.length}</button>
                   ))}
                 </div>
               </div>
 
               <div className="mb-4">
-                <p className="text-muted fw-bold small mb-2">MAX PRICE: ₹{price}</p>
+                <p className="text-muted fw-bold small mb-2 d-flex justify-content-between"><span>MAX PRICE: ₹{price}</span><span><TfiArrowCircleDown className="fs-5 fw-bold"/></span> </p>
                 <input type="range" className="form-range custom-range-input" min="0" max="10000" step="100" value={price} onChange={(e) => setPrice(Number(e.target.value))} />
               </div>
 
               <div className="mb-4">
-                <p className="text-muted fw-bold small mb-2">RATINGS</p>
+                <p className="text-muted fw-bold small mb-2 d-flex justify-content-between"><span>RATINGS</span><span><TfiArrowCircleDown className="fw-bold fs-5"/></span></p>
                 {[4, 3, 2].map(r => (
                   <div className="form-check mb-2" key={r}>
                     <input className="form-check-input shadow-none" type="radio" name="rating" id={`r${r}`} checked={rating === r} onChange={() => setRating(r)} />

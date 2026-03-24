@@ -10,7 +10,6 @@ const ProductItem = ({ product }) => {
   const navigate = useNavigate();
   const [isWishlisted, setIsWishlisted] = useState(false);
   
-  // Refs for GSAP animations
   const cardRef = useRef(null);
   const contentRef = useRef(null);
 
@@ -26,7 +25,6 @@ const ProductItem = ({ product }) => {
     return () => window.removeEventListener("wishlistUpdated", checkWishlist);
   }, [product.id]);
 
-  // GSAP Hover Animations
   const onMouseEnter = () => {
     gsap.to(cardRef.current, {
       y: -10,
@@ -34,7 +32,6 @@ const ProductItem = ({ product }) => {
       duration: 0.3,
       ease: "power2.out"
     });
-    // Subtle lift for the text content
     gsap.to(contentRef.current, {
       y: -2,
       duration: 0.3,
@@ -109,11 +106,10 @@ const ProductItem = ({ product }) => {
         ref={cardRef}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
-        className="product-card mb-3 p-0 overflow-hidden shadow-sm border border-light position-relative bg-white rounded-4"
+        className="product-card mb-3 p-0 overflow-hidden shadow-sm m-3 border border-light position-relative bg-white rounded-4"
         style={{ cursor: 'pointer', transition: 'box-shadow 0.3s ease' }}
       >
         
-        {/* Image Container */}
         <div
           style={{
             background: 'radial-gradient(circle, rgba(238, 174, 202, 0.1) 0%, rgba(223, 93, 232, 0.05) 100%)',
@@ -121,7 +117,7 @@ const ProductItem = ({ product }) => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            overflow: 'hidden' // Important for zoom effect
+            overflow: 'hidden'
           }}
           className="position-relative"
         >
@@ -145,18 +141,17 @@ const ProductItem = ({ product }) => {
               src={product?.image || shop4}
               onError={(e) => (e.target.src = shop4)}
               alt={product?.name}
-              className="product-img-zoom" // Added custom class for CSS zoom
+              className="product-img-zoom" 
               style={{ 
                 maxWidth: '100%', 
                 maxHeight: '100%', 
                 objectFit: 'contain',
-                transition: 'transform 0.5s ease' // Smooth zoom
+                transition: 'transform 0.5s ease'
               }}
             />
           </Link>
         </div>
 
-        {/* Body Content */}
         <div className="product-body p-3" ref={contentRef}>
           <h6 className="product-title mb-1 text-truncate" title={product?.name} style={{ fontWeight: '600' }}>
             {product?.name}

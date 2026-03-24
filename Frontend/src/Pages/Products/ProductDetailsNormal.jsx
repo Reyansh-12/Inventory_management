@@ -246,7 +246,7 @@ const ProductDetailsNormal = () => {
             </div>
             <input type="text" className="form-control mb-3" placeholder="Review Title" value={reviewTitle} onChange={(e)=>setReviewTitle(e.target.value)} />
             <textarea className="form-control mb-3" rows="4" placeholder="Your experience..." value={reviewComment} onChange={(e)=>setReviewComment(e.target.value)}></textarea>
-            <button className="btn w-100 text-white fw-bold py-2" style={{ background: '#e85a8a', letterSpacing:'initial' }} onClick={submitReview} disabled={isSubmitting}>
+            <button className="btn w-100 text-white fw-bold" style={{ background: '#e85a8a', letterSpacing:'initial' }} onClick={submitReview} disabled={isSubmitting}>
               {isSubmitting ? "Submitting..." : "Submit Review"}
             </button>
           </div>

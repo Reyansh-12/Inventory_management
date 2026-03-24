@@ -205,7 +205,7 @@ if (isset($_FILES['imageBox']) && $_FILES['imageBox']['error'] === 0) {
                         <form id="myForm" method="POST" enctype="multipart/form-data" data-parsley-validate>
                             <input type="hidden" name="product_id" value="<?= htmlspecialchars($productId ?? '') ?>">
                             <input type="hidden" name="existing_image"
-                                value="<?= htmlspecialchars($editData[' image_path'] ?? '') ?>">
+                                value="<?= htmlspecialchars($editData['image_path'] ?? '') ?>">
                             <input type="hidden" name="removed_gallery_images" id="removedGalleryImages" value="[]">
                             <div class="row">
                                 <div class="col-lg-8 border-end pr-lg-4">
