@@ -1,8 +1,7 @@
 [build]
   base = "Frontend"
-  
-  command = "npm run build"
-  
+  # Yahan '--legacy-peer-deps' add kiya hai conflict ignore karne ke liye
+  command = "npm install --legacy-peer-deps && npm run build"
   publish = "dist"
 
 [[redirects]]
