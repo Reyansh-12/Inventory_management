@@ -163,7 +163,7 @@ const ProductDetailsNormal = () => {
               </div>
               <div className="d-grid gap-3 ms-5 d-flex">
                 <div className="col-lg-6">
-                  <button className="btn w-100 text-white fw-bold rounded-4" style={{ background: '#e85a8a', letterSpacing: 'initial' }} onClick={addToCart}>Add To Cart</button>
+                  <button className="btn w-100 text-white fw-bold rounded-4" style={{ background: '#e85a8a', letterSpacing: 'initial' }} onClick={() => { addToCart; navigate("/cart"); }}>Add To Cart</button>
                 </div>
                 <div className="col-lg-6">
                   <button className="btn w-100 text-white fw-bold rounded-4" style={{ background: '#e85a8a', letterSpacing: 'initial' }} onClick={addToCart}>Buy Now</button>
