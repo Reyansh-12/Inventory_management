@@ -1,0 +1,12 @@
+.orderSummary{
+    padding-right: 9px;
+}
+.orderSummary::-webkit-scrollbar{
+    background: transparent;
+    width: 5px;
+    margin-left: 5px;
+}
+.orderSummary::-webkit-scrollbar-thumb{
+    background: rgba(128, 128, 128, 0.267);
+    border-radius: 10px;
+}
