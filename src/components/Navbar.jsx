@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { HiOutlineShoppingCart, HiOutlineUserCircle } from "react-icons/hi"; 
-import { FaRegHeart, FaTrashAlt, FaSignOutAlt, FaPlus, FaMinus } from "react-icons/fa"; 
+import { HiOutlineShoppingCart, HiOutlineUserCircle } from "react-icons/hi";
+import { FaRegHeart, FaTrashAlt, FaSignOutAlt, FaPlus, FaMinus } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "../assets/styles/plugins/navbar.css";
@@ -28,8 +28,8 @@ export const Navbar = () => {
   useEffect(() => {
     loadData();
     window.addEventListener("cartUpdated", loadData);
-    window.addEventListener("wishlistUpdated", loadData); 
-    
+    window.addEventListener("wishlistUpdated", loadData);
+
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
 
@@ -50,8 +50,8 @@ export const Navbar = () => {
     const data = type === "cart" ? cart : wishlist;
     const updated = data.filter(item => item.id !== id);
     localStorage.setItem(key, JSON.stringify(updated));
-    
-    notifyUpdates(); 
+
+    notifyUpdates();
     loadData();
     toast.info(`Item removed from ${type}`);
   };
@@ -82,14 +82,14 @@ export const Navbar = () => {
     }
 
     localStorage.setItem("cart", JSON.stringify(existingCart));
-    
+
     const updatedWishlist = wishlist.filter(item => item.id !== product.id);
     localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
 
-    notifyUpdates(); 
+    notifyUpdates();
     loadData();
     toast.success("Moved to cart!");
-    
+
     setOpenWishlist(false);
     setTimeout(() => setOpenCart(true), 400);
   };
@@ -108,12 +108,12 @@ export const Navbar = () => {
     });
 
     localStorage.setItem("cart", JSON.stringify(updatedCart));
-    localStorage.setItem("wishlist", JSON.stringify([])); 
-    
-    notifyUpdates(); 
+    localStorage.setItem("wishlist", JSON.stringify([]));
+
+    notifyUpdates();
     loadData();
     toast.success("All items moved to cart!");
-    
+
     setOpenWishlist(false);
     setTimeout(() => setOpenCart(true), 400);
   };
@@ -128,10 +128,10 @@ export const Navbar = () => {
     const updatedCart = cart.filter(item => item.id !== product.id);
     localStorage.setItem("cart", JSON.stringify(updatedCart));
 
-    notifyUpdates(); 
+    notifyUpdates();
     loadData();
     toast.info("Saved to wishlist!");
-    
+
     setOpenCart(false);
     setTimeout(() => setOpenWishlist(true), 400);
   };
@@ -152,7 +152,7 @@ export const Navbar = () => {
       <div className="container">
         <div className="row align-items-center pt-3 pb-3">
           <div className="col-lg-3">
-          <img src={logo} alt="" style={{width: '140px'}}/>
+            <img src={logo} alt="" style={{ width: '140px' }} />
           </div>
           <div className="col-lg-4 d-none d-lg-block">
             <ul className="main-nav d-flex list-unstyled m-0">
@@ -196,7 +196,7 @@ export const Navbar = () => {
       </div>
 
       <div className={`cart-drawer ${openWishlist ? "open" : ""}`} style={{
-        position: 'fixed', right: openWishlist ? '0' : '-400px', top: '0', width: '350px', 
+        position: 'fixed', right: openWishlist ? '0' : '-400px', top: '0', width: '350px',
         height: '100vh', background: '#fff', zIndex: '2000', transition: '0.4s ease', boxShadow: '-5px 0 15px rgba(0,0,0,0.1)'
       }}>
         <div className="p-3 border-bottom d-flex justify-content-between align-items-center bg-light">
@@ -204,23 +204,23 @@ export const Navbar = () => {
           <button className="btn-close" onClick={() => setOpenWishlist(false)}></button>
         </div>
         <div className="p-3 overflow-auto" style={{ height: wishlist.length > 1 ? 'calc(100vh - 140px)' : 'calc(100vh - 60px)' }}>
-          {wishlist.length === 0 ? <p className="text-center mt-5 text-muted">Your wishlist is empty</p> : 
+          {wishlist.length === 0 ? <p className="text-center mt-5 text-muted">Your wishlist is empty</p> :
             wishlist.map(item => (
               <div className="d-flex align-items-center mb-3 border-bottom pb-2" key={item.id}>
                 <img src={item.image} width="50" height="50" className="rounded object-fit-cover shadow-sm" alt="" />
                 <div className="ms-3 flex-grow-1">
                   <h6 className="mb-0 small fw-bold">{item.name}</h6>
                   <p className="mb-1 small text-muted">₹{item.price}</p>
-                  <button onClick={() => moveToCart(item)} className="btn border-0 btn-sm p-0 text-primary fw-bold" style={{fontSize: '11px', letterSpacing: 'initial'}}>MOVE TO CART →</button>
+                  <button onClick={() => moveToCart(item)} className="btn border-0 btn-sm p-0 text-primary fw-bold" style={{ fontSize: '11px', letterSpacing: 'initial' }}>MOVE TO CART →</button>
                 </div>
-                <button className="btn border-0 text-danger btn-sm" onClick={() => removeItem(item.id, "wishlist")}><ImCross style={{fontSize: '10px'}}/></button>
+                <button className="btn border-0 text-danger btn-sm" onClick={() => removeItem(item.id, "wishlist")}><ImCross style={{ fontSize: '10px' }} /></button>
               </div>
             ))
           }
         </div>
         {wishlist.length > 1 && (
           <div className="p-3 border-top position-absolute bottom-0 w-100 bg-white shadow">
-            <button onClick={moveAllToCart} className="btn w-100 fw-bold rounded-pill text-white" style={{background: 'rgb(232, 90, 138)', letterSpacing: '0.5px'}}>
+            <button onClick={moveAllToCart} className="btn w-100 fw-bold rounded-pill text-white" style={{ background: 'rgb(232, 90, 138)', letterSpacing: '0.5px' }}>
               MOVE ALL TO CART ({wishlist.length})
             </button>
           </div>
@@ -228,15 +228,15 @@ export const Navbar = () => {
       </div>
 
       <div className={`cart-drawer ${openCart ? "open" : ""}`} style={{
-        position: 'fixed', right: openCart ? '0' : '-400px', top: '0', width: '350px', 
+        position: 'fixed', right: openCart ? '0' : '-400px', top: '0', width: '350px',
         height: '100vh', background: '#fff', zIndex: '2000', transition: '0.4s ease', boxShadow: '-5px 0 15px rgba(0,0,0,0.1)'
       }}>
         <div className="p-3 border-bottom d-flex justify-content-between align-items-center bg-light">
           <h5 className="m-0 fw-bold">Cart ({cart.length})</h5>
           <button className="btn-close" onClick={() => setOpenCart(false)}></button>
         </div>
-        <div className="p-3 overflow-auto" style={{ height: 'calc(100vh - 180px)' }}>
-          {cart.length === 0 ? <p className="text-center mt-5 text-muted">Your cart is empty</p> : 
+        <div className="p-3 drawer overflow-auto" style={{ height: 'calc(100vh - 180px)' }}>
+          {cart.length === 0 ? <p className="text-center mt-5 text-muted">Your cart is empty</p> :
             cart.map(item => (
               <div className="d-flex align-items-center mb-4 border-bottom pb-3" key={item.id}>
                 <img src={item.image} width="60" height="60" className="rounded shadow-sm col-lg-2" alt="" />
@@ -250,9 +250,9 @@ export const Navbar = () => {
                   </div> */}
                 </div>
                 <div className="text-end col-lg-4">
-                    <button className="btn btn-sm fs-5 border-0 text-danger mb-2 me-1" onClick={() => saveForLater(item)} title="Save for Later"><FaHeart /></button>
-                    <button className="btn btn-sm border-0 fs-5 text-danger mb-2" onClick={() => removeItem(item.id, "cart")}>✕</button>
-                    <p className="m-0 small fw-bold">₹{item.price * (item.qty || 1)}</p>
+                  <button className="btn btn-sm fs-5 border-0 text-danger mb-2 me-1" onClick={() => saveForLater(item)} title="Save for Later"><FaHeart /></button>
+                  <button className="btn btn-sm border-0 fs-5 text-danger mb-2" onClick={() => removeItem(item.id, "cart")}>✕</button>
+                  <p className="m-0 small fw-bold">₹{item.price * (item.qty || 1)}</p>
                 </div>
               </div>
             ))
@@ -264,16 +264,16 @@ export const Navbar = () => {
               <span>Total:</span>
               <span className="text-danger">₹{calculateTotal()}</span>
             </div>
-            <button onClick={() => {setOpenCart(false); navigate("/cart");}} className="btn w-100 fw-bold rounded-pill text-white shadow-sm" style={{background: 'rgb(232, 90, 138)', letterSpacing:'0.5px'}}>
-                PROCEED TO CHECKOUT
+            <button onClick={() => { setOpenCart(false); navigate("/cart"); }} className="btn w-100 fw-bold rounded-pill text-white shadow-sm" style={{ background: 'rgb(232, 90, 138)', letterSpacing: '0.5px' }}>
+              PROCEED TO CHECKOUT
             </button>
           </div>
         )}
       </div>
 
       {(openCart || openWishlist) && (
-        <div className="drawer-overlay" onClick={() => {setOpenCart(false); setOpenWishlist(false);}} 
-        style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: '1500' }}></div>
+        <div className="drawer-overlay" onClick={() => { setOpenCart(false); setOpenWishlist(false); }}
+          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: '1500' }}></div>
       )}
     </header>
   );

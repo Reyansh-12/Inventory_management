@@ -167,7 +167,7 @@ const Checkout = () => {
                 </div>
 
                 <button
-                  onClick={() => navigate('/payment')}
+                  onClick={() => navigate('')}
                   className="btn w-100 text-white rounded-pill fw-bold shadow-lg"
                   style={{ letterSpacing: "1px", background: 'rgb(232, 90, 138)' }}
                 >

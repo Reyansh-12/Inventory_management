@@ -51,7 +51,7 @@ const Cart = () => {
     );
 
     return (
-        <div className="cart-container">
+        <div className="cart-container" style={{marginTop:'130px'}}>
             {/* <div className="mb-0">
                 <Stepper currentStep={1} />
             </div> */}
@@ -59,8 +59,8 @@ const Cart = () => {
                 <FaChevronLeft /> Back to Address
             </button> */}
             <header className="cart-header mb-3" style={{ marginTop: '80px' }}>
-                <h1 className="cart-title">Your Cart</h1>
-                <span className="item-count shadow-sm p-2 rounded-4">
+                <h1 className="cart-title me-5">Shopping Cart</h1>
+                <span className="item-count border shadow-sm p-2 rounded-4">
                     <span className="text-success">{cartItems.length}</span> Items
                 </span>
             </header>
