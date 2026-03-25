@@ -1,0 +1,59 @@
+.stepper-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .step-circle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    font-weight: bold;
+    color: #ccc;
+    z-index: 2;
+    position: relative;
+  }
+  
+  .step-circle.active {
+    border-color: #6c5ce7; /* Aapka theme color */
+    color: #6c5ce7;
+  }
+  
+  .step-circle.completed {
+    background: #6c5ce7;
+    border-color: #6c5ce7;
+    color: #fff;
+  }
+  
+  .step-label {
+    position: absolute;
+    top: 35px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    font-weight: 600;
+    color: #ccc;
+    white-space: nowrap;
+  }
+  
+  .step-label.active-label {
+    color: #333;
+  }
+  
+  .step-line {
+    flex-grow: 1;
+    height: 3px;
+    background: #eee;
+    margin: 0 10px;
+    position: relative;
+    top: -10px; /* Label ki wajah se circle adjust karne ke liye */
+  }
+  
+  .step-line.line-completed {
+    background: #6c5ce7;
+  }

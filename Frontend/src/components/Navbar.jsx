@@ -152,7 +152,7 @@ export const Navbar = () => {
       <div className="container">
         <div className="row align-items-center pt-3 pb-3">
           <div className="col-lg-3">
-          <img src={logo} alt="" style={{width: '200px'}}/>
+          <img src={logo} alt="" style={{width: '140px'}}/>
           </div>
           <div className="col-lg-4 d-none d-lg-block">
             <ul className="main-nav d-flex list-unstyled m-0">
@@ -239,17 +239,17 @@ export const Navbar = () => {
           {cart.length === 0 ? <p className="text-center mt-5 text-muted">Your cart is empty</p> : 
             cart.map(item => (
               <div className="d-flex align-items-center mb-4 border-bottom pb-3" key={item.id}>
-                <img src={item.image} width="60" height="60" className="rounded shadow-sm" alt="" />
-                <div className="ms-3 flex-grow-1">
-                  <h6 className="mb-1 small fw-bold">{item.name}</h6>
+                <img src={item.image} width="60" height="60" className="rounded shadow-sm col-lg-2" alt="" />
+                <div className="ms-3 flex-grow-1 col-lg-5">
+                  <h6 className="mb-1 small fw-bold cursor-pointer">{item.name}</h6>
                   <p className="mb-2 small text-muted fw-bold">₹{item.price}</p>
-                  <div className="d-flex align-items-center border rounded-pill" style={{ width: 'fit-content', background: '#f9f9f9' }}>
+                  {/* <div className="d-flex align-items-center border rounded-pill" style={{ width: 'fit-content', background: '#f9f9f9' }}>
                     <button className="btn btn-sm px-2 border-0" onClick={() => updateQuantity(item.id, "dec")}><FaMinus style={{fontSize: '10px'}}/></button>
                     <span className="px-2 small fw-bold">{item.qty || 1}</span>
                     <button className="btn btn-sm px-2 border-0" onClick={() => updateQuantity(item.id, "inc")}><FaPlus style={{fontSize: '10px'}}/></button>
-                  </div>
+                  </div> */}
                 </div>
-                <div className="text-end">
+                <div className="text-end col-lg-4">
                     <button className="btn btn-sm fs-5 border-0 text-danger mb-2 me-1" onClick={() => saveForLater(item)} title="Save for Later"><FaHeart /></button>
                     <button className="btn btn-sm border-0 fs-5 text-danger mb-2" onClick={() => removeItem(item.id, "cart")}>✕</button>
                     <p className="m-0 small fw-bold">₹{item.price * (item.qty || 1)}</p>
@@ -264,7 +264,7 @@ export const Navbar = () => {
               <span>Total:</span>
               <span className="text-danger">₹{calculateTotal()}</span>
             </div>
-            <button onClick={() => {setOpenCart(false); navigate("/checkout");}} className="btn w-100 fw-bold rounded-pill text-white shadow-sm" style={{background: 'rgb(232, 90, 138)', letterSpacing:'0.5px'}}>
+            <button onClick={() => {setOpenCart(false); navigate("/cart");}} className="btn w-100 fw-bold rounded-pill text-white shadow-sm" style={{background: 'rgb(232, 90, 138)', letterSpacing:'0.5px'}}>
                 PROCEED TO CHECKOUT
             </button>
           </div>

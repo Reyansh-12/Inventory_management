@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { useParams, NavLink, useNavigate } from "react-router-dom"; 
+import { useParams, NavLink, useNavigate } from "react-router-dom";
 import Footer from "../../components/Footer";
 import shop2 from "../../assets/images/shop/product-details/2.webp";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../assets/styles/plugins/cartDrawer.css";
 import { toast } from "react-toastify";
-import { FaStar, FaRegStar, FaChevronLeft, FaTimes } from "react-icons/fa"; 
+import { FaStar, FaRegStar, FaChevronLeft, FaTimes } from "react-icons/fa";
 import { TfiArrowCircleRight } from "react-icons/tfi";
+import Navbar from "../../components/Navbar";
 
 const ProductDetailsNormal = () => {
   const { id } = useParams();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [product, setProduct] = useState(null);
-  const [reviews, setReviews] = useState([]); 
+  const [reviews, setReviews] = useState([]);
   const [qty, setQty] = useState(1);
-  const [showReviewForm, setShowReviewForm] = useState(false); 
-  
+  const [showReviewForm, setShowReviewForm] = useState(false);
+
   const [userRating, setUserRating] = useState(0);
   const [hover, setHover] = useState(0);
   const [reviewTitle, setReviewTitle] = useState("");
@@ -31,14 +32,14 @@ const ProductDetailsNormal = () => {
     fetch(`http://localhost/Inventory_management/Backend/src/Pages/APIs/fetchReviewsAPI.php?product_id=${id}`)
       .then((res) => res.json())
       .then((data) => {
-          if(Array.isArray(data)) setReviews(data);
-          else setReviews([]);
+        if (Array.isArray(data)) setReviews(data);
+        else setReviews([]);
       })
       .catch((err) => console.error("Review fetch error:", err));
   }, [id]);
 
-  const avgRating = reviews.length > 0 
-    ? (reviews.reduce((acc, curr) => acc + parseInt(curr.rating), 0) / reviews.length).toFixed(1) 
+  const avgRating = reviews.length > 0
+    ? (reviews.reduce((acc, curr) => acc + parseInt(curr.rating), 0) / reviews.length).toFixed(1)
     : 0;
 
   const checkLogin = (actionName) => {
@@ -75,7 +76,7 @@ const ProductDetailsNormal = () => {
         `http://localhost/Inventory_management/Backend/src/Pages/APIs/checkPurchaseAPI.php?email=${encodeURIComponent(user.email)}&product=${encodeURIComponent(product.name)}`
       );
       const data = await response.json();
-      if (data.hasBought) setShowReviewForm(true); 
+      if (data.hasBought) setShowReviewForm(true);
       else toast.error("Review only allowed for purchased products!");
     } catch (err) { toast.error("Error verifying purchase status."); }
   };
@@ -83,16 +84,16 @@ const ProductDetailsNormal = () => {
   const submitReview = async () => {
     if (userRating === 0) return toast.error("Please select a rating!");
     if (!reviewTitle.trim() || !reviewComment.trim()) return toast.error("Please fill all fields!");
-    
+
     const userStr = localStorage.getItem("user");
     if (!userStr) return toast.error("User session not found. Please login again.");
-    
+
     const user = JSON.parse(userStr);
     setIsSubmitting(true);
 
     const reviewData = {
       product_id: id,
-      customer_email: user.email, 
+      customer_email: user.email,
       customer_name: user.name,
       rating: userRating,
       title: reviewTitle,
@@ -105,9 +106,9 @@ const ProductDetailsNormal = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(reviewData)
       });
-      
+
       const result = await res.json();
-      
+
       if (result.success) {
         toast.success("Review submitted!");
         setShowReviewForm(false);
@@ -119,10 +120,10 @@ const ProductDetailsNormal = () => {
       } else {
         toast.error(result.message || "Failed to submit review.");
       }
-    } catch (err) { 
-      toast.error("Network error. Please try again."); 
-    } finally { 
-      setIsSubmitting(false); 
+    } catch (err) {
+      toast.error("Network error. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -130,8 +131,9 @@ const ProductDetailsNormal = () => {
 
   return (
     <main style={{ background: "#F9F8F6", position: 'relative' }}>
-      <div className="container pt-4" style={{marginTop: '80px'}}>
-        <button onClick={() => navigate(-1)} className="btn d-flex align-items-center gap-2 text-dark fw-bold border-0 p-0" style={{letterSpacing: 'initial'}}>
+      {/* <Navbar /> */}
+      <div className="container pt-4" style={{ marginTop: '100px' }}>
+        <button onClick={() => navigate(-1)} className="btn d-flex align-items-center gap-2 text-dark fw-bold border-0 p-0" style={{ letterSpacing: 'initial' }}>
           <FaChevronLeft /> Back to Products
         </button>
       </div>
@@ -140,27 +142,32 @@ const ProductDetailsNormal = () => {
         <div className="container">
           <div className="row align-items-center">
             <div className="col-lg-6 text-center border border-0 border-end">
-                <img src={product.image || shop2} className="img-fluid rounded-5 shadow ps-5 pe-5" style={{maxHeight:'400px'}} alt={product.name} />
+              <img src={product.image || shop2} className="img-fluid rounded-5 shadow ps-5 pe-5" style={{ maxHeight: '400px' }} alt={product.name} />
             </div>
             <div className="col-lg-6 ps-lg-5">
-              <h1 className="fw-bold text-start ms-5" style={{fontSize: '2.5rem'}}>{product.name}</h1>
+              <h1 className="fw-bold text-start ms-5" style={{ fontSize: '2.5rem' }}>{product.name}</h1>
               <div className="d-flex align-items-center mb-3 ms-5">
                 <div className="text-warning">
                   {[...Array(5)].map((_, i) => (
-                    i < Math.floor(avgRating) ? <FaStar key={i} style={{color:'rgb(232, 90, 138)'}}/> : <FaRegStar key={i} style={{color:'rgb(232, 90, 138)'}}/>
+                    i < Math.floor(avgRating) ? <FaStar key={i} style={{ color: 'rgb(232, 90, 138)' }} /> : <FaRegStar key={i} style={{ color: 'rgb(232, 90, 138)' }} />
                   ))}
                 </div>
                 <span className="ms-2 text-muted">({reviews.length} Reviews)</span>
               </div>
               <p className="text-muted text-start ms-5">{product.description || "Premium formula for your skin health."}</p>
-              <h2 className="text-start ms-5" style={{color: 'rgba(227, 39, 95, 1)', fontWeight: '700', fontFamily:'none'}}>₹{product.price}</h2>
+              <h2 className="text-start ms-5" style={{ color: 'rgba(227, 39, 95, 1)', fontWeight: '700', fontFamily: 'none' }}>₹{product.price}</h2>
               <div className="quantityBox d-flex align-items-center mb-4 mt-4 ms-5">
-                <button className="btn fs-2 border-0" onClick={decrement} style={{width:'40px', height:'50px'}}><strong>-</strong></button>
+                <button className="btn fs-2 border-0" onClick={decrement} style={{ width: '40px', height: '50px' }}><strong>-</strong></button>
                 <span className="mx-2 fw-bold fs-5">{qty}</span>
-                <button className="btn fs-4 border-0" onClick={increment} style={{width:'40px', height:'50px'}}><strong>+</strong></button>
+                <button className="btn fs-4 border-0" onClick={increment} style={{ width: '40px', height: '50px' }}><strong>+</strong></button>
               </div>
-              <div className="d-grid gap-3 ms-5">
-                <button className="btn  text-white fw-bold rounded-5" style={{background: '#e85a8a', letterSpacing:'initial'}} onClick={addToCart}>Add To Cart</button>
+              <div className="d-grid gap-3 ms-5 d-flex">
+                <div className="col-lg-6">
+                  <button className="btn w-100 text-white fw-bold rounded-4" style={{ background: '#e85a8a', letterSpacing: 'initial' }} onClick={addToCart}>Add To Cart</button>
+                </div>
+                <div className="col-lg-6">
+                  <button className="btn w-100 text-white fw-bold rounded-4" style={{ background: '#e85a8a', letterSpacing: 'initial' }} onClick={addToCart}>Buy Now</button>
+                </div>
               </div>
             </div>
           </div>
@@ -175,15 +182,15 @@ const ProductDetailsNormal = () => {
               <div className="d-flex align-items-center mb-4">
                 <h2 className="display-4 fw-bold me-3">{avgRating}</h2>
                 <div>
-                    <div className="text-warning fs-5">
-                        {[...Array(5)].map((_, i) => (
-                            i < Math.floor(avgRating) ? <FaStar style={{color:'rgb(232, 90, 138)'}} key={i}/> : <FaRegStar key={i} style={{color:'rgb(232, 90, 138)'}}/>
-                        ))}
-                    </div>
-                    <p className="text-muted mb-0">Based on {reviews.length} reviews</p>
+                  <div className="text-warning fs-5">
+                    {[...Array(5)].map((_, i) => (
+                      i < Math.floor(avgRating) ? <FaStar style={{ color: 'rgb(232, 90, 138)' }} key={i} /> : <FaRegStar key={i} style={{ color: 'rgb(232, 90, 138)' }} />
+                    ))}
+                  </div>
+                  <p className="text-muted mb-0">Based on {reviews.length} reviews</p>
                 </div>
               </div>
-              <button className="btn w-100 fw-bold mb-3 text-dark border-dark rounded-5" style={{ border: '1.5px dashed black', letterSpacing:'initial' }} onClick={handleReviewClick}>
+              <button className="btn w-100 fw-bold mb-3 text-dark border-dark rounded-5" style={{ border: '1.5px dashed black', letterSpacing: 'initial' }} onClick={handleReviewClick}>
                 Write a Review
               </button>
             </div>
@@ -205,13 +212,13 @@ const ProductDetailsNormal = () => {
                             <h6 className="mb-0 fw-bold">{rev.customer_name}</h6>
                             <div className="text-warning small">
                               {[...Array(5)].map((_, i) => (
-                                i < rev.rating ? <FaStar key={i} style={{color:'rgb(232, 90, 138)'}}/> : <FaRegStar key={i} style={{color:'rgb(232, 90, 138)'}}/>
+                                i < rev.rating ? <FaStar key={i} style={{ color: 'rgb(232, 90, 138)' }} /> : <FaRegStar key={i} style={{ color: 'rgb(232, 90, 138)' }} />
                               ))}
                             </div>
                           </div>
                         </div>
                         <span className="text-muted small">
-                            {rev.created_at === "Just now" ? "Just now" : new Date(rev.created_at).toLocaleDateString()}
+                          {rev.created_at === "Just now" ? "Just now" : new Date(rev.created_at).toLocaleDateString()}
                         </span>
                       </div>
                       <h6 className="mt-3 fw-bold text-start">{rev.title}</h6>
@@ -221,8 +228,8 @@ const ProductDetailsNormal = () => {
 
                   {reviews.length > 2 && (
                     <NavLink to={`/rating/${id}`}>
-                      <button className="btn viewAll text-white fw-bold shadow-sm" style={{background:'rgba(227, 39, 95, 1)', borderRadius: '30px', padding: '0px 25px', letterSpacing:'initial'}}>
-                        View All Reviews ({reviews.length}) <TfiArrowCircleRight className='ms-1 fs-5'/>
+                      <button className="btn viewAll text-white fw-bold shadow-sm" style={{ background: 'rgba(227, 39, 95, 1)', borderRadius: '30px', padding: '0px 25px', letterSpacing: 'initial' }}>
+                        View All Reviews ({reviews.length}) <TfiArrowCircleRight className='ms-1 fs-5' />
                       </button>
                     </NavLink>
                   )}
@@ -236,17 +243,17 @@ const ProductDetailsNormal = () => {
       {showReviewForm && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div className="bg-white p-4 rounded shadow-lg w-100" style={{ maxWidth: '500px', position: 'relative' }}>
-            <FaTimes onClick={() => setShowReviewForm(false)} className="position-absolute" style={{top:20, right:20, cursor:'pointer'}} />
+            <FaTimes onClick={() => setShowReviewForm(false)} className="position-absolute" style={{ top: 20, right: 20, cursor: 'pointer' }} />
             <h4 className="fw-bold mb-3">Write a Review</h4>
             <div className="mb-3 fs-3 text-center">
-                {[1,2,3,4,5].map(s => (
-                    <FaStar key={s} color={s <= (hover || userRating) ? "#ffc107" : "#e4e5e9"} 
-                    onMouseEnter={()=>setHover(s)} onMouseLeave={()=>setHover(0)} onClick={()=>setUserRating(s)} style={{cursor:'pointer'}} />
-                ))}
+              {[1, 2, 3, 4, 5].map(s => (
+                <FaStar key={s} color={s <= (hover || userRating) ? "#ffc107" : "#e4e5e9"}
+                  onMouseEnter={() => setHover(s)} onMouseLeave={() => setHover(0)} onClick={() => setUserRating(s)} style={{ cursor: 'pointer' }} />
+              ))}
             </div>
-            <input type="text" className="form-control mb-3" placeholder="Review Title" value={reviewTitle} onChange={(e)=>setReviewTitle(e.target.value)} />
-            <textarea className="form-control mb-3" rows="4" placeholder="Your experience..." value={reviewComment} onChange={(e)=>setReviewComment(e.target.value)}></textarea>
-            <button className="btn w-100 text-white fw-bold" style={{ background: '#e85a8a', letterSpacing:'initial' }} onClick={submitReview} disabled={isSubmitting}>
+            <input type="text" className="form-control mb-3" placeholder="Review Title" value={reviewTitle} onChange={(e) => setReviewTitle(e.target.value)} />
+            <textarea className="form-control mb-3" rows="4" placeholder="Your experience..." value={reviewComment} onChange={(e) => setReviewComment(e.target.value)}></textarea>
+            <button className="btn w-100 text-white fw-bold" style={{ background: '#e85a8a', letterSpacing: 'initial' }} onClick={submitReview} disabled={isSubmitting}>
               {isSubmitting ? "Submitting..." : "Submit Review"}
             </button>
           </div>

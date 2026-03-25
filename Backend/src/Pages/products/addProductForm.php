@@ -122,7 +122,7 @@ if (isset($_POST['submit'])) {
 }
 $catResult = mysqli_query($con, "SELECT id, category, brands FROM category WHERE status='Active'");
 if (isset($_FILES['imageBox']) && $_FILES['imageBox']['error'] === 0) {
-    $minSize = 100 * 1024;      
+    $minSize = 5 * 1024;      
     $maxSize = 5 * 1024 * 1024;  
     $allowedExt = ['jpg', 'jpeg', 'png', 'webp', 'svg'];
     $allowedMime = [
@@ -138,7 +138,7 @@ if (isset($_FILES['imageBox']) && $_FILES['imageBox']['error'] === 0) {
         die("Invalid image type. Allowed: PNG, JPG, JPEG, WEBP, SVG");
     }
     if ($fileSize < $minSize) {
-        die("Image must be at least 100 KB");
+        die("Image must be at least 5 KB");
     }
     if ($fileSize > $maxSize) {
         die("Image must not exceed 5 MB");
@@ -553,7 +553,7 @@ if (isset($_FILES['imageBox']) && $_FILES['imageBox']['error'] === 0) {
         document.getElementById('productImage').addEventListener('change', function (e) {
             const file = e.target.files[0];
             if (!file) return;
-            const minSize = 100 * 1024;       
+            const minSize = 5 * 1024;       
             const maxSize = 5 * 1024 * 1024;  
 
             const allowedTypes = [
@@ -574,7 +574,7 @@ if (isset($_FILES['imageBox']) && $_FILES['imageBox']['error'] === 0) {
                 return;
             }
             if (file.size < minSize) {
-                errorBox.innerHTML = 'Image size must be at least 100 KB';
+                errorBox.innerHTML = 'Image size must be at least 5 KB';
                 e.target.value = '';
                 return;
             }
@@ -598,7 +598,7 @@ if (isset($_FILES['imageBox']) && $_FILES['imageBox']['error'] === 0) {
         document.getElementById('galleryInput').addEventListener('change', function (e) {
             const files = Array.from(e.target.files);
             const errorBox = document.getElementById('galleryError');
-            const minSize = 100 * 1024;      
+            const minSize = 5 * 1024;      
             const maxSize = 5 * 1024 * 1024;  
 
             const allowedTypes = [
@@ -620,7 +620,7 @@ if (isset($_FILES['imageBox']) && $_FILES['imageBox']['error'] === 0) {
                     return;
                 }
                 if (file.size < minSize) {
-                    errorBox.innerHTML = 'Each image must be at least 100 KB';
+                    errorBox.innerHTML = 'Each image must be at least 5 KB';
                     this.value = '';
                     return;
                 }

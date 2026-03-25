@@ -5,6 +5,7 @@ import ProductItem from "@/Pages/Products/ProductItem.jsx";
 import image from "../../assets/images/secondSection.png";
 import "../../assets/styles/plugins/ProductCards.css";
 import { TfiArrowCircleDown } from "react-icons/tfi";
+import Navbar  from "../../components/Navbar";
 
 const ProductFourColumns = () => {
   const [products, setProducts] = useState([]);
@@ -58,6 +59,7 @@ const ProductFourColumns = () => {
   };
 
   return (
+    
     <main
       className="main-content"
       style={{
@@ -72,6 +74,7 @@ const ProductFourColumns = () => {
         flexDirection: "column"
       }}
     >
+      <Navbar />
       <div className="container-fluid h-100 px-0">
         <div className="row g-0 h-100 mx-0">
           

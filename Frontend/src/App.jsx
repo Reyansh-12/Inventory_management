@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 
-// Layout Components
 import Navbar from './components/Navbar';
 import { HomePage } from './Pages/HomePage';
 import { AboutUs } from './Pages/AboutUs/AboutUs';
@@ -10,11 +9,12 @@ import ProductFourColumns from './Pages/Products/ProductFourColumns';
 import ProductDetailsNormal from './Pages/Products/ProductDetailsNormal';
 import ReviewPage from './Pages/Products/ReviewPage';
 import Checkout from './Pages/Products/Checkout';
+import Cart from "./Pages/Products/Cart";
+import Payment from "./Pages/Products/Payment";
 
-// CSS Imports - Order matters!
-import './assets/styles/vendor/bootstrap.min.css'; // Bootstrap first
-import './assets/styles/plugins/style.min.css';     // Theme styles
-import './App.css';                                 // Your custom overrides last
+import './assets/styles/vendor/bootstrap.min.css';
+import './assets/styles/plugins/style.min.css';     
+import './App.css';                                 
 
 function App() {
   const location = useLocation();
@@ -33,7 +33,6 @@ function App() {
   }, [location, navigate]);
 
   return (
-    // overflow-hidden class X-axis scroll ko khatam kar degi
     <div className="main-app-wrapper" style={{ overflowX: 'hidden', width: '100vw' }}>
       <Navbar />
       <Routes>
@@ -44,6 +43,8 @@ function App() {
         <Route path="/product/:id" element={<ProductDetailsNormal />} />
         <Route path="/rating/:id" element={<ReviewPage />} />
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/payment" element={<Payment />} />
       </Routes>
     </div>
   );
