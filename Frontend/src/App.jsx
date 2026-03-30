@@ -11,6 +11,9 @@ import ReviewPage from './Pages/Products/ReviewPage';
 import Checkout from './Pages/Products/Checkout';
 import Cart from "./Pages/Products/Cart";
 import Payment from "./Pages/Products/Payment";
+import OrderSuccess from "./Pages/Products/OrderSuccess";
+import MyOrders from "./Pages/Products/MyOrders";
+import Profile from "./Pages/Profile";
 
 import './assets/styles/vendor/bootstrap.min.css';
 import './assets/styles/plugins/style.min.css';     
@@ -19,6 +22,10 @@ import './App.css';
 function App() {
   const location = useLocation();
   const navigate = useNavigate();
+
+  const hideNavbarPaths = ["/checkout", "/payment", "/order-success"];
+  
+  const shouldShowNavbar = !hideNavbarPaths.includes(location.pathname.toLowerCase());
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -34,7 +41,8 @@ function App() {
 
   return (
     <div className="main-app-wrapper" style={{ overflowX: 'hidden', width: '100vw' }}>
-      <Navbar />
+      {shouldShowNavbar && <Navbar />}
+      
       <Routes>
         <Route path='/' element={<HomePage />} />
         <Route path='/about' element={<AboutUs />} />
@@ -45,6 +53,9 @@ function App() {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/payment" element={<Payment />} />
+        <Route path="/order-success" element={<OrderSuccess />} />
+        <Route path="/my-orders" element={<MyOrders />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </div>
   );

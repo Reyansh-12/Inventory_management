@@ -7,7 +7,6 @@ import "../../assets/styles/plugins/cartDrawer.css";
 import { toast } from "react-toastify";
 import { FaStar, FaRegStar, FaChevronLeft, FaTimes } from "react-icons/fa";
 import { TfiArrowCircleRight } from "react-icons/tfi";
-import Navbar from "../../components/Navbar";
 
 const ProductDetailsNormal = () => {
   const { id } = useParams();
@@ -54,18 +53,42 @@ const ProductDetailsNormal = () => {
   const increment = () => setQty((q) => q + 1);
   const decrement = () => setQty((q) => Math.max(1, q - 1));
 
-  const addToCart = () => {
-    if (!checkLogin("add items to cart")) return;
-    const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
-    const existingItemIndex = existingCart.findIndex(item => item.id === product.id);
-    if (existingItemIndex > -1) {
-      existingCart[existingItemIndex].qty += qty;
+  const handlePurchase = (targetPath) => {
+    const isBuyNow = targetPath === "/checkout";
+    
+    if (!checkLogin(isBuyNow ? "buy now" : "add items to cart")) return;
+  
+    const productToSave = {
+      ...product,
+      image: product.image || shop2,
+      qty: qty
+    };
+  
+    if (isBuyNow) {
+      // 1. BUY NOW: Pehle purana koi bhi buyNowItem clear karein
+      localStorage.removeItem("buyNowItem");
+      // 2. Naya item save karein
+      localStorage.setItem("buyNowItem", JSON.stringify([productToSave]));
+      
+      toast.success("Proceeding to checkout...");
+      setTimeout(() => {
+        navigate("/checkout");
+      }, 400); // Thoda extra delay storage sync ke liye
     } else {
-      existingCart.push({ ...product, qty });
+      // ADD TO CART: Normal flow
+      const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
+      const existingItemIndex = existingCart.findIndex(item => item.id === product.id);
+  
+      if (existingItemIndex > -1) {
+        existingCart[existingItemIndex].qty += qty;
+      } else {
+        existingCart.push(productToSave);
+      }
+  
+      localStorage.setItem("cart", JSON.stringify(existingCart));
+      window.dispatchEvent(new Event("cartUpdated"));
+      toast.success("Added to cart!");
     }
-    localStorage.setItem("cart", JSON.stringify(existingCart));
-    window.dispatchEvent(new Event("cartUpdated"));
-    toast.success("Added to cart!");
   };
 
   const handleReviewClick = async () => {
@@ -131,7 +154,6 @@ const ProductDetailsNormal = () => {
 
   return (
     <main style={{ background: "#F9F8F6", position: 'relative' }}>
-      {/* <Navbar /> */}
       <div className="container pt-4" style={{ marginTop: '100px' }}>
         <button onClick={() => navigate(-1)} className="btn d-flex align-items-center gap-2 text-dark fw-bold border-0 p-0" style={{ letterSpacing: 'initial' }}>
           <FaChevronLeft /> Back to Products
@@ -156,17 +178,31 @@ const ProductDetailsNormal = () => {
               </div>
               <p className="text-muted text-start ms-5">{product.description || "Premium formula for your skin health."}</p>
               <h2 className="text-start ms-5" style={{ color: 'rgba(227, 39, 95, 1)', fontWeight: '700', fontFamily: 'none' }}>₹{product.price}</h2>
+              
               <div className="quantityBox d-flex align-items-center mb-4 mt-4 ms-5">
                 <button className="btn fs-2 border-0" onClick={decrement} style={{ width: '40px', height: '50px' }}><strong>-</strong></button>
                 <span className="mx-2 fw-bold fs-5">{qty}</span>
                 <button className="btn fs-4 border-0" onClick={increment} style={{ width: '40px', height: '50px' }}><strong>+</strong></button>
               </div>
+
               <div className="d-grid gap-3 ms-5 d-flex">
                 <div className="col-lg-6">
-                  <button className="btn w-100 text-white fw-bold rounded-4" style={{ background: '#e85a8a', letterSpacing: 'initial' }} onClick={() => { addToCart; navigate("/cart"); }}>Add To Cart</button>
+                  <button 
+                    className="btn w-100 text-white fw-bold rounded-4" 
+                    style={{ background: '#e85a8a', letterSpacing: 'initial' }} 
+                    onClick={() => handlePurchase()}
+                  >
+                    Add To Cart
+                  </button>
                 </div>
                 <div className="col-lg-6">
-                  <button className="btn w-100 text-white fw-bold rounded-4" style={{ background: '#e85a8a', letterSpacing: 'initial' }} onClick={addToCart}>Buy Now</button>
+                  <button 
+                    className="btn w-100 text-white fw-bold rounded-4" 
+                    style={{ background: '#333', letterSpacing: 'initial' }} 
+                    onClick={() => handlePurchase("/checkout")}
+                  >
+                    Buy Now
+                  </button>
                 </div>
               </div>
             </div>

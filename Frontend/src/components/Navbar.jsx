@@ -180,13 +180,18 @@ export const Navbar = () => {
                   <HiOutlineUserCircle className="fs-2 text-dark" />
                   <span className="ms-1 d-none d-md-inline small fw-bold">{user.name}</span>
                 </div>
-                {openUserMenu && (
-                  <ul className="dropdown-menu show dropdown-menu-end shadow border-0 mt-2 position-absolute" style={{ right: 0, zIndex: 3000 }}>
-                    <li className="px-3 py-2 border-bottom text-muted small">{user.email}</li>
-                    <li><NavLink className="dropdown-item py-2" to="/profile">My Profile</NavLink></li>
-                    <li><button className="dropdown-item py-2 text-danger" onClick={handleLogout}><FaSignOutAlt className="me-2" /> Logout</button></li>
-                  </ul>
-                )}
+                {/* User Dropdown Menu Update */}
+{openUserMenu && (
+  <ul className="dropdown-menu show dropdown-menu-end shadow border-0 mt-2 position-absolute" style={{ right: 0, zIndex: 3000 }}>
+    <li className="px-3 py-2 border-bottom text-muted small">{user.email}</li>
+    <li><NavLink className="dropdown-item py-2" to="/profile">My Profile</NavLink></li>
+    
+    {/* Naya Link Yaha Add Karein */}
+    <li><NavLink className="dropdown-item py-2" to="/my-orders">📦 My Orders</NavLink></li>
+    
+    <li><button className="dropdown-item py-2 text-danger" onClick={handleLogout}><FaSignOutAlt className="me-2" /> Logout</button></li>
+  </ul>
+)}
               </div>
             ) : (
               <NavLink to="/login" className="btn login-btn border border-dark px-3 py-1 fw-bold small">Login</NavLink>
@@ -264,9 +269,17 @@ export const Navbar = () => {
               <span>Total:</span>
               <span className="text-danger">₹{calculateTotal()}</span>
             </div>
-            <button onClick={() => { setOpenCart(false); navigate("/cart"); }} className="btn w-100 fw-bold rounded-pill text-white shadow-sm" style={{ background: 'rgb(232, 90, 138)', letterSpacing: '0.5px' }}>
-              PROCEED TO CHECKOUT
-            </button>
+            <button 
+  onClick={() => { 
+    localStorage.removeItem("checkoutItem"); // Purana 'Buy Now' clear karein
+    setOpenCart(false); 
+    navigate("/checkout"); // Direct checkout par bhejien
+  }} 
+  className="btn w-100 fw-bold rounded-pill text-white shadow-sm" 
+  style={{ background: 'rgb(232, 90, 138)', letterSpacing: '0.5px' }}
+>
+  PROCEED TO CHECKOUT
+</button>
           </div>
         )}
       </div>
