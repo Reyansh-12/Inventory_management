@@ -4,12 +4,10 @@ include BASE_PATH . "/src/Layouts/Links.php";
 include BASE_PATH . "/src/controllers/dbConnection.php";
 
 $order_id = $_GET['order_id'] ?? null;
-
 if (!$order_id) {
     echo "<script>window.location.href='history.php';</script>";
     exit;
 }
-
 $query = "SELECT * FROM `order_list` WHERE `order_id` = '$order_id' LIMIT 1";
 $result = mysqli_query($con, $query);
 $order = mysqli_fetch_assoc($result);
@@ -18,7 +16,6 @@ if (!$order) {
     echo "Order not found!";
     exit;
 }
-
 $names  = explode(", ", $order['product']);
 $imgs   = explode(", ", $order['image_path']);
 $prices = explode(", ", $order['price']);
@@ -74,7 +71,6 @@ $qtys   = explode(", ", $order['quantity']);
         .info-label { font-size: 0.75rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; margin-bottom: 5px; }
         .info-value { font-size: 1rem; color: #2d3748; font-weight: 600; }
 
-        /* Product Row (Exactly as per your design) */
         .product-row {
             display: flex;
             align-items: center;
