@@ -48,11 +48,41 @@ const Checkout = () => {
   const subtotal = items.reduce((acc, item) => acc + item.price * (item.qty || 1), 0);
   const total = subtotal; 
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    let filteredValue = value;
+
+    if (name === "name" || name === "city") {
+      filteredValue = value.replace(/[^a-zA-Z\s]/g, "");
+    } 
+    else if (name === "phone") {
+      filteredValue = value.replace(/\D/g, "").slice(0, 10);
+    } 
+    else if (name === "pincode") {
+      filteredValue = value.replace(/\D/g, "").slice(0, 6);
+    }
+
+    setFormData({ ...formData, [name]: filteredValue });
+  };
+
   const handleAddNewAddress = (e) => {
     e.preventDefault();
+
+    const phoneRegex = /^[6-9]\d{9}$/;
+    if (!phoneRegex.test(formData.phone)) {
+      toast.error("Enter a valid 10-digit Indian phone number starting with 6-9.");
+      return;
+    }
+
+    if (formData.pincode.length !== 6) {
+      toast.error("Pincode must be exactly 6 digits.");
+      return;
+    }
+
     const newAddr = { ...formData, id: Date.now(), type: "Office" };
     setAddresses([...addresses, newAddr]);
     setShowAddressForm(false);
+    setFormData({ name: "", phone: "", address: "", city: "", pincode: "" }); 
     toast.success("New address added!");
   };
 
@@ -85,23 +115,63 @@ const Checkout = () => {
               {showAddressForm ? (
                 <form onSubmit={handleAddNewAddress} className="row g-3">
                   <div className="col-md-6 mt-3">
-                    <input type="text" placeholder="Full Name" className="form-control p-3 rounded-3" onChange={(e) => setFormData({ ...formData, name: e.target.value })} required />
+                    <input 
+                      type="text" 
+                      name="name" 
+                      placeholder="Full Name" 
+                      className="form-control p-3 rounded-3" 
+                      value={formData.name}
+                      onChange={handleInputChange} 
+                      required 
+                    />
                   </div>
                   <div className="col-md-6 mt-3">
-                    <input type="number" placeholder="Phone Number" className="form-control p-3 rounded-3" onChange={(e) => setFormData({ ...formData, phone: e.target.value })} required />
+                    <input 
+                      type="text" 
+                      name="phone" 
+                      placeholder="Phone Number" 
+                      className="form-control p-3 rounded-3" 
+                      value={formData.phone}
+                      onChange={handleInputChange} 
+                      required 
+                    />
                   </div>
                   <div className="col-12 mt-3">
-                    <input type="text" placeholder="Address (House No, Building, Street)" className="form-control p-3 rounded-3" onChange={(e) => setFormData({ ...formData, address: e.target.value })} required />
+                    <input 
+                      type="text" 
+                      name="address"
+                      placeholder="Address (House No, Building, Street)" 
+                      className="form-control p-3 rounded-3" 
+                      value={formData.address}
+                      onChange={(e) => setFormData({ ...formData, address: e.target.value })} 
+                      required 
+                    />
                   </div>
                   <div className="col-md-6 mt-3">
-                    <input type="text" placeholder="City" className="form-control p-3 rounded-3" onChange={(e) => setFormData({ ...formData, city: e.target.value })} required />
+                    <input 
+                      type="text" 
+                      name="city" 
+                      placeholder="City" 
+                      className="form-control p-3 rounded-3" 
+                      value={formData.city}
+                      onChange={handleInputChange} 
+                      required 
+                    />
                   </div>
                   <div className="col-md-6 mt-3">
-                    <input type="text" placeholder="Pincode" className="form-control p-3 rounded-3" onChange={(e) => setFormData({ ...formData, pincode: e.target.value })} required />
+                    <input 
+                      type="text" 
+                      name="pincode" 
+                      placeholder="Pincode" 
+                      className="form-control p-3 rounded-3" 
+                      value={formData.pincode}
+                      onChange={handleInputChange} 
+                      required 
+                    />
                   </div>
                   <div className="col-12">
-                    <button type="submit" className="btn btn-dark px-4 mt-3 rounded-pill me-2">Save Address</button>
-                    <button type="button" className="btn btn-light px-4 mt-3 rounded-pill" onClick={() => setShowAddressForm(false)}>Cancel</button>
+                    <button type="submit" className="btn btn-dark px-4 mt-3 rounded-pill me-2" style={{letterSpacing:'initial'}}>Save Address</button>
+                    <button type="button" className="btn btn-light px-4 mt-3 rounded-pill" onClick={() => setShowAddressForm(false)} style={{letterSpacing:'initial'}}>Cancel</button>
                   </div>
                 </form>
               ) : (
@@ -159,7 +229,11 @@ const Checkout = () => {
                 </div>
 
                 <button
-                  onClick={() => navigate('/payment')}
+                  onClick={() => {
+                    const selectedAddr = addresses[selectedAddress];
+                    localStorage.setItem("shippingAddress", JSON.stringify(selectedAddr));
+                    navigate('/payment');
+                  }}
                   className="btn w-100 text-white rounded-pill fw-bold py-2 shadow-lg"
                   style={{ background: 'rgb(232, 90, 138)', letterSpacing: 'initial' }}
                 >

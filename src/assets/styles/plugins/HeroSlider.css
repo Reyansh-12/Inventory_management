@@ -40,13 +40,28 @@
 /* Modern Tabs */
 .modern-tabs { background: #eee; padding: 5px; border-radius: 100px; }
 .tab-item { 
-  padding: 10px 25px; cursor: pointer; font-size: 14px; font-weight: 500; 
-  color: #666; position: relative; z-index: 2; transition: 0.3s;
+  padding: 10px 25px; 
+  cursor: pointer; 
+  font-size: 14px; 
+  font-weight: 500; 
+  color: #666; 
+  position: relative; 
+  z-index: 2; /* Text hamesha indicator ke upar rahega */
+  transition: color 0.3s ease;
 }
-.tab-item.active { color: #fff; }
+.tab-item.active { 
+  color: #ffffff !important; 
+}
 .tab-indicator {
-  position: absolute; top: 5px; bottom: 5px; left: 0; background: #1a1a1a; 
-  border-radius: 100px; z-index: 1; pointer-events: none;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  background: #1a1a1a; 
+  border-radius: 100px; 
+  z-index: 1; /* Indicator background ki tarah kaam karega */
+  pointer-events: none;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); /* Smooth movement */
 }
 .title-underline { width: 50px; height: 4px; background: #e85a8a; border-radius: 10px; margin-top: 10px; }
 
@@ -55,3 +70,11 @@
   padding: 12px 30px; border-radius: 50px; transition: 0.3s;
 }
 .view-all-btn:hover { background: #1a1a1a; color: #fff; }
+.modern-tabs ul {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}

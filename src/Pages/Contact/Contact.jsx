@@ -35,21 +35,31 @@ export const Contact = () => {
     switch (name) {
       case 'con_name':
         if (!trimmedValue) error = "First name field is required.";
+        else if (/[0-9]/.test(trimmedValue)) error = "Numbers are not allowed in name.";
         else if (trimmedValue.length < 2) error = "Name is too short (min 2 characters).";
         break;
       
       case 'con_lastName':
         if (!trimmedValue) error = "Last name field is required.";
+        else if (/[0-9]/.test(trimmedValue)) error = "Numbers are not allowed in last name.";
         break;
 
       case 'con_email':
-        const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
-        if (!trimmedValue) error = "Email field isrequired.";
-        else if (!emailRegex.test(trimmedValue)) error = "Oops! That doesn't look like a valid email.";
+        // Updated Regex: Must start with a letter [a-zA-Z]
+        const emailRegex = /^[a-zA-Z][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+        
+        if (!trimmedValue) {
+          error = "Email field is required.";
+        } else if (!/^[a-zA-Z]/.test(trimmedValue)) {
+          error = "Email must start with a letter (a-z). Numbers/Symbols not allowed at start.";
+        } else if (!emailRegex.test(trimmedValue)) {
+          error = "Oops! That doesn't look like a valid email.";
+        }
         break;
 
       case 'con_message':
         if (!trimmedValue) error = "Write us a message.";
+        else if (/[0-9]/.test(trimmedValue)) error = "Numbers are not allowed in the message.";
         else if (trimmedValue.length < 15) error = "Please provide a bit more detail (min 15 characters).";
         break;
 
@@ -61,9 +71,17 @@ export const Contact = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setInputs(prev => ({ ...prev, [name]: value }));
+    let finalValue = value;
 
-    const fieldError = validateField(name, value);
+    // Real-time filtering: Prevent numbers in Name and Message fields
+    if (name === 'con_name' || name === 'con_lastName' || name === 'con_message') {
+      finalValue = value.replace(/[0-9]/g, ''); 
+    }
+
+    setInputs(prev => ({ ...prev, [name]: finalValue }));
+
+    // Validate on every keystroke
+    const fieldError = validateField(name, finalValue);
     setErrors(prev => ({ ...prev, [name]: fieldError }));
   };
 
@@ -135,12 +153,14 @@ export const Contact = () => {
                 <form onSubmit={handleSubmit} noValidate>
                   <div className="row">
                     
+                    {/* First Name */}
                     <div className="col-md-6 mb-4">
                       <div className={`input-group-modern ${errors.con_name ? 'is-invalid' : ''}`}>
                         <input 
                           className="modern-input" 
                           type="text" 
                           name="con_name" 
+                          autoComplete="off"
                           value={inputs.con_name} 
                           onChange={handleChange} 
                         />
@@ -149,12 +169,14 @@ export const Contact = () => {
                       {errors.con_name && <div className="parsley-custom-error">{errors.con_name}</div>}
                     </div>
 
+                    {/* Last Name */}
                     <div className="col-md-6 mb-4">
                       <div className={`input-group-modern ${errors.con_lastName ? 'is-invalid' : ''}`}>
                         <input 
                           className="modern-input" 
                           type="text" 
                           name="con_lastName" 
+                          autoComplete="off"
                           value={inputs.con_lastName} 
                           onChange={handleChange} 
                         />
@@ -163,12 +185,14 @@ export const Contact = () => {
                       {errors.con_lastName && <div className="parsley-custom-error">{errors.con_lastName}</div>}
                     </div>
 
+                    {/* Email Address */}
                     <div className="col-12 mb-4">
                       <div className={`input-group-modern ${errors.con_email ? 'is-invalid' : ''}`}>
                         <input 
                           className="modern-input" 
                           type="email" 
                           name="con_email" 
+                          autoComplete="off"
                           value={inputs.con_email} 
                           onChange={handleChange} 
                         />
@@ -177,6 +201,7 @@ export const Contact = () => {
                       {errors.con_email && <div className="parsley-custom-error">{errors.con_email}</div>}
                     </div>
 
+                    {/* Message */}
                     <div className="col-12 mb-4">
                       <div className={`input-group-modern ${errors.con_message ? 'is-invalid' : ''}`}>
                         <textarea 

@@ -4,7 +4,7 @@ import Footer from "../../components/Footer";
 import ProductItem from "@/Pages/Products/ProductItem.jsx";
 import image from "../../assets/images/secondSection.png";
 import "../../assets/styles/plugins/ProductCards.css";
-import { TfiArrowCircleDown } from "react-icons/tfi";
+import { TfiArrowCircleDown, TfiArrowCircleUp } from "react-icons/tfi"; // Up arrow import kiya
 import Navbar  from "../../components/Navbar";
 
 const ProductFourColumns = () => {
@@ -14,6 +14,11 @@ const ProductFourColumns = () => {
   const [search, setSearch] = useState("");
   const [price, setPrice] = useState(10000);
   const [rating, setRating] = useState(0);
+
+  // Toggle states for Accordion effect
+  const [showCat, setShowCat] = useState(true);
+  const [showPrice, setShowPrice] = useState(true);
+  const [showRating, setShowRating] = useState(true);
 
   const location = useLocation();
 
@@ -59,7 +64,6 @@ const ProductFourColumns = () => {
   };
 
   return (
-    
     <main
       className="main-content"
       style={{
@@ -86,31 +90,49 @@ const ProductFourColumns = () => {
                         onClick={handleClearFilters} style={{fontSize: '12px', letterSpacing:'initial'}}>RESET</button>
               </div>
 
+              {/* CATEGORIES SECTION */}
               <div className="mb-4 text-start">
-                <p className="text-muted fw-bold small mb-3 d-flex justify-content-between"><span>CATEGORIES</span><span><TfiArrowCircleDown  className="fw-bolder fs-6"/></span></p>
-                <div className="list-group list-group-flush">
-                  <button className={`list-group-item list-group-item-action border-0 px-0 py-1 small text-start ${selectedCategory === "All" ? "text-danger fw-bold" : ""}`}
-                          onClick={() => setSelectedCategory("All")}>All Products</button>
-                  {categories.map((cat, i) => (
-                    <button key={i} className={`list-group-item list-group-item-action border-0 px-0 py-1 small text-start ${selectedCategory === cat.name ? "text-danger fw-bold" : ""}`}
-                            onClick={() => setSelectedCategory(cat.name)}>{cat.name}{cat.length}</button>
-                  ))}
+                <p className="text-muted fw-bold small mb-3 d-flex justify-content-between cursor-pointer" onClick={() => setShowCat(!showCat)}>
+                    <span>CATEGORIES</span>
+                    <span>{showCat ? <TfiArrowCircleUp className="fw-bolder fs-6"/> : <TfiArrowCircleDown className="fw-bolder fs-6"/>}</span>
+                </p>
+                <div style={{ maxHeight: showCat ? "500px" : "0", overflow: "hidden", transition: "max-height 0.4s ease-in-out" }}>
+                  <div className="list-group list-group-flush">
+                    <button className={`list-group-item list-group-item-action border-0 px-0 py-1 small text-start ${selectedCategory === "All" ? "text-danger fw-bold" : ""}`}
+                            onClick={() => setSelectedCategory("All")}>All Products</button>
+                    {categories.map((cat, i) => (
+                      <button key={i} className={`list-group-item list-group-item-action border-0 px-0 py-1 small text-start ${selectedCategory === cat.name ? "text-danger fw-bold" : ""}`}
+                              onClick={() => setSelectedCategory(cat.name)}>{cat.name}{cat.length}</button>
+                    ))}
+                  </div>
                 </div>
               </div>
 
+              {/* PRICE SECTION */}
               <div className="mb-4">
-                <p className="text-muted fw-bold small mb-2 d-flex justify-content-between"><span>MAX PRICE: ₹{price}</span><span><TfiArrowCircleDown className="fs-5 fw-bold"/></span> </p>
-                <input type="range" className="form-range custom-range-input" min="0" max="10000" step="100" value={price} onChange={(e) => setPrice(Number(e.target.value))} />
+                <p className="text-muted fw-bold small mb-2 d-flex justify-content-between cursor-pointer" onClick={() => setShowPrice(!showPrice)}>
+                    <span>MAX PRICE: ₹{price}</span>
+                    <span>{showPrice ? <TfiArrowCircleUp className="fs-5 fw-bold"/> : <TfiArrowCircleDown className="fs-5 fw-bold"/>}</span> 
+                </p>
+                <div style={{ maxHeight: showPrice ? "100px" : "0", overflow: "hidden", transition: "max-height 0.4s ease-in-out" }}>
+                  <input type="range" className="form-range custom-range-input" min="0" max="10000" step="100" value={price} onChange={(e) => setPrice(Number(e.target.value))} />
+                </div>
               </div>
 
+              {/* RATINGS SECTION */}
               <div className="mb-4">
-                <p className="text-muted fw-bold small mb-2 d-flex justify-content-between"><span>RATINGS</span><span><TfiArrowCircleDown className="fw-bold fs-5"/></span></p>
-                {[4, 3, 2].map(r => (
-                  <div className="form-check mb-2" key={r}>
-                    <input className="form-check-input shadow-none" type="radio" name="rating" id={`r${r}`} checked={rating === r} onChange={() => setRating(r)} />
-                    <label className="form-check-label small cursor-pointer" htmlFor={`r${r}`}>{r}★ & Above</label>
-                  </div>
-                ))}
+                <p className="text-muted fw-bold small mb-2 d-flex justify-content-between cursor-pointer" onClick={() => setShowRating(!showRating)}>
+                    <span>RATINGS</span>
+                    <span>{showRating ? <TfiArrowCircleUp className="fw-bold fs-5"/> : <TfiArrowCircleDown className="fw-bold fs-5"/>}</span>
+                </p>
+                <div style={{ maxHeight: showRating ? "200px" : "0", overflow: "hidden", transition: "max-height 0.4s ease-in-out" }}>
+                  {[4, 3, 2].map(r => (
+                    <div className="form-check mb-2" key={r}>
+                      <input className="form-check-input shadow-none" type="radio" name="rating" id={`r${r}`} checked={rating === r} onChange={() => setRating(r)} />
+                      <label className="form-check-label small cursor-pointer" htmlFor={`r${r}`}>{r}★ & Above</label>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>

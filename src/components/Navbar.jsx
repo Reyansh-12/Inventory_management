@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { HiOutlineShoppingCart, HiOutlineUserCircle } from "react-icons/hi";
-import { FaRegHeart, FaTrashAlt, FaSignOutAlt, FaPlus, FaMinus } from "react-icons/fa";
+import { FaRegHeart, FaTrashAlt, FaSignOutAlt, FaPlus, FaMinus, FaHeart } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import "../assets/styles/plugins/navbar.css";
 import { ImCross } from "react-icons/im";
-import { FaHeart } from "react-icons/fa";
 import logo from "../assets/images/logo-removebg-preview.png";
+import "../assets/styles/plugins/navbar.css";
 
 export const Navbar = () => {
   const navigate = useNavigate();
@@ -17,6 +16,8 @@ export const Navbar = () => {
   const [cart, setCart] = useState([]);
   const [wishlist, setWishlist] = useState([]);
   const [user, setUser] = useState(null);
+
+  const userMenuRef = useRef(null);
 
   const loadData = () => {
     setCart(JSON.parse(localStorage.getItem("cart")) || []);
@@ -33,12 +34,23 @@ export const Navbar = () => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
 
+    const handleClickOutside = (event) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setOpenUserMenu(false);
+      }
+    };
+
+    if (openUserMenu) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
     return () => {
       window.removeEventListener("cartUpdated", loadData);
       window.removeEventListener("wishlistUpdated", loadData);
       window.removeEventListener("scroll", handleScroll);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [openUserMenu]);
 
   const notifyUpdates = () => {
     window.dispatchEvent(new Event("cartUpdated"));
@@ -82,14 +94,12 @@ export const Navbar = () => {
     }
 
     localStorage.setItem("cart", JSON.stringify(existingCart));
-
     const updatedWishlist = wishlist.filter(item => item.id !== product.id);
     localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
 
     notifyUpdates();
     loadData();
     toast.success("Moved to cart!");
-
     setOpenWishlist(false);
     setTimeout(() => setOpenCart(true), 400);
   };
@@ -113,7 +123,6 @@ export const Navbar = () => {
     notifyUpdates();
     loadData();
     toast.success("All items moved to cart!");
-
     setOpenWishlist(false);
     setTimeout(() => setOpenCart(true), 400);
   };
@@ -131,7 +140,6 @@ export const Navbar = () => {
     notifyUpdates();
     loadData();
     toast.info("Saved to wishlist!");
-
     setOpenCart(false);
     setTimeout(() => setOpenWishlist(true), 400);
   };
@@ -175,26 +183,28 @@ export const Navbar = () => {
             </div>
 
             {user ? (
-              <div className="position-relative">
+              <div className="position-relative" ref={userMenuRef}>
                 <div className="d-flex align-items-center cursor-pointer" onClick={() => setOpenUserMenu(!openUserMenu)}>
                   <HiOutlineUserCircle className="fs-2 text-dark" />
                   <span className="ms-1 d-none d-md-inline small fw-bold">{user.name}</span>
                 </div>
-                {/* User Dropdown Menu Update */}
-{openUserMenu && (
-  <ul className="dropdown-menu show dropdown-menu-end shadow border-0 mt-2 position-absolute" style={{ right: 0, zIndex: 3000 }}>
-    <li className="px-3 py-2 border-bottom text-muted small">{user.email}</li>
-    <li><NavLink className="dropdown-item py-2" to="/profile">My Profile</NavLink></li>
-    
-    {/* Naya Link Yaha Add Karein */}
-    <li><NavLink className="dropdown-item py-2" to="/my-orders">📦 My Orders</NavLink></li>
-    
-    <li><button className="dropdown-item py-2 text-danger" onClick={handleLogout}><FaSignOutAlt className="me-2" /> Logout</button></li>
-  </ul>
-)}
+                {openUserMenu && (
+                  <ul className="dropdown-menu show dropdown-menu-end shadow border-0 mt-2 position-absolute" style={{ right: 0, zIndex: 3000 }}>
+                    <li className="px-3 py-2 border-bottom text-muted small">{user.email}</li>
+                    <li><NavLink className="dropdown-item py-2" to="/profile" onClick={() => setOpenUserMenu(false)}>My Profile</NavLink></li>
+                    <li><NavLink className="dropdown-item py-2" to="/my-orders" onClick={() => setOpenUserMenu(false)}>📦 My Orders</NavLink></li>
+                    <li><button className="dropdown-item py-2 text-danger" onClick={handleLogout}><FaSignOutAlt className="me-2" /> Logout</button></li>
+                  </ul>
+                )}
               </div>
             ) : (
-              <NavLink to="/login" className="btn login-btn border border-dark px-3 py-1 fw-bold small">Login</NavLink>
+              <a 
+                href="http://localhost:3000/Backend/src/Pages/Auth/signin.php" 
+                className="btn login-btn border border-dark px-3 py-1 fw-bold small"
+                style={{ textDecoration: 'none' }}
+              >
+                Login
+              </a>
             )}
           </div>
         </div>
@@ -248,11 +258,6 @@ export const Navbar = () => {
                 <div className="ms-3 flex-grow-1 col-lg-5">
                   <h6 className="mb-1 small fw-bold cursor-pointer">{item.name}</h6>
                   <p className="mb-2 small text-muted fw-bold">₹{item.price}</p>
-                  {/* <div className="d-flex align-items-center border rounded-pill" style={{ width: 'fit-content', background: '#f9f9f9' }}>
-                    <button className="btn btn-sm px-2 border-0" onClick={() => updateQuantity(item.id, "dec")}><FaMinus style={{fontSize: '10px'}}/></button>
-                    <span className="px-2 small fw-bold">{item.qty || 1}</span>
-                    <button className="btn btn-sm px-2 border-0" onClick={() => updateQuantity(item.id, "inc")}><FaPlus style={{fontSize: '10px'}}/></button>
-                  </div> */}
                 </div>
                 <div className="text-end col-lg-4">
                   <button className="btn btn-sm fs-5 border-0 text-danger mb-2 me-1" onClick={() => saveForLater(item)} title="Save for Later"><FaHeart /></button>
@@ -270,16 +275,16 @@ export const Navbar = () => {
               <span className="text-danger">₹{calculateTotal()}</span>
             </div>
             <button 
-  onClick={() => { 
-    localStorage.removeItem("checkoutItem"); // Purana 'Buy Now' clear karein
-    setOpenCart(false); 
-    navigate("/checkout"); // Direct checkout par bhejien
-  }} 
-  className="btn w-100 fw-bold rounded-pill text-white shadow-sm" 
-  style={{ background: 'rgb(232, 90, 138)', letterSpacing: '0.5px' }}
->
-  PROCEED TO CHECKOUT
-</button>
+              onClick={() => { 
+                localStorage.removeItem("checkoutItem"); 
+                setOpenCart(false); 
+                navigate("/checkout"); 
+              }} 
+              className="btn w-100 fw-bold rounded-pill text-white shadow-sm" 
+              style={{ background: 'rgb(232, 90, 138)', letterSpacing: '0.5px' }}
+            >
+              PROCEED TO CHECKOUT
+            </button>
           </div>
         )}
       </div>
