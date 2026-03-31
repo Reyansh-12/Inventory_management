@@ -43,6 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($data)) {
     $final_prices = mysqli_real_escape_string($con, implode(", ", $p_prices));
     $final_imgs = mysqli_real_escape_string($con, implode(", ", $p_imgs));
 
+    // 1. Pehle Order Insert Karein
     $sql = "INSERT INTO `order_list` (
         `order_id`, `customer_id`, `customer`, `email`, `phone`, `address`, `city`, `pincode`, 
         `product`, `product_id`, `category`, `brand`, `quantity`, `shipping_charge`, 
@@ -54,7 +55,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($data)) {
     )";
 
     if (mysqli_query($con, $sql)) {
-        echo json_encode(["success" => true, "order_id" => $order_id, "message" => "Single row order placed!"]);
+        
+        // --- START: QUANTITY UPDATE LOGIC ---
+        $stock_update_success = true;
+        
+        foreach ($items as $item) {
+            $p_id = (int)$item['id'];
+            $buy_qty = (int)$item['qty'];
+
+            // Query jo quantity kam karegi agar stock available ho
+            $update_stock_sql = "UPDATE `product_list` 
+                                 SET `quantity` = `quantity` - $buy_qty 
+                                 WHERE `id` = $p_id AND `quantity` >= $buy_qty";
+            
+            if (!mysqli_query($con, $update_stock_sql)) {
+                $stock_update_success = false;
+            }
+        }
+        // --- END: QUANTITY UPDATE LOGIC ---
+
+        if ($stock_update_success) {
+            echo json_encode(["success" => true, "order_id" => $order_id, "message" => "Order placed and stock updated!"]);
+        } else {
+            echo json_encode(["success" => true, "order_id" => $order_id, "message" => "Order placed, but some stock failed to update."]);
+        }
+
     } else {
         echo json_encode(["success" => false, "message" => mysqli_error($con)]);
     }
