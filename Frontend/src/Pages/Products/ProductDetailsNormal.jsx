@@ -179,11 +179,29 @@ const ProductDetailsNormal = () => {
               <p className="text-muted text-start ms-5">{product.description || "Premium formula for your skin health."}</p>
               <h2 className="text-start ms-5" style={{ color: 'rgba(227, 39, 95, 1)', fontWeight: '700', fontFamily: 'none' }}>₹{product.price}</h2>
               
-              <div className="quantityBox d-flex align-items-center mb-4 mt-4 ms-5">
-                <button className="btn fs-2 border-0" onClick={decrement} style={{ width: '40px', height: '50px' }}><strong>-</strong></button>
-                <span className="mx-2 fw-bold fs-5">{qty}</span>
-                <button className="btn fs-4 border-0" onClick={increment} style={{ width: '40px', height: '50px' }}><strong>+</strong></button>
-              </div>
+              <div className="quantityBox d-flex align-items-center mb-4 mt-4 ms-lg-5 ms-0 justify-content-start">
+  <div className="d-flex align-items-center border border-danger rounded-pill bg-white shadow-sm px-2">
+    <button 
+      className="btn border-0 d-flex align-items-center justify-content-center" 
+      onClick={decrement} 
+      style={{ width: '40px', height: '40px', fontSize: '1.5rem', color: '#e85a8a' }}
+    >
+      <strong>-</strong>
+    </button>
+    
+    <span className="mx-3 fw-bold fs-5" style={{ minWidth: '20px', textAlign: 'center' }}>
+      {qty}
+    </span>
+    
+    <button 
+      className="btn border-0 d-flex align-items-center justify-content-center" 
+      onClick={increment} 
+      style={{ width: '40px', height: '40px', fontSize: '1.2rem', color: '#e85a8a' }}
+    >
+      <strong>+</strong>
+    </button>
+  </div>
+</div>
 
               <div className="d-grid gap-3 ms-5 d-flex">
                 <div className="col-lg-6">

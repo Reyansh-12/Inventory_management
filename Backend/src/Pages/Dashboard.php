@@ -480,7 +480,7 @@ $inventory = mysqli_fetch_assoc($inventoryResult);
 }
 
 #inventoryPieChart {
-    max-height: 250px !important; /* Chart size control */
+    max-height: 250px !important; 
 }
 
 .custom-legend {
@@ -509,7 +509,7 @@ $inventory = mysqli_fetch_assoc($inventoryResult);
     </style>
 </head>
 
-<body>
+<body class="dashboard">
     <div id="global-loader">
         <div class="whirly-loader"> </div>
     </div>

@@ -8,38 +8,85 @@ const Payment = () => {
   const [method, setMethod] = useState("COD");
   const [onlineType, setOnlineType] = useState(""); 
   const [total, setTotal] = useState(0);
+  const [cartItems, setCartItems] = useState([]);
+  const [user, setUser] = useState(null);
   
   const [upiId, setUpiId] = useState("");
   const [selectedBank, setSelectedBank] = useState("");
 
   useEffect(() => {
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const subtotal = cart.reduce((acc, item) => acc + item.price * (item.qty || 1), 0);
+    const buyNow = JSON.parse(localStorage.getItem("buyNowItem"));
+    const itemsToProcess = buyNow || cart;
+    
+    setCartItems(itemsToProcess);
+    const subtotal = itemsToProcess.reduce((acc, item) => acc + item.price * (item.qty || 1), 0);
     setTotal(subtotal);
+
+    const userData = JSON.parse(localStorage.getItem("user"));
+    setUser(userData);
   }, []);
 
-  const handleFinalOrder = () => {
-    if (method === "Online") {
-      if (!onlineType) return Swal.fire("Error", "Please select an Online Payment method", "error");
+  const handleFinalOrder = async () => {
+    const currentUser = JSON.parse(localStorage.getItem("user"));
+    const savedAddress = JSON.parse(localStorage.getItem("shippingAddress"));
+    const buyNowItem = JSON.parse(localStorage.getItem("buyNowItem"));
+    const cartItemsData = JSON.parse(localStorage.getItem("cart")) || [];
+    
+    const itemsToOrder = buyNowItem ? buyNowItem : cartItemsData;
+  
+    if (!savedAddress) {
+      return Swal.fire("Error", "Please select a shipping address", "error");
     }
-
-    Swal.fire({
-      title: 'Processing Payment...',
-      html: 'Please wait while we verify your transaction',
-      timer: 2000,
-      didOpen: () => { Swal.showLoading() }
-    }).then(() => {
-      Swal.fire('Order Placed!', `Successfully paid via ${onlineType || method}`, 'success')
-      .then(() => {
-        localStorage.removeItem("cart"); 
-        navigate("/order-success");     
+  
+    const orderData = {
+      customer_id: currentUser?.id || 0,
+      customer: savedAddress.name,
+      email: currentUser?.user_email || currentUser?.email || "",
+      phone: savedAddress.phone,
+      address: savedAddress.address,
+      city: savedAddress.city,
+      pincode: savedAddress.pincode,
+      shipping_charge: 0,
+      payment_method: onlineType || method,
+      total_amount: total,
+      items: itemsToOrder.map(item => ({
+        id: item.id,
+        name: item.name,
+        qty: item.qty || 1,
+        price: item.price,
+        image: item.image,
+        category: item.category || "General",
+        brand: item.brand || "Cosmelina"
+      }))
+    };
+  
+    Swal.fire({ title: 'Processing...', didOpen: () => Swal.showLoading() });
+  
+    try {
+      const response = await fetch("http://localhost/Inventory_management/Backend/src/Pages/APIs/placeOrderAPI.php", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json" 
+        },
+        body: JSON.stringify(orderData)
       });
-    });
-};
-const handleNext = (addressData) => {
-  localStorage.setItem("shippingAddress", JSON.stringify(addressData));
-  navigate("/payment");
-};
+  
+      const result = await response.json();
+  
+      if (result.success) {
+        Swal.fire("Success", "Order Placed Successfully!", "success").then(() => {
+          localStorage.removeItem("cart");
+          localStorage.removeItem("buyNowItem");
+          navigate("/order-success");
+        });
+      } else {
+        Swal.fire("Error", result.message, "error");
+      }
+    } catch (error) {
+      Swal.fire("Error", "Server connection failed", "error");
+    }
+  };
 
   return (
     <div className="container py-5" style={{ maxWidth: "800px" }}>
@@ -92,21 +139,20 @@ const handleNext = (addressData) => {
                   </div>
                 </div>
 
-                <div className="bg-light p-3 rounded-3 animate__animated animate__fadeIn">
+                <div className="bg-light p-3 rounded-3">
                   {onlineType === 'UPI' && (
                     <div>
                       <label className="form-label fw-bold small text-uppercase">Enter VPA / UPI ID</label>
                       <input type="text" className="form-control form-control-lg rounded-3" placeholder="username@upi" value={upiId} onChange={(e) => setUpiId(e.target.value)} />
-                      <p className="text-muted mt-2 mb-0" style={{fontSize: '12px'}}>Example: 9876543210@ybl, name@oksbi</p>
                     </div>
                   )}
 
                   {onlineType === 'QR' && (
                     <div className="text-center py-2">
                        <div className="bg-white d-inline-block p-3 rounded-3 shadow-sm border mb-2">
-                          <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=ExamplePayment" alt="QR Code" />
+                          <img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=YOUR_UPI@ID&am=${total}`} alt="QR Code" />
                        </div>
-                       <p className="fw-bold m-0 small">Scan this QR to pay ₹{total}</p>
+                       <p className="fw-bold m-0 small">Scan to pay ₹{total}</p>
                     </div>
                   )}
 
@@ -115,15 +161,11 @@ const handleNext = (addressData) => {
                        <label className="form-label fw-bold small text-uppercase">Select Your Bank</label>
                        <select className="form-select form-select-lg rounded-3" value={selectedBank} onChange={(e) => setSelectedBank(e.target.value)}>
                           <option value="">-- Choose Bank --</option>
-                          <option value="SBI">State Bank of India</option>
-                          <option value="HDFC">HDFC Bank</option>
-                          <option value="ICICI">ICICI Bank</option>
-                          <option value="AXIS">Axis Bank</option>
+                          <option value="SBI">SBI</option>
+                          <option value="HDFC">HDFC</option>
                        </select>
                     </div>
                   )}
-
-                  {!onlineType && <p className="text-center text-muted m-0 italic">Select a payment option above</p>}
                 </div>
               </div>
             )}
@@ -139,7 +181,7 @@ const handleNext = (addressData) => {
           <button className="btn btn-dark w-100 rounded-pill fw-bold shadow-lg" onClick={handleFinalOrder} style={{letterSpacing: 'initial'}}>
              {method === 'COD' ? 'PLACE ORDER (COD)' : `PAY ₹${total} NOW`}
           </button>
-          <p className="mt-3 text-muted small"><FaCheckCircle className="text-success me-1"/> 100% Secure Payments powered by Razorpay</p>
+          <p className="mt-3 text-muted small"><FaCheckCircle className="text-success me-1"/> Secure Payments powered by Razorpay</p>
       </div>
     </div>
   );

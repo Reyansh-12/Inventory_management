@@ -104,6 +104,7 @@ const normalize = (value) => value?.toLowerCase().replace(/\s+/g, "");
       button.removeEventListener("mousemove", onMove);
     };
   }, []);
+  
   useEffect(() => {
     cardRefs.current.forEach((card) => {
       if (!card) return;

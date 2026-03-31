@@ -8,14 +8,11 @@ document.getElementById('productImage').addEventListener('change', function() {
         title.textContent = "Drag and drop a file to upload";
     }
 });
-
-
 document.addEventListener("DOMContentLoaded", function() {
     if (isEditMode) {
         document.getElementById("brandSelect").disabled = false;
     }
 });
-
 $('#discountInput').on('input', function() {
     let inputValue = $(this).val();
     let filteredValue = inputValue.replace(/[^0-9]/g, '');
@@ -26,10 +23,8 @@ $('#resetButton').on('click', function() {
     parsleyForm.reset();
 });
 document.addEventListener("DOMContentLoaded", function() {
-
     let toastElement = document.getElementById("actionToast");
     let toastMessage = document.getElementById("toastMessage");
-
     if (params.get("added") === "1") {
         toastMessage.textContent = "Product added successfully!";
         toastElement.classList.add("text-bg-success", "text-white");
@@ -51,7 +46,6 @@ document.addEventListener("DOMContentLoaded", function() {
         window.history.replaceState({}, document.title, window.location.pathname);
     }, 3500);
 });
-
 function filterBrandsByCategory() {
     const categorySelect = document.getElementById("categorySelector");
     const brandSelect = document.getElementById("brandSelect");
@@ -75,18 +69,15 @@ function filterBrandsByCategory() {
         }
     });
 }
-
 document.getElementById('productImage').addEventListener('change', function() {
     const file = this.files[0];
     const title = this.closest('.image-upload').querySelector('h4');
-
     if (file) {
         title.textContent = file.name;
     } else {
         title.textContent = "Drag and drop a file to upload";
     }
 });
-
 $(function() {
     window.Parsley.addValidator('gteMinquantity', {
         validateNumber: function(value) {
@@ -98,7 +89,6 @@ $(function() {
             en: 'Max Quantity must be greater than or equal to Min Quantity'
         }
     });
-
     $('#quantity').on('keydown', function() {
         let parsleyField = $(this).parsley();
         setTimeout(() => {
@@ -111,10 +101,6 @@ $(function() {
         }, 0);
     });
 });
-
-
-
-
 function validateProductName() {
     const input = document.getElementById('productName');
     const error = document.getElementById('productNameError');
@@ -125,17 +111,13 @@ function validateProductName() {
         error.style.display = 'none';
     }
 }
-
 function validateQuantity() {
     const minInput = document.getElementById('minQuantity');
     const maxInput = document.getElementById('quantity');
-
     const minError = document.getElementById('minQuantityError');
     const maxError = document.getElementById('maxError');
-
     const minValue = minInput.value;
     const maxValue = maxInput.value;
-
     if (minValue === '') {
         minError.style.display = 'block';
     } else {
@@ -148,7 +130,6 @@ function validateQuantity() {
         maxError.style.display = 'none';
     }
 }
-
 document.getElementById('price').addEventListener('input', function() {
     let value = this.value;
     if (value < 0) {
@@ -159,33 +140,26 @@ document.getElementById('price').addEventListener('input', function() {
         this.value = 1000000;
     }
 });
-
 document.getElementById('productImage').addEventListener('change', function() {
     const file = this.files[0];
     const preview = document.getElementById('imagePreview');
     const title = document.getElementById('imageUploadTitle');
     const errorBox = document.getElementById('imageError');
-
     errorBox.style.display = 'none';
     errorBox.innerText = '';
-
     if (!file) return;
-
     if (!ALLOWED_TYPES.includes(file.type)) {
         errorBox.innerText = "Only JPG, PNG, and WEBP image formats are allowed.";
         errorBox.style.display = 'block';
         resetImageInput();
         return;
     }
-
     if (file.size > MAX_IMAGE_SIZE) {
         errorBox.innerText = "Image size must be less than 100KB.";
         errorBox.style.display = 'block';
         resetImageInput();
         return;
     }
-
-
     const reader = new FileReader();
     reader.onload = function(e) {
         preview.src = e.target.result;
@@ -193,20 +167,16 @@ document.getElementById('productImage').addEventListener('change', function() {
     reader.readAsDataURL(file);
     title.textContent = file.name;
 });
-
 function resetImageInput() {
     const input = document.getElementById('productImage');
     const preview = document.getElementById('imagePreview');
     const title = document.getElementById('imageUploadTitle');
-
     input.value = '';
     preview.src = '/Backend/assets/images/icons/upload.svg';
     title.textContent = 'Drag and drop a file to upload';
 }
-
 document.getElementById('price').addEventListener('input', function() {
     let value = this.value;
-
     if (parseFloat(value) > 1000000) {
         this.value = 1000000;
     }
@@ -225,37 +195,28 @@ document.getElementById('quantity').addEventListener('input', function() {
         this.value = 1000000;
     }
 });
-
 const MAX_IMAGES = 5;
 let selectedFiles = [];
 let removedImages = [];
 let existingCount = 0;
-
 const input = document.getElementById('galleryInput');
 const preview = document.getElementById('galleryPreview');
 const uploadBox = document.getElementById('uploadBox');
 const counterText = document.getElementById('counterText');
-
 function addPreview(file = null, imagePath = null) {
-
     const div = document.createElement('div');
     div.className = 'gallery-item';
-
     const img = document.createElement('img');
     img.src = imagePath ? imagePath : URL.createObjectURL(file);
-
     const remove = document.createElement('div');
     remove.className = 'remove-btn';
     remove.innerHTML = '&times;';
-
     remove.onclick = function() {
         div.remove();
-
         if (file) {
             selectedFiles = selectedFiles.filter(f => f !== file);
             syncFilesToInput();
         }
-
         if (imagePath) {
             removedImages.push(imagePath);
             existingCount--;

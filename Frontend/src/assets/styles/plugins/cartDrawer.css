@@ -39,7 +39,7 @@
     font-size:18px;
     }
     
-    .quantityBox{
+    /* .quantityBox{
     display:flex;
     align-items:center;
     gap:0px;
@@ -47,7 +47,7 @@
     padding:5px 0px;
     width:107px;
     border-radius: 13px;
-    }
+    } */
     
     /* .quantityBox button{
     border:none;

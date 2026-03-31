@@ -29,13 +29,24 @@ function App() {
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
-    const authUser = searchParams.get('auth_user');
-
-    if (authUser) {
-      localStorage.setItem("user", authUser);
-      window.history.replaceState(null, "", window.location.pathname);
-      navigate("/", { replace: true });
-      window.location.reload(); 
+    const authUserString = searchParams.get('auth_user');
+  
+    if (authUserString) {
+      try {
+        // Step 1: URL se data decode karein aur JSON mein convert karein
+        const decodedData = decodeURIComponent(authUserString);
+        const userData = JSON.parse(decodedData);
+        
+        // Step 2: Stringify karke local storage mein save karein
+        localStorage.setItem("user", JSON.stringify(userData));
+  
+        window.history.replaceState(null, "", window.location.pathname);
+        navigate("/", { replace: true });
+        // Reload is optionally used to refresh Navbar/Context
+        window.location.reload(); 
+      } catch (error) {
+        console.error("User Data Parse Error:", error);
+      }
     }
   }, [location, navigate]);
 

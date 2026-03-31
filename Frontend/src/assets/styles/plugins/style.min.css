@@ -11,6 +11,9 @@ body,
   padding: 0 !important;
   text-align: start !important;
 }
+body::-webkit-scrollbar{
+  background: transparent ;
+}
 body {
   font-family: Inter, sans-serif;
   font-size: 1rem;

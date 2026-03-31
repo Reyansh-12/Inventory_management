@@ -340,7 +340,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
         let emailValid = true;
         let phoneValid = true;
 
-        // EMAIL CHECK
         $('#userEmail').on('blur', function () {
             let email = $(this).val().trim();
 
@@ -362,7 +361,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
             });
         });
 
-        // PHONE CHECK
         $('#contact').on('blur', function () {
             let phone = $(this).val().trim();
 

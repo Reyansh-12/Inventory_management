@@ -2,11 +2,13 @@
 define("BASE_PATH", dirname(__DIR__, 3));
 include BASE_PATH . "/src/Layouts/Links.php";
 include BASE_PATH . "/src/controllers/dbConnection.php";
-$order_list = "SELECT `id`, `order_id`, `customer`, `product`, `category`, `brand`, `quantity`, `status`, `total_amount`, `price`, `created` FROM `order_list` ORDER BY `id` DESC";
-$resut = mysqli_query($con, $order_list);
-mysqli_query($con, "UPDATE order_list SET seen = 1 WHERE seen = 0");
 
-echo "success";
+// Fetching orders
+$order_list_query = "SELECT `id`, `order_id`, `customer`, `product`, `category`, `brand`, `quantity`, `status`, `total_amount`, `price`, `image_path`, `created`, `seen` FROM `order_list` ORDER BY `id` DESC";
+$resut = mysqli_query($con, $order_list_query);
+
+// Mark as seen logic
+mysqli_query($con, "UPDATE order_list SET seen = 1 WHERE seen = 0");
 ?>
 
 <!DOCTYPE html>
@@ -15,220 +17,45 @@ echo "success";
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-    <meta name="description" content="POS - Bootstrap Admin Template">
-    <meta name="keywords"
-        content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern,  html5, responsive">
-    <meta name="author" content="Dreamguys - Bootstrap Admin Template">
-    <meta name="robots" content="noindex, nofollow">
-    <title>User List</title>
+    <title>All Notifications</title>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <link rel="stylesheet" href="/Backend/src/assets/css/history.css">
     <style>
-        .order-card {
-            transition: all 0.3s ease;
-        }
-
-        .unseen-card {
-            background-color: #f8f9ff;
-            border-left: 4px solid #0d6efd;
-        }
-
-        .seen-card {
-            opacity: 0.85;
-        }
-
-        /* Professional Order History Overhaul */
-        :root {
-            --primary-blue: #6792ff;
-            --border-color: #edf2f9;
-            --text-muted: #718096;
-        }
-
-        .order-card {
-            background: #fff;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
-        }
-
-        .order-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
-        }
-
-        .order-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 15px;
-            margin-bottom: 15px;
-        }
-
-        .order-id {
-            font-weight: 700;
-            color: #2d3748;
-            font-size: 1.1rem;
-        }
-
-        .order-total {
-            font-weight: 800;
-            color: var(--primary-blue);
-            font-size: 1.2rem;
-        }
-
-        /* Metadata Styling */
-        .order-meta {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-bottom: 15px;
-        }
-
-        .meta-item a {
-            color: #4a5568;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        /* Product Section */
-        .product {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .product-img {
-            width: 70px;
-            height: 70px;
-            border-radius: 10px;
-            object-fit: cover;
-            background: #f7fafc;
-        }
-
-        .product-name {
-            font-weight: 700;
-            color: #2d3748;
-            font-size: 1rem;
-            margin-bottom: 5px;
-        }
-
-        .product-meta {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
-        .product-meta span {
-            margin-right: 15px;
-        }
-
-        /* Status Badges */
-        .badge.paid {
-            background: rgba(32, 201, 151, 0.1);
-            color: #198754;
-            padding: 5px 12px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .payment-label {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 700;
-        }
-
-        .payment-cash {
-            background: #fff5f5;
-            color: #e53e3e;
-        }
-
-        .payment-online {
-            background: #ebf8ff;
-            color: #3182ce;
-        }
-
-        /* --- Professional Filter Bar Styling --- */
-        .filter-wrapper {
-            background: #fff;
-            padding: 15px 20px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-        }
-
-        .custom-filter-box {
-            position: relative;
-            width: 180px;
-        }
-
-        .filter-label {
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            margin-bottom: 5px;
-            display: block;
-            letter-spacing: 0.5px;
-        }
-
-        .form-select-custom {
-            appearance: none;
-            background: var(--bg-light);
-            border: 1px solid var(--border-color) !important;
-            border-radius: 8px !important;
-            padding: 10px 35px 10px 15px !important;
-            font-size: 0.9rem !important;
-            font-weight: 600;
-            color: #4a5568;
-            width: 100%;
-            cursor: pointer;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236792ff' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 12px center;
-            background-size: 12px;
-            transition: all 0.2s ease;
-        }
-
-        .form-select-custom:focus {
-            border-color: var(--primary-blue) !important;
-            box-shadow: 0 0 0 3px rgba(103, 146, 255, 0.1) !important;
-            outline: none;
-        }
-
-        .filter-icon {
-            position: absolute;
-            left: 12px;
-            top: 38px;
-            color: var(--primary-blue);
-            z-index: 5;
-            font-size: 0.9rem;
-        }
-
-        /* Padding adjust for icons */
-        .form-select-icon-padding {
-            padding-left: 35px !important;
-        }
+        /* Aapki original CSS */
+        .order-card { transition: all 0.3s ease; background: #fff; border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03); }
+        .order-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08); }
+        .unseen-card { background-color: #f8f9ff; border-left: 4px solid #0d6efd; }
+        .seen-card { opacity: 0.85; }
+        :root { --primary-blue: #6792ff; --border-color: #edf2f9; --text-muted: #718096; }
+        .order-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 15px; }
+        .order-id { font-weight: 700; color: #2d3748; font-size: 1.1rem; }
+        .order-total { font-weight: 800; color: var(--primary-blue); font-size: 1.2rem; }
+        .order-meta { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px; }
+        .meta-item a { color: #4a5568; text-decoration: none; font-weight: 600; }
+        .product { display: flex; gap: 20px; align-items: center; }
+        .product-img { width: 70px; height: 70px; border-radius: 10px; object-fit: cover; background: #f7fafc; }
+        .product-name { font-weight: 700; color: #2d3748; font-size: 1rem; margin-bottom: 5px; }
+        .product-meta { font-size: 0.8rem; color: var(--text-muted); }
+        .badge.paid { background: rgba(32, 201, 151, 0.1); color: #198754; padding: 5px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+        .payment-label { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; }
+        .payment-cash { background: #fff5f5; color: #e53e3e; }
+        .payment-online { background: #ebf8ff; color: #3182ce; }
+        .filter-wrapper { background: #fff; padding: 15px 20px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03); }
+        .custom-filter-box { position: relative; width: 180px; }
+        .filter-label { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; display: block; }
+        .form-select-custom { appearance: none; background: var(--bg-light); border: 1px solid var(--border-color) !important; border-radius: 8px !important; padding: 10px 35px 10px 15px !important; font-size: 0.9rem !important; font-weight: 600; color: #4a5568; width: 100%; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236792ff' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; background-size: 12px; }
+        
+        /* Multiple product ke liye extra style */
+        .more-badge { background: #eef2ff; color: #6366f1; padding: 2px 8px; border-radius: 4px; font-size: 11px; margin-left: 8px; border: 1px solid #e0e7ff; }
     </style>
 </head>
 
 <body>
-    <div id="global-loader">
-        <div class="whirly-loader"> </div>
-    </div>
     <div class="main-wrapper">
         <div class="d-flx row">
-            <div class="col-md-3">
-                <?php include BASE_PATH . "/src/Layouts/Sidebar.php"; ?>
-            </div>
-            <div class="col-md-9">
-                <?php include BASE_PATH . "/src/Layouts/Header.php"; ?>
-            </div>
+            <div class="col-md-3"><?php include BASE_PATH . "/src/Layouts/Sidebar.php"; ?></div>
+            <div class="col-md-9"><?php include BASE_PATH . "/src/Layouts/Header.php"; ?></div>
         </div>
     </div>
     <div class="page-wrapper">
@@ -239,198 +66,93 @@ echo "success";
                     <h6>View your all activities</h6>
                 </div>
             </div>
-            <?php
-            $unseenQuery = mysqli_query($con, "SELECT COUNT(*) as total FROM order_list WHERE seen = 0");
-            $unseenData = mysqli_fetch_assoc($unseenQuery);
-            $unseenCount = $unseenData['total'];
-            ?>
-            <div class="filter-wrapper mb-4 d-flex align-items-center gap-4 flex-wrap">
 
+            <div class="filter-wrapper mb-4 d-flex align-items-center gap-4 flex-wrap">
                 <div class="custom-filter-box">
                     <label class="filter-label">Payment Mode</label>
-                    <i class="bi bi-wallet2 filter-icon"></i>
-                    <select class="form-select-custom form-select-icon-padding" id="paymentFilter">
-                        <option value="all" selected>All Transactions</option>
+                    <select class="form-select-custom" id="paymentFilter">
+                        <option value="all">All Transactions</option>
                         <option value="cash">Cash Payment</option>
                         <option value="online">Online Payment</option>
-                        <option value="card">Card Payment</option>
                     </select>
                 </div>
-
-                <div class="custom-filter-box">
-                    <label class="filter-label">Sort by Amount</label>
-                    <i class="bi bi-sort-numeric-down filter-icon"></i>
-                    <select class="form-select-custom form-select-icon-padding" id="priceSort">
-                        <option value="default" selected>Newest First</option>
-                        <option value="high">Highest Price</option>
-                        <option value="low">Lowest Price</option>
-                    </select>
-                </div>
-
-                <div class="ms-auto d-none d-lg-block">
-                    <div class="text-end">
-                        <span class="text-muted small fw-bold">TOTAL ORDERS</span>
-                        <h5 class="mb-0 fw-bold text-dark"><?= mysqli_num_rows($resut) ?></h5>
-                    </div>
+                <div class="ms-auto">
+                    <span class="text-muted small fw-bold">TOTAL ORDERS</span>
+                    <h5 class="mb-0 fw-bold"><?= mysqli_num_rows($resut) ?></h5>
                 </div>
             </div>
+
             <div class="activity">
-                <div class="activity-box">
-                    <ul class="activity-list">
-                        <?php
-                        while ($row = mysqli_fetch_assoc($resut)) {
-                            $paymentMode = strtolower($row['status']);
-                            $paymentClass = ($paymentMode == 'online') ? 'payment-online' : 'payment-cash';
-                            ?>
-                            <div class='order-card' data-payment='<?= $paymentMode ?>'
-                                data-price='<?= $row['total_amount'] ?>'>
-                                <div class='order-header'>
-                                    <div class='order-left'>
-                                        <span class='order-id'>Order #<?= $row['order_id'] ?></span>
-                                        <span class='badge paid ms-2'>Paid</span>
+                <ul class="activity-list" style="list-style: none; padding: 0;">
+                    <?php
+                    while ($row = mysqli_fetch_assoc($resut)) {
+                        $paymentMode = strtolower($row['status']);
+                        $paymentClass = ($paymentMode == 'online') ? 'payment-online' : 'payment-cash';
+                        
+                        // MULTIPLE PRODUCTS LOGIC
+                        $names  = explode(", ", $row['product']);
+                        $imgs   = explode(", ", $row['image_path']);
+                        $is_multiple = count($names) > 1;
+                        ?>
+                        <div class='order-card <?= ($row['seen'] == 0) ? 'unseen-card' : '' ?>' 
+                             data-payment='<?= $paymentMode ?>' data-price='<?= $row['total_amount'] ?>'>
+                            
+                            <div class='order-header'>
+                                <div class='order-left'>
+                                    <span class='order-id'>Order #<?= $row['order_id'] ?></span>
+                                    <span class='badge paid ms-2'>Paid</span>
+                                </div>
+                                <div class='order-total'>₹ <?= number_format($row['total_amount'], 2) ?></div>
+                            </div>
+
+                            <div class='order-meta'>
+                                <span class='meta-item'>Customer: <strong><?= htmlspecialchars($row['customer']) ?></strong></span>
+                                <span class='mx-2'>|</span>
+                                <span class='meta-item'>Time: <?= date('M d, Y h:i A', strtotime($row['created'])) ?></span>
+                            </div>
+
+                            <div class='product'>
+                                <img src='<?= htmlspecialchars($imgs[0]) ?>' class='product-img' onerror="this.src='/assets/img/placeholder.png'"/>
+                                
+                                <div class='product-info w-100'>
+                                    <div class='product-name'>
+                                        <?= htmlspecialchars($names[0]) ?>
+                                        <?php if($is_multiple): ?>
+                                            <span class="more-badge">+<?= count($names)-1 ?> more items</span>
+                                        <?php endif; ?>
                                     </div>
-                                    <div class='order-total'>₹ <?= number_format($row['total_amount'], 2) ?></div>
-                                </div>
-
-                                <div class='order-meta'>
-                                    <span class='meta-item'>Customer: <a
-                                            href='#'><?= htmlspecialchars($row['customer']) ?></a></span>
-                                    <span class='mx-2'>|</span>
-                                    <span class='meta-item'>Time:
-                                        <?= date('M d, Y h:i A', strtotime($row['created'])) ?></span>
-                                </div>
-
-                                <div class='product'>
-                                    <img src='/Backend/src/uploads/products/featured/product_6979a7b1479cf2.85124957.webp'
-                                        class='product-img' />
-                                    <div class='product-info w-100'>
-                                        <div class='product-name'><?= htmlspecialchars($row['product']) ?></div>
-                                        <div class='product-meta d-flex justify-content-between align-items-center'>
-                                            <div>
-                                                <span>Brand: <strong><?= $row['brand'] ?></strong></span>
-                                                <span>Qty: <strong><?= $row['quantity'] ?></strong></span>
-                                            </div>
-                                            <div class="d-flex align-items-center gap-3">
-                                                <span
-                                                    class="payment-label <?= $paymentClass ?>"><?= strtoupper($row['status']) ?></span>
-                                                <a href='/Backend/src/Pages/notification/viewAllOrder.php?order_id=<?= $row['order_id'] ?>'
-                                                    class="btn btn-sm btn-outline-primary"
-                                                    style="font-size: 11px; border-radius: 6px;">
-                                                    View Details
-                                                    </a>
-                                            </div>
+                                    <div class='product-meta d-flex justify-content-between align-items-center'>
+                                        <div>
+                                            <span>Brand: <strong><?= $row['brand'] ?></strong></span>
+                                            <span>Qty: <strong><?= $row['quantity'] ?></strong></span>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <span class="payment-label <?= $paymentClass ?>"><?= strtoupper($row['status']) ?></span>
+                                            <a href='/Backend/src/Pages/notification/viewAllOrder.php?order_id=<?= $row['order_id'] ?>'
+                                                class="btn btn-sm btn-outline-primary" style="font-size: 11px; border-radius: 6px;">
+                                                View Details
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        <?php } ?>
-
-                    </ul>
-                </div>
+                        </div>
+                    <?php } ?>
+                </ul>
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
+        // Filters Logic
         const paymentFilter = document.getElementById('paymentFilter');
-        const priceSort = document.getElementById('priceSort');
-        const container = document.querySelector('.activity-list');
-
-        function applyFilters() {
-
-            const paymentValue = paymentFilter.value;
-            const sortValue = priceSort.value;
-
-            let cards = Array.from(document.querySelectorAll('.order-card'));
-
-            cards.forEach(card => {
-                const paymentType = card.getAttribute('data-payment');
-
-                if (paymentValue === 'all') {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = (paymentType === paymentValue) ? 'block' : 'none';
-                }
+        paymentFilter.addEventListener('change', function() {
+            const val = this.value.toLowerCase();
+            document.querySelectorAll('.order-card').forEach(card => {
+                const method = card.getAttribute('data-payment');
+                card.style.display = (val === 'all' || method === val) ? 'block' : 'none';
             });
-
-            if (sortValue !== 'default') {
-
-                cards.sort((a, b) => {
-                    let priceA = parseFloat(a.getAttribute('data-price'));
-                    let priceB = parseFloat(b.getAttribute('data-price'));
-
-                    return sortValue === 'high'
-                        ? priceB - priceA
-                        : priceA - priceB;
-                });
-
-                container.innerHTML = '';
-                cards.forEach(card => container.appendChild(card));
-            }
-        }
-
-        paymentFilter.addEventListener('change', applyFilters);
-        priceSort.addEventListener('change', applyFilters);
-    </script>
-    <script>
-
-        function updateBadge(count) {
-            document.getElementById('unseenBadge').innerText = count;
-        }
-
-        document.getElementById('markAllSeen').addEventListener('click', function () {
-
-            fetch('mark_all_seen.php')
-                .then(response => response.text())
-                .then(data => {
-
-                    if (data === "success") {
-
-                        document.querySelectorAll('.order-card').forEach(card => {
-                            card.classList.remove('unseen-card');
-                            card.classList.add('seen-card');
-                            card.setAttribute('data-seen', '1');
-                        });
-
-                        updateBadge(0);
-                    }
-
-                });
-
-        });
-
-
-        // Mark single card seen
-        document.querySelectorAll('.order-card').forEach(card => {
-
-            card.addEventListener('click', function () {
-
-                if (this.getAttribute('data-seen') === '0') {
-
-                    const id = this.getAttribute('data-id');
-
-                    fetch('mark_seen.php', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: 'id=' + id
-                    });
-
-                    this.classList.remove('unseen-card');
-                    this.classList.add('seen-card');
-                    this.setAttribute('data-seen', '1');
-
-                    let badge = document.getElementById('unseenBadge');
-                    let count = parseInt(badge.innerText);
-
-                    if (count > 0) {
-                        updateBadge(count - 1);
-                    }
-                }
-
-            });
-
         });
     </script>
 </body>
-
 </html>
