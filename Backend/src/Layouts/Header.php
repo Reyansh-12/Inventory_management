@@ -161,9 +161,9 @@ $lastOrders = mysqli_query($con, "SELECT * FROM order_list ORDER BY id DESC LIMI
                                         <a href="/Backend/src/Pages/notification/notification.php">
                                             <div class="media d-flex">
                                                 <span class="avatar flex-shrink-0">
-                                                    <div class="bg-soft-primary rounded-circle p-2 text-center"
+                                                    <div class="bg-soft-primary rounded-circle text-center"
                                                         style="width:40px; height:40px;">
-                                                        <i class="fas fa-shopping-cart text-primary"></i>
+                                                        <img src="<?= htmlspecialchars($row['image_path']) ?>" alt="">
                                                     </div>
                                                 </span>
                                                 <div class="media-body flex-grow-1 ms-2">

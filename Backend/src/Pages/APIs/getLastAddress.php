@@ -6,7 +6,6 @@ include "../../controllers/dbConnection.php";
 $customer_id = $_GET['customer_id'] ?? 0;
 
 if($customer_id > 0) {
-    // Orders table se latest order ka address fetch karna
     $sql = "SELECT address, city, pincode, phone FROM orders 
             WHERE customer_id = ? 
             ORDER BY id DESC LIMIT 1";
