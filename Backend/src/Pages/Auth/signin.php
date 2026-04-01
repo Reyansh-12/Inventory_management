@@ -40,7 +40,7 @@ if (isset($_POST['submit'])) {
             ];
             $encodedUser = urlencode(json_encode($userData));
 
-            header("Location: http://localhost:5173/?auth_user=" . $encodedUser);
+            header("Location: http://localhost:5173/home?auth_user=" . $encodedUser);
             exit();
         }
     } else {

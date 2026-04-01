@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { FaMapMarkerAlt, FaPlus, FaCheckCircle, FaChevronLeft } from "react-icons/fa";
+import { FaMapMarkerAlt, FaPlus, FaCheckCircle, FaChevronLeft, FaTrash } from "react-icons/fa";
 import "../../assets/styles/plugins/checkout.css";
 
 const Checkout = () => {
@@ -10,17 +10,22 @@ const Checkout = () => {
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(0);
 
-  const [addresses, setAddresses] = useState([
-    {
-      id: 1,
-      name: "Reyansh Raut",
-      phone: "9370822659",
-      address: "56, Santoshi Mata Mandir, Sai Baba Nagar, Kharbi Road",
-      city: "Nagpur",
-      pincode: "440034",
-      type: "Home"
-    }
-  ]);
+  // PERMANENT STORAGE LOGIC: Load addresses from localStorage or use default
+  const [addresses, setAddresses] = useState(() => {
+    const saved = localStorage.getItem("userAddresses");
+    return saved ? JSON.parse(saved) : [
+      {
+        id: 1,
+        name: "Reyansh Raut",
+        phone: "9370822659",
+        address: "56, Santoshi Mata Mandir, Sai Baba Nagar, Kharbi Road",
+        city: "Nagpur",
+        pincode: "440034",
+        nearby: "Santoshi Mata Mandir",
+        type: "Home"
+      }
+    ];
+  });
 
   const [formData, setFormData] = useState({
     name: "", phone: "", address: "", nearby: "", city: "", pincode: ""
@@ -42,7 +47,6 @@ const Checkout = () => {
     } else {
       navigate("/shop");
     }
-
   }, [navigate]);
 
   const subtotal = items.reduce((acc, item) => acc + item.price * (item.qty || 1), 0);
@@ -70,35 +74,40 @@ const Checkout = () => {
 
     const phoneRegex = /^[6-9]\d{9}$/;
     if (!phoneRegex.test(formData.phone)) {
-      toast.error("Enter a valid 10-digit Indian phone number starting with 6-9.");
+      toast.error("Enter a valid 10-digit phone number.");
       return;
     }
 
     if (formData.pincode.length !== 6) {
-      toast.error("Pincode must be exactly 6 digits.");
+      toast.error("Pincode must be 6 digits.");
       return;
     }
 
     const newAddr = { 
       id: Date.now(), 
-      name: formData.name,
-      phone: formData.phone,
-      address: formData.address,
-      nearby: formData.nearby,
-      city: formData.city,
-      pincode: formData.pincode,
+      ...formData,
       type: "Office" 
     };
 
-    setAddresses((prev) => {
-        const newList = [...prev, newAddr];
-        setSelectedAddress(newList.length - 1); 
-        return newList;
-    });
+    const updatedList = [...addresses, newAddr];
+    
+    // SAVE PERMANENTLY
+    setAddresses(updatedList);
+    localStorage.setItem("userAddresses", JSON.stringify(updatedList));
 
+    setSelectedAddress(updatedList.length - 1); 
     setShowAddressForm(false);
     setFormData({ name: "", phone: "", address: "", nearby: "", city: "", pincode: "" }); 
-    toast.success("New address added!");
+    toast.success("Address saved permanently!");
+  };
+
+  const deleteAddress = (e, id) => {
+    e.stopPropagation(); // Prevents selecting the address while deleting
+    const filtered = addresses.filter(addr => addr.id !== id);
+    setAddresses(filtered);
+    localStorage.setItem("userAddresses", JSON.stringify(filtered));
+    if (selectedAddress >= filtered.length) setSelectedAddress(0);
+    toast.info("Address removed");
   };
 
   return (
@@ -108,11 +117,11 @@ const Checkout = () => {
           <button onClick={() => {
             localStorage.removeItem("buyNowItem"); 
             navigate(-1);
-          }} className="btn btn-link border-0 text-dark text-decoration-none p-0" style={{letterSpacing: 'initial'}}>
+          }} className="btn btn-link border-0 text-dark text-decoration-none p-0">
             <FaChevronLeft /> Back to Cart
           </button>
           <h3 className="fw-bold m-0">Secure Checkout</h3>
-          <div></div>
+          <div style={{ width: "100px" }}></div>
         </div>
 
         <div className="row g-4">
@@ -121,7 +130,7 @@ const Checkout = () => {
               <div className="d-flex justify-content-between align-items-center mb-4">
                 <h5 className="fw-bold m-0"><FaMapMarkerAlt className="me-2 text-danger" /> Shipping Address</h5>
                 {!showAddressForm && (
-                  <button className="btn btn-sm rounded-pill px-3" onClick={() => setShowAddressForm(true)} style={{ borderColor: 'rgb(232, 90, 138)', color: 'rgb(232, 90, 138)', letterSpacing: 'initial' }}>
+                  <button className="btn btn-sm rounded-pill px-3 border-primary text-primary" onClick={() => setShowAddressForm(true)}>
                     <FaPlus className="me-1 small" /> Add New
                   </button>
                 )}
@@ -129,92 +138,36 @@ const Checkout = () => {
 
               {showAddressForm ? (
                 <form onSubmit={handleAddNewAddress} className="row g-3">
-                  <div className="col-md-6 mt-3">
-                    <input 
-                      type="text" 
-                      name="name" 
-                      placeholder="Full Name" 
-                      className="form-control p-3 rounded-3" 
-                      value={formData.name}
-                      onChange={handleInputChange} 
-                      required 
-                    />
-                  </div>
-                  <div className="col-md-6 mt-3">
-                    <input 
-                      type="text" 
-                      name="phone" 
-                      placeholder="Phone Number" 
-                      className="form-control p-3 rounded-3" 
-                      value={formData.phone}
-                      onChange={handleInputChange} 
-                      required 
-                    />
-                  </div>
-                  <div className="col-12 mt-3">
-                    <input 
-                      type="text" 
-                      name="address"
-                      placeholder="Address (House No, Building, Street)" 
-                      className="form-control p-3 rounded-3" 
-                      value={formData.address}
-                      onChange={(e) => setFormData({ ...formData, address: e.target.value })} 
-                      required 
-                    />
-                  </div>
-                  <div className="col-md-6 mt-3">
-                    <input 
-                      type="text" 
-                      name="city" 
-                      placeholder="City" 
-                      className="form-control p-3 rounded-3" 
-                      value={formData.city}
-                      onChange={handleInputChange} 
-                      required 
-                    />
-                  </div>
-                  <div className="col-md-6 mt-3">
-                    <input 
-                      type="text" 
-                      name="pincode" 
-                      placeholder="Pincode" 
-                      className="form-control p-3 rounded-3" 
-                      value={formData.pincode}
-                      onChange={handleInputChange} 
-                      required 
-                    />
-                  </div>
-                  <div className="col-12 mt-3">
-                    <input 
-                      type="text" 
-                      name="nearby"
-                      placeholder="Nearby Famous Place/Shop/School,etc.(Optional)" 
-                      className="form-control p-3 rounded-3" 
-                      value={formData.nearby}
-                      onChange={(e) => setFormData({ ...formData, nearby: e.target.value })} 
-                      required 
-                    />
-                  </div>
+                  <div className="col-md-6"><input type="text" name="name" placeholder="Full Name" className="form-control p-3 rounded-3" value={formData.name} onChange={handleInputChange} required /></div>
+                  <div className="col-md-6"><input type="text" name="phone" placeholder="Phone Number" className="form-control p-3 rounded-3" value={formData.phone} onChange={handleInputChange} required /></div>
+                  <div className="col-12"><input type="text" name="address" placeholder="House No, Street, Area" className="form-control p-3 rounded-3" value={formData.address} onChange={handleInputChange} required /></div>
+                  <div className="col-md-6"><input type="text" name="city" placeholder="City" className="form-control p-3 rounded-3" value={formData.city} onChange={handleInputChange} required /></div>
+                  <div className="col-md-6"><input type="text" name="pincode" placeholder="Pincode" className="form-control p-3 rounded-3" value={formData.pincode} onChange={handleInputChange} required /></div>
+                  <div className="col-12"><input type="text" name="nearby" placeholder="Nearby Landmark (Optional)" className="form-control p-3 rounded-3" value={formData.nearby} onChange={handleInputChange} /></div>
                   <div className="col-12">
-                    <button type="submit" className="btn btn-dark px-4 mt-3 rounded-pill me-2" style={{letterSpacing:'initial'}}>Save Address</button>
-                    <button type="button" className="btn btn-light px-4 mt-3 rounded-pill" onClick={() => setShowAddressForm(false)} style={{letterSpacing:'initial'}}>Cancel</button>
+                    <button type="submit" className="btn btn-dark px-4 mt-2 rounded-pill me-2">Save Permanently</button>
+                    <button type="button" className="btn btn-light px-4 mt-2 rounded-pill" onClick={() => setShowAddressForm(false)}>Cancel</button>
                   </div>
                 </form>
               ) : (
-                <div className="row g-3" style={{marginTop: '20px', marginBottom: '10px'}}>
+                <div className="row g-3 mt-2">
                   {addresses.map((addr, index) => (
                     <div className="col-md-6" key={addr.id}>
                       <div
                         onClick={() => setSelectedAddress(index)}
-                        className={`p-3 rounded-4 border-2 position-relative cursor-pointer transition-all ${selectedAddress === index ? " bg-white shadow-sm" : "border-light bg-light"}`}
-                        style={{ borderStyle: "solid", transition: "0.3s", borderColor: selectedAddress === index ? 'rgb(232, 90, 138)' : '#eee' }}
+                        className={`p-3 rounded-4 border-2 position-relative cursor-pointer transition-all ${selectedAddress === index ? "border-primary bg-white shadow-sm" : "border-light bg-light"}`}
+                        style={{ borderStyle: "solid", transition: "0.3s" }}
                       >
-                        {selectedAddress === index && <FaCheckCircle className="position-absolute top-0 end-0 m-3" style={{ color: 'rgb(232, 90, 138)' }} />}
-                        {/* <span className="badge bg-secondary mb-2 px-3">{addr.type}</span> */}
+                        {selectedAddress === index && <FaCheckCircle className="position-absolute top-0 end-0 m-3 text-primary" />}
                         <h6 className="fw-bold mb-1">{addr.name}</h6>
                         <p className="small text-muted mb-1">{addr.address}, {addr.city} - {addr.pincode}</p>
-                        <p className="small text-muted mb-1"><strong>Nearby :- </strong>{addr.nearby}</p>
-                        <p className="small fw-bold m-0">{addr.phone}</p>
+                        <p className="small text-muted mb-2"><strong>Nearby:</strong> {addr.nearby || "N/A"}</p>
+                        <div className="d-flex justify-content-between align-items-center">
+                            <span className="small fw-bold">{addr.phone}</span>
+                            {addresses.length > 1 && (
+                                <FaTrash className="text-danger small" onClick={(e) => deleteAddress(e, addr.id)} />
+                            )}
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -223,14 +176,14 @@ const Checkout = () => {
             </div>
           </div>
 
+          {/* Order Summary Section */}
           <div className="col-lg-4">
-            <div className="card border-0 shadow-sm rounded-4 p-4 sticky-top" style={{ top: "120px" }}>
+            <div className="card border-0 shadow-sm rounded-4 p-4 sticky-top" style={{ top: "100px" }}>
               <h5 className="fw-bold mb-4">Order Summary</h5>
-
               <div className="mb-4 overflow-auto" style={{ maxHeight: "250px" }}>
                 {items.map((item) => (
                   <div className="d-flex align-items-center mb-3" key={item.id}>
-                    <img src={item.image} className="rounded-3" width="55" height="55" style={{ objectFit: "cover" }} alt={item.name} />
+                    <img src={item.image} className="rounded-3" width="50" height="50" style={{ objectFit: "cover" }} alt={item.name} />
                     <div className="ms-3 flex-grow-1">
                       <p className="small fw-bold mb-0">{item.name}</p>
                       <small className="text-muted">Qty: {item.qty || 1} × ₹{item.price}</small>
@@ -239,32 +192,22 @@ const Checkout = () => {
                   </div>
                 ))}
               </div>
-
               <div className="border-top pt-3">
-                <div className="d-flex justify-content-between mb-2">
-                  <span className="text-muted">Subtotal</span>
-                  <span className="fw-bold">₹{subtotal}</span>
-                </div>
-                <div className="d-flex justify-content-between mb-2">
-                  <span className="text-muted">Shipping</span>
-                  <span className="text-success fw-bold">FREE</span>
-                </div>
-                <hr className="my-3" />
+                <div className="d-flex justify-content-between mb-2"><span>Subtotal</span><span className="fw-bold">₹{subtotal}</span></div>
+                <div className="d-flex justify-content-between mb-2"><span>Shipping</span><span className="text-success fw-bold">FREE</span></div>
+                <hr />
                 <div className="d-flex justify-content-between align-items-center mb-4">
-                  <h5 className="fw-bold m-0">Total Amount</h5>
-                  <h4 className="fw-bold m-0" style={{ color: 'rgb(232, 90, 138)' }}>₹{total}</h4>
+                  <h5 className="fw-bold m-0">Total</h5>
+                  <h4 className="fw-bold m-0 text-primary">₹{total}</h4>
                 </div>
-
                 <button
                   onClick={() => {
-                    const selectedAddr = addresses[selectedAddress];
-                    localStorage.setItem("shippingAddress", JSON.stringify(selectedAddr));
+                    localStorage.setItem("shippingAddress", JSON.stringify(addresses[selectedAddress]));
                     navigate('/payment');
                   }}
-                  className="btn w-100 text-white rounded-pill fw-bold shadow-lg"
-                  style={{ background: 'rgb(232, 90, 138)', letterSpacing: 'initial' }}
+                  className="btn btn-primary w-100 py-3 rounded-pill fw-bold shadow"
                 >
-                  CONFIRM ORDER
+                  CONTINUE TO PAYMENT
                 </button>
               </div>
             </div>

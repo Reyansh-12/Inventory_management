@@ -118,3 +118,16 @@
     aspect-ratio: 4 / 3; 
   }
 }
+.tab-indicator {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  /* left: 0; ko remove kar sakte hain kyunki GSAP x (transform) use karega */
+  background: #1a1a1a; 
+  border-radius: 100px; 
+  z-index: 1; 
+  pointer-events: none;
+  /* transition property ko remove karein agar aap GSAP use kar rahe hain 
+     taaki dono ek saath fight na karein */
+  transition: none !important; 
+}

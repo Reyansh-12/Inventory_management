@@ -95,7 +95,17 @@ const HeroSlider = () => {
       });
     }
   };
-
+useEffect(() => {
+  if (products.length > 0 || activeCategory === "All") {
+    const initialTab = categoryRefs.current[0];
+    if (initialTab && underlineRef.current) {
+      gsap.set(underlineRef.current, {
+        x: initialTab.offsetLeft,
+        width: initialTab.offsetWidth,
+      });
+    }
+  }
+}, [products]); 
   return (
     <div ref={heroRef} className="main-wrapper-advance">
 
