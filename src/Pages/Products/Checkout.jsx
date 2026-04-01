@@ -84,6 +84,7 @@ const Checkout = () => {
       name: formData.name,
       phone: formData.phone,
       address: formData.address,
+      nearby: formData.nearby,
       city: formData.city,
       pincode: formData.pincode,
       type: "Office" 
@@ -96,7 +97,7 @@ const Checkout = () => {
     });
 
     setShowAddressForm(false);
-    setFormData({ name: "", phone: "", address: "", city: "", pincode: "" }); 
+    setFormData({ name: "", phone: "", address: "", nearby: "", city: "", pincode: "" }); 
     toast.success("New address added!");
   };
 
@@ -180,6 +181,17 @@ const Checkout = () => {
                       className="form-control p-3 rounded-3" 
                       value={formData.pincode}
                       onChange={handleInputChange} 
+                      required 
+                    />
+                  </div>
+                  <div className="col-12 mt-3">
+                    <input 
+                      type="text" 
+                      name="nearby"
+                      placeholder="Nearby Famous Place/Shop/School,etc.(Optional)" 
+                      className="form-control p-3 rounded-3" 
+                      value={formData.nearby}
+                      onChange={(e) => setFormData({ ...formData, nearby: e.target.value })} 
                       required 
                     />
                   </div>
