@@ -23,7 +23,7 @@ const Checkout = () => {
   ]);
 
   const [formData, setFormData] = useState({
-    name: "", phone: "", address: "", city: "", pincode: ""
+    name: "", phone: "", address: "", nearby: "", city: "", pincode: ""
   });
 
   useEffect(() => {
@@ -212,7 +212,8 @@ const Checkout = () => {
                         {selectedAddress === index && <FaCheckCircle className="position-absolute top-0 end-0 m-3" style={{ color: 'rgb(232, 90, 138)' }} />}
                         {/* <span className="badge bg-secondary mb-2 px-3">{addr.type}</span> */}
                         <h6 className="fw-bold mb-1">{addr.name}</h6>
-                        <p className="small text-muted mb-2">{addr.address}, {addr.city} - {addr.pincode}</p>
+                        <p className="small text-muted mb-1">{addr.address}, {addr.city} - {addr.pincode}</p>
+                        <p className="small text-muted mb-1"><strong>Nearby :- </strong>{addr.nearby}</p>
                         <p className="small fw-bold m-0">{addr.phone}</p>
                       </div>
                     </div>
