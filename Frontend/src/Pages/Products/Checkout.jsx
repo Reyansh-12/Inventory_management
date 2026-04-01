@@ -79,15 +79,29 @@ const Checkout = () => {
       return;
     }
 
-    const newAddr = { ...formData, id: Date.now(), type: "Office" };
-    setAddresses([...addresses, newAddr]);
+    const newAddr = { 
+      id: Date.now(), 
+      name: formData.name,
+      phone: formData.phone,
+      address: formData.address,
+      city: formData.city,
+      pincode: formData.pincode,
+      type: "Office" 
+    };
+
+    setAddresses((prev) => {
+        const newList = [...prev, newAddr];
+        setSelectedAddress(newList.length - 1); 
+        return newList;
+    });
+
     setShowAddressForm(false);
     setFormData({ name: "", phone: "", address: "", city: "", pincode: "" }); 
     toast.success("New address added!");
   };
 
   return (
-    <div style={{ background: "#f4f7f6", minHeight: "100vh", paddingTop: "110px", paddingBottom: "50px" }}>
+    <div style={{ background: "#f4f7f6", minHeight: "100vh", paddingTop: "50px", paddingBottom: "50px" }}>
       <div className="container">
         <div className="d-flex justify-content-between align-items-center mb-4">
           <button onClick={() => {
@@ -175,7 +189,7 @@ const Checkout = () => {
                   </div>
                 </form>
               ) : (
-                <div className="row g-3">
+                <div className="row g-3" style={{marginTop: '20px', marginBottom: '10px'}}>
                   {addresses.map((addr, index) => (
                     <div className="col-md-6" key={addr.id}>
                       <div
@@ -184,7 +198,7 @@ const Checkout = () => {
                         style={{ borderStyle: "solid", transition: "0.3s", borderColor: selectedAddress === index ? 'rgb(232, 90, 138)' : '#eee' }}
                       >
                         {selectedAddress === index && <FaCheckCircle className="position-absolute top-0 end-0 m-3" style={{ color: 'rgb(232, 90, 138)' }} />}
-                        <span className="badge bg-secondary mb-2 px-3">{addr.type}</span>
+                        {/* <span className="badge bg-secondary mb-2 px-3">{addr.type}</span> */}
                         <h6 className="fw-bold mb-1">{addr.name}</h6>
                         <p className="small text-muted mb-2">{addr.address}, {addr.city} - {addr.pincode}</p>
                         <p className="small fw-bold m-0">{addr.phone}</p>
@@ -234,7 +248,7 @@ const Checkout = () => {
                     localStorage.setItem("shippingAddress", JSON.stringify(selectedAddr));
                     navigate('/payment');
                   }}
-                  className="btn w-100 text-white rounded-pill fw-bold py-2 shadow-lg"
+                  className="btn w-100 text-white rounded-pill fw-bold shadow-lg"
                   style={{ background: 'rgb(232, 90, 138)', letterSpacing: 'initial' }}
                 >
                   CONFIRM ORDER

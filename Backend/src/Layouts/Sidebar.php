@@ -16,9 +16,8 @@
         integrity="sha512-t7Few9xlddEmgd3oKZQahkNI4dS6l80+eGEzFQiqtyVYdvcSG2D3Iub77R20BdotfRPA9caaRkg1tyaJiPmO0g=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
         <style>
-            /* --- Professional Sidebar Overhaul --- */
 #sidebar {
-    background: #1a1d21; /* Deep charcoal/navy background */
+    background: #1a1d21;
     box-shadow: 4px 0 10px rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
 }
@@ -32,7 +31,7 @@
 }
 
 .sidebar-menu ul li a {
-    color: #a0aec0 !important; /* Muted grey for inactive items */
+    color: #a0aec0 !important;
     display: flex;
     align-items: center;
     padding: 12px 15px;
@@ -43,11 +42,9 @@
     text-decoration: none !important;
 }
 
-/* Hover Effect */
 .sidebar-menu ul li a:hover {
     background: rgba(103, 146, 255, 0.08);
-    color: #6792ff !important; /* Primary Brand Blue */
-}
+    color: #6792ff !important; 
 
 .sidebar-menu ul li a i {
     font-size: 1.1rem;
@@ -59,7 +56,6 @@
     transform: scale(1.1);
 }
 
-/* Active State Styling */
 .sidebar-menu ul li.active a {
     background: #6792ff !important;
     color: #ffffff !important;
@@ -70,7 +66,6 @@
     color: #ffffff !important;
 }
 
-/* Slimscroll Polish */
 .slimscroll {
     scrollbar-width: thin;
     scrollbar-color: #2d3748 transparent;

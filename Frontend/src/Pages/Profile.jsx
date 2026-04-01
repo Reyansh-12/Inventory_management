@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaCamera, FaChevronLeft, FaUser, FaEnvelope, FaPhone, FaShieldAlt } from "react-icons/fa";
+import { FaCamera, FaChevronLeft, FaUser, FaEnvelope, FaPhoneAlt, FaShieldAlt } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -97,7 +97,7 @@ const Profile = () => {
                     <div><small className="text-muted d-block">Email Address</small><strong>{user.user_email}</strong></div>
                   </div>
                   <div className="list-group-item border-0 d-flex align-items-center px-0 py-3">
-                    <div className="p-2 bg-light rounded-3 me-3"><FaPhone className="text-muted" /></div>
+                    <div className="p-2 bg-light rounded-3 me-3"><FaPhoneAlt className="text-muted" /></div>
                     <div><small className="text-muted d-block">Phone</small><strong>{user.user_contact || "Not provided"}</strong></div>
                   </div>
                 </div>
@@ -161,7 +161,7 @@ const Profile = () => {
                           onChange={(e) => setUser({...user, user_contact: e.target.value})}
                           
                         />
-                        <label htmlFor="phoneInput" className="text-muted"><FaPhone className="me-2" />Phone Number</label>
+                        <label htmlFor="phoneInput" className="text-muted"><FaPhoneAlt className="me-2" />Phone Number</label>
                       </div>
                     </div>
                   </div>

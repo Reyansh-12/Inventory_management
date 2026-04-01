@@ -284,7 +284,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             data-parsley-errors-container="#brandError">
                                             <?php
                                             if (!empty($editData['brands'])) {
-                                                // Database se comma separated brands ko array mein badalna
                                                 $brands = explode(',', $editData['brands']);
                                                 foreach ($brands as $brand) {
                                                     $brand = trim($brand);
@@ -350,6 +349,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
     <script>
 const imageInput = document.getElementById('uploadImage');
 const imageError = document.getElementById('imageError');
@@ -359,12 +361,10 @@ const previewImg = document.getElementById('previewImg');
 imageInput.addEventListener('change', function () {
     const file = this.files[0];
 
-    // Clear previous error
     imageError.innerHTML = '';
 
     if (!file) return;
 
-    // ✅ Allowed file types
     const allowedTypes = [
         'image/jpeg',
         'image/jpg',
@@ -373,32 +373,27 @@ imageInput.addEventListener('change', function () {
         'image/svg+xml'
     ];
 
-    // ✅ Size limits
-    const minSize = 100 * 1024;       // 100 KB
-    const maxSize = 5 * 1024 * 1024;  // 5 MB
+    const minSize = 100 * 1024;       
+    const maxSize = 5 * 1024 * 1024;  
 
-    // ❌ Type validation
     if (!allowedTypes.includes(file.type)) {
         showImageError('Only JPG, JPEG, PNG, WEBP, SVG files are allowed');
         resetImage();
         return;
     }
 
-    // ❌ Minimum size validation
     if (file.size < minSize) {
         showImageError('Image size must be at least 100 KB');
         resetImage();
         return;
     }
 
-    // ❌ Maximum size validation
     if (file.size > maxSize) {
         showImageError('Image size must not exceed 5 MB');
         resetImage();
         return;
     }
 
-    // ✅ Valid image
     fileNameEl.innerText = file.name;
 
     const reader = new FileReader();
@@ -423,13 +418,12 @@ function resetImage() {
     <script>
         $(document).ready(function () {
             $('.select2-tags').select2({
-                tags: true, // Naye tags allow karne ke liye
-                tokenSeparators: [',', ' '], // Comma ya Space dabane par tag ban jaye
+                tags: true, 
+                tokenSeparators: [',', ' '], 
                 placeholder: "Select or type brands"
             });
         });
 
-        // Aapka purana Image preview script yahan rahega...
     </script>
 
 </body>

@@ -33,16 +33,13 @@ function App() {
   
     if (authUserString) {
       try {
-        // Step 1: URL se data decode karein aur JSON mein convert karein
         const decodedData = decodeURIComponent(authUserString);
         const userData = JSON.parse(decodedData);
         
-        // Step 2: Stringify karke local storage mein save karein
         localStorage.setItem("user", JSON.stringify(userData));
   
         window.history.replaceState(null, "", window.location.pathname);
         navigate("/", { replace: true });
-        // Reload is optionally used to refresh Navbar/Context
         window.location.reload(); 
       } catch (error) {
         console.error("User Data Parse Error:", error);
@@ -55,7 +52,7 @@ function App() {
       {shouldShowNavbar && <Navbar />}
       
       <Routes>
-        <Route path='/' element={<HomePage />} />
+        <Route path='/home' element={<HomePage />} />
         <Route path='/about' element={<AboutUs />} />
         <Route path='/contact' element={<Contact />} />
         <Route path='/shop' element={<ProductFourColumns />} />

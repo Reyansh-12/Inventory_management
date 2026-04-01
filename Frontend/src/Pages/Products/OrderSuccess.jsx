@@ -88,7 +88,7 @@ const OrderSuccess = () => {
 
       <div className="row g-3">
         <div className="col-md-6">
-          <button className="btn btn-dark w-100 rounded-pill fw-bold" onClick={() => navigate("/")} style={{letterSpacing: 'initial'}}>
+          <button className="btn btn-dark w-100 rounded-pill fw-bold" onClick={() => navigate("/home")} style={{letterSpacing: 'initial'}}>
              CONTINUE SHOPPING <FaArrowRight className="ms-2" />
           </button>
         </div>

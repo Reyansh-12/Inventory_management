@@ -3,11 +3,9 @@ define("BASE_PATH", dirname(__DIR__, 3));
 include BASE_PATH . "/src/Layouts/Links.php";
 include BASE_PATH . "/src/controllers/dbConnection.php";
 
-// Fetching orders
 $order_list_query = "SELECT `id`, `order_id`, `customer`, `product`, `category`, `brand`, `quantity`, `status`, `total_amount`, `price`, `image_path`, `created`, `seen` FROM `order_list` ORDER BY `id` DESC";
 $resut = mysqli_query($con, $order_list_query);
 
-// Mark as seen logic
 mysqli_query($con, "UPDATE order_list SET seen = 1 WHERE seen = 0");
 ?>
 
@@ -22,7 +20,6 @@ mysqli_query($con, "UPDATE order_list SET seen = 1 WHERE seen = 0");
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <link rel="stylesheet" href="/Backend/src/assets/css/history.css">
     <style>
-        /* Aapki original CSS */
         .order-card { transition: all 0.3s ease; background: #fff; border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03); }
         .order-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08); }
         .unseen-card { background-color: #f8f9ff; border-left: 4px solid #0d6efd; }
@@ -46,7 +43,6 @@ mysqli_query($con, "UPDATE order_list SET seen = 1 WHERE seen = 0");
         .filter-label { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; display: block; }
         .form-select-custom { appearance: none; background: var(--bg-light); border: 1px solid var(--border-color) !important; border-radius: 8px !important; padding: 10px 35px 10px 15px !important; font-size: 0.9rem !important; font-weight: 600; color: #4a5568; width: 100%; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236792ff' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; background-size: 12px; }
         
-        /* Multiple product ke liye extra style */
         .more-badge { background: #eef2ff; color: #6366f1; padding: 2px 8px; border-radius: 4px; font-size: 11px; margin-left: 8px; border: 1px solid #e0e7ff; }
     </style>
 </head>
@@ -88,8 +84,6 @@ mysqli_query($con, "UPDATE order_list SET seen = 1 WHERE seen = 0");
                     while ($row = mysqli_fetch_assoc($resut)) {
                         $paymentMode = strtolower($row['status']);
                         $paymentClass = ($paymentMode == 'online') ? 'payment-online' : 'payment-cash';
-                        
-                        // MULTIPLE PRODUCTS LOGIC
                         $names  = explode(", ", $row['product']);
                         $imgs   = explode(", ", $row['image_path']);
                         $is_multiple = count($names) > 1;
@@ -142,9 +136,7 @@ mysqli_query($con, "UPDATE order_list SET seen = 1 WHERE seen = 0");
             </div>
         </div>
     </div>
-
     <script>
-        // Filters Logic
         const paymentFilter = document.getElementById('paymentFilter');
         paymentFilter.addEventListener('change', function() {
             const val = this.value.toLowerCase();

@@ -98,6 +98,7 @@ const HeroSlider = () => {
 
   return (
     <div ref={heroRef} className="main-wrapper-advance">
+
       <div className="position-relative heroSection overflow-hidden">
         <div className="container position-absolute hero-content-overlay" style={{ zIndex: 10 }}>
           <div className="overflow-hidden">

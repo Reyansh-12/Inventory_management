@@ -138,7 +138,7 @@ export const AboutUs = () => {
                     <div className="icon-wrap mb-4">
                       <img src={feat.img} width="60" alt="Icon" />
                     </div>
-                    <h5 className="fw-bold">{feat.title}</h5>
+                    <h5 className="fw-bold text-white">{feat.title}</h5>
                     <p className="opacity-50">{feat.desc}</p>
                   </div>
                 </div>

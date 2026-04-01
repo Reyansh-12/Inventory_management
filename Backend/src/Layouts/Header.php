@@ -16,7 +16,6 @@ $notificationCount = mysqli_fetch_assoc($notificationCountQuery)['total'];
 
 ?>
 <?php
-// Time ago function for professional look
 function time_ago($timestamp)
 {
     $time_ago = strtotime($timestamp);
@@ -37,9 +36,7 @@ function time_ago($timestamp)
         return date('M d', $time_ago);
 }
 
-// Fetch only UNSEEN count for the badge, but show last 5 for the list
 $notiBadgeQuery = mysqli_query($con, "SELECT COUNT(*) as total FROM order_list WHERE seen = 0");
-// $notificationCount = mysqli_fetch_assoc($notiBadgeQuery)['total'];
 
 $lastOrders = mysqli_query($con, "SELECT * FROM order_list ORDER BY id DESC LIMIT 5");
 ?>
@@ -59,7 +56,6 @@ $lastOrders = mysqli_query($con, "SELECT * FROM order_list ORDER BY id DESC LIMI
     <style>
         .notification-message.unseen {
             background-color: #f4f7ff;
-            /* Light blue tint for new orders */
             border-left: 3px solid #6792ff;
         }
 
@@ -102,8 +98,8 @@ $lastOrders = mysqli_query($con, "SELECT * FROM order_list ORDER BY id DESC LIMI
     <div class="header">
         <div class="header-left active">
             <a href="/Backend/src/Pages/Dashboard.php" class="logo">
-                <img src="/Backend/src/assets/images/brand/logo.webp" class="ms-5" alt=""
-                    style="height: 35px; width: 60px;">
+                <img src="/Backend/src/assets/images/logo-removebg-preview.png" class="ms-5" alt=""
+                    style="height: 50px; width: 150px;">
             </a>
             <a href="index.html" class="logo-small">
                 <img src="/Backend/src/assets/images/logo-small.png" alt="">

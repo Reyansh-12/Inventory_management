@@ -133,7 +133,6 @@ export const Contact = () => {
 
   return (
     <div ref={contactRef}>
-      <Navbar />
       <main className="contact-wrapper">
         <div className="contact-banner-area position-relative">
           <img src={bannerImage} alt="Banner" style={{opacity: '70%'}} className="w-100 banner-img" />

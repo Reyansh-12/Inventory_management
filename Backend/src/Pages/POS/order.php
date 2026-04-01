@@ -38,20 +38,16 @@ if (!empty($_SESSION['selected_customer_id'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $order_id = 'ORD-' . strtoupper(uniqid());
     $customer = mysqli_real_escape_string($con, $_POST['customer']);
-    $status = mysqli_real_escape_string($con, $_POST['status']); // Payment Mode
+    $status = mysqli_real_escape_string($con, $_POST['status']); 
     $total = (float) $_POST['total_amount'];
 
-    // Optional fields (UTR, Card details)
     $utr = $_POST['utr'] ?? '';
     $card_name = $_POST['card_name'] ?? '';
 
-    // Cart Items Loop (Example: storing multiple items as a string or in a sub-table)
-    // Yahan hum man kar chal rahe hain ki aap single entry kar rahe hain summary ke liye
     $sql = "INSERT INTO order_list (order_id, customer, status, total_amount, created, seen) 
             VALUES ('$order_id', '$customer', '$status', '$total', NOW(), 0)";
 
     if (mysqli_query($con, $sql)) {
-        // Order success hone par session clear karein
         unset($_SESSION['order_cart']);
         echo json_encode(['success' => true, 'order_id' => $order_id]);
     } else {
@@ -156,7 +152,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             overflow: hidden;
         }
 
-        /* --- Professional Invoice & Checkout Overhaul --- */
         :root {
             --primary-blue: #6792ff;
             --border-color: #e2e8f0;
@@ -169,7 +164,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border-radius: 12px !important;
         }
 
-        /* Invoice Header Styling */
         .invoice-branding h1 {
             font-weight: 800;
             letter-spacing: -1px;
@@ -191,7 +185,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-size: 1rem;
         }
 
-        /* Table Polish */
         .table thead th {
             background-color: #f8f9fa;
             text-transform: uppercase;
@@ -206,7 +199,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             padding: 12px 15px !important;
         }
 
-        /* Payment Options Styling */
         .btn-check:checked+.payment-card {
             border: 2px solid var(--primary-blue) !important;
             background-color: rgba(103, 146, 255, 0.05);
@@ -230,7 +222,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             transform: scale(1.1);
         }
 
-        /* Sticky Grand Total Bar */
         .grand-total-section {
             background: #1a1d21;
             color: white;
@@ -247,7 +238,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: #fff;
         }
 
-        /* --- Dynamic Payment Fields Polish --- */
         .payment-details-box {
             background: rgba(103, 146, 255, 0.05);
             border-radius: 8px;
@@ -255,10 +245,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin-top: 15px;
             border: 1px solid rgba(103, 146, 255, 0.1);
             display: none;
-            /* Hidden by default */
         }
 
-        /* Show box only when parent radio is checked */
         #qrRadio:checked~.payment-card .payment-details-box,
         #cardRadio:checked~.payment-card .payment-details-box {
             display: block;
@@ -285,26 +273,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: var(--primary-blue) !important;
         }
 
-        /* --- Table Layout & Overflow Fix --- */
         .table-responsive {
             max-width: 800px;
-            /* Table ki total width fix kar di */
             margin: 0 auto;
-            /* Table ko center mein align kiya */
             overflow-x: hidden !important;
-            /* Horizontal scroll remove kiya */
             border: 1px solid #edf2f9;
             border-radius: 8px;
         }
 
         .table {
             table-layout: fixed;
-            /* Columns ki width fix karne ke liye */
             width: 100% !important;
             margin-bottom: 0 !important;
         }
 
-        /* Specific Column Widths (In pixels) */
         .col-id {
             width: 40px;
         }
@@ -313,7 +295,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             width: 320px;
         }
 
-        /* Description ko space di */
         .col-rate {
             width: 100px;
         }
@@ -326,7 +307,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             width: 120px;
         }
 
-        /* Product Name Truncation with Tooltip support */
         .product-name-cell {
             display: block;
             width: 100%;
@@ -342,7 +322,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             vertical-align: middle !important;
         }
 
-        /* --- Professional Pagination Styling --- */
         .dataTables_wrapper .dataTables_paginate {
             margin-top: 20px;
             padding-top: 15px;
@@ -375,7 +354,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background: #f8fafc !important;
         }
 
-        /* Table Footer Symmetry */
         .table-footer {
             display: flex;
             justify-content: space-between;
@@ -411,7 +389,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div class="card p-4">
                     <div class="invoice-branding text-center mb-5 border-bottom pb-4">
-                        <h1>BRANCY</h1>
+                        <h1>COSMELINA</h1>
                         <p class="text-muted small mb-0">Plot no 66, Kharabi, Nagpur, Maharashtra</p>
                         <p class="text-muted small">GSTIN: 27AAAAA0000A1Z5</p>
                     </div>
@@ -610,7 +588,7 @@ $.ajax({
     },
     success: function (res) {
 
-        console.log(res); // 🔥 VERY IMPORTANT
+        console.log(res);
 
         if (res.success) {
             Swal.fire("Success", "Order " + res.order_id + " saved", "success")
