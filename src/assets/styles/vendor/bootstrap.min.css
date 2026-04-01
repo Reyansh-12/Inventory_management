@@ -5782,7 +5782,7 @@ fieldset:disabled .btn {
     text-align: center;
     white-space: nowrap;
     vertical-align: baseline;
-    border-radius: .25rem
+    border-radius: .25rem;
 }
 
 .badge:empty {

@@ -106,7 +106,7 @@ const ProductItem = ({ product }) => {
         ref={cardRef}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
-        className="product-card mb-3 p-0 overflow-hidden shadow-sm m-3 border border-light position-relative bg-white rounded-4"
+        className="product-card mb-3 p-0 overflow-hidden shadow-sm m-3 col-sm-12 border border-light position-relative bg-white rounded-4"
         style={{ cursor: 'pointer', transition: 'box-shadow 0.3s ease' }}
       >
         

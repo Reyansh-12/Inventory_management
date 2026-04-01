@@ -164,7 +164,7 @@ export const Navbar = () => {
           </div>
           <div className="col-lg-4 d-none d-lg-block">
             <ul className="main-nav d-flex list-unstyled m-0">
-              <li className="me-4"><NavLink to="/" className="nav-link text-black fw-bold">Home</NavLink></li>
+              <li className="me-4"><NavLink to="/home" className="nav-link text-black fw-bold">Home</NavLink></li>
               <li className="me-4"><NavLink to="/shop" className="nav-link text-black fw-bold">Shop</NavLink></li>
               <li className="me-4"><NavLink to="/about" className="nav-link text-black fw-bold">About</NavLink></li>
               <li><NavLink to="/contact" className="nav-link text-black fw-bold">Contact</NavLink></li>
@@ -258,6 +258,11 @@ export const Navbar = () => {
                 <div className="ms-3 flex-grow-1 col-lg-5">
                   <h6 className="mb-1 small fw-bold cursor-pointer">{item.name}</h6>
                   <p className="mb-2 small text-muted fw-bold">₹{item.price}</p>
+                  <div className="quantity-controls align-items-center rounded-5 p-0 gap-2">
+                    <button className="qty-btn" onClick={() => updateQuantity(item.id, "dec")}><FaMinus /></button>
+                    <input type="text" className="qty-input text-dark text-center" style={{ width: '40px' }} value={item.qty || 1} readOnly />
+                    <button className="qty-btn" onClick={() => updateQuantity(item.id, "inc")}><FaPlus /></button>
+                  </div>
                 </div>
                 <div className="text-end col-lg-4">
                   <button className="btn btn-sm fs-5 border-0 text-danger mb-2 me-1" onClick={() => saveForLater(item)} title="Save for Later"><FaHeart /></button>

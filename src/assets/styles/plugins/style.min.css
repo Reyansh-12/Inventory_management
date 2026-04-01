@@ -3595,7 +3595,7 @@ input::-webkit-inner-spin-button {
   height: 25px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 28px;
+  font-size: 2px;
   width: 53px;
   text-align: center;
   transition: all 0.5s ease 0s;

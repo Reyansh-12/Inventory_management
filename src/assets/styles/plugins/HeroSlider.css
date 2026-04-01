@@ -1,8 +1,6 @@
-/* Typography & Global */
 .main-wrapper-advance { background-color: #fafafa; font-family: 'Inter', sans-serif; }
 .text-pink { color: #e85a8a; }
 
-/* Hero Section */
 .hero-content-overlay { top: 50%; left: 8%; transform: translateY(-50%); }
 .hero-title { font-size: 100px; font-weight: 800; line-height: 1; letter-spacing: -2px; margin-bottom: 10px; color: #1a1a1a; }
 .subtitle { font-size: 24px; font-weight: 300; letter-spacing: 5px; text-transform: uppercase; }
@@ -19,12 +17,10 @@
   background: linear-gradient(90deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 50%);
 }
 
-/* Brand Ticker */
 .brand-ticker-section { border-top: 1px solid #eee; border-bottom: 1px solid #eee; background: #fff; overflow: hidden; }
 .brand-item { font-size: 20px; font-weight: 700; color: #ccc; text-transform: uppercase; letter-spacing: 4px; transition: 0.3s; }
 .brand-item:hover { color: #1a1a1a; }
 
-/* Offer Cards */
 .offer-card-adv { position: relative; overflow: hidden; border-radius: 20px; cursor: pointer; }
 .offer-overlay {
   position: absolute; inset: 0; background: rgba(0,0,0,0.2); 
@@ -37,7 +33,6 @@
 .offer-card-adv img { transition: 1.5s cubic-bezier(0.19, 1, 0.22, 1); }
 .offer-card-adv:hover img { transform: scale(1.1); }
 
-/* Modern Tabs */
 .modern-tabs { background: #eee; padding: 5px; border-radius: 100px; }
 .tab-item { 
   padding: 10px 25px; 
@@ -46,7 +41,7 @@
   font-weight: 500; 
   color: #666; 
   position: relative; 
-  z-index: 2; /* Text hamesha indicator ke upar rahega */
+  z-index: 2; 
   transition: color 0.3s ease;
 }
 .tab-item.active { 
@@ -59,9 +54,9 @@
   left: 0;
   background: #1a1a1a; 
   border-radius: 100px; 
-  z-index: 1; /* Indicator background ki tarah kaam karega */
+  z-index: 1; 
   pointer-events: none;
-  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); /* Smooth movement */
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); 
 }
 .title-underline { width: 50px; height: 4px; background: #e85a8a; border-radius: 10px; margin-top: 10px; }
 
@@ -77,4 +72,49 @@
   padding: 0;
   margin: 0;
   list-style: none;
+}
+
+.hero-title {
+  font-size: clamp(3rem, 10vw, 6rem);
+  line-height: 1;
+}
+
+.modern-tabs-container {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.modern-tabs::-webkit-scrollbar {
+  display: none; 
+}
+
+.white-space-nowrap {
+  white-space: nowrap;
+}
+
+@media (max-width: 576px) {
+  .offer-overlay h2 {
+    font-size: 1.8rem !important;
+  }
+  .hero-content-overlay {
+    bottom: 20%;
+    left: 0;
+    width: 100%;
+    padding: 0 20px;
+  }
+  
+  .product-anim-wrap {
+    padding: 5px;
+  }
+}
+
+.main-offer {
+  aspect-ratio: 16 / 9;
+}
+
+@media (max-width: 991px) {
+  .main-offer {
+    aspect-ratio: 4 / 3; 
+  }
 }

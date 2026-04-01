@@ -89,7 +89,7 @@ const Payment = () => {
   };
 
   return (
-    <div className="container py-5" style={{ maxWidth: "800px" }}>
+    <div className="container" style={{ maxWidth: "800px" }}>
       <button className="btn btn-link text-dark border-0 p-0 mb-4 text-decoration-none d-flex align-items-center" onClick={() => navigate(-1)} style={{letterSpacing: 'initial'}}>
         <FaChevronLeft className="me-2" /> Back to Address
       </button>

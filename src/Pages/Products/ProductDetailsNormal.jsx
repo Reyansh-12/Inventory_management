@@ -55,21 +55,21 @@ const ProductDetailsNormal = () => {
 
   const handlePurchase = (targetPath) => {
     const isBuyNow = targetPath === "/checkout";
-    
+
     if (!checkLogin(isBuyNow ? "buy now" : "add items to cart")) return;
-  
+
     const productToSave = {
       ...product,
       image: product.image || shop2,
       qty: qty
     };
-  
+
     if (isBuyNow) {
       // 1. BUY NOW: Pehle purana koi bhi buyNowItem clear karein
       localStorage.removeItem("buyNowItem");
       // 2. Naya item save karein
       localStorage.setItem("buyNowItem", JSON.stringify([productToSave]));
-      
+
       toast.success("Proceeding to checkout...");
       setTimeout(() => {
         navigate("/checkout");
@@ -78,13 +78,13 @@ const ProductDetailsNormal = () => {
       // ADD TO CART: Normal flow
       const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
       const existingItemIndex = existingCart.findIndex(item => item.id === product.id);
-  
+
       if (existingItemIndex > -1) {
         existingCart[existingItemIndex].qty += qty;
       } else {
         existingCart.push(productToSave);
       }
-  
+
       localStorage.setItem("cart", JSON.stringify(existingCart));
       window.dispatchEvent(new Event("cartUpdated"));
       toast.success("Added to cart!");
@@ -178,45 +178,45 @@ const ProductDetailsNormal = () => {
               </div>
               <p className="text-muted text-start ms-5">{product.description || "Premium formula for your skin health."}</p>
               <h2 className="text-start ms-5" style={{ color: 'rgba(227, 39, 95, 1)', fontWeight: '700', fontFamily: 'none' }}>₹{product.price}</h2>
-              
+
               <div className="quantityBox d-flex align-items-center mb-4 mt-4 ms-lg-5 ms-0 justify-content-start">
-  <div className="d-flex align-items-center border border-danger rounded-pill bg-white shadow-sm px-2">
-    <button 
-      className="btn border-0 d-flex align-items-center justify-content-center" 
-      onClick={decrement} 
-      style={{ width: '40px', height: '40px', fontSize: '1.5rem', color: '#e85a8a' }}
-    >
-      <strong>-</strong>
-    </button>
-    
-    <span className="mx-3 fw-bold fs-5" style={{ minWidth: '20px', textAlign: 'center' }}>
-      {qty}
-    </span>
-    
-    <button 
-      className="btn border-0 d-flex align-items-center justify-content-center" 
-      onClick={increment} 
-      style={{ width: '40px', height: '40px', fontSize: '1.2rem', color: '#e85a8a' }}
-    >
-      <strong>+</strong>
-    </button>
-  </div>
-</div>
+                <div className="d-flex align-items-center border border-danger rounded-pill bg-white shadow-sm px-2">
+                  <button
+                    className="btn border-0 d-flex align-items-center justify-content-center"
+                    onClick={decrement}
+                    style={{ width: '40px', height: '40px', fontSize: '1.5rem', color: '#e85a8a' }}
+                  >
+                    <strong>-</strong>
+                  </button>
+
+                  <span className="mx-3 fw-bold fs-5" style={{ minWidth: '20px', textAlign: 'center' }}>
+                    {qty}
+                  </span>
+
+                  <button
+                    className="btn border-0 d-flex align-items-center justify-content-center"
+                    onClick={increment}
+                    style={{ width: '40px', height: '40px', fontSize: '1.2rem', color: '#e85a8a' }}
+                  >
+                    <strong>+</strong>
+                  </button>
+                </div>
+              </div>
 
               <div className="d-grid gap-3 ms-5 d-flex">
                 <div className="col-lg-6">
-                  <button 
-                    className="btn w-100 text-white fw-bold rounded-4" 
-                    style={{ background: '#e85a8a', letterSpacing: 'initial' }} 
+                  <button
+                    className="btn w-100 text-white fw-bold rounded-4"
+                    style={{ background: '#e85a8a', letterSpacing: 'initial' }}
                     onClick={() => handlePurchase()}
                   >
                     Add To Cart
                   </button>
                 </div>
                 <div className="col-lg-6">
-                  <button 
-                    className="btn w-100 text-white fw-bold rounded-4" 
-                    style={{ background: '#333', letterSpacing: 'initial' }} 
+                  <button
+                    className="btn w-100 text-white fw-bold rounded-4"
+                    style={{ background: '#333', letterSpacing: 'initial' }}
                     onClick={() => handlePurchase("/checkout")}
                   >
                     Buy Now

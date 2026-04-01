@@ -4,6 +4,7 @@ import Logo from "../assets/images/brand-logo/logo.webp";
 import { Link } from "react-router-dom";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import logo from "../assets/images/logo-removebg-preview.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -70,8 +71,8 @@ const Footer = () => {
         <div className="row g-5 pb-5">
           
           <div className="col-md-6 col-lg-4 footer-column">
-            <Link to="/" className="footer-logo mb-4 d-inline-block">
-              <img src={Logo} width="110" alt="Logo" />
+            <Link to="/" className="footer-logo d-inline-block">
+              <img src={logo} width="150" alt="Logo" />
             </Link>
             <p style={{ color: "#666", fontSize: "15px", lineHeight: "1.8" }}>
               Experience the fusion of nature and science. Brancy delivers premium skincare that honors your natural glow.
