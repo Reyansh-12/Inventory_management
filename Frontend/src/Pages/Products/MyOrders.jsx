@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // Add this
+import { useNavigate } from "react-router-dom"; 
 import { FaBox, FaTruck, FaCheckCircle, FaCalendarAlt, FaMapMarkerAlt, FaFilter } from "react-icons/fa";
 import { toast } from "react-toastify";
 
@@ -10,7 +10,7 @@ const MyOrders = () => {
   const [loading, setLoading] = useState(true);
   const [selectedYear, setSelectedYear] = useState("All");
   
-  const navigate = useNavigate(); // Navigation hook
+  const navigate = useNavigate(); 
   const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
@@ -59,7 +59,7 @@ const MyOrders = () => {
   }
 
   return (
-    <div className="container" style={{ background: "#f8f9fa", minHeight: "100vh", marginTop: '120px', paddingBottom: '50px' }}>
+    <div className="container" style={{ minHeight: "100vh", marginTop: '120px', paddingBottom: '50px' }}>
       
       <div className="row align-items-center mb-4">
         <div className="col-md-6">
@@ -91,18 +91,20 @@ const MyOrders = () => {
         </div>
       ) : (
         <div className="row g-4">
-          {filteredOrders.map((order) => (
+          {filteredOrders.map((order) => {
+            console.log(order.image_path);
+            return (
             <div 
               key={order.id} 
               className="col-12" 
               onClick={() => navigate(`/order-details/${order.order_id}`, { state: { order } })}
               style={{ cursor: 'pointer' }}
             >
-              <div className="card border-0 shadow-sm rounded-4 overflow-hidden bg-white hover-shadow" style={{ transition: '0.3s' }}>
+              <div className="card border-0 mb-3 shadow-lg rounded-4 overflow-hidden bg-white hover-shadow" style={{ transition: '0.3s' }}>
                 <div className="row g-0">
                   <div className="col-md-2 p-3 d-flex align-items-center justify-content-center bg-light">
                     <img 
-                      src={`http://localhost/Inventory_management/Backend/assets/uploads/${order.image_path.split(',')[0]}`} 
+                      src={order.image_path} 
                       alt="product"
                       className="img-fluid rounded-3"
                       style={{ maxHeight: "120px", objectFit: "contain" }}
@@ -144,7 +146,8 @@ const MyOrders = () => {
                 </div>
               </div>
             </div>
-          ))}
+            );
+      })}
         </div>
       )}
     </div>

@@ -10,7 +10,6 @@ const Checkout = () => {
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(0);
 
-  // PERMANENT STORAGE LOGIC: Load addresses from localStorage or use default
   const [addresses, setAddresses] = useState(() => {
     const saved = localStorage.getItem("userAddresses");
     return saved ? JSON.parse(saved) : [
@@ -91,7 +90,6 @@ const Checkout = () => {
 
     const updatedList = [...addresses, newAddr];
     
-    // SAVE PERMANENTLY
     setAddresses(updatedList);
     localStorage.setItem("userAddresses", JSON.stringify(updatedList));
 
@@ -102,7 +100,7 @@ const Checkout = () => {
   };
 
   const deleteAddress = (e, id) => {
-    e.stopPropagation(); // Prevents selecting the address while deleting
+    e.stopPropagation(); 
     const filtered = addresses.filter(addr => addr.id !== id);
     setAddresses(filtered);
     localStorage.setItem("userAddresses", JSON.stringify(filtered));
@@ -117,7 +115,7 @@ const Checkout = () => {
           <button onClick={() => {
             localStorage.removeItem("buyNowItem"); 
             navigate(-1);
-          }} className="btn btn-link border-0 text-dark text-decoration-none p-0">
+          }} className="btn btn-link border-0 text-dark text-decoration-none p-0" style={{letterSpacing:'initial'}}>
             <FaChevronLeft /> Back to Cart
           </button>
           <h3 className="fw-bold m-0">Secure Checkout</h3>
@@ -130,7 +128,7 @@ const Checkout = () => {
               <div className="d-flex justify-content-between align-items-center mb-4">
                 <h5 className="fw-bold m-0"><FaMapMarkerAlt className="me-2 text-danger" /> Shipping Address</h5>
                 {!showAddressForm && (
-                  <button className="btn btn-sm rounded-pill px-3 border-primary text-primary" onClick={() => setShowAddressForm(true)}>
+                  <button className="btn btn-sm rounded-pill px-3" onClick={() => setShowAddressForm(true)} style={{letterSpacing:'initial', color:'#E85A8A', border:'1px solid #E85A8A'}}>
                     <FaPlus className="me-1 small" /> Add New
                   </button>
                 )}
@@ -138,15 +136,15 @@ const Checkout = () => {
 
               {showAddressForm ? (
                 <form onSubmit={handleAddNewAddress} className="row g-3">
-                  <div className="col-md-6"><input type="text" name="name" placeholder="Full Name" className="form-control p-3 rounded-3" value={formData.name} onChange={handleInputChange} required /></div>
+                  <div className="col-md-6 mb-3"><input type="text" name="name" placeholder="Full Name" className="form-control p-3 rounded-3" value={formData.name} onChange={handleInputChange} required /></div>
                   <div className="col-md-6"><input type="text" name="phone" placeholder="Phone Number" className="form-control p-3 rounded-3" value={formData.phone} onChange={handleInputChange} required /></div>
-                  <div className="col-12"><input type="text" name="address" placeholder="House No, Street, Area" className="form-control p-3 rounded-3" value={formData.address} onChange={handleInputChange} required /></div>
-                  <div className="col-md-6"><input type="text" name="city" placeholder="City" className="form-control p-3 rounded-3" value={formData.city} onChange={handleInputChange} required /></div>
+                  <div className="col-12 mb-3"><input type="text" name="address" placeholder="House No, Street, Area" className="form-control p-3 rounded-3" value={formData.address} onChange={handleInputChange} required /></div>
+                  <div className="col-md-6 mb-3"><input type="text" name="city" placeholder="City" className="form-control p-3 rounded-3" value={formData.city} onChange={handleInputChange} required /></div>
                   <div className="col-md-6"><input type="text" name="pincode" placeholder="Pincode" className="form-control p-3 rounded-3" value={formData.pincode} onChange={handleInputChange} required /></div>
-                  <div className="col-12"><input type="text" name="nearby" placeholder="Nearby Landmark (Optional)" className="form-control p-3 rounded-3" value={formData.nearby} onChange={handleInputChange} /></div>
+                  <div className="col-12 mb-3"><input type="text" name="nearby" placeholder="Nearby Landmark (Optional)" className="form-control p-3 rounded-3" value={formData.nearby} onChange={handleInputChange} /></div>
                   <div className="col-12">
-                    <button type="submit" className="btn btn-dark px-4 mt-2 rounded-pill me-2">Save Permanently</button>
-                    <button type="button" className="btn btn-light px-4 mt-2 rounded-pill" onClick={() => setShowAddressForm(false)}>Cancel</button>
+                    <button type="submit" className="btn px-4 mt-2 rounded-pill me-2 text-white" style={{background:'#E85A8A', letterSpacing:'initial'}}>Save Permanently</button>
+                    <button type="button" className="btn border border-dark px-4 mt-2 rounded-pill" onClick={() => setShowAddressForm(false)} style={{letterSpacing:'initial'}}>Cancel</button>
                   </div>
                 </form>
               ) : (
@@ -155,10 +153,10 @@ const Checkout = () => {
                     <div className="col-md-6" key={addr.id}>
                       <div
                         onClick={() => setSelectedAddress(index)}
-                        className={`p-3 rounded-4 border-2 position-relative cursor-pointer transition-all ${selectedAddress === index ? "border-primary bg-white shadow-sm" : "border-light bg-light"}`}
-                        style={{ borderStyle: "solid", transition: "0.3s" }}
+                        className={`p-3 rounded-4 position-relative cursor-pointer transition-all` }
+                        style={{ borderStyle: "solid", transition: "0.3s", border: selectedAddress === index ? "2px solid #E85A8A" : "1px solid #ddd" }}
                       >
-                        {selectedAddress === index && <FaCheckCircle className="position-absolute top-0 end-0 m-3 text-primary" />}
+                        {selectedAddress === index && <FaCheckCircle className="position-absolute top-0 end-0 m-3" style={{color:'#E85A8A'}} />}
                         <h6 className="fw-bold mb-1">{addr.name}</h6>
                         <p className="small text-muted mb-1">{addr.address}, {addr.city} - {addr.pincode}</p>
                         <p className="small text-muted mb-2"><strong>Nearby:</strong> {addr.nearby || "N/A"}</p>
@@ -176,7 +174,6 @@ const Checkout = () => {
             </div>
           </div>
 
-          {/* Order Summary Section */}
           <div className="col-lg-4">
             <div className="card border-0 shadow-sm rounded-4 p-4 sticky-top" style={{ top: "100px" }}>
               <h5 className="fw-bold mb-4">Order Summary</h5>
@@ -198,14 +195,14 @@ const Checkout = () => {
                 <hr />
                 <div className="d-flex justify-content-between align-items-center mb-4">
                   <h5 className="fw-bold m-0">Total</h5>
-                  <h4 className="fw-bold m-0 text-primary">₹{total}</h4>
+                  <h4 className="fw-bold m-0" style={{color:'#E85A8A'}}>₹{total}</h4>
                 </div>
                 <button
                   onClick={() => {
                     localStorage.setItem("shippingAddress", JSON.stringify(addresses[selectedAddress]));
                     navigate('/payment');
                   }}
-                  className="btn btn-primary w-100 py-3 rounded-pill fw-bold shadow"
+                  className="btn w-100 text-white rounded-pill fw-bold shadow" style={{letterSpacing:'initial', background:'#E85A8A'}}
                 >
                   CONTINUE TO PAYMENT
                 </button>

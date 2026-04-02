@@ -245,6 +245,7 @@ $inventory = mysqli_fetch_assoc($inventoryResult);
     <title>BRANCY – Cosmetic Store</title>
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.dataTables.css" />
     <link rel="stylesheet" href="/Backend/src/assets/css/dashboard/dashboard.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <style>
         .sales-filter .btn {
             min-width: 90px;
@@ -263,7 +264,6 @@ $inventory = mysqli_fetch_assoc($inventoryResult);
             color: black;
         }
 
-        /* Professional Overhaul */
         :root {
             --primary-color: #6792ff;
             --success-bg: rgba(32, 201, 151, 0.15);
@@ -370,12 +370,6 @@ $inventory = mysqli_fetch_assoc($inventoryResult);
             justify-content: center;
             border-radius: 12px;
         }
-
-
-
-
-
-
         .dash-widget {
             display: flex;
             align-items: center;

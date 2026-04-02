@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate} from 'react-router-dom';
 
 import Navbar from './components/Navbar';
 import { HomePage } from './Pages/HomePage';
@@ -14,6 +14,7 @@ import Payment from "./Pages/Products/Payment";
 import OrderSuccess from "./Pages/Products/OrderSuccess";
 import MyOrders from "./Pages/Products/MyOrders";
 import Profile from "./Pages/Profile";
+import OrderDetails from "./Pages/Products/OrderDetails";
 
 import './assets/styles/vendor/bootstrap.min.css';
 import './assets/styles/plugins/style.min.css';     
@@ -39,7 +40,7 @@ function App() {
         localStorage.setItem("user", JSON.stringify(userData));
   
         window.history.replaceState(null, "", window.location.pathname);
-        navigate("/", { replace: true });
+        navigate("/home", { replace: true });
         window.location.reload(); 
       } catch (error) {
         console.error("User Data Parse Error:", error);
@@ -64,6 +65,7 @@ function App() {
         <Route path="/order-success" element={<OrderSuccess />} />
         <Route path="/my-orders" element={<MyOrders />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/order-details/:id" element={<OrderDetails />} />
       </Routes>
     </div>
   );

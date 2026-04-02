@@ -45,6 +45,7 @@ const Payment = () => {
       email: currentUser?.user_email || currentUser?.email || "",
       phone: savedAddress.phone,
       address: savedAddress.address,
+      nearby: savedAddress.nearby || "",
       city: savedAddress.city,
       pincode: savedAddress.pincode,
       shipping_charge: 0,
