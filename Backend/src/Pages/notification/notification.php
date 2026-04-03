@@ -145,40 +145,40 @@ mysqli_query($con, "UPDATE order_list SET seen = 1 WHERE seen = 0");
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Yes, update it!'
             })
-            // .then((result) => {
-            //     if (result.isConfirmed) {
-            //         Swal.fire({
-            //             title: 'Updating...',
-            //             allowOutsideClick: false,
-            //             didOpen: () => { Swal.showLoading() }
-            //         });
+            .then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Updating...',
+                        allowOutsideClick: false,
+                        didOpen: () => { Swal.showLoading() }
+                    });
 
-            //         fetch('/Backend/src/controllers/updateOrderStatus.php', {
-            //             method: 'POST',
-            //             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            //             body: `order_id=${orderId}&status=${newStatus}`
-            //         })
-            //         .then(response => response.json())
-            //         .then(data => {
-            //             if (data.success) {
-            //                 Swal.fire({
-            //                     icon: 'success',
-            //                     title: 'Updated!',
-            //                     text: 'Status has been updated successfully.',
-            //                     timer: 1500,
-            //                     showConfirmButton: false
-            //                 });
-            //             } else {
-            //                 Swal.fire('Error!', data.message, 'error');
-            //             }
-            //         })
-            //         .catch(err => {
-            //             console.error(err);
-            //             Swal.fire('Oops!', 'Something went wrong!', 'error');
-            //         });
-            //     } else {
-            //     }
-            // });
+                    fetch('/Backend/src/controllers/updateOrderStatus.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: `order_id=${orderId}&status=${newStatus}`
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                // icon: 'success',
+                                title: 'Updated!',
+                                text: 'Status has been updated successfully.',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                        } else {
+                            Swal.fire('Error!', data.message, 'error');
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        Swal.fire('Oops!', 'Something went wrong!', 'error');
+                    });
+                } else {
+                }
+            });
         }
 
         const paymentFilter = document.getElementById('paymentFilter');
