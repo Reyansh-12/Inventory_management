@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; 
-import { FaBox, FaTruck, FaCheckCircle, FaCalendarAlt, FaMapMarkerAlt, FaFilter } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { FaBox, FaTruck, FaCheckCircle, FaCalendarAlt, FaMapMarkerAlt, FaFilter, FaTimesCircle } from "react-icons/fa";
 import { toast } from "react-toastify";
 
 const MyOrders = () => {
@@ -9,8 +9,8 @@ const MyOrders = () => {
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedYear, setSelectedYear] = useState("All");
-  
-  const navigate = useNavigate(); 
+
+  const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
@@ -60,7 +60,7 @@ const MyOrders = () => {
 
   return (
     <div className="container" style={{ minHeight: "100vh", marginTop: '120px', paddingBottom: '50px' }}>
-      
+
       <div className="row align-items-center mb-4">
         <div className="col-md-6">
           <h3 className="fw-bold m-0 text-dark">Order History</h3>
@@ -69,8 +69,8 @@ const MyOrders = () => {
         <div className="col-md-6 text-md-end">
           <div className="d-inline-flex align-items-center bg-white p-2 rounded-3 shadow-sm border">
             <FaFilter className="text-muted me-2 ms-2" />
-            <select 
-              className="form-select border-0 shadow-none fw-bold" 
+            <select
+              className="form-select border-0 shadow-none fw-bold"
               style={{ width: '150px', cursor: 'pointer' }}
               value={selectedYear}
               onChange={(e) => setSelectedYear(e.target.value)}
@@ -94,60 +94,64 @@ const MyOrders = () => {
           {filteredOrders.map((order) => {
             console.log(order.image_path);
             return (
-            <div 
-              key={order.id} 
-              className="col-12" 
-              onClick={() => navigate(`/order-details/${order.order_id}`, { state: { order } })}
-              style={{ cursor: 'pointer' }}
-            >
-              <div className="card border-0 mb-3 shadow-lg rounded-4 overflow-hidden bg-white hover-shadow" style={{ transition: '0.3s' }}>
-                <div className="row g-0">
-                  <div className="col-md-2 p-3 d-flex align-items-center justify-content-center bg-light">
-                    <img 
-                      src={order.image_path} 
-                      alt="product"
-                      className="img-fluid rounded-3"
-                      style={{ maxHeight: "120px", objectFit: "contain" }}
-                      onError={(e) => { e.target.src = "https://via.placeholder.com/150?text=Cosmetic"; }}
-                    />
-                  </div>
-
-                  <div className="col-md-10 p-4">
-                    <div className="d-flex justify-content-between align-items-start mb-2">
-                      <div>
-                        <h5 className="fw-bold mb-1 text-dark">{order.product}</h5>
-                        <p className="small text-muted mb-2">
-                          <span className="fw-bold text-uppercase text-primary">ID: #{order.order_id}</span> | Brand: {order.brand}
-                        </p>
-                      </div>
-                      <div className="text-end">
-                        <h4 className="fw-bold m-0" style={{ color: '#e85a8a' }}>₹{order.total_amount}</h4>
-                        <small className="badge bg-light text-dark border">{order.payment_method}</small>
-                      </div>
+              <div
+                key={order.id}
+                className="col-12"
+                onClick={() => navigate(`/order-details/${order.order_id}`, { state: { order } })}
+                style={{ cursor: 'pointer' }}
+              >
+                <div className="card border-0 mb-3 shadow-lg rounded-4 overflow-hidden bg-white hover-shadow" style={{ transition: '0.3s' }}>
+                  <div className="row g-0">
+                    <div className="col-md-2 p-3 d-flex align-items-center justify-content-center bg-light">
+                      <img
+                        src={order.image_path}
+                        alt="product"
+                        className="img-fluid rounded-3"
+                        style={{ maxHeight: "120px", objectFit: "contain" }}
+                        onError={(e) => { e.target.src = "https://via.placeholder.com/150?text=Cosmetic"; }}
+                      />
                     </div>
 
-                    <div className="row align-items-center mt-3 border-top pt-3">
-                      <div className="col-md-4">
-                        <div className="d-flex align-items-center text-muted small">
-                          <FaCalendarAlt className="me-2" />
-                          <span>Ordered: {new Date(order.created).toLocaleDateString('en-GB')}</span>
+                    <div className="col-md-10 p-4">
+                      <div className="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                          <h5 className="fw-bold mb-1 text-dark">{order.product}</h5>
+                          <p className="small text-muted mb-2">
+                            <span className="fw-bold text-uppercase text-primary">ID: #{order.order_id}</span> | Brand: {order.brand}
+                          </p>
+                        </div>
+                        <div className="text-end">
+                          <h4 className="fw-bold m-0" style={{ color: '#e85a8a' }}>₹{order.total_amount}</h4>
+                          <small className="badge bg-light text-dark border">{order.payment_method}</small>
                         </div>
                       </div>
-                      <div className="col-md-4 text-md-end ms-auto">
-                        <span className={`badge rounded-pill px-4 py-2 ${
-                          order.status === 'Delivered' ? 'bg-success text-white' : 'bg-warning text-dark'
-                        }`}>
-                          {order.status === 'Delivered' ? <FaCheckCircle className="me-1" /> : <FaTruck className="me-1" />}
-                          {order.status}
-                        </span>
+
+                      <div className="row align-items-center mt-3 border-top pt-3">
+                        <div className="col-md-4">
+                          <div className="d-flex align-items-center text-muted small">
+                            <FaCalendarAlt className="me-2" />
+                            <span>Ordered: {new Date(order.created).toLocaleDateString('en-GB')}</span>
+                          </div>
+                        </div>
+                        <div className="col-md-4 text-md-end ms-auto">
+                          <span className={`badge rounded-pill px-4 py-2 ${order.status === 'Delivered' ? 'bg-success text-white' :
+                              order.status === 'Canceled' ? 'bg-danger text-white' :
+                                'bg-warning text-dark'
+                            }`}>
+                            {order.status === 'Delivered' && <FaCheckCircle className="me-1" />}
+                            {order.status === 'Canceled' && <FaTimesCircle className="me-1" />}
+                            {order.status !== 'Delivered' && order.status !== 'Canceled' && <FaTruck className="me-1" />}
+
+                            {order.status}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
             );
-      })}
+          })}
         </div>
       )}
     </div>

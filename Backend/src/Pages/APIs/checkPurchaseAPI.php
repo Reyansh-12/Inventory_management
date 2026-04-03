@@ -13,8 +13,12 @@ if (empty($email) || empty($product)) {
     exit;
 }
 
-// Order list table check
-$sql = "SELECT id FROM order_list WHERE email = '$email' AND product = '$product' LIMIT 1";
+$sql = "SELECT id FROM order_list 
+        WHERE email = '$email' 
+        AND product = '$product' 
+        AND status = 'Delivered' 
+        LIMIT 1";
+
 $result = mysqli_query($con, $sql);
 
 if ($result && mysqli_num_rows($result) > 0) {

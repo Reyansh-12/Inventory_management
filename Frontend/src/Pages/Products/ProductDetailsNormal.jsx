@@ -65,17 +65,14 @@ const ProductDetailsNormal = () => {
     };
 
     if (isBuyNow) {
-      // 1. BUY NOW: Pehle purana koi bhi buyNowItem clear karein
       localStorage.removeItem("buyNowItem");
-      // 2. Naya item save karein
       localStorage.setItem("buyNowItem", JSON.stringify([productToSave]));
 
       toast.success("Proceeding to checkout...");
       setTimeout(() => {
         navigate("/checkout");
-      }, 400); // Thoda extra delay storage sync ke liye
+      }, 400); 
     } else {
-      // ADD TO CART: Normal flow
       const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
       const existingItemIndex = existingCart.findIndex(item => item.id === product.id);
 
@@ -94,14 +91,21 @@ const ProductDetailsNormal = () => {
   const handleReviewClick = async () => {
     if (!checkLogin("write a review")) return;
     const user = JSON.parse(localStorage.getItem("user"));
+    
     try {
       const response = await fetch(
         `http://localhost/Inventory_management/Backend/src/Pages/APIs/checkPurchaseAPI.php?email=${encodeURIComponent(user.email)}&product=${encodeURIComponent(product.name)}`
       );
       const data = await response.json();
-      if (data.hasBought) setShowReviewForm(true);
-      else toast.error("Review only allowed for purchased products!");
-    } catch (err) { toast.error("Error verifying purchase status."); }
+      
+      if (data.hasBought) {
+        setShowReviewForm(true);
+      } else {
+        toast.info("Reviews are only allowed for orders that are successfully DELIVERED.");
+      }
+    } catch (err) { 
+      toast.error("Security check failed. Please try again later."); 
+    }
   };
 
   const submitReview = async () => {
